@@ -3,6 +3,7 @@
     "rules": {
       "indentation": "tab",
       "number-leading-zero": null,
-      "color-hex-case": ["lower", { "severity": "warning" }]
+      "color-hex-case": ["lower", { "severity": "warning" }],
+      "number-leading-zer": null
     }
 }

@@ -1,7 +1,7 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   purge: [],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: false, // or 'media' or 'classs'
   theme: {
     extend: {
       colors: {
