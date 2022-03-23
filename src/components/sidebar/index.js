@@ -28,14 +28,25 @@ function SideBarComponent({ active }) {
         </Link>
         <Link to="/inbox">
           <p
-            className={active === "inbox" ? " mb-4 text-purple-100" : " mb-4 "}
+            className={active === "about" ? " mb-4 text-purple-100" : " mb-4 "}
           >
-            Inbox
+            About
           </p>
         </Link>
-        <Link to="/profile">
-          <p className="text-xl font-semibold">Profile</p>
-        </Link>
+        <button
+          type="button"
+          onClick={() => navigate("/login")}
+          className="mt-10 rounded-full border border-gray-400 w-full py-3 text-gray-400 font-semibold flex justify-center items-center"
+        >
+          Log in
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate("/signup")}
+          className="mt-4 rounded-full border border-orange-200 bg-orange-200  w-full py-3 text-white font-semibold flex justify-center items-center"
+        >
+          Join now
+        </button>
       </div>
     </div>
   );
