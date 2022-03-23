@@ -5,5 +5,4 @@ module.exports = {
       },
     },
   };
-// Project Setup
   
