@@ -15,7 +15,7 @@ import CommunitySection from "./community";
 
 function HomeComponent() {
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
+    <div className="max-w-screen-2xl w-full flex m-auto border-r border-gray-50">
       <SideBarComponent active="home" />
       <div className="ml-72 p-0">
         <div className="relative">

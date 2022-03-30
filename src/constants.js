@@ -10,7 +10,7 @@ const NonAuthRoutes = {
   home: "/",
   login: "/login",
   signup: "/signup",
-  forgotPassword: "/forgot/password",
+  forgotPassword: "/forgot-password",
   resetPassword: "/reset-password/:token",
   about: "/about",
   stylists: "/stylists",

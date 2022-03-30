@@ -1,8 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import brandLogo from "../../assets/images/brand-logo.svg";
 
 function SideBarComponent({ active }) {
+  const navigate = useNavigate();
   return (
     <div className="w-72 bg-gray-50 p-8 h-screen fixed border-r border-gray-100 shadow">
       <img src={brandLogo} alt="brand logo" />
