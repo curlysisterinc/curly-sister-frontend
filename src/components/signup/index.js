@@ -12,7 +12,7 @@ import { useFormik } from "formik";
 import AuthModalComponent from "../authModal";
 import AuthSideBarComponent from "../authSidebar";
 import authHandler from "../../authHandler";
-import { AuthRoutes } from "../../constants";
+import { NonAuthRoutes } from "../../constants";
 import { signupUser } from "../../redux/auth/authSlice";
 import onboarding from "../api/onBoarding";
 import googleIcon from "../../assets/images/google-icon.svg";
@@ -51,7 +51,8 @@ function SignupComponent() {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
+      firstName: "",
+      lastName: "",
       password: "",
       password2: "",
       userEmail: "",
@@ -59,23 +60,25 @@ function SignupComponent() {
     },
     onSubmit: (values) => {
       onboarding
-        .SignUp(values.userEmail, values.password, values.name)
+        .SignUp(
+          values.userEmail,
+          values.password,
+          values.firstName,
+          values.lastName
+        )
         .then((response) => {
           if (response.status === 200) {
             setEmailSuccess(true);
-            const res = response.data;
-            // eslint-disable-next-line no-console
-            console.log("handle signup", res);
-            // JWT DECODE SETUP
-            const accessToken = res.access_token;
-            const refreshToken = res.refresh_token;
-            Cookies.set("accessToken", accessToken);
-            authHandler.handle(refreshToken);
+            // const res = response;
+            // // eslint-disable-next-line no-console
+            // console.log("handle signup", res);
+            // // eslint-disable-next-line no-underscore-dangle
+            // authHandler.setUserInfo(res.data);
+
             // const accessToken = res.access_token;
             // authHandler.handle(accessToken);
             dispatch(
               signupUser({
-                token: accessToken,
                 isSignedIn: true,
               })
             );
@@ -97,7 +100,8 @@ function SignupComponent() {
       );
       const validPassword = passwordRegex.test(values.password);
       const isValid =
-        values.name.trim().length &&
+        values.firstName.trim().length &&
+        values.lastName.trim().length &&
         values.userEmail.trim().length &&
         values.password.trim().length &&
         values.password2.trim().length &&
@@ -108,8 +112,11 @@ function SignupComponent() {
       } else {
         setBtnDisabled(true);
       }
-      if (!values.name) {
-        errors.name = "*Please enter your name";
+      if (!values.firstName) {
+        errors.firstName = "*Please enter your first name";
+      }
+      if (!values.lastName) {
+        errors.lastName = "*Please enter your last name";
       }
 
       if (!values.userEmail) {
@@ -197,23 +204,46 @@ function SignupComponent() {
             <div className="mb-6">
               <label
                 className="block text-black text-sm font-bold "
-                htmlFor="fullname"
+                htmlFor="firstName"
               >
-                Fullname
+                FirstName
                 <input
                   className="shadow-sm appearance-none mt-3 border border-gray-500 rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="fullname"
+                  id="firstName"
                   type="text"
-                  value={formik.values.name}
-                  placeholder="Enter fullname"
-                  name="name"
+                  value={formik.values.firstName}
+                  placeholder="Enter firstname"
+                  name="firstName"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
               </label>
-              {formik.errors.name && formik.touched.name ? (
+              {formik.errors.firstName && formik.touched.firstName ? (
                 <div className="text-red-400 text-sm font-normal">
-                  {formik.errors.name}
+                  {formik.errors.firstName}
+                </div>
+              ) : null}
+            </div>
+            <div className="mb-6">
+              <label
+                className="block text-black text-sm font-bold "
+                htmlFor="lastName"
+              >
+                LastName
+                <input
+                  className="shadow-sm appearance-none mt-3 border border-gray-500 rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="lastName"
+                  type="text"
+                  value={formik.values.lastName}
+                  placeholder="Enter lastName"
+                  name="lastName"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                />
+              </label>
+              {formik.errors.lastName && formik.touched.lastName ? (
+                <div className="text-red-400 text-sm font-normal">
+                  {formik.errors.lastName}
                 </div>
               ) : null}
             </div>
@@ -347,7 +377,7 @@ function SignupComponent() {
               Already have an account?{" "}
               <Link to="/login" className="text-orange-200 ml-2">
                 {" "}
-                Sign In
+                Log In
               </Link>
             </div>
             <div className="flex justify-between items-center mt-4">
@@ -396,7 +426,7 @@ function SignupComponent() {
                 <button
                   className="bg-orange-200 rounded shadow text-white font-bold w-full py-3"
                   type="button"
-                  onClick={() => navigate(AuthRoutes.home)}
+                  onClick={() => navigate(NonAuthRoutes.login)}
                 >
                   Continue with your experience
                 </button>

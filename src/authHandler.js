@@ -1,8 +1,9 @@
+/* eslint-disable camelcase */
 /* eslint-disable object-shorthand */
 /* eslint-disable prettier/prettier */
 /* eslint-disable import/no-anonymous-default-export */
 /* eslint-disable import/no-cycle */
-
+/* eslint-disable camelcase */
 export default {
   handle(TOKEN) {
     this.set(TOKEN);
@@ -17,27 +18,31 @@ export default {
     return localStorage.removeItem("token");
   },
   setUserInfo(
-    _id,
+    active,
+    createdAt,
+    email,
+    email_verified,
     firstName,
     lastName,
-    email,
-    emailVerified,
-    name,
-    userInitials
+    reset_password,
+    role,
+    source
   ) {
     const user = {
-      _id: _id,
-      name: name,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      emailVerified: emailVerified,
-      userInitials: userInitials,
+      active,
+      createdAt,
+      email,
+      email_verified,
+      firstName,
+      lastName,
+      reset_password,
+      role,
+      source,
     };
     localStorage.setItem("user", JSON.stringify(user));
   },
   getUser() {
-    return localStorage.getItem("user");
+    return JSON.parse(localStorage.getItem("user"));
   },
   deleteUser() {
     return JSON.parse(localStorage.removeItem("user"));

@@ -7,6 +7,7 @@ const initialState = {
   userEmail: undefined,
   userPw: undefined,
   userTitle: undefined,
+  user: null,
 };
 
 const authSlice = createSlice({
@@ -26,9 +27,8 @@ const authSlice = createSlice({
       state.isSignedIn = isSignedIn;
     },
     signupUser(state, action) {
-      const { token, isSignedIn } = action.payload;
+      const { isSignedIn } = action.payload;
 
-      state.token = token;
       state.isSignedIn = isSignedIn;
     },
     forgotPassword(state, action) {
@@ -42,6 +42,10 @@ const authSlice = createSlice({
 
       state.token = token;
       state.isSignedIn = isSignedIn;
+    },
+    logoutUser(state) {
+      state.isSignedIn = false;
+      state.user = null;
     },
   },
 });
@@ -57,6 +61,7 @@ export const {
   signupUser,
   forgotPassword,
   resetPassword,
+  logoutUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

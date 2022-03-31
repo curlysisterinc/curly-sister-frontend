@@ -7,12 +7,13 @@ import { Routes, Route } from "react-router-dom";
 import HomeComponent from "./components/home";
 import AboutComponent from "./components/about";
 
-import { NonAuthRoutes } from "./constants";
+import { NonAuthRoutes, AuthRoutes } from "./constants";
 import LoginComponent from "./components/login";
 import SignupComponent from "./components/signup";
 import ForgotPasswordComponent from "./components/forgotPassword";
 import TermsAndPrivacy from "./components/termsAndPrivacy";
 import ResetPasswordComponent from "./components/resetPassword";
+import UserHome from "./components/userHome";
 
 function Routers() {
   return (
@@ -57,6 +58,7 @@ function Routers() {
             path={NonAuthRoutes.termsAndPrivacy}
             element={<TermsAndPrivacy />}
           />
+          <Route path={AuthRoutes.home} element={<UserHome />} />
         </Routes>
       </Suspense>
     </div>

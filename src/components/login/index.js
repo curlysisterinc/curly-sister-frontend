@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prefer-regex-literals */
+/* eslint-disable-next-line no-console */
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -68,7 +71,10 @@ function LoginComponent() {
           if (response.status === 200) {
             setEmailSuccess(true);
             const res = response.data;
-            // eslint-disable-next-line no-console
+            console.log(res);
+            // eslint-disable-next-line no-underscore-dangle
+
+            authHandler.setUserInfo(res.user);
             // JWT DECODE SETUP
             const accessToken = res.access_token;
             const refreshToken = res.refresh_token;
@@ -85,7 +91,7 @@ function LoginComponent() {
           }
         })
         .catch((error) => {
-          if (error.response.data.message) {
+          if (error) {
             setEmailSuccess(false);
             setEmailFailure(true);
             setBtnIsLoading(false);
@@ -247,7 +253,7 @@ function LoginComponent() {
               {btnIsLoading ? (
                 <div className="flex justify-center">loading...</div>
               ) : (
-                "Sign In"
+                "Log In"
               )}
             </button>
             <div className="flex justify-center mt-5 text-sm text-gray-150">

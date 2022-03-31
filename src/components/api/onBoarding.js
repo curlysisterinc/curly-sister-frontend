@@ -10,11 +10,12 @@ import { curlySistersOnboarding } from "../../config";
 // eslint-disable-next-line
 export default {
   /** Send a POST request to Log In User */
-  async SignUp(email, password, name) {
+  async SignUp(email, password, firstName, lastName) {
     const data = {
       email,
       password,
-      name,
+      firstName,
+      lastName,
     };
     const stringifiedData = JSON.stringify(data);
     return curlySistersOnboarding.post("/users/register", stringifiedData);
