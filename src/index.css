@@ -6,9 +6,7 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "BeatriceRegular";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -16,4 +14,51 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+@layer base {
+  @font-face {
+    font-family: "GTSuperTextBlack";
+    font-weight: 900;
+    src: local("GTSuperTextBlack"),
+      url(./assets/fonts/GTSuperTextBlack.otf) format("opentype");
+  }
+  @font-face {
+    font-family: "BeatriceSemiBold";
+    font-weight: 600;
+    src: local("BeatriceSemiBold"),
+      url(./assets/fonts/BeatriceSemiBold.otf) format("opentype");
+  }
+  @font-face {
+    font-family: "BeatriceSemiBoldItalic";
+    font-weight: 600;
+    src: local("BeatriceSemiBoldItalic"),
+      url(./assets/fonts/BeatriceSemiBoldItalic.otf) format("opentype");
+  }
+
+  @font-face {
+    font-family: "BeatriceMedium";
+    font-weight: 500;
+    src: local("BeatriceMedium"),
+      url(./assets/fonts/BeatriceMedium.otf) format("opentype");
+  }
+  @font-face {
+    font-family: "BeatriceMediumItalic";
+    font-weight: 500;
+    font-style: italic;
+    src: local("BeatriceMediumItalic"),
+      url(./assets/fonts/BeatriceMediumItalic.otf) format("opentype");
+  }
+  @font-face {
+    font-family: "BeatriceRegular";
+    font-weight: 400;
+    src: local("BeatriceRegular"),
+      url(./assets/fonts/BeatriceRegular.otf) format("opentype");
+  }
+  @font-face {
+    font-family: "BeatriceRegularItalic";
+    font-weight: 400;
+    src: local("BeatriceRegularItalic"),
+      url(./assets/fonts/BeatriceRegularItalic.otf) format("opentype");
+  }
 }

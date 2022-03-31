@@ -14,7 +14,7 @@ function LearnSection() {
       <div className="p-10 absolute flex justify-start items-center bg-gradient-to-r from-purple-200 w-5/6 h-full  left-0 top-1/2 transform -translate-y-1/2">
         <div className="w-2/4 pr-14">
           <p className="text-gray-100 text-base">LEARN HAIR CARE</p>
-          <h2 className="text-4xl text-white font-bold my-5">
+          <h2 className="text-4xl text-white font-bold my-5 font-GTSuperTextBlack">
             Get to know how to care for your unique hair
           </h2>
           <p className="text-gray-100 text-base pr-10 leading-7">

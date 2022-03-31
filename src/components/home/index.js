@@ -15,7 +15,7 @@ import CommunitySection from "./community";
 
 function HomeComponent() {
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
+    <div className="max-w-screen-2xl w-full flex m-auto border-r border-gray-50">
       <SideBarComponent active="home" />
       <div className="ml-72 p-0">
         <div className="relative">
@@ -34,7 +34,7 @@ function HomeComponent() {
           </div>
           <div className="bg-purple-200 px-10 pt-14">
             <div className="relative text-center w-full border border-orange-100 flex flex-col justify-center items-center py-24">
-              <h1 className="text-white font-bold text-5xl">
+              <h1 className="text-white font-bold text-5xl font-GTSuperTextBlack">
                 Let’s find you a stylist
               </h1>
               <p className="text-white text-lg mt-6">

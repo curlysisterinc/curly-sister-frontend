@@ -15,7 +15,9 @@ function BookStylist() {
       </div>
 
       <div className="flex justify-between items-center mt-5">
-        <h2 className="text-4xl text-gray-400 font-bold">Book a stylist</h2>
+        <h2 className="text-4xl text-gray-400 font-bold font-GTSuperTextBlack">
+          Book a stylist
+        </h2>
         <p className="text-gray-200 text-lg leading-7 w-1/2">
           We have stylists that are <strong>masters of their craft</strong> and
           are ready to teach you in the art of mastering your waves and curls.
@@ -26,7 +28,7 @@ function BookStylist() {
         <div className="bg-white p-6 rounded-xl shadow-lg">
           <img src={stylist1} alt="stylist" />
           <div className="flex my-3">
-            <h5 className="text-lg text-gray-400 font-semibold mr-3">
+            <h5 className="text-lg text-gray-400 mr-3 font-BeatriceSemiBold">
               Leo Curls
             </h5>
             <img src={ratingIcon} alt="rating" />
@@ -40,13 +42,13 @@ function BookStylist() {
           <div className="mt-5 flex justify-between items-center w-full">
             <button
               type="button"
-              className="border border-gray-200 text-gray-400 font-semibold w-5/12 rounded-full py-2"
+              className="border border-gray-200 text-gray-400 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               View profile
             </button>
             <button
               type="button"
-              className="text-white border bg-gray-400 border-gray-200 font-semibold w-5/12 rounded-full py-2"
+              className="text-white border bg-gray-400 border-gray-200 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               Book Leo
             </button>
@@ -56,7 +58,7 @@ function BookStylist() {
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <img src={stylist2} alt="stylist" />
           <div className="flex my-3">
-            <h5 className="text-lg text-gray-400 font-semibold mr-3">
+            <h5 className="text-lg text-gray-400 font-BeatriceSemiBold mr-3">
               Pitze Patze{" "}
             </h5>
             <img src={ratingIcon} alt="rating" />
@@ -70,13 +72,13 @@ function BookStylist() {
           <div className="mt-5 flex justify-between items-center w-full">
             <button
               type="button"
-              className="border border-gray-200 text-gray-400 font-semibold w-5/12 rounded-full py-2"
+              className="border border-gray-200 text-gray-400 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               View profile
             </button>
             <button
               type="button"
-              className="text-white border bg-gray-400 border-gray-200 font-semibold w-5/12 rounded-full py-2"
+              className="text-white border bg-gray-400 border-gray-200 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               Book Leo
             </button>
@@ -87,7 +89,7 @@ function BookStylist() {
           <img src={stylist3} alt="stylist" />
 
           <div className="flex my-3">
-            <h5 className="text-lg text-gray-400 font-semibold mr-3">
+            <h5 className="text-lg text-gray-400 font-BeatriceSemiBold mr-3">
               Allyn Antione Beauty{" "}
             </h5>
             <img src={ratingIcon} alt="rating" />
@@ -101,13 +103,13 @@ function BookStylist() {
           <div className="mt-5 flex justify-between items-center w-full">
             <button
               type="button"
-              className="border border-gray-200 text-gray-400 font-semibold w-5/12 rounded-full py-2"
+              className="border border-gray-200 text-gray-400 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               View profile
             </button>
             <button
               type="button"
-              className="text-white border bg-gray-400 border-gray-200 font-semibold w-5/12 rounded-full py-2"
+              className="text-white border bg-gray-400 border-gray-200 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               Book Leo
             </button>
@@ -117,7 +119,7 @@ function BookStylist() {
       <div className="mt-12 flex justify-center items-center">
         <button
           type="button"
-          className="text-white border bg-purple-100 border-gray-200 font-semibold w-44  rounded-full py-2"
+          className="text-white border bg-purple-100 border-gray-200 font-BeatriceSemiBold w-44  rounded-full py-2"
         >
           Find more
         </button>
