@@ -6,7 +6,6 @@ import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomeComponent from "./components/home";
 import AboutComponent from "./components/about";
-
 import { NonAuthRoutes, AuthRoutes } from "./constants";
 import LoginComponent from "./components/login";
 import SignupComponent from "./components/signup";
