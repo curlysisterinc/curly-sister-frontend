@@ -15,10 +15,13 @@ import searchIcon from "../../assets/images/search-normal.svg";
 import productRecommendation from "../../assets/images/product-recommendation.png";
 import stylistPlace1 from "../../assets/images/stylist-place-1.png";
 import stylistPlace2 from "../../assets/images/stylist-place-2.png";
+import serenaAvatar from "../../assets/images/serena-avatar.png";
+import hairChallengeAvatar from "../../assets/images/hair-challenge-avatar.png";
+import bookMarkIcon from "../../assets/images/book-mark.png";
 
 function UserHome() {
   const userDetails = authHandler.getUser("users");
-  const userFirstName = userDetails.firstName;
+  const userFirstName = userDetails.active.firstName;
 
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border-r border-gray-50">
@@ -49,9 +52,9 @@ function UserHome() {
         </div>
 
         {/* flexed-content */}
-        <div className="flex justify-between items-start mt-10 w-full ">
+        <div className="grid grid-cols-12  mt-10 w-full ">
           {/* left-content */}
-          <div className="w-8/12">
+          <div className="col-span-8">
             <div className="bg-orange-300 border border-orange-100 rounded-lg p-6">
               <div className="w-full flex justify-between items-center mb-5">
                 <p className="text-gray-400 text-base">
@@ -235,26 +238,96 @@ function UserHome() {
                     View more
                   </Link>
                 </div>
-                <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-full p-3">
-                  <img
-                    className="mr-3"
-                    src={productRecommendation}
-                    alt="circle"
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-400 text-base">
-                      How do you style your hair in winter?
-                    </p>
+                <div className="mb-4 bg-white flex items-center justify-between shadow rounded-lg border border-gray-250 w-full p-5">
+                  <div className="flex items-center">
+                    <img className="mr-3" src={serenaAvatar} alt="circle" />
                     <div>
-                      <p className="text-sm text-gray-200">
+                      <p className="font-semibold text-gray-400 text-base mb-1">
+                        How do you style your hair in winter?
+                      </p>
+                      <div>
+                        <p className="text-sm text-gray-400">
+                          Serena Williams{" "}
+                          <span className="text-gray-400">
+                            78 comments · 23 Mar 2022
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="flex -space-x-2 overflow-hidden">
+                      <img
+                        className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
+                        src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                      <img
+                        className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
+                        src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                      <img
+                        className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
+                        src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
+                        alt=""
+                      />
+                    </div>
+                    <img
+                      className="ml-3"
+                      src={bookMarkIcon}
+                      alt="book mark icon"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4 bg-white flex justify-between items-center shadow rounded-lg border border-gray-250 w-full p-5">
+                  <div className="flex items-center">
+                    <img
+                      className="mr-3"
+                      src={hairChallengeAvatar}
+                      alt="circle"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-400 text-base mb-1">
                         What has been your biggest hair challenge?
                       </p>
+                      <div>
+                        <p className="text-sm text-gray-400">
+                          Funmi Adekunle
+                          <span className="text-gray-400">
+                            78 comments · 23 Mar 2022
+                          </span>
+                        </p>
+                      </div>
                     </div>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="flex -space-x-2 overflow-hidden">
+                      <img
+                        className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
+                        src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                      <img
+                        className="inline-block h-12 w-12 rounded-full ring-2 ring-white"
+                        src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt=""
+                      />
+                    </div>
+                    <img
+                      className="ml-3"
+                      src={bookMarkIcon}
+                      alt="book mark icon"
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* right-content */}
+          {/* <div className="col-span-4">hello</div> */}
         </div>
       </div>
     </div>

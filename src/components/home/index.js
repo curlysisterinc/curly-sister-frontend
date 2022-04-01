@@ -51,8 +51,8 @@ function HomeComponent() {
           </div>
         </div>
         <div className="mt-20">
-          <LearnSection />
           <BookStylist />
+          <LearnSection />
           <CommunitySection />
         </div>
         <FooterComponent />
