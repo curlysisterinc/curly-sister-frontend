@@ -75,7 +75,7 @@ function SideBarComponent({ active, isLoggedIn }) {
           </button>
         </div>
       ) : (
-        <div className="mt-10 text-gray-400 text-xl font-semibold">
+        <div className="mt-10 text-gray-400 text-lg font-semibold">
           <Link to="/home">
             <p
               className={active === "home" ? " mb-4 text-purple-100" : " mb-4 "}
