@@ -13,7 +13,7 @@ function AboutComponent() {
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="home" />
-      <div className="ml-72 p-0">
+      <div className="ml-80 p-0">
         <div className="relative">
           <div className="bg-purple-200 px-10 pt-14">
             <div className="border border-orange-100 relative">
