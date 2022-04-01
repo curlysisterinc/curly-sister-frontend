@@ -21,10 +21,10 @@ function SideBarComponent({ active, isLoggedIn }) {
     authHandler.deleteUser();
   };
   return (
-    <div className="w-72 bg-gray-50 p-8 h-screen fixed border-r border-gray-100 shadow">
+    <div className="w-80 bg-gray-50 p-8 h-screen fixed border-r border-gray-100 shadow">
       <img src={brandLogo} alt="brand logo" />
       {!isLoggedIn ? (
-        <div className="mt-10 text-gray-400 text-xl font-semibold">
+        <div className="mt-10 text-gray-400 text-lg font-semibold">
           <Link to="/">
             <p
               className={active === "home" ? " mb-4 text-purple-100" : " mb-4 "}
@@ -62,14 +62,14 @@ function SideBarComponent({ active, isLoggedIn }) {
           <button
             type="button"
             onClick={() => navigate("/login")}
-            className="mt-10 rounded-full border border-gray-400 w-full py-3 text-gray-400 font-semibold flex justify-center items-center"
+            className="text-sm mt-10 rounded-full border border-gray-400 w-full py-3 text-gray-400 font-semibold flex justify-center items-center"
           >
             Log in
           </button>
           <button
             type="button"
             onClick={() => navigate("/signup")}
-            className="mt-4 rounded-full border border-orange-200 bg-orange-200  w-full py-3 text-white font-semibold flex justify-center items-center"
+            className="text-sm mt-4 rounded-full border border-orange-200 bg-orange-200  w-full py-3 text-white font-semibold flex justify-center items-center"
           >
             Join now
           </button>

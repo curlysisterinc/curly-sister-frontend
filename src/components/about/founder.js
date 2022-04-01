@@ -5,9 +5,11 @@ function FounderSection() {
   return (
     <div className="bg-gray-50 p-10 flex justify-between items-center">
       <div>
-        <div className="flex items-center">
-          <p className="mr-5 uppercase text-gray-200">founders note</p>
-          <hr className="border border-orange-100 w-3/4" />
+        <div className="grid grid-cols-12 w-full">
+          <h5 className="col-span-4 uppercase text-base text-gray-300">
+            founders note
+          </h5>
+          <hr className="border border-orange-100 col-span-8 mt-3" />
         </div>
         <h2 className="text-4xl text-gray-400 font-bold my-8">Meet Pheobe</h2>
         <p className="w-9/12 text-gray-200">

@@ -7,11 +7,11 @@ import ratingIcon from "../../assets/images/rating.svg";
 function BookStylist() {
   return (
     <div className="py-20 px-10 bg-gray-50">
-      <div className="flex items-center justify-between w-full">
-        <h5 className="w-1/4 uppercase text-base text-gray-300">
+      <div className="grid grid-cols-12 w-full">
+        <h5 className="col-span-4 uppercase text-base text-gray-300">
           get help from the experts
         </h5>
-        <hr className="border border-orange-100 w-3/4" />
+        <hr className="border border-orange-100 col-span-8 mt-3" />
       </div>
 
       <div className="flex justify-between items-center mt-5">
@@ -24,7 +24,7 @@ function BookStylist() {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-10 mt-12">
+      <div className="grid grid-cols-3 gap-6 mt-12">
         <div className="bg-white p-6 rounded-xl shadow-lg">
           <img src={stylist1} alt="stylist" />
           <div className="flex my-3">
@@ -42,13 +42,13 @@ function BookStylist() {
           <div className="mt-5 flex justify-between items-center w-full">
             <button
               type="button"
-              className="border border-gray-200 text-gray-400 font-BeatriceSemiBold w-5/12 rounded-full py-2"
+              className="border text-sm border-gray-200 text-gray-400 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               View profile
             </button>
             <button
               type="button"
-              className="text-white border bg-gray-400 border-gray-200 font-BeatriceSemiBold w-5/12 rounded-full py-2"
+              className="text-white text-sm border bg-gray-400 border-gray-200 font-BeatriceSemiBold w-5/12 rounded-full py-2"
             >
               Book Leo
             </button>
@@ -69,7 +69,7 @@ function BookStylist() {
             experience and has a loyal clientele. She trained under Chaz Dean,
             the creator of Wen and has numerous curly certifications.
           </p>
-          <div className="mt-5 flex justify-between items-center w-full">
+          <div className="mt-5 flex justify-between items-center w-full text-sm">
             <button
               type="button"
               className="border border-gray-200 text-gray-400 font-BeatriceSemiBold w-5/12 rounded-full py-2"
@@ -100,7 +100,7 @@ function BookStylist() {
             experience and has a loyal clientele. She trained under Chaz Dean,
             the creator of Wen and has numerous curly certifications.
           </p>
-          <div className="mt-5 flex justify-between items-center w-full">
+          <div className="mt-5 flex justify-between items-center w-full text-sm">
             <button
               type="button"
               className="border border-gray-200 text-gray-400 font-BeatriceSemiBold w-5/12 rounded-full py-2"

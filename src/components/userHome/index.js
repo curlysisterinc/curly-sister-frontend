@@ -18,6 +18,10 @@ import stylistPlace2 from "../../assets/images/stylist-place-2.png";
 import serenaAvatar from "../../assets/images/serena-avatar.png";
 import hairChallengeAvatar from "../../assets/images/hair-challenge-avatar.png";
 import bookMarkIcon from "../../assets/images/book-mark.png";
+import trendingVideo from "../../assets/images/trending-video.png";
+import curatedProduct from "../../assets/images/curated-product.png";
+import continueLearning from "../../assets/images/continue-learning.png";
+import arrowIcon from "../../assets/images/arrow.svg";
 
 function UserHome() {
   const userDetails = authHandler.getUser("users");
@@ -26,7 +30,7 @@ function UserHome() {
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border-r border-gray-50">
       <SideBarComponent active="home" isLoggedIn />
-      <div className="ml-72 bg-white px-10 pt-14 w-full">
+      <div className="ml-80 bg-white px-10 py-14 w-full">
         <div className="flex flex-col w-full lg:flex-row justify-between items-center">
           <div className="flex justify-start items-center ">
             <img className="mr-3" src={profileDp} alt="profile pix" />
@@ -52,7 +56,7 @@ function UserHome() {
         </div>
 
         {/* flexed-content */}
-        <div className="grid grid-cols-12  mt-10 w-full ">
+        <div className="grid grid-cols-12 gap-10  mt-10 w-full ">
           {/* left-content */}
           <div className="col-span-8">
             <div className="bg-orange-300 border border-orange-100 rounded-lg p-6">
@@ -327,7 +331,48 @@ function UserHome() {
           </div>
 
           {/* right-content */}
-          {/* <div className="col-span-4">hello</div> */}
+          <div className="col-span-4">
+            <div>Trending Videos</div>
+            <div className="mt-8">
+              <img src={trendingVideo} alt="trending video" />
+            </div>
+            <div className="border border-gray-50 w-full my-6" />
+            <div className="mt-3 rounded-lg w-full border bg-orange-150 overflow-hidden border-orange-200 shadow">
+              <img src={curatedProduct} alt="trending video" />
+              <div className="bg-white p-3">
+                <p className="font-BeatriceSemiBold text-base my-3 text-gray-400">
+                  Our curated products
+                </p>
+                <p className="text-sm text-gray-200">
+                  Over 100+ hand selected, trusted items for your hair.
+                </p>
+                <div className="flex text-orange-200 font-BeatriceSemiBold text-sm mt-3">
+                  Get them
+                  <img className="ml-3" src={arrowIcon} alt="arrow icon" />
+                </div>
+              </div>
+            </div>
+            <div className="border border-gray-50 w-full my-6 overflow-hidden" />
+
+            <div className="mt-8">
+              <p>Continue Learning</p>
+              <div className="mt-3 rounded-lg w-full border border-gray-50 shadow">
+                <img src={continueLearning} alt="trending video" />
+                <div className="bg-white p-3">
+                  <p className="text-sm text-gray-200">
+                    Oprah Winfrey · 11 Feb 2022
+                  </p>
+                  <p className="font-BeatriceSemiBold text-base my-3 text-gray-400">
+                    Here’s help for drying your textured hair the right way
+                  </p>
+                  <p className="text-sm text-gray-200">
+                    A speech caused a remarkable sensation among the party. Some
+                    of the birds hurried off at once to see...
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
