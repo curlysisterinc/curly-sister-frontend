@@ -61,4 +61,18 @@ code {
     src: local("BeatriceRegularItalic"),
       url(./assets/fonts/BeatriceRegularItalic.otf) format("opentype");
   }
+
+/* 
+Font Weight	Numerical Weight
+"Thin", "Hairline"	100
+"Extra Light", "Ultra Light"	200
+"Light", "Book"	300
+"Normal", "Regular", "Roman", "Standard", "Plain"	400/Normal
+"Medium", "Demi"	500
+"Semi Bold", "Semi Bld", "Demi Bold", "Demi Bld"	600
+"Bold", "Bld"	700/Bold
+"Extra Bold", "Ultra Bold", "Extra Bld", "Ultra Bld"	800
+"Black", "Heavy", "Ultra", "Fat", "Poster", "Ultra Black" 	 900 
+*/
+
 }
