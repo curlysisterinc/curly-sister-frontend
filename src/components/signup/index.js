@@ -212,7 +212,7 @@ function SignupComponent() {
                   id="firstName"
                   type="text"
                   value={formik.values.firstName}
-                  placeholder="Enter firstname"
+                  placeholder="Enter First Name"
                   name="firstName"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -235,7 +235,7 @@ function SignupComponent() {
                   id="lastName"
                   type="text"
                   value={formik.values.lastName}
-                  placeholder="Enter lastName"
+                  placeholder="Enter Last Name"
                   name="lastName"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -261,7 +261,7 @@ function SignupComponent() {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   type="email"
-                  placeholder="Enter email address"
+                  placeholder="Enter Email Address"
                 />
               </label>
               {formik.errors.userEmail && formik.touched.userEmail ? (
@@ -282,7 +282,7 @@ function SignupComponent() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={formik.values.password}
-                    placeholder="Enter strong password"
+                    placeholder="Enter Password"
                     name="password"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
