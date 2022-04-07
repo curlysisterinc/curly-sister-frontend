@@ -16,9 +16,9 @@ import dropdownIcon from "../../assets/images/dropdown.svg";
 function SideBarComponent({ active, isLoggedIn }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userDetails = authHandler.getUser("users");
-  const userFirstName = userDetails.active.firstName;
-  const userLastName = userDetails.active.lastName;
+  // const userDetails = authHandler.getUser("users");
+  // const userFirstName = userDetails.firstName;
+  // const userLastName = userDetails.lastName;
   const [open, setOpen] = useState(false);
 
   const onLogout = () => {
@@ -150,9 +150,7 @@ function SideBarComponent({ active, isLoggedIn }) {
             className="flex items-center justify-between relative"
           >
             <img src={allynAvatar} alt="avatar" />
-            <p className=" text-purple-100">
-              {userFirstName} {userLastName}
-            </p>
+            <p className=" text-purple-100">Tope</p>
             <img
               className={open && "transform rotate-180"}
               src={dropdownIcon}
