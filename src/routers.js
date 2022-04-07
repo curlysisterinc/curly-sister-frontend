@@ -13,6 +13,8 @@ import ForgotPasswordComponent from "./components/forgotPassword";
 import TermsAndPrivacy from "./components/termsAndPrivacy";
 import ResetPasswordComponent from "./components/resetPassword";
 import UserHome from "./components/userHome";
+import AdminDashbaord from "./components/adminDashboard/dashbaord";
+import AddStylist from "./components/adminDashboard/addStylist";
 
 function Routers() {
   return (
@@ -58,6 +60,8 @@ function Routers() {
             element={<TermsAndPrivacy />}
           />
           <Route path={AuthRoutes.home} element={<UserHome />} />
+          <Route path={AuthRoutes.dashboard} element={<AdminDashbaord />} />
+          <Route path={AuthRoutes.addStylist} element={<AddStylist />} />
         </Routes>
       </Suspense>
     </div>
