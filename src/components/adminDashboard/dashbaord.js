@@ -17,8 +17,8 @@ function AdminDashbaord() {
             onClick={() => setOpenTab("overview")}
             className={
               openTab === "overview"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5  "
+                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
+                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer "
             }
           >
             Overview
@@ -27,8 +27,8 @@ function AdminDashbaord() {
             onClick={() => setOpenTab("users")}
             className={
               openTab === "users"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 "
+                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
+                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer"
             }
           >
             Users
@@ -37,8 +37,8 @@ function AdminDashbaord() {
             onClick={() => setOpenTab("content")}
             className={
               openTab === "content"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 "
+                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
+                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer"
             }
           >
             Content
@@ -47,8 +47,8 @@ function AdminDashbaord() {
             onClick={() => setOpenTab("data")}
             className={
               openTab === "data"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5  "
+                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
+                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5  cursor-pointer"
             }
           >
             Data
