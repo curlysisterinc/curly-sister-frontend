@@ -119,6 +119,15 @@ function SideBarComponent({ active, isLoggedIn }) {
               Profile
             </p>
           </Link>
+          <Link to="/dashboard">
+            <p
+              className={
+                active === "dashboard" ? " mb-4 text-purple-100" : " mb-4 "
+              }
+            >
+              Dashboard
+            </p>
+          </Link>
           <div onClick={onLogout}>
             <p
               className={

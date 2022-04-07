@@ -18,6 +18,8 @@ module.exports = {
           300: "#8E8695",
           400: "#443C4D",
           500: "#E1E6EB",
+          600: "#EEEDEF",
+          700: "#A49DAA",
         },
         orange: {
           50: "rgba(255, 133, 0, 0.1)",
@@ -44,6 +46,9 @@ module.exports = {
         BeatriceRegular: "'BeatriceRegular', serif",
         BeatriceRegularItalic: "'BeatriceRegularItalic', serif",
         BeatriceMedium: "'BeatriceMedium', serif",
+      },
+      fontSize: {
+        22: "1.375rem",
       },
     },
   },
