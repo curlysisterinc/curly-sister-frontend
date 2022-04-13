@@ -5,7 +5,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import { curlySistersOnboarding } from "../../config";
+import { curlySistersOnboarding } from "../config";
 
 // eslint-disable-next-line
 export default {

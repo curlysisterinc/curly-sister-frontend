@@ -9,99 +9,22 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-console */
 /* eslint-disable-next-line jsx-a11y/control-has-associated-label */
-
 import React, { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthRoutes } from "../../constants";
-import grayIndicator from "../../assets/images/gray-indicator.svg";
-import greenIndicator from "../../assets/images/green-indicator.svg";
-import addManuallyIcon from "../../assets/images/add-manually.svg";
-import dropdownIcon from "../../assets/images/dropdown.svg";
-import whiteDropdownIcon from "../../assets/images/white-dropdown.svg";
-import searchIcon from "../../assets/images/search-normal-2.svg";
-import kebabIcon from "../../assets/images/kebab.svg";
+import { AuthRoutes } from "../../../../constants";
+import grayIndicator from "../../../../assets/images/gray-indicator.svg";
+import greenIndicator from "../../../../assets/images/green-indicator.svg";
+import addManuallyIcon from "../../../../assets/images/add-manually.svg";
+import dropdownIcon from "../../../../assets/images/dropdown.svg";
+import whiteDropdownIcon from "../../../../assets/images/white-dropdown.svg";
+import searchIcon from "../../../../assets/images/search-normal-2.svg";
+import kebabIcon from "../../../../assets/images/kebab.svg";
+import { stylistTypes, users } from "./data";
 // import trashIcon from "../../assets/images/trash.svg";
 // import activateIcon from "../../assets/images/activate.svg";
-import spencerAvatar from "../../assets/images/spencer.svg";
-import allynAvatar from "../../assets/images/allyn.svg";
-import rfHairstudio from "../../assets/images/rf-hairstudio.svg";
-import productRecommendation from "../../assets/images/product-recommendation.png";
-
 // import stylists from "../api/stylists";
 import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
-
-const stylistTypes = [
-  {
-    id: 1,
-    name: "All stylists",
-  },
-  {
-    id: 2,
-    name: "Walk-in only",
-  },
-  {
-    id: 3,
-    name: "Curly sister stylist",
-  },
-  {
-    id: 4,
-    name: "Master stylist",
-  },
-];
-
-const users = [
-  {
-    id: 1,
-    selected: false,
-    avatar: `${productRecommendation}`,
-    name: "All Naturals",
-    email: "bookings@allnaturals.com",
-    type: "Curly sister stylist",
-    location: "333, Fremont Street, SF, CA, 94105, USA",
-    status: "active",
-  },
-  {
-    id: 2,
-    selected: false,
-    avatar: `${spencerAvatar}`,
-    name: "Spencer Wright",
-    email: "swhair@hey.com",
-    type: "Walk-in only",
-    location: "2, Hebert Macaulay Way, Yaba, Lagos, 100...",
-    status: "inactive",
-  },
-  {
-    id: 3,
-    selected: false,
-    avatar: `${rfHairstudio}`,
-    name: "RF hair studio",
-    email: "rfhair@gmail.com",
-    type: "Walk-in only",
-    location: "546, Mandela Avenue, SF, CA, 92401, USA",
-    status: "active",
-  },
-  {
-    id: 4,
-    selected: false,
-    avatar: `${allynAvatar}`,
-    name: "Allyn Antoine",
-    email: "ally.antoine@aabeauty.com",
-    type: "Master stylist",
-    location: "129 Mission Street, SF, CA, 95338, USA",
-    status: "inactive",
-  },
-  {
-    id: 5,
-    selected: false,
-    avatar: `${productRecommendation}`,
-    name: "Spencer Wright",
-    email: "bookings@allnaturals.com",
-    type: "Curly sister stylist",
-    location: "333, Fremont Street, SF, CA, 94105, USA",
-    status: "active",
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");

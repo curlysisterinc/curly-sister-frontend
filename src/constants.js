@@ -5,6 +5,7 @@ const AuthRoutes = {
   analytics: "/analytics",
   dashboard: "/dashboard",
   addStylist: "/add-stylist",
+  termsAndPrivacy: "/terms-and-privacy",
 };
 
 const NonAuthRoutes = {

@@ -16,6 +16,18 @@ code {
     monospace;
 }
 
+.toggle-bg:after {
+  content: "";
+  @apply absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-5 w-5 transition shadow-sm;
+}
+input:checked + .toggle-bg:after {
+  transform: translateX(100%);
+  @apply border-white;
+}
+input:checked + .toggle-bg {
+  @apply bg-purple-100 border-purple-100;
+}
+
 @layer base {
   @font-face {
     font-family: "GTSuperTextBlack";
@@ -62,7 +74,7 @@ code {
       url(./assets/fonts/BeatriceRegularItalic.otf) format("opentype");
   }
 
-/* 
+  /* 
 Font Weight	Numerical Weight
 "Thin", "Hairline"	100
 "Extra Light", "Ultra Light"	200
@@ -74,5 +86,4 @@ Font Weight	Numerical Weight
 "Extra Bold", "Ultra Bold", "Extra Bld", "Ultra Bld"	800
 "Black", "Heavy", "Ultra", "Fat", "Poster", "Ultra Black" 	 900 
 */
-
 }

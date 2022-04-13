@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from "react";
-import SideBarComponent from "../sidebar";
+import SideBarComponent from "../sidebar/sidebar";
 // eslint-disable-next-line import/no-cycle
-import UsersTab from "./users";
+import UsersTab from "./dashboard/users/users";
 
 function AdminDashbaord() {
   const [openTab, setOpenTab] = useState("overview");
