@@ -15,6 +15,8 @@ import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
 import { stylistTypes, stylistStatus, channels } from "./data";
 import ManageCertificationModal from "./manageCertificationModal";
+import ManageTagModal from "./manageTagModal";
+import ManageServicesModal from "./manageServicesModal";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -22,15 +24,19 @@ function classNames(...classes) {
 function AddStylist() {
   const [openDetails, setOpenDetails] = useState(false);
   const [openLocation, setOpenLocation] = useState(false);
+  const [openService, setOpenService] = useState(false);
   const [openCertification, setOpenCertification] = useState(false);
   const [selected, setSelected] = useState(channels[0]);
   const [selectedType, setSelectedType] = useState(stylistTypes[0]);
   const [status, setStatus] = useState(stylistStatus[0]);
   const [numOfCertification, setNumOfCertification] = useState(0);
+  const [numOfTag, setNumOfTag] = useState(0);
   const [openCertificationModal, setOpenCertificationModal] = useState(false);
+  const [openServiceModal, setOpenServiceModal] = useState(false);
   const [selectCertification, setSelectCertification] = useState(
     "Select certification"
   );
+  const [selectTag, setSelectTag] = useState("Select tag");
   const [inputList, setInputList] = useState([{ firstName: "", lastName: "" }]);
   const navigate = useNavigate();
 
@@ -62,13 +68,33 @@ function AddStylist() {
   const handleOpenCertificationModal = () => {
     setOpenCertificationModal(true);
   };
+  // handle certification modal close
+  const handleCloseTagModal = () => {
+    setOpenCertificationModal(false);
+  };
+  // handle certification modal open
+  const handleOpenTagModal = () => {
+    setOpenCertificationModal(true);
+  };
+  // handle certification modal close
+  const handleCloseServiceModal = () => {
+    setOpenServiceModal(false);
+  };
+  // handle Service modal open
+  const handleOpenServiceModal = () => {
+    setOpenServiceModal(true);
+  };
   // handle certification modal change
   useEffect(() => {
     const ac = new AbortController();
     document.title = "CurlySisters • Add Stylists";
     const populatedCertification = numOfCertification;
+    const populatedTag = numOfTag;
     if (populatedCertification.length > 0) {
       setSelectCertification("select another certification");
+    }
+    if (populatedTag.length > 0) {
+      setSelectCertification("select another tag");
     }
     return function cleanup() {
       ac.abort();
@@ -519,6 +545,7 @@ function AddStylist() {
           </div>
           {openCertification && (
             <div className="mt-5 text-sm">
+              {/* certifications */}
               <div className="flex justify-between items-center">
                 <p className="e">Certifications</p>
                 <div
@@ -528,9 +555,8 @@ function AddStylist() {
                   Manage Certifications
                 </div>
               </div>
-              {numOfCertification.length > 0 && (
-                <div className="border border-gray-50 w-full p-3 mt-4 rounded-xl" />
-              )}
+
+              <div className="border border-gray-50 w-full p-3 mt-4 rounded-xl" />
 
               <div
                 onClick={handleOpenCertificationModal}
@@ -543,158 +569,70 @@ function AddStylist() {
                   handleClose={handleCloseCertificationModal}
                 />
               )}
+              <hr className="border border-gray-600 w-full mt-3" />
+              {/* tags */}
+              <div className="mt-6">
+                <div className=" flex justify-between items-center">
+                  <p className="e">Tags</p>
+                  <div
+                    onClick={handleOpenCertificationModal}
+                    className="text-purple-100 cursor-pointer"
+                  >
+                    Manage Tags
+                  </div>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Type to search and select certifications"
+                  multiple
+                  className="block border-gray-50 w-full p-3 mt-4 rounded-lg h-10 appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:text-gray-300"
+                />
+
+                <div
+                  onClick={handleOpenTagModal}
+                  className="text-purple-100 cursor-pointer mt-4"
+                >
+                  {selectTag}
+                </div>
+                {openCertificationModal && (
+                  <ManageTagModal handleClose={handleCloseTagModal} />
+                )}
+              </div>
             </div>
           )}
         </div>
         {/* services and pricing */}
         <div className="mx-auto w-4/6 mt-8">
           <div
-            onClick={() => setOpenLocation(!openLocation)}
+            onClick={() => setOpenService(!openService)}
             className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full"
           >
             Services and pricing
           </div>
-          {openLocation && (
-            <div className="">
-              <label
-                className="block text-black text-sm font-bold mt-5"
-                htmlFor="address"
+          {openService && (
+            <div className="mt-5">
+              <div className="flex justify-between items-center">
+                <p className="">Services</p>
+                <div
+                  onClick={handleOpenServiceModal}
+                  className="text-purple-100 cursor-pointer"
+                >
+                  Add new service
+                </div>
+              </div>
+
+              {/* <div className="border border-gray-50 w-full p-3 mt-4 rounded-lg h-10" /> */}
+
+              <div
+                onClick={handleOpenCertificationModal}
+                className="text-purple-100 cursor-pointer mt-4"
               >
-                Address
-                <input
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  placeholder="Type and select address..."
-                  name="address"
-                  label="address"
-                  id="address"
-                />
-              </label>
-              <div className="grid grid-cols-2  justify-between gap-6 items-center">
-                <label
-                  className="inline-block text-black text-sm font-bold mt-5 col"
-                  htmlFor="email"
-                >
-                  Email address
-                  <input
-                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    type="email"
-                    placeholder="Enter email address"
-                    name="email"
-                    label="email"
-                    id="email"
-                  />
-                </label>
-                <label
-                  className="inline-block text-black text-sm font-bold mt-5 col"
-                  htmlFor="number"
-                >
-                  Phone number
-                  <input
-                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    type="number"
-                    placeholder="Enter phone number"
-                    name="number"
-                    label="number"
-                    id="number"
-                  />
-                </label>
+                Select another device
               </div>
-              <div className="mt-5">
-                Links
-                <div className="grid grid-cols-12 border border-gray-800 mt-5 h-46 rounded-lg">
-                  <div className="col col-span-2  flex justify-center items-center border-r-2 border-gray-800 pr-3">
-                    <Listbox value={selected} onChange={setSelected}>
-                      {({ open }) => (
-                        // eslint-disable-next-line react/jsx-no-useless-fragment
-
-                        <div className="relative">
-                          <Listbox.Button className="relative w-full bg-white border-0 cursor-default focus:outline-none focus:ring-1 focus:ring-purple-100 focus:border-purple-100 sm:text-sm">
-                            <span className="flex items-center">
-                              <span className=" block text-gray-400">
-                                {selected.name}
-                              </span>
-                            </span>
-                            <span className=" absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                              {/* <SelectorIcon
-                              className="h-5 w-5 text-gray-400"
-                              aria-hidden="true"
-                            /> */}
-                            </span>
-                          </Listbox.Button>
-
-                          <Transition
-                            show={open}
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                          >
-                            <Listbox.Options className="absolute z-10 mt-1 bg-white shadow-lg max-h-56 w-32 rounded-md py-1 text-base text-gray-400 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                              {channels.map((channel) => (
-                                <Listbox.Option
-                                  key={channel.id}
-                                  className={({ active }) =>
-                                    classNames(
-                                      active
-                                        ? "text-white bg-indigo-600"
-                                        : "text-gray-400",
-                                      "cursor-default select-none relative py-2 pl-3 pr-9"
-                                    )
-                                  }
-                                  value={channel}
-                                >
-                                  {({ selected, active }) => (
-                                    <>
-                                      <div className="flex items-center">
-                                        <span
-                                          className={classNames(
-                                            selected
-                                              ? "font-semibold"
-                                              : "font-normal",
-                                            "ml-3 block "
-                                          )}
-                                        >
-                                          {channel.name}
-                                        </span>
-                                      </div>
-
-                                      {selected ? (
-                                        <span
-                                          className={classNames(
-                                            active
-                                              ? "text-white"
-                                              : "text-indigo-600",
-                                            "absolute inset-y-0 right-0 flex items-center pr-4"
-                                          )}
-                                        >
-                                          {/* <CheckIcon
-                                          className="h-5 w-5"
-                                          aria-hidden="true"
-                                        /> */}
-                                        </span>
-                                      ) : null}
-                                    </>
-                                  )}
-                                </Listbox.Option>
-                              ))}
-                            </Listbox.Options>
-                          </Transition>
-                        </div>
-                      )}
-                    </Listbox>
-                  </div>
-                  <input
-                    type="text"
-                    className="col col-span-8 pl-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                    placeholder="Enter link here"
-                  />
-                </div>
-                {/* add new input */}
-                <div className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer">
-                  Add more links
-                </div>
-              </div>
+              {openServiceModal && (
+                <ManageServicesModal handleClose={handleCloseServiceModal} />
+              )}
             </div>
           )}
         </div>

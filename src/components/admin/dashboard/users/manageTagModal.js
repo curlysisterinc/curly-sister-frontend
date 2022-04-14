@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import closeModalBtn from "../../../../assets/images/close-modal.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 
-function ManageCertificationModal({ handleClose }) {
+function ManageTagModal({ handleClose }) {
   const [inputList, setInputList] = useState([
     { certification: "", checked: true },
   ]);
@@ -110,11 +110,9 @@ function ManageCertificationModal({ handleClose }) {
           />
           <div className="bg-white h-screen p-10">
             <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
-              Certifications
+              Tags
             </h4>
-            <p className="text-gray-200 text-base">
-              Add and remove certifications
-            </p>
+            <p className="text-gray-200 text-base">Add and remove tags</p>
             {inputList.map((certificate, index) => {
               return (
                 <div key={index}>
@@ -212,7 +210,7 @@ function ManageCertificationModal({ handleClose }) {
                       onClick={handleAddClick}
                       className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer"
                     >
-                      Add new certification
+                      Add new Tag
                     </div>
                   )}
                 </div>
@@ -231,4 +229,4 @@ function ManageCertificationModal({ handleClose }) {
   );
 }
 
-export default ManageCertificationModal;
+export default ManageTagModal;
