@@ -22,6 +22,9 @@ function ManageCertificationModal({ handleClose }) {
   const [checkId, setCheckId] = useState(1);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checkedArray, setCheckedArray] = useState([]);
+  const toggleOn = "transition transform-none";
+  const toggleOff = "transition transform translate-x-5";
+
   // handle check
   const handleClick = (event, index) => {
     const { id, checked } = event.target;
@@ -81,14 +84,13 @@ function ManageCertificationModal({ handleClose }) {
   };
 
   // handle checkbox toggle
-  const toggleOptions = (e) => {
-    console.log(e.checked, "target");
-    // setIsClicked((state) => ({
-    //   ...state[index], // <-- copy previous state
-    //   [index]: !state[index], // <-- update value by index key
-    // }));
+  const toggleOptions = (index) => {
+    setIsClicked((state) => ({
+      ...state, // <-- copy previous state
+      [index]: !state[index], // <-- update value by index key
+    }));
     setOpenOptions(!openOptions);
-    setCheckId((checkId) => checkId + 1);
+    // setCheckId((checkId) => checkId + 1);
 
     // check(event) {
     //      console.log(event.checked) // true or false
@@ -124,7 +126,7 @@ function ManageCertificationModal({ handleClose }) {
                         type="text"
                         name="certification"
                         className="col col-span-7 pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                        placeholder="Enter link here"
+                        placeholder="Enter Link Here"
                         value={certificate.certification}
                         onChange={(e) => handleInputChange(e, index)}
                       />
@@ -134,19 +136,44 @@ function ManageCertificationModal({ handleClose }) {
                           className="flex items-center cursor-pointer"
                         >
                           <span className="mr-3 text-gray-900 text-sm font-medium">
-                            Add options
+                            Add Options
                           </span>
-                          <div className="relative">
+                          {openOptions ? (
+                            <div
+                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
+                              onClick={() => toggleOptions(index)}
+                            >
+                              <div
+                                className={`bg-white h-5 w-5 rounded-full shadow-md transition transform translate-x-5 ${
+                                  isClicked[index] ? toggleOff : null
+                                }`}
+                              />
+                            </div>
+                          ) : (
+                            <div
+                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
+                              id={index + 1}
+                              onClick={() => toggleOptions(index)}
+                            >
+                              <div
+                                className={`bg-white h-5 w-5 rounded-full shadow-md transition transform ${
+                                  isClicked[index] ? toggleOn : null
+                                }`}
+                              />
+                            </div>
+                          )}
+
+                          {/* <div className="relative">
                             <input
                               type="checkbox"
                               name={index + 1}
-                              onChange={(e) => handleClick(e)}
+                              onChange={(e) => toggleOptions(e, index)}
                               id={index + 1}
                               checked={certificate.checked}
                               className="sr-only"
                             />
                             <div className="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full" />
-                          </div>
+                          </div> */}
                         </label>
                       </div>
                       {inputList.length > 1 && (
