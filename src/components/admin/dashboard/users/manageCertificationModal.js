@@ -22,13 +22,13 @@ function ManageCertificationModal({ handleClose }) {
   const [checkId, setCheckId] = useState(1);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checkedArray, setCheckedArray] = useState([]);
+  const [isToggle, setIsToggle] = useState(false);
   const toggleOn = "transition transform-none";
   const toggleOff = "transition transform translate-x-5";
 
   // handle check
   const handleClick = (event, index) => {
     const { id, checked } = event.target;
-    console.log(checked, id);
     const newData = [...inputList];
     newData.splice(index, 1, {
       certification: inputList[index].certification,
@@ -85,6 +85,7 @@ function ManageCertificationModal({ handleClose }) {
       ...state, // <-- copy previous state
       [index]: !state[index], // <-- update value by index key
     }));
+    setIsToggle(!isToggle);
     setOpenOptions(!openOptions);
     // setCheckId((checkId) => checkId + 1);
 
@@ -134,10 +135,10 @@ function ManageCertificationModal({ handleClose }) {
                           <span className="mr-3 text-gray-900 text-sm font-medium">
                             Add Options
                           </span>
-                          {openOptions ? (
+                          {isToggle ? (
                             <div
-                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
                               onClick={() => toggleOptions(index)}
+                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
                             >
                               <div
                                 className={`bg-white h-5 w-5 rounded-full shadow-md transition transform translate-x-5 ${
@@ -147,9 +148,8 @@ function ManageCertificationModal({ handleClose }) {
                             </div>
                           ) : (
                             <div
-                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
-                              id={index + 1}
                               onClick={() => toggleOptions(index)}
+                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
                             >
                               <div
                                 className={`bg-white h-5 w-5 rounded-full shadow-md transition transform ${
@@ -181,7 +181,6 @@ function ManageCertificationModal({ handleClose }) {
                         </div>
                       )}
                     </div>
-                    {/* option list */}
                     {openOptions ? (
                       <div className="w-full">
                         {optionList.map((option, index) => {
