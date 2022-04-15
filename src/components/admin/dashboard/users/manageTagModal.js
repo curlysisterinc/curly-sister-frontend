@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import closeModalBtn from "../../../../assets/images/close-modal.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 
-function ManageCertificationModal({ handleClose }) {
+function ManageTagModal({ handleClose }) {
   const [inputList, setInputList] = useState([
     { certification: "", checked: true },
   ]);
@@ -22,13 +22,10 @@ function ManageCertificationModal({ handleClose }) {
   const [checkId, setCheckId] = useState(1);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [checkedArray, setCheckedArray] = useState([]);
-  const [isToggle, setIsToggle] = useState(false);
-  const toggleOn = "transition transform-none";
-  const toggleOff = "transition transform translate-x-5";
-
   // handle check
   const handleClick = (event, index) => {
     const { id, checked } = event.target;
+    console.log(checked, id);
     const newData = [...inputList];
     newData.splice(index, 1, {
       certification: inputList[index].certification,
@@ -84,14 +81,14 @@ function ManageCertificationModal({ handleClose }) {
   };
 
   // handle checkbox toggle
-  const toggleOptions = (index) => {
-    setIsClicked((state) => ({
-      ...state, // <-- copy previous state
-      [index]: !state[index], // <-- update value by index key
-    }));
-    setIsToggle(!isToggle);
+  const toggleOptions = (e) => {
+    console.log(e.checked, "target");
+    // setIsClicked((state) => ({
+    //   ...state[index], // <-- copy previous state
+    //   [index]: !state[index], // <-- update value by index key
+    // }));
     setOpenOptions(!openOptions);
-    // setCheckId((checkId) => checkId + 1);
+    setCheckId((checkId) => checkId + 1);
 
     // check(event) {
     //      console.log(event.checked) // true or false
@@ -113,11 +110,9 @@ function ManageCertificationModal({ handleClose }) {
           />
           <div className="bg-white h-screen p-10">
             <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
-              Certifications
+              Tags
             </h4>
-            <p className="text-gray-200 text-base">
-              Add and remove certifications
-            </p>
+            <p className="text-gray-200 text-base">Add and remove tags</p>
             {inputList.map((certificate, index) => {
               return (
                 <div key={index}>
@@ -127,7 +122,7 @@ function ManageCertificationModal({ handleClose }) {
                         type="text"
                         name="certification"
                         className="col col-span-7 pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
-                        placeholder="Enter Link Here"
+                        placeholder="Enter link here"
                         value={certificate.certification}
                         onChange={(e) => handleInputChange(e, index)}
                       />
@@ -137,43 +132,19 @@ function ManageCertificationModal({ handleClose }) {
                           className="flex items-center cursor-pointer"
                         >
                           <span className="mr-3 text-gray-900 text-sm font-medium">
-                            Add Options
+                            Add options
                           </span>
-                          {isToggle ? (
-                            <div
-                              onClick={() => toggleOptions(index)}
-                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
-                            >
-                              <div
-                                className={`bg-white h-5 w-5 rounded-full shadow-md transition transform translate-x-5 ${
-                                  isClicked[index] ? toggleOff : null
-                                }`}
-                              />
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => toggleOptions(index)}
-                              className="w-12 h-7 flex items-center bg-purple-600 rounded-full p-1 cursor-pointer"
-                            >
-                              <div
-                                className={`bg-white h-5 w-5 rounded-full shadow-md transition transform ${
-                                  isClicked[index] ? toggleOn : null
-                                }`}
-                              />
-                            </div>
-                          )}
-
-                          {/* <div className="relative">
+                          <div className="relative">
                             <input
                               type="checkbox"
                               name={index + 1}
-                              onChange={(e) => toggleOptions(e, index)}
+                              onChange={(e) => handleClick(e)}
                               id={index + 1}
                               checked={certificate.checked}
                               className="sr-only"
                             />
                             <div className="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full" />
-                          </div> */}
+                          </div>
                         </label>
                       </div>
                       {inputList.length > 1 && (
@@ -185,6 +156,7 @@ function ManageCertificationModal({ handleClose }) {
                         </div>
                       )}
                     </div>
+                    {/* option list */}
                     {openOptions ? (
                       <div className="w-full">
                         {optionList.map((option, index) => {
@@ -238,7 +210,7 @@ function ManageCertificationModal({ handleClose }) {
                       onClick={handleAddClick}
                       className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer"
                     >
-                      Add new certification
+                      Add new Tag
                     </div>
                   )}
                 </div>
@@ -257,4 +229,4 @@ function ManageCertificationModal({ handleClose }) {
   );
 }
 
-export default ManageCertificationModal;
+export default ManageTagModal;
