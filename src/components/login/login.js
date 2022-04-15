@@ -12,13 +12,13 @@ import Cookies from "js-cookie";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
 import AuthModalComponent from "../authModal";
-import AuthSideBarComponent from "../authSidebar";
+import AuthSideBarComponent from "../authSidebar/authSideBar";
 import googleIcon from "../../assets/images/google-icon.svg";
 import facebookIcon from "../../assets/images/facebook-icon.svg";
 import authHandler from "../../authHandler";
 import { AuthRoutes } from "../../constants";
 import { loginUser } from "../../redux/auth/authSlice";
-import onboarding from "../api/onBoarding";
+import onboarding from "../../api/onBoarding";
 import signedInImg from "../../assets/images/signed-in-img.svg";
 import failedSignin from "../../assets/images/failed-signin.svg";
 

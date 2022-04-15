@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prefer-regex-literals */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import authHandler from "../../authHandler";
@@ -16,9 +16,8 @@ import dropdownIcon from "../../assets/images/dropdown.svg";
 function SideBarComponent({ active, isLoggedIn }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // const userDetails = authHandler.getUser("users");
-  // const userFirstName = userDetails.firstName;
-  // const userLastName = userDetails.lastName;
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [open, setOpen] = useState(false);
 
   const onLogout = () => {
@@ -26,6 +25,21 @@ function SideBarComponent({ active, isLoggedIn }) {
     dispatch(logoutUser());
     authHandler.deleteUser();
   };
+
+  useEffect(() => {
+    const ac = new AbortController();
+    if (isLoggedIn) {
+      const userDetails = authHandler.getUser("users");
+      const userFirstName = userDetails.active.firstName;
+      const userLastName = userDetails.active.lastName;
+      setFirstName(userFirstName);
+      setLastName(userLastName);
+    }
+
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
   return (
     <div className="w-80 bg-gray-50 px-12 h-screen fixed border-r border-gray-100 shadow flex flex-col justify-between">
       <div className="pt-8">
@@ -147,10 +161,12 @@ function SideBarComponent({ active, isLoggedIn }) {
         {isLoggedIn && (
           <div
             onClick={() => setOpen(!open)}
-            className="flex items-center justify-between relative"
+            className="flex items-center justify-between relative cursor-pointer"
           >
             <img src={allynAvatar} alt="avatar" />
-            <p className=" text-purple-100">Tope</p>
+            <p className=" text-purple-100">
+              {firstName} {lastName}
+            </p>
             <img
               className={open && "transform rotate-180"}
               src={dropdownIcon}

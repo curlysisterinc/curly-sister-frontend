@@ -10,11 +10,11 @@ import Cookies from "js-cookie";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
 import AuthModalComponent from "../authModal";
-import AuthSideBarComponent from "../authSidebar";
+import AuthSideBarComponent from "../authSidebar/authSideBar";
 import authHandler from "../../authHandler";
 import { NonAuthRoutes } from "../../constants";
 import { signupUser } from "../../redux/auth/authSlice";
-import onboarding from "../api/onBoarding";
+import onboarding from "../../api/onBoarding";
 import googleIcon from "../../assets/images/google-icon.svg";
 import facebookIcon from "../../assets/images/facebook-icon.svg";
 import signedInImg from "../../assets/images/signed-in-img.svg";
@@ -439,8 +439,7 @@ function SignupComponent() {
               <h2>Ooops! Something went wrong</h2>
               <img src={failedSignin} alt="failed sign in" />
               <p className="text-gray-150">
-                No payment has been made, please try once more. If the error
-                occurs again consult Stripe for assistance.
+                Looks like there is a problem, please try signing in again.
               </p>
               <button
                 className="bg-orange-200 rounded shadow text-white font-bold w-full py-3"

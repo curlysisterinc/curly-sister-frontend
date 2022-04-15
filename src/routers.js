@@ -4,17 +4,17 @@
 /* eslint-disable prefer-regex-literals */
 import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
-import HomeComponent from "./components/home";
-import AboutComponent from "./components/about";
+import HomeComponent from "./components/home/home";
+import AboutComponent from "./components/about/about";
 import { NonAuthRoutes, AuthRoutes } from "./constants";
-import LoginComponent from "./components/login";
-import SignupComponent from "./components/signup";
-import ForgotPasswordComponent from "./components/forgotPassword";
-import TermsAndPrivacy from "./components/termsAndPrivacy";
-import ResetPasswordComponent from "./components/resetPassword";
-import UserHome from "./components/userHome";
-import AdminDashbaord from "./components/adminDashboard/dashbaord";
-import AddStylist from "./components/adminDashboard/addStylist";
+import LoginComponent from "./components/login/login";
+import SignupComponent from "./components/signup/signup";
+import ForgotPasswordComponent from "./components/forgotPassword/forgotPassword";
+import TermsAndPrivacy from "./components/termsAndPrivacy/termsAndPrivacy";
+import ResetPasswordComponent from "./components/resetPassword/resetPassword";
+import UserHome from "./components/userHome/userHome";
+import AdminDashbaord from "./components/admin/dashboard";
+import AddStylist from "./components/admin/dashboard/users/addStylist";
 
 function Routers() {
   return (

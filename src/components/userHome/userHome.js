@@ -8,7 +8,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import SideBarComponent from "../sidebar";
+import SideBarComponent from "../sidebar/sidebar";
 import authHandler from "../../authHandler";
 import profileDp from "../../assets/images/profile-dp.png";
 import searchIcon from "../../assets/images/search-normal.svg";

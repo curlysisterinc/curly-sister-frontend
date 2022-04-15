@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import { curlySistersApi } from "../../config";
+import { curlySistersApi } from "../config";
 
 export default {
   /** Send a GET request to get All Station  */

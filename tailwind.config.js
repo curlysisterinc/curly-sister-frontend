@@ -20,6 +20,7 @@ module.exports = {
           500: "#E1E6EB",
           600: "#EEEDEF",
           700: "#A49DAA",
+          800: "#D5D2D7",
         },
         orange: {
           50: "rgba(255, 133, 0, 0.1)",
@@ -59,5 +60,5 @@ module.exports = {
       opacity: ["disabled"],
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

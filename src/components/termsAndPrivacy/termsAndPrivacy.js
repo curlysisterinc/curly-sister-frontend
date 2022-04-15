@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import SideBarComponent from "../sidebar";
-import FooterComponent from "../footer";
+import SideBarComponent from "../sidebar/sidebar";
+import FooterComponent from "../footer/footer";
 
 function TermsAndPrivacy() {
   const [active, setActive] = useState("terms");
@@ -9,7 +9,7 @@ function TermsAndPrivacy() {
   };
   return (
     <div className="bg-white max-w-screen-2xl w-full flex m-auto border-r border-gray-50">
-      <SideBarComponent />
+      <SideBarComponent isLoggedIn />
       <div className="ml-80 p-0">
         <div className="w-1/2 mx-auto my-10">
           <div className="flex justify-start items-start">
