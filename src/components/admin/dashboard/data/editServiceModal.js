@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
 
-function ManageServicesModal({ handleClose }) {
+function EditServiceModal({ handleClose }) {
   const [serviceList, setServiceList] = useState([
     { serviceName: "", description: "", price: "", duration: "", people: "" },
   ]);
@@ -45,7 +45,7 @@ function ManageServicesModal({ handleClose }) {
         />
         <div className="bg-white p-10">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
-            Add a service
+            Edit service
           </h4>
           <p className="text-gray-200 text-base mb-6">
             Create a new service for people to book
@@ -61,7 +61,7 @@ function ManageServicesModal({ handleClose }) {
                   className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="serviceName"
                   type="text"
-                  value={serviceList.serviceName}
+                  value="Stylist training"
                   placeholder="Type a name here"
                   name="serviceName"
                   onChange={handleChange}
@@ -82,6 +82,7 @@ function ManageServicesModal({ handleClose }) {
                   label="description"
                   id="description"
                   rows="3"
+                  value=" This training is for professional stylists to have a deep dive in the art of curly hair."
                 />
               </label>
             </div>
@@ -105,9 +106,10 @@ function ManageServicesModal({ handleClose }) {
                       <select
                         id="currency"
                         name="currency"
+                        value="90"
                         className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
                       >
-                        <option>$USD</option>
+                        <option value="usd">$USD</option>
                         <option>$CAD</option>
                         <option>$EUR</option>
                       </select>
@@ -168,7 +170,7 @@ function ManageServicesModal({ handleClose }) {
                 <input
                   type="file"
                   onChange={handleFileChange}
-                  className="opacity-0 absolute h-16 w-120  border"
+                  className="opacity-0 absolute h-16 w-120  border cursor-pointer"
                 />
                 {coverPhoto === null ? (
                   <img src={uploadFile} className="h-16 w-120" alt="" />
@@ -192,7 +194,7 @@ function ManageServicesModal({ handleClose }) {
                   {" "}
                   ...{" "}
                 </svg> */}
-              Create service
+              Save changes
             </button>
           </form>
         </div>
@@ -201,4 +203,4 @@ function ManageServicesModal({ handleClose }) {
   );
 }
 
-export default ManageServicesModal;
+export default EditServiceModal;

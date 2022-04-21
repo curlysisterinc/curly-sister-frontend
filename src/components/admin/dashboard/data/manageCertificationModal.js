@@ -8,6 +8,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -16,19 +17,19 @@ import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
 
-function ManageTagModal({ handleClose }) {
+function ManageCertificationModal({ handleClose }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [inputList, setInputList] = useState([
-    { certification: "", checked: false },
-  ]);
+  const [inputList, setInputList] = useState([{ name: "", checked: false }]);
   const [optionList, setOptionList] = useState([
     { option: "", openOption: false },
   ]);
 
+  const { name, checked } = inputList;
+
   useEffect(() => {
     const ac = new AbortController();
-    document.title = "Curly sisters • Create tags";
+    document.title = "Curly sisters • Create certifications";
 
     // if (authenticated === null) {
     //   navigate(NonAuthRoutes.login);
@@ -77,7 +78,7 @@ function ManageTagModal({ handleClose }) {
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setInputList([...inputList, { certification: "", checked: false }]);
+    setInputList([...inputList, { name: "", checked: false }]);
   };
 
   // handle check
@@ -144,7 +145,10 @@ function ManageTagModal({ handleClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    admin.CreateCertification(inputList).then((response) => {
+    const list = [...inputList];
+
+    console.log(name, "data");
+    admin.CreateCertification(list[name]).then((response) => {
       if (response.status === 200) {
         const res = response.data;
         console.log(res);
@@ -155,7 +159,7 @@ function ManageTagModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className="fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
     >
       <div
         className="flex items-start h-full"
@@ -167,28 +171,36 @@ function ManageTagModal({ handleClose }) {
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white min-h-screen p-10">
+        <div className="bg-white min-h-screen  p-10">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
-            Tags
+            Certifications
           </h4>
-          <p className="text-gray-200 text-base">Add and remove tags</p>
+          <p className="text-gray-200 text-base">
+            Add and remove certifications
+          </p>
           <form onSubmit={handleSubmit}>
             {inputList.map((certificate, index) => {
               return (
                 <div key={index}>
                   <div className="mt-5 border border-gray-800 rounded-lg overflow-hidden">
                     <div className=" grid grid-cols-12 ">
-                      <input
-                        type="text"
-                        name="certification"
-                        className={clsx(
-                          inputList.length > 1 ? "col-span-7" : "col-span-8",
-                          "col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
-                        )}
-                        placeholder="Enter link here"
-                        value={certificate.certification}
-                        onChange={(e) => handleInputChange(e, index)}
-                      />
+                      <label
+                        htmlFor={certificate.name}
+                        className="col col-span-6"
+                      >
+                        <input
+                          type="text"
+                          name="name"
+                          id={certificate.name}
+                          className={clsx(
+                            inputList.length > 1 ? "col-span-7" : "col-span-8",
+                            "col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                          )}
+                          placeholder="Enter link here"
+                          value={certificate.name}
+                          onChange={(e) => handleInputChange(e, index)}
+                        />
+                      </label>
                       <div className="col col-span-4 mr-2 py-2">
                         <label
                           htmlFor={index + 1}
@@ -225,7 +237,7 @@ function ManageTagModal({ handleClose }) {
                       onClick={handleAddClick}
                       className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer"
                     >
-                      Add new tag
+                      Add new certification
                     </div>
                   )}
                 </div>
@@ -244,4 +256,4 @@ function ManageTagModal({ handleClose }) {
   );
 }
 
-export default ManageTagModal;
+export default ManageCertificationModal;

@@ -39,6 +39,7 @@ module.exports = {
       },
       width: {
         36: "36px",
+        120: "120px",
         196: "196px",
       },
       fontFamily: {
@@ -52,6 +53,9 @@ module.exports = {
       },
       fontSize: {
         22: "1.375rem",
+      },
+      backgroundImage: {
+        "service-image": "url('/src/assets/images/service-image.png')",
       },
     },
   },
