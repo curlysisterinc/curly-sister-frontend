@@ -18,6 +18,9 @@ module.exports = {
           300: "#8E8695",
           400: "#443C4D",
           500: "#E1E6EB",
+          600: "#EEEDEF",
+          700: "#A49DAA",
+          800: "#D5D2D7",
         },
         orange: {
           50: "rgba(255, 133, 0, 0.1)",
@@ -32,9 +35,12 @@ module.exports = {
       },
       height: {
         36: "36px",
+        46: "46px",
       },
       width: {
         36: "36px",
+        120: "120px",
+        196: "196px",
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",
@@ -45,6 +51,12 @@ module.exports = {
         BeatriceRegularItalic: "'BeatriceRegularItalic', serif",
         BeatriceMedium: "'BeatriceMedium', serif",
       },
+      fontSize: {
+        22: "1.375rem",
+      },
+      backgroundImage: {
+        "service-image": "url('/src/assets/images/service-image.png')",
+      },
     },
   },
   variants: {
@@ -52,5 +64,5 @@ module.exports = {
       opacity: ["disabled"],
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

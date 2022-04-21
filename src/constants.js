@@ -3,7 +3,9 @@ const AuthRoutes = {
   home: "/home",
   about: "/stations",
   analytics: "/analytics",
-  ads: "/ads",
+  dashboard: "/dashboard",
+  addStylist: "/add-stylist",
+  termsAndPrivacy: "/terms-and-privacy",
 };
 
 const NonAuthRoutes = {
