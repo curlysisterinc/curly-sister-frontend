@@ -12,19 +12,16 @@
 import React, { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthRoutes } from "../../../../constants";
-import grayIndicator from "../../../../assets/images/gray-indicator.svg";
-import greenIndicator from "../../../../assets/images/green-indicator.svg";
 import addManuallyIcon from "../../../../assets/images/add-manually.svg";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
 import whiteDropdownIcon from "../../../../assets/images/white-dropdown.svg";
 import searchIcon from "../../../../assets/images/search-normal-2.svg";
-import kebabIcon from "../../../../assets/images/kebab.svg";
 import { stylistTypes, users } from "./data";
-// import trashIcon from "../../assets/images/trash.svg";
-// import activateIcon from "../../assets/images/activate.svg";
+
 // import stylists from "../api/stylists";
 import { Listbox, Transition } from "@headlessui/react";
 import clsx from "clsx";
+import UserRow from "./userRow";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -32,11 +29,9 @@ function classNames(...classes) {
 function UsersTab() {
   const [activeTab, setActiveTab] = useState("stylists");
   const [toggleAddStylist, setToggleAddStylist] = useState(false);
-  // const [allStylists, setAllStylists] = useState([]);
   const [selectedType, setSelectedType] = useState(stylistTypes[0]);
 
   const [list, setList] = useState(users);
-  // const [selectedList, setSelectedList] = useState([]);
   const [masterChecked, setMasterChecked] = useState(false);
   const navigate = useNavigate();
 
@@ -45,18 +40,8 @@ function UsersTab() {
     tempList.map((user) => (user.selected = e.target.checked));
     setMasterChecked(e.target.checked);
     setList(tempList);
-    // setSelectedList(list.filter((e) => e.selected));
   };
 
-  const onItemCheck = (e, item) => {
-    const tempList = list;
-    tempList.map((user) => {
-      if (user.id === item.id) {
-        user.selected = e.target.checked;
-      }
-      return user;
-    });
-  };
   // useEffect(() => {
   //   const ac = new AbortController();
   //   document.title = "CurlySisters • Stylists";
@@ -293,54 +278,7 @@ function UsersTab() {
                     </tr>
                   </thead>
                   <tbody className="">
-                    {list.map((user) => (
-                      <tr
-                        key={user.id}
-                        className="bg-white border-b border-gray-600"
-                        onClick={() => navigate(AuthRoutes.addStylist)}
-                      >
-                        <th scope="row">
-                          <input
-                            type="checkbox"
-                            checked={user.selected}
-                            className="ml-3"
-                            id="rowcheck{user.id}"
-                            onChange={(e) => onItemCheck(e, user)}
-                          />
-                        </th>
-                        <td className="px-6 py-4 whitespace-nowrap flex items-center">
-                          <img
-                            className="h-10 w-10"
-                            src={user.avatar}
-                            alt="profile pix"
-                          />
-                          <div className="ml-2">
-                            <p className="text-sm text-gray-400 mb-1">
-                              {user.name}
-                            </p>
-                            <p className="text-xs text-gray-200 ">
-                              {user.email}
-                            </p>
-                          </div>
-                        </td>
-                        <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                          {user.type}
-                        </td>
-                        <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                          {user.location}
-                        </td>
-                        <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                          {user.status === "active" ? (
-                            <img src={greenIndicator} alt="" />
-                          ) : (
-                            <img src={grayIndicator} alt="" />
-                          )}
-                        </td>
-                        <td className="px-2 py-4 relative cursor-pointer">
-                          <img src={kebabIcon} alt="kebab icon" />
-                        </td>
-                      </tr>
-                    ))}
+                    <UserRow list={list} setList={setList} />
                   </tbody>
                 </table>
                 <div className="my-10" />

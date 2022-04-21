@@ -50,7 +50,7 @@ function ManageServicesModal({ handleClose }) {
           <p className="text-gray-200 text-base mb-6">
             Create a new service for people to book
           </p>
-          <form className="">
+          <form className="py-10 ">
             <div className="mb-6">
               <label
                 className="block text-black text-sm font-bold "

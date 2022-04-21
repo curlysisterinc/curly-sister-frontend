@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import SideBarComponent from "../sidebar/sidebar";
 // eslint-disable-next-line import/no-cycle
+import DataTab from "./dashboard/data/data";
+// eslint-disable-next-line import/no-cycle
 import UsersTab from "./dashboard/users/users";
 
 function AdminDashbaord() {
@@ -58,7 +60,7 @@ function AdminDashbaord() {
         {openTab === "overview" && <div>overview</div>}
         {openTab === "users" && <UsersTab />}
         {openTab === "content" && <div>content</div>}
-        {openTab === "data" && <div>data</div>}
+        {openTab === "data" && <DataTab />}
       </div>
     </div>
   );

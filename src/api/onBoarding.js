@@ -18,7 +18,7 @@ export default {
       lastName,
     };
     const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post("/users/register", stringifiedData);
+    return curlySistersOnboarding.post("/api/users/register", stringifiedData);
   },
 
   /** Send a POST request to Log In User */
@@ -28,7 +28,7 @@ export default {
       password,
     };
     const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post("/users/login", stringifiedData);
+    return curlySistersOnboarding.post("/api/users/login", stringifiedData);
   },
 
   /** Send a POST request for Forgot Password */
@@ -38,7 +38,7 @@ export default {
     };
     const stringifiedData = JSON.stringify(data);
     return curlySistersOnboarding.post(
-      "/users/forgotPassword",
+      "/api/users/forgotPassword",
       stringifiedData
     );
   },
@@ -50,7 +50,7 @@ export default {
     };
     const stringifiedData = JSON.stringify(data);
     return curlySistersOnboarding.post(
-      `$/users/reset-password/${token}`,
+      `/api/users/reset-password/${token}`,
       stringifiedData
     );
   },
