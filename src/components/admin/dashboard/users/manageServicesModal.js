@@ -31,19 +31,19 @@ function ManageServicesModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
     >
       <div
-        className="flex items-start h-full"
+        className="flex  justify-end items-start h-full"
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          className="mt-10 mr-10 bg-white rounded-full p-2"
+          className="mt-20 mr-10 bg-white rounded-full p-2"
           onClick={handleClose}
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white p-10">
+        <div className="bg-white p-10 w-2/5">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Add a service
           </h4>

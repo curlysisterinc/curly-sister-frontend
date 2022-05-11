@@ -125,13 +125,9 @@ function AvailabilityTab() {
                 {inputList.length > 1 && (
                   <div
                     onClick={handleRemoveClick}
-                    className=" col col-span-1 py-2  cursor-pointer flex items-center justify-center border-l border-gray-800"
+                    className="absolute -right-10 cursor-pointer flex items-center justify-center border-gray-800"
                   >
-                    <img
-                      className="absolute -right-10"
-                      src={cancel}
-                      alt="trash icon"
-                    />
+                    <img className="" src={cancel} alt="trash icon" />
                   </div>
                 )}
                 {/* weekday list */}

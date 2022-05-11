@@ -19,9 +19,7 @@ import admin from "../../../../api/admin";
 function ManageTagModal({ handleClose }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [inputList, setInputList] = useState([
-    { certification: "", checked: false },
-  ]);
+  const [inputList, setInputList] = useState([{ tag: "", checked: false }]);
   const [optionList, setOptionList] = useState([
     { option: "", openOption: false },
   ]);
@@ -77,18 +75,18 @@ function ManageTagModal({ handleClose }) {
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setInputList([...inputList, { certification: "", checked: false }]);
+    setInputList([...inputList, { tag: "", checked: false }]);
   };
 
   // handle check
   const handleCheckboxChange = (e, dataIndex) => {
     const { checked } = e.target;
     setInputList(
-      inputList.map((certificate, index) => {
+      inputList.map((tag, index) => {
         if (index === dataIndex) {
-          certificate.checked = checked;
+          tag.checked = checked;
         }
-        return certificate;
+        return tag;
       })
     );
   };
@@ -155,41 +153,57 @@ function ManageTagModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
     >
       <div
-        className="flex items-start h-full"
+        className="flex items-start justify-end h-full w-full"
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          className="mt-10 mr-10 bg-white rounded-full p-2"
+          className="mt-20 mr-10 bg-white rounded-full p-2"
           onClick={handleClose}
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white min-h-screen p-10">
+        <div className="bg-white min-h-screen p-10 w-2/5">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Tags
           </h4>
           <p className="text-gray-200 text-base">Add and remove tags</p>
           <form onSubmit={handleSubmit}>
-            {inputList.map((certificate, index) => {
+            {inputList.map((tag, index) => {
               return (
                 <div key={index}>
                   <div className="mt-5 border border-gray-800 rounded-lg overflow-hidden">
                     <div className=" grid grid-cols-12 ">
-                      <input
-                        type="text"
-                        name="certification"
+                      <label
+                        htmlFor={tag.name}
                         className={clsx(
-                          inputList.length > 1 ? "col-span-7" : "col-span-8",
-                          "col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                          inputList.length > 1
+                            ? "col-span-7"
+                            : "xl:col-span-8 2xl:col-span-9",
+                          " "
                         )}
-                        placeholder="Enter link here"
-                        value={certificate.certification}
-                        onChange={(e) => handleInputChange(e, index)}
-                      />
-                      <div className="col col-span-4 mr-2 py-2">
+                      >
+                        <input
+                          type="text"
+                          name="name"
+                          id={tag.name}
+                          className="col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                          placeholder="Enter link here"
+                          value={tag.name}
+                          onChange={(e) => handleInputChange(e, index)}
+                        />
+                      </label>
+
+                      <div
+                        className={clsx(
+                          inputList.length > 1
+                            ? "col-span-4"
+                            : "xl:col-span-4 2xl:col-span-3",
+                          "mr-2 py-2 "
+                        )}
+                      >
                         <label
                           htmlFor={index + 1}
                           className="flex items-center cursor-pointer"
@@ -202,7 +216,7 @@ function ManageTagModal({ handleClose }) {
                               type="checkbox"
                               onChange={(e) => handleCheckboxChange(e, index)}
                               id={index + 1}
-                              checked={certificate.checked}
+                              checked={tag.checked}
                               className="sr-only"
                             />
                             <div className="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full" />

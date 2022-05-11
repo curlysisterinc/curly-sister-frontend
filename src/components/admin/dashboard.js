@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState } from "react";
 import SideBarComponent from "../sidebar/sidebar";
+import ContentTab from "./dashboard/content/contentTable";
 // eslint-disable-next-line import/no-cycle
 import DataTab from "./dashboard/data/data";
 // eslint-disable-next-line import/no-cycle
@@ -59,7 +60,7 @@ function AdminDashbaord() {
         {/* content */}
         {openTab === "overview" && <div>overview</div>}
         {openTab === "users" && <UsersTab />}
-        {openTab === "content" && <div>content</div>}
+        {openTab === "content" && <ContentTab />}
         {openTab === "data" && <DataTab />}
       </div>
     </div>

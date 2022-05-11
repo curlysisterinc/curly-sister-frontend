@@ -1,3 +1,7 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable no-else-return */
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable eqeqeq */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -23,6 +27,7 @@ import {
   channels,
   phoneNumberCountries,
   getService,
+  certificationsList,
 } from "./data";
 import ManageCertificationModal from "./manageCertificationModal";
 import ManageTagModal from "./manageTagModal";
@@ -31,6 +36,7 @@ import SelectPhoneDropdown from "./selectPhoneDropdown";
 import AvailabilityTab from "./availability";
 import GalleryTab from "./gallery";
 import cancel from "../../../../assets/images/cancel.svg";
+import MultiselectComponent from "./multiSelectComponent";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -164,6 +170,7 @@ function AddStylist() {
     list.splice(index, 1);
     setServiceList(list);
   };
+
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" isLoggedIn />
@@ -588,17 +595,11 @@ function AddStylist() {
                       Manage Certifications
                     </div>
                   </div>
-
-                  <div className="border border-gray-50 w-full p-3 mt-4 rounded-xl" />
-
-                  <div
-                    onClick={handleOpenCertificationModal}
-                    className="text-purple-100 cursor-pointer mt-4"
-                  >
-                    select certification
+                  <div className="mt-5">
+                    <MultiselectComponent placeholder="Type to search and select certifications" />
                   </div>
 
-                  <hr className="border border-gray-600 w-full mt-3" />
+                  <hr className="border border-gray-600 w-full mt-8" />
                   {/* tags */}
                   <div className="mt-6">
                     <div className=" flex justify-between items-center">
@@ -611,18 +612,8 @@ function AddStylist() {
                       </div>
                     </div>
 
-                    <input
-                      type="text"
-                      placeholder="Type to search and select certifications"
-                      multiple
-                      className="block border-gray-50 w-full p-3 mt-4 rounded-lg h-10 appearance-none border text-gray-700 leading-tight focus:outline-none focus:shadow-outline placeholder:text-gray-300"
-                    />
-
-                    <div
-                      onClick={handleOpenTagModal}
-                      className="text-purple-100 cursor-pointer mt-4"
-                    >
-                      select tag
+                    <div className="mt-5">
+                      <MultiselectComponent placeholder="Type to search and select tags" />
                     </div>
                   </div>
                 </div>
