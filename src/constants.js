@@ -5,6 +5,9 @@ const AuthRoutes = {
   analytics: "/analytics",
   dashboard: "/dashboard",
   addStylist: "/add-stylist",
+  addArticle: "/add-article",
+  addVideo: "/add-video",
+  bookings: "/bookings",
   termsAndPrivacy: "/terms-and-privacy",
 };
 

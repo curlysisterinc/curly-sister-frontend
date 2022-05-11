@@ -15,6 +15,9 @@ import ResetPasswordComponent from "./components/resetPassword/resetPassword";
 import UserHome from "./components/userHome/userHome";
 import AdminDashbaord from "./components/admin/dashboard";
 import AddStylist from "./components/admin/dashboard/users/addStylist";
+import IndividualsBookings from "./components/admin/dashboard/users/individuals/bookings/bookings";
+import NewArticle from "./components/admin/dashboard/content/article/newArticle";
+import NewVideo from "./components/admin/dashboard/content/video/addVideo";
 
 function Routers() {
   return (
@@ -62,6 +65,9 @@ function Routers() {
           <Route path={AuthRoutes.home} element={<UserHome />} />
           <Route path={AuthRoutes.dashboard} element={<AdminDashbaord />} />
           <Route path={AuthRoutes.addStylist} element={<AddStylist />} />
+          <Route path={AuthRoutes.bookings} element={<IndividualsBookings />} />
+          <Route path={AuthRoutes.addArticle} element={<NewArticle />} />
+          <Route path={AuthRoutes.addVideo} element={<NewVideo />} />
         </Routes>
       </Suspense>
     </div>

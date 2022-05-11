@@ -17,6 +17,7 @@ module.exports = {
           250: "#E2E0E4",
           300: "#8E8695",
           400: "#443C4D",
+          450: "rgba(68, 60, 77, 0.5)",
           500: "#E1E6EB",
           600: "#EEEDEF",
           700: "#A49DAA",
@@ -40,6 +41,7 @@ module.exports = {
       width: {
         36: "36px",
         120: "120px",
+        140: "140px",
         196: "196px",
       },
       fontFamily: {

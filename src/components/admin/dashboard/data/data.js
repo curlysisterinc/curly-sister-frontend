@@ -17,6 +17,7 @@ import timer from "../../../../assets/images/timer.svg";
 import ellipses from "../../../../assets/images/ellipses.svg";
 import add from "../../../../assets/images/add.svg";
 import EditServiceModal from "./editServiceModal";
+import { certificationsList } from "../users/data";
 
 function DataTab() {
   const [openService, setOpenService] = useState(false);
@@ -184,8 +185,18 @@ function DataTab() {
         </div>
         {openCertification && (
           <div className="mt-5">
-            <div className="flex justify-between items-center">
-              <p className="">Certifications</p>
+            <div className="">
+              <p className="mb-5">Certifications</p>
+              <div className="flex">
+                {certificationsList &&
+                  certificationsList.map((certification) => {
+                    return (
+                      <div className="rounded-full bg-purple-100 px-3 py-1 h-8 flex justify-center items-center text-white text-sm mx-3">
+                        {certification.label}
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
         )}
@@ -215,8 +226,18 @@ function DataTab() {
         </div>
         {openTag && (
           <div className="mt-5">
-            <div className="flex justify-between items-center">
-              <p className="">Tags</p>
+            <div className="">
+              <p className="mb-5">Tags</p>
+              <div className="flex">
+                {certificationsList &&
+                  certificationsList.map((certification) => {
+                    return (
+                      <div className="rounded-full bg-purple-100 px-3 py-1 h-8 flex justify-center items-center text-white text-sm mx-3">
+                        {certification.label}
+                      </div>
+                    );
+                  })}
+              </div>
             </div>
           </div>
         )}
