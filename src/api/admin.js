@@ -36,8 +36,8 @@ export default {
       description,
       by,
     };
-    const stringifiedData = JSON.stringify(data);
-    return curlySistersApi.post("/V1/admin/add-video", stringifiedData);
+    // const stringifiedData = JSON.stringify(data);
+    return curlySistersApi.post("/V1/admin/add-video", data);
   },
 
   /** Send a POST request to add video to content */

@@ -64,7 +64,7 @@ function SideBarComponent({ active, isLoggedIn }) {
                 Stylists
               </p>
             </Link>
-            <Link to="/learn">
+            <Link to="/learn-more">
               <p
                 className={
                   active === "learn" ? " mb-4 text-purple-100" : " mb-4 "
@@ -117,7 +117,7 @@ function SideBarComponent({ active, isLoggedIn }) {
                 Stylists
               </p>
             </Link>
-            <Link to="/learn">
+            <Link to={AuthRoutes.learn}>
               <p
                 className={
                   active === "learn" ? " mb-4 text-purple-100" : " mb-4 "
