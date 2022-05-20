@@ -40,9 +40,13 @@ module.exports = {
       },
       width: {
         36: "36px",
+        55: "55%",
         120: "120px",
         140: "140px",
         196: "196px",
+      },
+      minWidth: {
+        '30': "30%",
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",

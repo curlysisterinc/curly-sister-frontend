@@ -15,11 +15,12 @@ import NewVideoCategory from "./newVideoCategory";
 
 function NewVideo() {
   const navigate = useNavigate();
+  const [draftBtn, setDraftBtn] = useState(false);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
-  const [radioStatus, setRadioStatus] = useState(2);
-  const radioHandler = (status) => {
-    setRadioStatus(status);
-  };
+  // const [radioStatus, setRadioStatus] = useState(2);
+  // const radioHandler = (status) => {
+  //   setRadioStatus(status);
+  // };
   const [btnDisabled, setBtnDisabled] = useState(true);
 
   const handleModalOpen = () => {
@@ -71,13 +72,35 @@ function NewVideo() {
         values.title.trim().length ||
         values.category.trim().length ||
         values.description.trim().length ||
-        values.by.trim().length;
+        values.by.trim().length ||
+        values.link.trim().length;
 
       if (isValid) {
         setBtnDisabled(false);
+        setDraftBtn(true);
       } else {
         setBtnDisabled(true);
+        setDraftBtn(false);
       }
+    },
+
+    handleSaveDraft: (e, values) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("file", values.file);
+      formData.append("source", values.source);
+      formData.append("status", values.status2);
+      admin
+        .SaveArticleDraft(formData)
+        .then((response) => {
+          if (response.status === 200) {
+            console.log(response.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   });
   return (
@@ -102,6 +125,15 @@ function NewVideo() {
                 Video
               </div>
               <div className="flex">
+                {draftBtn && (
+                  <button
+                    type="button"
+                    onClick={formik.handleSaveDraft}
+                    className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400"
+                  >
+                    Draft saved
+                  </button>
+                )}
                 <button
                   type="submit"
                   disabled={btnDisabled}
@@ -203,10 +235,7 @@ function NewVideo() {
                           type="radio"
                           name="uploadVideo"
                           id="embedLink"
-                          value={formik.values.link}
-                          checked={radioStatus === 2}
-                          onChange={formik.handleChange}
-                          onClick={(e) => radioHandler(2)}
+                          checked
                         />
                       </label>
                     </div>
@@ -214,7 +243,8 @@ function NewVideo() {
                   <hr className=" border-gray-800 w-full mt-4" />
                   <div className="px-5 py-5">
                     {/* {radioStatus === 1 ? <div>hello</div> : null} */}
-                    {radioStatus === 2 ? (
+
+                    <label htmlFor="link">
                       <input
                         className="shadow-sm appearance-none border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 text-sm placeholder:text-sm leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="Enter a link here eg. YouTube, Vimeo, Wistia, etc."
@@ -224,7 +254,7 @@ function NewVideo() {
                         value={formik.values.link}
                         onChange={formik.handleChange}
                       />
-                    ) : null}
+                    </label>
                   </div>
                 </div>
                 <label
