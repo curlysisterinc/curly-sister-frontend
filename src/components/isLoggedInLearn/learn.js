@@ -9,22 +9,9 @@ import { AuthRoutes } from "../../constants";
 import SideBarComponent from "../sidebar/sidebar";
 import AllTab from "./allTab";
 import authHandler from "../../authHandler";
-import VideoTab from "./videoTab";
-import ArticleTab from "./articleTab";
-import CommunityTab from "./communityTab";
 
 function LearnComponent({ activeTab }) {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const userDetails = authHandler.getUser("users");
-
-  // useEffect(() => {
-  //   if (userDetails) {
-  //     setIsLoggedIn(true);
-  //     console.log(userDetails);
-  //   }
-  // }, [userDetails, isLoggedIn]);
-  // const [activeTab, setActiveTab] = useState("all");
 
   return (
     <div>

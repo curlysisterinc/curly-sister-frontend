@@ -28,24 +28,33 @@ export default {
   },
 
   /** Send a POST request to add video to content */
-  async AddVideoToContent(link, category, title, description, by) {
-    const data = {
-      link,
-      category,
-      title,
-      description,
-      by,
-    };
-    // const stringifiedData = JSON.stringify(data);
-    return curlySistersApi.post("/V1/admin/add-video", data);
+  async AddVideoToContent(data) {
+    return curlySistersApi.post("/v1/admin/add-video", data);
   },
 
   /** Send a POST request to add video to content */
   async AddArticleToContent(data) {
     return curlySistersFormDataApi.post(
-      "/V1/admin/article/create-article",
+      "/v1/admin/article/create-article",
       data
     );
+  },
+
+  async CreateVideoCategory(name) {
+    const data = { name };
+    return curlySistersApi.post("/v1/admin/create-video-category", data);
+  },
+
+  async GetVideoCategory() {
+    return curlySistersApi.get("/v1/admin/find-all-video-category");
+  },
+
+  async GetAllVideos() {
+    return curlySistersApi.get("/v1/admin/find-all-videos");
+  },
+
+  async GetAllArticles() {
+    return curlySistersApi.get("/v1/admin/find-all-article");
   },
 
   async SaveArticleDraft(data) {

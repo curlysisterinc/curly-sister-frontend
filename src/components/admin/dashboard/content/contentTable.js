@@ -25,6 +25,8 @@ function ContentTab() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [list, setList] = useState(contents);
   const [masterChecked, setMasterChecked] = useState(false);
+  const [checkItem, setCheckItem] = useState([]);
+  // const [callToAction, setCallToAction] = useState(false);
   const navigate = useNavigate();
 
   const onMasterCheck = (e) => {
@@ -40,6 +42,7 @@ function ContentTab() {
   const closeDeleteModal = () => {
     setDeleteModal(false);
   };
+
   return (
     <div className="">
       <div className="flex items-end justify-between">
@@ -49,7 +52,7 @@ function ContentTab() {
         </div>
         <div className="">
           {/* filters */}
-          {masterChecked ? (
+          {masterChecked || checkItem.length ? (
             <div
               onClick={() => setToggleActions(!toggleActions)}
               className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
@@ -219,6 +222,8 @@ function ContentTab() {
                     contentsList={list}
                     query={query}
                     setContentsList={setList}
+                    checkItem={checkItem}
+                    setCheckItem={setCheckItem}
                   />
                 </tbody>
               </table>

@@ -65,6 +65,28 @@ function AddStylist() {
     phoneNumber: "",
     phoneCode: "US +1",
   });
+  const [stylistValues, setStylistValues] = useState({
+    stylist_name: "",
+    email: "",
+    business_name: "",
+    address: "",
+    certification: "",
+    city: "",
+    services: [""],
+    certifications: [""],
+    tags: [""],
+    country: "",
+    phone_no: "",
+    facebook: "",
+    instagram: "",
+    latitude: "",
+    longitude: "",
+    state: "",
+    website: "",
+    zipcode: "",
+    photo: "",
+    description: "",
+  });
   const { email, phoneNumber, address, phoneCode } = locationAndContact;
   // location and contact change
   const handleDropdownChange = (e) => {
@@ -73,6 +95,10 @@ function AddStylist() {
       [e.target.name]: e.target.value,
     });
     console.log(phoneNumberCountries);
+  };
+
+  const handleChange = (e) => {
+    setStylistValues({ ...stylistValues, [e.target.name]: e.target.value });
   };
   // handle file change
   const handleFileChange = (e) => {
@@ -189,170 +215,17 @@ function AddStylist() {
                 Add stylist
               </div>
               <div className="flex">
-                {/* stylist type */}
-                <Listbox value={selectedType} onChange={setSelectedType}>
-                  {({ open }) => (
-                    <div className="relative mr-3">
-                      <Listbox.Button className="relative w-full bg-white border rounded-full border-gray-250  shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-purple-100 focus:border-purple-100 sm:text-sm">
-                        <span className="flex items-center">
-                          <span className="ml-3 block truncate">
-                            {selectedType.name}
-                          </span>
-                        </span>
-                        <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                          <img
-                            className={clsx(
-                              open && "transform rotate-180",
-                              "ml-12 "
-                            )}
-                            src={dropdownIcon}
-                            alt=""
-                          />
-                        </span>
-                      </Listbox.Button>
+                <select className="mr-3 bg-white border rounded-full border-gray-250  shadow-sm">
+                  <option>Master stylist</option>
+                  <option>Stylist</option>
+                  <option>Super Admin</option>
+                </select>
 
-                      <Transition
-                        show={open}
-                        as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                          {stylistTypes.map((type) => (
-                            <Listbox.Option
-                              key={type.id}
-                              className={({ active }) =>
-                                classNames(
-                                  active
-                                    ? "text-white bg-indigo-600"
-                                    : "text-gray-400",
-                                  "cursor-default select-none relative py-2 pl-3 pr-9"
-                                )
-                              }
-                              value={type}
-                            >
-                              {({ selected, active }) => (
-                                <>
-                                  <div className="flex items-center">
-                                    <span
-                                      className={classNames(
-                                        selected
-                                          ? "font-semibold"
-                                          : "font-normal",
-                                        "ml-3 block truncate"
-                                      )}
-                                    >
-                                      {type.name}
-                                    </span>
-                                  </div>
+                <select className="mr-3 bg-white border rounded-full border-gray-250  shadow-sm">
+                  <option>Active</option>
+                  <option>Inactive</option>
+                </select>
 
-                                  {selected ? (
-                                    <span
-                                      className={classNames(
-                                        active
-                                          ? "text-white"
-                                          : "text-indigo-600",
-                                        "absolute inset-y-0 right-0 flex items-center pr-4"
-                                      )}
-                                    >
-                                      {/* <CheckIcon
-                                        className="h-5 w-5"
-                                        aria-hidden="true"
-                                      /> */}
-                                    </span>
-                                  ) : null}
-                                </>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  )}
-                </Listbox>
-                {/* stylist status */}
-                <Listbox value={status} onChange={setStatus}>
-                  {({ open }) => (
-                    <div className="relative mr-3">
-                      <Listbox.Button className="relative w-full bg-white border rounded-full border-gray-250  shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-purple-100 focus:border-purple-100 sm:text-sm">
-                        <span className="flex items-center">
-                          <span className="ml-3 block truncate">
-                            {status.name}
-                          </span>
-                        </span>
-                        <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                          <img
-                            className={clsx(
-                              open && "transform rotate-180",
-                              "ml-12 "
-                            )}
-                            src={dropdownIcon}
-                            alt=""
-                          />
-                        </span>
-                      </Listbox.Button>
-
-                      <Transition
-                        show={open}
-                        as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <Listbox.Options className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
-                          {stylistStatus.map((type) => (
-                            <Listbox.Option
-                              key={type.id}
-                              className={({ active }) =>
-                                classNames(
-                                  active
-                                    ? "text-white bg-indigo-600"
-                                    : "text-gray-400",
-                                  "cursor-default select-none relative py-2 pl-3 pr-9"
-                                )
-                              }
-                              value={type}
-                            >
-                              {({ selected, active }) => (
-                                <>
-                                  <div className="flex items-center">
-                                    <span
-                                      className={classNames(
-                                        selected
-                                          ? "font-semibold"
-                                          : "font-normal",
-                                        "ml-3 block truncate"
-                                      )}
-                                    >
-                                      {type.name}
-                                    </span>
-                                  </div>
-
-                                  {selected ? (
-                                    <span
-                                      className={classNames(
-                                        active
-                                          ? "text-white"
-                                          : "text-indigo-600",
-                                        "absolute inset-y-0 right-0 flex items-center pr-4"
-                                      )}
-                                    >
-                                      {/* <CheckIcon
-                                        className="h-5 w-5"
-                                        aria-hidden="true"
-                                      /> */}
-                                    </span>
-                                  ) : null}
-                                </>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  )}
-                </Listbox>
                 <button
                   type="button"
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white"
@@ -403,16 +276,17 @@ function AddStylist() {
                   </div>
                   <label
                     className="block text-black text-sm font-bold mt-5"
-                    htmlFor="name"
+                    htmlFor="stylist_name"
                   >
                     Name
                     <input
                       className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                      type="email"
+                      type="text"
                       placeholder="Enter name here..."
-                      name="name"
-                      label="name"
-                      id="name"
+                      name="stylist_name"
+                      id="stylist_name"
+                      value={stylistValues.stylist_name}
+                      onChange={handleChange}
                     />
                   </label>
                   <label
@@ -427,7 +301,9 @@ function AddStylist() {
                       name="description"
                       label="description"
                       id="description"
+                      value={stylistValues.description}
                       rows="3"
+                      onChange={handleChange}
                     />
                   </label>
                 </div>
@@ -463,6 +339,8 @@ function AddStylist() {
                       name="address"
                       label="address"
                       id="address"
+                      value={stylistValues.address}
+                      onChange={handleChange}
                     />
                   </label>
                   <div className="grid grid-cols-2 gap-6 items-center ">
@@ -478,29 +356,31 @@ function AddStylist() {
                         name="email"
                         label="email"
                         id="email"
+                        value={stylistValues.email}
+                        onChange={handleChange}
                       />
                     </label>
                     <label
                       className="inline-block text-black text-sm font-bold mt-5 col"
-                      htmlFor="email"
+                      htmlFor="phone_no"
                     >
                       Phone Number
-                      <div className="relative flex grid-cols-12 border">
-                        <SelectPhoneDropdown
+                      <div className="relative flex grid-cols-12 ">
+                        {/* <SelectPhoneDropdown
                           handleChange={handleDropdownChange}
                           value={phoneCode}
                           name="phoneCode"
                           placeholder="Code"
                           phoneNumberCountries={phoneNumberCountries}
                           clsName="col-span-4 "
-                        />
+                        /> */}
                         <input
                           className="shadow-sm col-span-8 appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          type="text"
-                          value={phoneNumber}
+                          type="number"
+                          value={stylistValues.phone_no}
                           placeholder="Enter phone number"
-                          name="phoneNumber"
-                          id="phoneNumber"
+                          name="phone_no"
+                          id="phone_no"
                         />
                       </div>
                     </label>
