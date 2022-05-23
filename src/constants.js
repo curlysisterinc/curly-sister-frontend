@@ -13,7 +13,7 @@ const AuthRoutes = {
   communities: "/learn/communities",
   articles: "/learn/articles",
   videoContent: "/learn/video/:token",
-  articleContent: "/learn/articles/:token",
+  articleContent: "/learn/article/:token",
   communityContent: "/learn/communities/:token",
   termsAndPrivacy: "/terms-and-privacy",
 };

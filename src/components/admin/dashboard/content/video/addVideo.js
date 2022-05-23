@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/no-cycle */
 /* eslint-disable eqeqeq */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -16,11 +17,25 @@ import NewVideoCategory from "./newVideoCategory";
 function NewVideo() {
   const navigate = useNavigate();
   const [draftBtn, setDraftBtn] = useState(false);
+  const [options, setOptions] = useState([]);
+  // const [status, setStatus] = useState([]);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
+  // const [status, setStatus] = useState("published");
+  const [videoInputs, setVideoInputs] = useState({
+    link: "",
+    category: "",
+    title: "",
+    description: "",
+    status: "",
+    source: "Super Admin",
+  });
   // const [radioStatus, setRadioStatus] = useState(2);
   // const radioHandler = (status) => {
   //   setRadioStatus(status);
   // };
+  const handleChange = (event) => {
+    setVideoInputs({ ...videoInputs, [event.target.name]: event.target.value });
+  };
   const [btnDisabled, setBtnDisabled] = useState(true);
 
   const handleModalOpen = () => {
@@ -35,74 +50,73 @@ function NewVideo() {
   };
 
   useEffect(() => {
+    admin.GetVideoCategory().then((result) => {
+      console.log(result.data.data, "data");
+      setOptions(result.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
     const ac = new AbortController();
     document.title = "CurlySisters • Create Video";
+    const isValid =
+      videoInputs.link.trim().length ||
+      videoInputs.category.trim().length ||
+      videoInputs.title.trim().length ||
+      videoInputs.description.trim().length ||
+      videoInputs.source.trim().length;
 
+    if (isValid) {
+      setBtnDisabled(false);
+      setDraftBtn(true);
+    } else {
+      setBtnDisabled(true);
+      setDraftBtn(false);
+    }
     return function cleanup() {
       ac.abort();
     };
   }, []);
 
-  const formik = useFormik({
-    initialValues: {
-      link: "",
-      category: "",
-      title: "",
-      description: "",
-      by: "",
-    },
-    onSubmit: (values) => {
-      admin
-        .AddVideoToContent(values)
-        .then((response) => {
-          if (response.status === 200) {
-            const res = response.data;
-            console.log(res);
-          }
-        })
-        .catch((error) => {
-          if (error) {
-            console.error(error, values, "error");
-          }
-        });
-    },
+  const handleSubmit = (e) => {
+    // setVideoInputs(prevState=>{ prevState, status });
 
-    validate: (values) => {
-      const isValid =
-        values.title.trim().length ||
-        values.category.trim().length ||
-        values.description.trim().length ||
-        values.by.trim().length ||
-        values.link.trim().length;
+    e.preventDefault();
+    admin
+      .AddVideoToContent(videoInputs)
+      .then((response) => {
+        if (response.status === 200) {
+          const res = response.data;
+          console.log(res);
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          console.error(error, videoInputs, "error");
+        }
+      });
+  };
 
-      if (isValid) {
-        setBtnDisabled(false);
-        setDraftBtn(true);
-      } else {
-        setBtnDisabled(true);
-        setDraftBtn(false);
-      }
-    },
+  const handleSaveDraft = (e) => {
+    setVideoInputs({ ...videoInputs, status: "unpublished" });
 
-    handleSaveDraft: (e, values) => {
-      e.preventDefault();
-      const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("file", values.file);
-      formData.append("source", values.source);
-      formData.append("status", values.status2);
-      admin
-        .SaveArticleDraft(formData)
-        .then((response) => {
-          if (response.status === 200) {
-            console.log(response.data);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-  });
+    e.preventDefault();
+
+    admin
+      .AddVideoToContent(videoInputs)
+      .then((response) => {
+        if (response.status === 200) {
+          const res = response.data;
+          console.log(res);
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          console.error(error, videoInputs, "error");
+        }
+      });
+  };
+
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" isLoggedIn />
@@ -115,11 +129,7 @@ function NewVideo() {
             <img className="mr-2" src={backArrow} alt="back arrow" />
             Go Back
           </div>
-          <form
-            autoComplete="off"
-            className="ml-28 w-4/6 "
-            onSubmit={formik.handleSubmit}
-          >
+          <form autoComplete="off" className="ml-28 w-4/6 ">
             <div className=" flex justify-between items-center">
               <div className="text-22 text-gray-400 font-BeatriceSemiBold">
                 Video
@@ -128,15 +138,16 @@ function NewVideo() {
                 {draftBtn && (
                   <button
                     type="button"
-                    onClick={formik.handleSaveDraft}
+                    onClick={handleSaveDraft}
                     className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400"
                   >
                     Draft saved
                   </button>
                 )}
                 <button
-                  type="submit"
+                  type="button"
                   disabled={btnDisabled}
+                  onClick={handleSubmit}
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
                 >
                   Publish
@@ -153,14 +164,13 @@ function NewVideo() {
                 >
                   Title
                   <input
-                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 text-sm placeholder:text-sm leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 text-sm placeholder:text-sm leading-tight focus:outline-none focus:shadow-outline"
                     type="text"
                     placeholder="Enter a title for this video here"
                     name="title"
-                    label="title"
                     id="title"
-                    value={formik.values.title}
-                    onChange={formik.handleChange}
+                    value={videoInputs.title}
+                    onChange={handleChange}
                   />
                 </label>
                 <div className="flex justify-between items-center space-x-5 mt-8">
@@ -179,29 +189,45 @@ function NewVideo() {
                     </div>
                     <select
                       id="category"
+                      name="category"
                       className="w-full block mt-3 text-sm border border-gray-800 rounded-lg py-4 px-3"
-                      value={formik.values.category}
-                      onChange={formik.handleChange}
+                      value={videoInputs.category}
+                      onChange={handleChange}
                     >
-                      <option value="Braiding">Braiding</option>
-                      <option value="Weaving">Weaving</option>
-                      <option value="Installation">Installation</option>
+                      {options.map((option) => {
+                        return (
+                          <option
+                            key={option._id}
+                            value={option._id}
+                            name={option.name}
+                          >
+                            {option.name}
+                          </option>
+                        );
+                      })}
                     </select>
                   </label>{" "}
                   <label
-                    htmlFor="by"
+                    htmlFor="source"
                     className="block text-gray-400 text-sm font-medium w-1/2"
                   >
                     By
                     <select
-                      id="by"
+                      id="source"
+                      name="source"
                       className="w-full block mt-3 text-sm border border-gray-800 rounded-lg py-4 px-3"
-                      value={formik.values.by}
-                      onChange={formik.handleChange}
+                      value={videoInputs.source}
+                      onChange={handleChange}
                     >
-                      <option value="Curly sister">Curly Sister</option>
-                      <option value="Brazillian Weave">Brazillian Weave</option>
-                      <option value="Afro Taste">Afro Taste</option>
+                      <option value="Super Admin" name="super-admin">
+                        Super Admin
+                      </option>
+                      <option value="Master Stylist" name="master-stylist">
+                        Master Stylist
+                      </option>
+                      <option value="Stylist" name="stylist">
+                        Stylist
+                      </option>
                     </select>
                   </label>
                 </div>
@@ -233,9 +259,8 @@ function NewVideo() {
                         <input
                           className="appearance-none rounded-full h-4 w-4 border border-gray-400 bg-white checked:bg-purple-100 checked:border-purple-100 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                           type="radio"
-                          name="uploadVideo"
                           id="embedLink"
-                          checked
+                          defaultChecked
                         />
                       </label>
                     </div>
@@ -246,13 +271,13 @@ function NewVideo() {
 
                     <label htmlFor="link">
                       <input
-                        className="shadow-sm appearance-none border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 text-sm placeholder:text-sm leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow-sm appearance-none border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 text-sm placeholder:text-sm leading-tight focus:outline-none focus:shadow-outline"
                         placeholder="Enter a link here eg. YouTube, Vimeo, Wistia, etc."
                         type="text"
                         name="link"
                         id="link"
-                        value={formik.values.link}
-                        onChange={formik.handleChange}
+                        value={videoInputs.link}
+                        onChange={handleChange}
                       />
                     </label>
                   </div>
@@ -263,13 +288,13 @@ function NewVideo() {
                 >
                   Add a description for this video (optional)
                   <textarea
-                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     type="textarea"
                     placeholder="Enter a description for this service"
                     name="description"
                     id="description"
-                    values={formik.values.description}
-                    onChange={formik.handleChange}
+                    values={videoInputs.description}
+                    onChange={handleChange}
                     rows="3"
                   />
                 </label>

@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-vars */
@@ -17,21 +18,25 @@ import trashIcon from "../../../../../assets/images/trash.svg";
 import activateIcon from "../../../../../assets/images/activate.svg";
 import rightArrow from "../../../../../assets/images/right-arrow.svg";
 
-function IndividualsRow({ stylistsList, setStylistsList, query }) {
+function IndividualsRow({
+  stylistsList,
+  setStylistsList,
+  query,
+  checkItem,
+  setCheckItem,
+}) {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const navigate = useNavigate();
-  // const [openDropdown, setOpenDropdown] = useState(false);
-  const onItemCheck = (e, data) => {
-    const { checked } = e.target;
-    setStylistsList(
-      stylistsList.map((user) => {
-        if (user.id === data.id) {
-          user.selected = checked;
-        }
-        return user;
-      })
-    );
+
+  const handleCheck = (event) => {
+    var updatedList = [...checkItem];
+    if (event.target.checked) {
+      updatedList = [...checkItem, event.target.value];
+    } else {
+      updatedList.splice(checkItem.indexOf(event.target.value), 1);
+    }
+    setCheckItem(updatedList);
   };
 
   const toggleDropdownStyle = (index) => {
@@ -68,10 +73,10 @@ function IndividualsRow({ stylistsList, setStylistsList, query }) {
               <th scope="row">
                 <input
                   type="checkbox"
-                  checked={stylist.selected}
+                  value={stylist.name}
                   className="ml-3"
                   id={stylist.id}
-                  onChange={(e) => onItemCheck(e, stylist)}
+                  onChange={handleCheck}
                 />
               </th>
               <td

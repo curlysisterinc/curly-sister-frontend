@@ -12,10 +12,11 @@ import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import closeModalBtn from "../../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../../assets/images/trash.svg";
+import admin from "../../../../../api/admin";
 
 function NewVideoCategory({ handleClose }) {
   const [inputList, setInputList] = useState([{ name: "" }]);
-
+  const [category, setCategory] = useState("");
   useEffect(() => {
     const ac = new AbortController();
     document.title = "Curly sisters • Create tags";
@@ -51,6 +52,29 @@ function NewVideoCategory({ handleClose }) {
     setInputList([...inputList, { name: "" }]);
   };
 
+  // const handleChange = (e) => {
+  //   setCategory({ ...category, [e.target.name]: e.target.value });
+  // };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // setVideoInputs({ ...videoInputs, status: "published" });
+    admin
+      .CreateVideoCategory(category)
+      .then((response) => {
+        if (response.status === 200) {
+          handleClose();
+          const res = response.data;
+          console.log(res);
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          console.error(error, category.name, "error");
+        }
+      });
+  };
+
   return (
     <div
       onClick={handleClose}
@@ -70,11 +94,22 @@ function NewVideoCategory({ handleClose }) {
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Video categories
           </h4>
-          <p className="text-gray-200 text-base">
-            Add and remove video categories
-          </p>
+          <p className="text-gray-200 text-base">Add video categories</p>
           <form>
-            {inputList.map((category, index) => {
+            <div className="w-full">
+              <label htmlFor="category">
+                <input
+                  type="text"
+                  name="category"
+                  id="category"
+                  className="mt-5 w-full border border-gray-800 rounded-lg"
+                  placeholder="Enter name of category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+              </label>
+            </div>
+            {/* {inputList.map((category, index) => {
               return (
                 <div key={index}>
                   <div className="mt-5 border border-gray-800 rounded-lg overflow-hidden">
@@ -111,11 +146,11 @@ function NewVideoCategory({ handleClose }) {
                   )}
                 </div>
               );
-            })}
+            })} */}
             <button
               type="submit"
               className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
-              onClick={handleClose}
+              onClick={handleSubmit}
             >
               Save changes
             </button>
