@@ -11,7 +11,7 @@ Curly Sister Beauty Platform, a React PWA Project.
 
 <h1>Documentation</h1>
 
-A documentation for the frontend development of Citrone LXP.
+A documentation for the frontend development of Curly Sisters.
 
 <h3>Dependencies</h3>
 
