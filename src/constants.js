@@ -6,8 +6,10 @@ const AuthRoutes = {
   dashboard: "/dashboard",
   learn: "/learn",
   addStylist: "/add-stylist",
-  addArticle: "/add-article",
-  addVideo: "/add-video",
+  addArticle: "/create-article",
+  addVideo: "/create-video",
+  editVideoById: "/edit-video/:token",
+  editArticleById: "/edit-article/:token",
   bookings: "/bookings",
   videos: "/learn/videos",
   communities: "/learn/communities",
@@ -16,6 +18,12 @@ const AuthRoutes = {
   articleContent: "/learn/article/:token",
   communityContent: "/learn/communities/:token",
   termsAndPrivacy: "/terms-and-privacy",
+  users: "/dashboard/users/stylists",
+  admin: "/dashboard/users/admin",
+  individual: "/dashboard/users/individual",
+  stylist: "/dashboard/users/stylist",
+  content: "/dashboard/content",
+  data: "/dashboard/data",
 };
 
 const NonAuthRoutes = {

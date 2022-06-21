@@ -13,23 +13,26 @@ import brandLogo from "../../assets/images/brand-logo.svg";
 import allynAvatar from "../../assets/images/allyn.svg";
 import dropdownIcon from "../../assets/images/dropdown.svg";
 
-function SideBarComponent({ active, isLoggedIn }) {
+function SideBarComponent({ active }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [open, setOpen] = useState(false);
 
+  const [open, setOpen] = useState(false);
+  const details = localStorage.getItem("user");
+  const [isLoggedIn, setIsLoggedIn] = useState(details);
   const onLogout = () => {
     navigate(NonAuthRoutes.login);
     dispatch(logoutUser());
     authHandler.deleteUser();
   };
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   useEffect(() => {
     const ac = new AbortController();
     if (isLoggedIn) {
       const userDetails = authHandler.getUser("users");
+      console.log(userDetails, "detailss");
       const userFirstName = userDetails.active.firstName;
       const userLastName = userDetails.active.lastName;
       setFirstName(userFirstName);
@@ -64,7 +67,7 @@ function SideBarComponent({ active, isLoggedIn }) {
                 Stylists
               </p>
             </Link>
-            <Link to="/learn-more">
+            <Link to={AuthRoutes.learn}>
               <p
                 className={
                   active === "learn" ? " mb-4 text-purple-100" : " mb-4 "

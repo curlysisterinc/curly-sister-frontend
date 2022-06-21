@@ -6,7 +6,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable camelcase */
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SideBarComponent from "../sidebar/sidebar";
 import authHandler from "../../authHandler";
@@ -24,19 +24,33 @@ import continueLearning from "../../assets/images/continue-learning.png";
 import arrowIcon from "../../assets/images/arrow.svg";
 
 function UserHome() {
-  const userDetails = authHandler.getUser("users");
-  const userFirstName = userDetails.active.firstName;
+  const details = localStorage.getItem("user");
+  const [isLoggedIn, setIsLoggedIn] = useState(details);
+
+  const [firstName, setFirstName] = useState("");
+  useEffect(() => {
+    const ac = new AbortController();
+    if (isLoggedIn) {
+      const userDetails = authHandler.getUser("users");
+      const userFirstName = userDetails.active.firstName;
+      setFirstName(userFirstName);
+    }
+
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border-r border-gray-50">
-      <SideBarComponent active="home" isLoggedIn />
+    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
+      <SideBarComponent active="home" />
       <div className="ml-80 bg-white px-10 py-14 w-full">
         <div className="flex flex-col w-full lg:flex-row justify-between items-center">
           <div className="flex justify-start items-center ">
             <img className="mr-3" src={profileDp} alt="profile pix" />
             <div className="">
               <p className="font-semibold text-gray-400 text-lg">
-                Hello {userFirstName} 👋
+                Hello {firstName} 👋
               </p>
               <p className="text-sm text-gray-200">
                 We hope your day is coming along great

@@ -1,9 +1,10 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-return-assign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthRoutes } from "../../../../../constants";
@@ -12,6 +13,7 @@ import whiteDropdownIcon from "../../../../../assets/images/white-dropdown.svg";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import StylistRow from "./stylistRow";
 import { users } from "../data";
+import admin from "../../../../../api/admin";
 
 function StylistTab() {
   const [toggleAddStylist, setToggleAddStylist] = useState(false);
@@ -27,6 +29,16 @@ function StylistTab() {
     setMasterChecked(e.target.checked);
     setList(tempList);
   };
+  useEffect(() => {
+    admin
+      .GetAllStylists()
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []);
   return (
     <div>
       <div className="flex items-end justify-between">

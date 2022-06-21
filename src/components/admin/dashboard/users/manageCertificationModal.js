@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
@@ -145,11 +146,20 @@ function ManageCertificationModal({ handleClose }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const list = [...inputList];
+    let newName;
+    console.log(list);
+    const listed = list.map((item) => {
+      newName = item.name;
+    });
 
-    console.log(name, "data");
-    admin.CreateCertification(list[name]).then((response) => {
+    console.log(newName);
+    admin.CreateCertification(newName).then((response) => {
       if (response.status === 200) {
         const res = response.data;
+        const newstate = inputList.map((item) => {
+          return { ...item, name: "" };
+        });
+        setInputList(newstate);
         console.log(res);
       }
     });
