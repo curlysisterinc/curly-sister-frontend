@@ -14,64 +14,56 @@ function LearnComponent({ activeTab }) {
   const navigate = useNavigate();
 
   return (
-    <div>
-      <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-        <SideBarComponent active="learn" isLoggedIn />
-
-        <div className="ml-80 bg-white px-10 pt-14 w-full">
-          <div>
-            <div className="flex mx-auto items-center space-x-6 justify-center">
-              <div
-                onClick={() => navigate(AuthRoutes.learn)}
-                className={clsx(
-                  activeTab === "all"
-                    ? "border-b-4 border-purple-100 text-purple-100"
-                    : "text-gray-300",
-                  "pb-1  text-sm cursor-pointer"
-                )}
-              >
-                All
-              </div>
-              <div
-                onClick={() => navigate(AuthRoutes.videos)}
-                className={clsx(
-                  activeTab === "videos"
-                    ? "border-b-4 border-purple-100 text-purple-100"
-                    : "text-gray-300",
-                  "pb-1  text-sm cursor-pointer"
-                )}
-              >
-                Videos
-              </div>
-              <div
-                onClick={() => navigate(AuthRoutes.articles)}
-                className={clsx(
-                  activeTab === "articles"
-                    ? "border-b-4 border-purple-100 text-purple-100"
-                    : "text-gray-300",
-                  "pb-1  text-sm cursor-pointer"
-                )}
-              >
-                Articles
-              </div>
-              <div
-                onClick={() => navigate(AuthRoutes.communities)}
-                className={clsx(
-                  activeTab === "communities"
-                    ? "border-b-4 border-purple-100 text-purple-100"
-                    : "text-gray-300",
-                  "pb-1  text-sm cursor-pointer"
-                )}
-              >
-                Community
-              </div>
+    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
+      <SideBarComponent active="learn" />
+      <div className="ml-80 bg-white px-10 pt-14 w-full">
+        <div>
+          <div className="flex mx-auto items-center space-x-6 justify-center">
+            <div
+              onClick={() => navigate(AuthRoutes.learn)}
+              className="pb-1  text-sm cursor-pointer border-b-4 border-purple-100 text-purple-100"
+            >
+              All
+            </div>
+            <div
+              onClick={() => navigate(AuthRoutes.videos)}
+              className={clsx(
+                activeTab === "videos"
+                  ? "border-b-4 border-purple-100 text-purple-100"
+                  : "text-gray-300",
+                "pb-1  text-sm cursor-pointer"
+              )}
+            >
+              Videos
+            </div>
+            <div
+              onClick={() => navigate(AuthRoutes.articles)}
+              className={clsx(
+                activeTab === "articles"
+                  ? "border-b-4 border-purple-100 text-purple-100"
+                  : "text-gray-300",
+                "pb-1  text-sm cursor-pointer"
+              )}
+            >
+              Articles
+            </div>
+            <div
+              onClick={() => navigate(AuthRoutes.communities)}
+              className={clsx(
+                activeTab === "communities"
+                  ? "border-b-4 border-purple-100 text-purple-100"
+                  : "text-gray-300",
+                "pb-1  text-sm cursor-pointer"
+              )}
+            >
+              Community
             </div>
           </div>
-          <AllTab />
-          {/* {activeTab === "videos" && <VideoTab />}
+        </div>
+        <AllTab />
+        {/* {activeTab === "videos" && <VideoTab />}
           {activeTab === "articles" && <ArticleTab />}
           {activeTab === "communities" && <CommunityTab />} */}
-        </div>
       </div>
     </div>
   );

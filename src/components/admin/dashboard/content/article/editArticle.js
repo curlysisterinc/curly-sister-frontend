@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-const */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-unused-vars */
@@ -5,13 +6,14 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import admin from "../../../../../api/admin";
 import SideBarComponent from "../../../../sidebar/sidebar";
 import { AuthRoutes } from "../../../../../constants";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import uploadFile from "../../../../../assets/images/upload-file.png";
 import SlateContent from "../slateContent";
+import learn from "../../../../../api/learn";
 
 const initialValue = [
   {
@@ -48,13 +50,15 @@ const initialValue = [
   },
 ];
 
-function NewArticle() {
+function EditArticle() {
   const navigate = useNavigate();
   const inputRef = useRef();
+  const [getArticles, setGetArticles] = useState({});
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [draftBtn, setDraftBtn] = useState(false);
   const [image, setImage] = useState(null);
   const [filePreview, setFilePreview] = useState("");
+  const { token } = useParams();
   const [inputValues, setInputValues] = useState({
     title: "",
     source: "",
@@ -62,23 +66,48 @@ function NewArticle() {
     status1: "published",
     status2: "unpublished",
     content: initialValue,
+    articleId: "",
   });
   console.log(initialValue, "initial valus");
+  useEffect(() => {
+    const ac = new AbortController();
 
-  const handlePublishArticle = (e) => {
+    learn
+      .GetOneArticle(token)
+      .then((response) => {
+        console.log(response.data, "data");
+        setGetArticles(response.data.data);
+        setInputValues({
+          ...inputValues,
+          link: response.data.data.link,
+          title: response.data.data.title,
+          source: response.data.data.source,
+          articleId: response.data.data._id,
+          status: "published",
+        });
+      })
+      .catch((error) => {
+        console.log(error.message, "error");
+      });
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
+  const handleEditArticle = (e) => {
     e.preventDefault();
     let formData = new FormData();
     formData.append("title", inputValues.title);
     formData.append("file", inputValues.file);
     formData.append("source", inputValues.source);
     formData.append("status", inputValues.status1);
-    // formData.append("content", inputValues.content);
+    formData.append("articleId", inputValues.articleId);
     admin
-      .AddArticleToContent(formData)
+      .EditArticle(formData)
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
           console.log(res);
+          navigate(-1);
         }
       })
       .catch((error) => {
@@ -178,7 +207,7 @@ function NewArticle() {
 
                 <button
                   type="submit"
-                  onClick={handlePublishArticle}
+                  onClick={handleEditArticle}
                   disabled={btnDisabled}
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
                 >
@@ -273,4 +302,4 @@ function NewArticle() {
   );
 }
 
-export default NewArticle;
+export default EditArticle;

@@ -1,4 +1,3 @@
-/* eslint-disable react/button-has-type */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-else-return */
 /* eslint-disable consistent-return */
@@ -38,7 +37,6 @@ import GalleryTab from "./gallery";
 import cancel from "../../../../assets/images/cancel.svg";
 import MultiselectComponent from "./multiSelectComponent";
 import admin from "../../../../api/admin";
-import ExtraLinks from "./extraLinks";
 
 function AddStylist() {
   const [openDetails, setOpenDetails] = useState(false);
@@ -64,8 +62,6 @@ function AddStylist() {
     phoneNumber: "",
     phoneCode: "US +1",
   });
-  const [getCertificates, setGetCertificates] = useState([]);
-  const [getTags, setGetTags] = useState([]);
   const [stylistValues, setStylistValues] = useState({
     stylist_name: "",
     email: "",
@@ -88,21 +84,6 @@ function AddStylist() {
     photo: "",
     description: "",
   });
-  const [selectedFile, setSelectedFile] = useState();
-  const template = { id: Math.random() };
-  const [count, setCount] = React.useState([template]);
-  const handleSelectChange = (update) => {
-    setStylistValues((prev) => ({ ...prev, [update.name]: update.value }));
-  };
-  const add = () => {
-    setCount((prev) => [...prev, template]);
-  };
-
-  const deleteR = (id, selected) => {
-    setCount((prev) => prev.filter((item) => item.id !== id));
-    handleSelectChange({ name: selected, value: "" });
-  };
-
   // location and contact change
   const handleDropdownChange = (e) => {
     setLocationAndContact({
@@ -112,81 +93,17 @@ function AddStylist() {
     console.log(phoneNumberCountries);
   };
 
-  useEffect(() => {
-    const ac = new AbortController();
-
-    admin
-      .GetCertification()
-      .then((response) => {
-        console.log(response.data, "certification");
-        setGetCertificates(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ac = new AbortController();
-
-    admin
-      .GetTags()
-      .then((response) => {
-        console.log(response.data, "tags");
-        setGetTags(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-  useEffect(() => {
-    const ac = new AbortController();
-    admin
-      .GetServices()
-      .then((response) => {
-        console.log(response.data, "services");
-        setServices(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
   const handleChange = (e) => {
     setStylistValues({ ...stylistValues, [e.target.name]: e.target.value });
   };
-
   // handle file change
   const handleFileChange = (e) => {
     setCoverPhoto(URL.createObjectURL(e.target.files[0]));
-    setSelectedFile(e.target.files[0]);
     // const file = e.target.files[0];
     // setStylistValues((stylistValues.photo = file));
     console.log(URL.createObjectURL(e.target.files[0]), "the actual file");
     // console.log(stylistValues.photo, "photo");
     setIsFileSelected(true);
-  };
-
-  const handlePhotoSubmission = () => {
-    const formData = new FormData();
-    formData.append("File", selectedFile);
-    admin
-      .UploadPhoto(formData)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
   };
 
   // handle input change
@@ -259,7 +176,7 @@ function AddStylist() {
     if (openServiceModal) {
       document.body.style.overflow = "hidden";
     }
-    // setServices(getService);
+    setServices(getService);
     return function cleanup() {
       ac.abort();
     };
@@ -351,16 +268,11 @@ function AddStylist() {
                 <div className="mt-5">
                   <div className="flex justify-between items-center w-full ">
                     {isFileSelected ? (
-                      <div>
-                        <img
-                          className="w-20 h-20 rounded-full object-cover"
-                          src={coverPhoto}
-                          alt=""
-                        />
-                        <button type="button" onClick={handlePhotoSubmission}>
-                          upload file
-                        </button>
-                      </div>
+                      <img
+                        className="w-20 h-20 rounded-full object-cover"
+                        src={coverPhoto}
+                        alt=""
+                      />
                     ) : (
                       <img src={gradientAvatar} alt="" />
                     )}
@@ -369,11 +281,11 @@ function AddStylist() {
                       <input
                         className="cursor-pointer opacity-0 border-2 inline-block  w-full absolute right-0 top-1/2 transform -translate-y-1/2"
                         type="file"
-                        name="file"
+                        name="photo"
+                        value={stylistValues.photo}
                         placeholder="upload photo"
                         onChange={handleFileChange}
                       />
-
                       <p className="text-sm text-purple-100">Upload photo</p>
                     </div>
                   </div>
@@ -483,30 +395,67 @@ function AddStylist() {
                   </div>
                   <div className="mt-5">
                     Links
-                    <div>
-                      <div>
-                        {count.map((val, i) => (
-                          <>
-                            <ExtraLinks
-                              key={val.id}
-                              onChange={handleSelectChange}
-                              globalInput={stylistValues}
-                              val={val}
-                              onDelete={deleteR}
-                              count={count}
-                            />
-                            {count.length - 1 === i && count.length < 3 && (
-                              <div
-                                onClick={add}
-                                className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer"
-                              >
-                                Add more links
+                    {inputList.map((x, i) => {
+                      return (
+                        <div>
+                          <div className=" relative">
+                            <label
+                              className="block text-black text-sm font-bold"
+                              htmlFor="link"
+                            >
+                              <div className="relative flex h-10 mt-5 border border-gray-800 focus-within:border-indigo-500 rounded-lg overflow-hidden">
+                                <div className="border-r absolute border-gray-800 h-full top-0 inset-y-0 left-0 flex items-center">
+                                  <select
+                                    id="link"
+                                    name="link"
+                                    className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded"
+                                  >
+                                    <option value={stylistValues.website}>
+                                      Website
+                                    </option>
+                                    <option value={stylistValues.instagram}>
+                                      Instagram
+                                    </option>
+                                    <option value={stylistValues.facebook}>
+                                      Facebook
+                                    </option>
+                                  </select>
+                                </div>
+                                <input
+                                  className="shadow-sm pl-36 placeholder-text-sm appearance-none border-0  w-full h-full px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                  type="text"
+                                  placeholder="Enter link here"
+                                  value={x.website}
+                                  onChange={(e) => handleInputChange(e, i)}
+                                />
+                                {inputList.length !== 1 && (
+                                  <div
+                                    onClick={handleRemoveClick}
+                                    className="absolute right-0 border-l border-gray-800 px-2 h-full cursor-pointer flex items-center justify-center"
+                                  >
+                                    <img
+                                      className=""
+                                      src={trashIcon}
+                                      alt="trash icon"
+                                    />
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </>
-                        ))}
-                      </div>
-                    </div>
+                            </label>
+                          </div>
+
+                          {inputList.length - 1 === i && inputList.length < 4 && (
+                            <div
+                              onClick={handleAddClick}
+                              className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer"
+                            >
+                              Add more links
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {/* add new input */}
                   </div>
                 </div>
               )}
@@ -540,10 +489,7 @@ function AddStylist() {
                     </div>
                   </div>
                   <div className="mt-5">
-                    <MultiselectComponent
-                      data={getCertificates}
-                      placeholder="Type to search and select certifications"
-                    />
+                    <MultiselectComponent placeholder="Type to search and select certifications" />
                   </div>
 
                   <hr className="border border-gray-600 w-full mt-8" />
@@ -560,10 +506,7 @@ function AddStylist() {
                     </div>
 
                     <div className="mt-5">
-                      <MultiselectComponent
-                        data={getTags}
-                        placeholder="Type to search and select tags"
-                      />
+                      <MultiselectComponent placeholder="Type to search and select tags" />
                     </div>
                   </div>
                 </div>
@@ -597,24 +540,24 @@ function AddStylist() {
                       Add new service
                     </div>
                   </div>
-                  {services.map((service, index) => {
+                  {serviceList.map((service, index) => {
                     return (
                       <>
                         <div className="border border-gray-800 rounded grid grid-cols-12 h-12 mt-5">
                           <div className=" col-span-5 flex  items-center border-r border-gray-800 pl-3">
                             <div className="bg-purple-100 rounded-full text-white text-sm px-3 py-1 w-auto inline-block">
-                              {service.name}
+                              Consultation
                             </div>
                           </div>
                           <div className="col-span-3 flex justify-between items-center border-r border-gray-800 px-3">
-                            <p>{service.default_price}</p>
+                            <p>35</p>
                             <p>$USD</p>
                           </div>
                           <div className="col-span-3 flex justify-between items-center border-r border-gray-800 px-3">
-                            <p>{service.duration}</p>
+                            <p>35</p>
                             <p>mins</p>
                           </div>
-                          {/* {services.length > 1 && (
+                          {serviceList.length > 1 && (
                             <div className="col-span-1 flex justify-between items-center px-6">
                               <img
                                 onClick={handleRemoveServiceClick}
@@ -623,9 +566,9 @@ function AddStylist() {
                                 alt=""
                               />
                             </div>
-                          )} */}
+                          )}
                         </div>
-                        {/* {services.length - 1 === index &&
+                        {serviceList.length - 1 === index &&
                           serviceList.length < 4 && (
                             <div
                               onClick={handleAddServiceClick}
@@ -633,7 +576,7 @@ function AddStylist() {
                             >
                               Select another service
                             </div>
-                          )} */}
+                          )}
                       </>
                     );
                   })}

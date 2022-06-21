@@ -6,19 +6,22 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import { AuthRoutes } from "../../../../../constants";
+import { useNavigate, useParams } from "react-router-dom";
 import admin from "../../../../../api/admin";
 import SideBarComponent from "../../../../sidebar/sidebar";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import NewVideoCategory from "./newVideoCategory";
+import learn from "../../../../../api/learn";
+import { AuthRoutes } from "../../../../../constants";
 
-function NewVideo() {
+function EditVideo() {
   const navigate = useNavigate();
   const [draftBtn, setDraftBtn] = useState(false);
   const [options, setOptions] = useState([]);
   // const [status, setStatus] = useState([]);
+  const { token } = useParams();
+  const [getVideos, setGetVideos] = useState({});
+
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
   // const [status, setStatus] = useState("published");
   const [videoInputs, setVideoInputs] = useState({
@@ -27,12 +30,10 @@ function NewVideo() {
     title: "",
     description: "",
     status: "",
-    source: "Super Admin",
+    source: "",
+    videoId: "",
   });
-  // const [radioStatus, setRadioStatus] = useState(2);
-  // const radioHandler = (status) => {
-  //   setRadioStatus(status);
-  // };
+
   const handleChange = (event) => {
     setVideoInputs({ ...videoInputs, [event.target.name]: event.target.value });
   };
@@ -50,6 +51,32 @@ function NewVideo() {
   };
 
   useEffect(() => {
+    const ac = new AbortController();
+
+    learn
+      .GetOneVideo(token)
+      .then((response) => {
+        console.log(response.data, "data");
+        setGetVideos(response.data.data);
+        setVideoInputs({
+          ...videoInputs,
+          link: response.data.data.link,
+          title: response.data.data.title,
+          description: response.data.data.description,
+          source: response.data.data.source,
+          videoId: response.data.data._id,
+          status: "published",
+        });
+      })
+      .catch((error) => {
+        console.log(error.message, "error");
+      });
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
+
+  useEffect(() => {
     admin.GetVideoCategory().then((result) => {
       console.log(result.data.data, "data");
       setOptions(result.data.data);
@@ -58,7 +85,7 @@ function NewVideo() {
 
   useEffect(() => {
     const ac = new AbortController();
-    document.title = "CurlySisters • Create Video";
+    document.title = "CurlySisters • Edit Video";
     const isValid =
       videoInputs.link.trim().length ||
       videoInputs.category.trim().length ||
@@ -83,11 +110,12 @@ function NewVideo() {
 
     e.preventDefault();
     admin
-      .AddVideoToContent(videoInputs)
+      .EditVideo(videoInputs)
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
           console.log(res);
+          navigate(AuthRoutes.content);
         }
       })
       .catch((error) => {
@@ -293,7 +321,7 @@ function NewVideo() {
                     placeholder="Enter a description for this service"
                     name="description"
                     id="description"
-                    values={videoInputs.description}
+                    value={videoInputs.description}
                     onChange={handleChange}
                     rows="3"
                   />
@@ -311,4 +339,4 @@ function NewVideo() {
   );
 }
 
-export default NewVideo;
+export default EditVideo;

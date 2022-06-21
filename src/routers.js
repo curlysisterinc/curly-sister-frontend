@@ -29,6 +29,13 @@ import CommunityTab from "./components/isLoggedInLearn/communityTab";
 import LearnMoreArticleTab from "./components/learn/articleTab";
 import LearnMoreTabComponent from "./components/learn/videoTab";
 import LearnMoreCommunityTab from "./components/learn/communityTab";
+import UsersTab from "./components/admin/dashboard/users/users";
+import AdminTab from "./components/admin/dashboard/users/admin/admin";
+import IndividualTab from "./components/admin/dashboard/users/individuals/individuals";
+import ContentTab from "./components/admin/dashboard/content/contentTable";
+import DataTab from "./components/admin/dashboard/data/data";
+import EditVideo from "./components/admin/dashboard/content/video/updateVideo";
+import EditArticle from "./components/admin/dashboard/content/article/editArticle";
 
 function Routers() {
   return (
@@ -117,6 +124,13 @@ function Routers() {
             path={AuthRoutes.communityContent}
             element={<CommunityContent />}
           />
+          <Route path={AuthRoutes.users} element={<UsersTab />} />
+          <Route path={AuthRoutes.admin} element={<AdminTab />} />
+          <Route path={AuthRoutes.individual} element={<IndividualTab />} />
+          <Route path={AuthRoutes.content} element={<ContentTab />} />
+          <Route path={AuthRoutes.data} element={<DataTab />} />
+          <Route path={AuthRoutes.editVideoById} element={<EditVideo />} />
+          <Route path={AuthRoutes.editArticleById} element={<EditArticle />} />
         </Routes>
       </Suspense>
     </div>

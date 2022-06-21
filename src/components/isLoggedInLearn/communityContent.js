@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -24,6 +25,14 @@ import edit from "../../assets/images/edit.svg";
 import pin from "../../assets/images/pin.svg";
 import report from "../../assets/images/report.svg";
 import backArrow from "../../assets/images/back-arrow.svg";
+import { BsPinAngle, BsPinAngleFill } from "react-icons/bs";
+import {
+  AiTwotoneDislike,
+  AiOutlineDislike,
+  AiTwotoneLike,
+  AiOutlineLike,
+} from "react-icons/ai";
+import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 
 function CommunityContent() {
   const navigate = useNavigate();
@@ -33,26 +42,125 @@ function CommunityContent() {
   const [replyComment, setReplyComment] = useState(false);
   const [getQuestion, setGetQuestion] = useState({});
   const [disableBtn, setDisableBtn] = useState(true);
-  const [comment, setComment] = useState("");
+  const [pinQuestion, setPinQuestion] = useState(true);
+  const [commentValue, setCommentValue] = useState("");
+  const [isLiked, setIsLiked] = useState(false);
+  const [isDisLiked, setIsDisLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [replyValue, setReplyValue] = useState("");
+  const [getComments, setGetComments] = useState([]);
+
   useEffect(async () => {
+    const ac = new AbortController();
+
     learn
       .GetOneQuestion(token)
       .then((response) => {
         setGetQuestion(response.data.data);
+        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
       });
+
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const ac = new AbortController();
+
+    learn
+      .GetCommentForQuestion(token)
+      .then((response) => {
+        console.log(response.data, "comment");
+        setGetComments(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.message, "comment");
+      });
+
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   const handleSubmitComment = (e) => {
     e.preventDefault();
 
     learn
-      .CommentOnQuestion(token, comment)
+      .CommentOnQuestion(token, commentValue)
       .then((response) => {
         console.log(response);
-        setComment("");
+        setCommentValue("");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleSubmitReply = (e) => {
+    e.preventDefault();
+
+    learn
+      .ReplyCommentOnArticle(token, replyValue)
+      .then((response) => {
+        console.log(response);
+        setReplyValue("");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handlePinQuestion = () => {
+    learn
+      .PinQuestion(token)
+      .then((response) => {
+        console.log(response);
+        setPinQuestion(!pinQuestion);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const handleUnPinQuestion = () => {
+    learn
+      .UnPinQuestion(token)
+      .then((response) => {
+        console.log(response);
+        setPinQuestion(!pinQuestion);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleArticleReactionLike = () => {
+    setIsLiked(true);
+    if (isLiked) {
+      setIsLiked(false);
+    }
+
+    learn
+      .ReactToQuestion(token, "like")
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleArticleReactionDisLike = () => {
+    setIsDisLiked(true);
+    if (isDisLiked) {
+      setIsDisLiked(false);
+    }
+
+    learn
+      .ReactToQuestion(token, "unlike")
+      .then((response) => {
+        console.log(response);
       })
       .catch((error) => {
         console.log(error);
@@ -60,7 +168,7 @@ function CommunityContent() {
   };
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="learn" isLoggedIn />
+      <SideBarComponent active="learn" />
       <div className="ml-80 bg-white px-10 pt-14 w-full">
         <div
           onClick={() => navigate(AuthRoutes.communities)}
@@ -81,24 +189,44 @@ function CommunityContent() {
                 <img src={bgBookmark} alt="" />
               </div>
             </div>
-            <p className="text-sm text-gray-200 flex items-center">
-              {getQuestion?.created_by?.firstName}{" "}
-              {getQuestion?.created_by?.lastName} ·{" "}
-              {getQuestion?.createdAt
-                ?.split("T")[0]
-                .split("-")
-                .reverse()
-                .join(" ")}
-              <span
-                className="ml-5 relative"
-                onClick={() => setQuestionDropdown(!questionDropdown)}
-              >
-                <img className="cursor-pointer" src={ellipses} alt="" />
+            <div className="flex items-center">
+              <p className="text-sm text-gray-200 flex items-center">
+                {getQuestion?.created_by?.firstName}{" "}
+                {getQuestion?.created_by?.lastName} ·{" "}
+                {getQuestion?.createdAt
+                  ?.split("T")[0]
+                  .split("-")
+                  .reverse()
+                  .join(" ")}
+              </p>
+              <div className="ml-5 relative">
+                <span
+                  className=""
+                  onClick={() => setQuestionDropdown(!questionDropdown)}
+                >
+                  <img className="cursor-pointer" src={ellipses} alt="" />
+                </span>
+
                 {questionDropdown ? (
                   <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
                     <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                      <img src={pin} alt="pin" className="mr-3" />
-                      <p>Pin</p>
+                      {pinQuestion ? (
+                        <div
+                          className="flex items-center space-x-3"
+                          onClick={handlePinQuestion}
+                        >
+                          <BsPinAngle />
+                          <p className="">Pin</p>
+                        </div>
+                      ) : (
+                        <div
+                          className="flex items-center space-x-3"
+                          onClick={handleUnPinQuestion}
+                        >
+                          <BsPinAngleFill />
+                          <p className="">Unpin</p>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm my-3">
                       <img src={edit} alt="pin" className="mr-3" />
@@ -110,13 +238,11 @@ function CommunityContent() {
                     </div>
                   </div>
                 ) : null}
-              </span>
-            </p>
+              </div>
+            </div>
+
             <p className="text-gray-400 text-base leading-6 mt-5">
-              This is a sample question asked on the platform. It sounded an
-              excellent plan, no doubt, and very neatly and simply arranged; the
-              only difficulty was, that she had not the smallest idea how to set
-              about it.
+              {getQuestion.question}
             </p>
           </div>
 
@@ -128,14 +254,14 @@ function CommunityContent() {
                 <div className="relative w-full">
                   <input
                     type="text"
-                    value={comment}
+                    value={commentValue}
                     name="comment"
                     id="comment"
-                    onChange={(e) => setComment(e.target.value)}
+                    onChange={(e) => setCommentValue(e.target.value)}
                     placeholder="Add your comment"
                     className="ml-5 w-full border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-70 text-gray-400 text-sm"
                   />
-                  {comment.length ? (
+                  {commentValue.length ? (
                     <button
                       type="button"
                       onClick={handleSubmitComment}
@@ -146,90 +272,123 @@ function CommunityContent() {
                   ) : null}
                 </div>
               </div>
-              <div className="mt-8">
-                <div className="flex items-start">
-                  <img className="h-10 w-10 mt-2" src={gradientAvatar} alt="" />
-                  <div className="ml-5 text-sm text-gray-400">
-                    <div className="flex items-center">
-                      <p className="mr-3">Serena Williams</p>
-                      <span className="text-gray-200 text-xs ">3 mins ago</span>
-                    </div>
-                    <p className="mt-3 leading-6">
-                      However, it was over at last, and they sat down again in a
-                      ring, and begged the mouse to tell them something more.
-                    </p>
-                    <div className="flex space-x-4 mt-4 items-center">
-                      <div className="flex">
-                        <img className="mr-2" src={like} alt="" />
-                        120
-                      </div>
-                      <img className="cursor-pointer" src={dislike} alt="" />
-                      <img
-                        className="cursor-pointer"
-                        src={reply}
-                        alt=""
-                        onClick={() => setReplyComment(!replyComment)}
-                      />
-                      <span
-                        className="relative"
-                        onClick={() => setReportDropdown(!reportDropdown)}
-                      >
-                        <img className="cursor-pointer" src={ellipses} alt="" />
-                        {reportDropdown ? (
-                          <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                            <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                              <img src={report} alt="report" className="mr-3" />
-                              Report
-                            </div>
+              {getQuestion.comments &&
+                getQuestion.comments?.map((element) => {
+                  return (
+                    <div className="mt-8">
+                      <div className="flex items-start">
+                        <img
+                          className="h-10 w-10 mt-2"
+                          src={gradientAvatar}
+                          alt=""
+                        />
+                        <div className="ml-5 text-sm text-gray-400">
+                          <div className="flex items-center">
+                            <p className="mr-3">Serena Williams</p>
+                            <span className="text-gray-200 text-xs ">
+                              3 mins ago
+                            </span>
                           </div>
-                        ) : null}
-                      </span>
-                      <span className="text-purple-100 cursor-pointer">
-                        5 replies
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-10">
-                <div className="flex items-start">
-                  <img className="h-10 w-10 mt-2" src={gradientAvatar} alt="" />
-                  <div className="ml-5 text-sm text-gray-400">
-                    <div className="flex items-center">
-                      <p className="mr-3">Nike Coates</p>
-                      <span className="text-gray-200 text-xs">3 days ago</span>
-                    </div>
-                    <p className="leading-6 mt-3">
-                      The next thing was to eat the comfits: this caused some
-                      noise and confusion, as the large birds complained that
-                      they could not taste theirs, and the small ones choked and
-                      had to be patted on the back.
-                    </p>
-                    <div className="flex space-x-3 items-center mt-4">
-                      <div className="flex items-center">
-                        <img className="mr-2" src={like} alt="" />
-                        120
-                      </div>
-                      <img className="" src={dislike} alt="" />
-                      <img className="" src={reply} alt="" />
-                      <span
-                        className="relative"
-                        onClick={() => setReportDropdown(!reportDropdown)}
-                      >
-                        <img className="cursor-pointer" src={ellipses} alt="" />
-                        {reportDropdown ? (
-                          <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                            <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                              <img src={report} alt="report" className="mr-3" />
-                              Report
+                          <p className="mt-3 leading-6">{element.comment}</p>
+                          <div className="flex space-x-4 mt-4 items-center">
+                            <div className="flex">
+                              <span
+                                className="mr-2 items-center"
+                                onClick={() => setIsLiked(!isLiked)}
+                              >
+                                {!isLiked ? (
+                                  <AiOutlineLike color="#8E8695" />
+                                ) : (
+                                  <AiTwotoneLike color="#8E8695" />
+                                )}
+                              </span>
+                              <p>{element.likes.length}</p>
                             </div>
+                            <div className="flex items-center">
+                              <span
+                                className="mr-2"
+                                onClick={() => setIsDisLiked(!isDisLiked)}
+                              >
+                                {!isDisLiked ? (
+                                  <AiOutlineDislike color="#8E8695" />
+                                ) : (
+                                  <AiTwotoneDislike color="#8E8695" />
+                                )}
+                              </span>
+
+                              <p>{element.unlikes.length}</p>
+                            </div>
+                            <img
+                              className="cursor-pointer"
+                              src={reply}
+                              alt=""
+                              onClick={() => setReplyComment(!replyComment)}
+                            />
+                            <span
+                              className="relative"
+                              onClick={() => setReportDropdown(!reportDropdown)}
+                            >
+                              <img
+                                className="cursor-pointer"
+                                src={ellipses}
+                                alt=""
+                              />
+                              {reportDropdown ? (
+                                <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
+                                  <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
+                                    <img
+                                      src={report}
+                                      alt="report"
+                                      className="mr-3"
+                                    />
+                                    Report
+                                  </div>
+                                </div>
+                              ) : null}
+                            </span>
+                            <span
+                              onClick={() => setReplyComment(true)}
+                              className="text-purple-100 cursor-pointer"
+                            >
+                              {element?.replies?.length} replies
+                            </span>
                           </div>
-                        ) : null}
-                      </span>
+                          {replyComment ? (
+                            <div className="m-6 flex items-center">
+                              <img
+                                src={gradientAvatar}
+                                alt=""
+                                className="h-10 w-10"
+                              />
+                              <div className="relative w-full">
+                                <input
+                                  type="text"
+                                  value={replyValue}
+                                  name="comment"
+                                  id="comment"
+                                  onChange={(e) =>
+                                    setReplyValue(e.target.value)
+                                  }
+                                  placeholder="Reply comment"
+                                  className="ml-5 w-300 border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
+                                />
+                                {replyValue.length ? (
+                                  <button
+                                    type="button"
+                                    onClick={handleSubmitReply}
+                                    className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
+                                  >
+                                    post
+                                  </button>
+                                ) : null}
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
+                  );
+                })}
             </div>
           </div>
 

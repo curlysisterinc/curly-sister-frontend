@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
@@ -142,9 +143,18 @@ function ManageTagModal({ handleClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    admin.CreateCertification(inputList).then((response) => {
+    const list = [...inputList];
+    let newName;
+    const listed = list.map((item) => {
+      newName = item.name;
+    });
+    admin.CreateTags(newName).then((response) => {
       if (response.status === 200) {
         const res = response.data;
+        const newstate = inputList.map((item) => {
+          return { ...item, name: "" };
+        });
+        setInputList(newstate);
         console.log(res);
       }
     });
