@@ -57,7 +57,7 @@ function NewArticle() {
   const [filePreview, setFilePreview] = useState("");
   const [inputValues, setInputValues] = useState({
     title: "",
-    source: "",
+    source: "curly sister",
     file: null,
     status1: "published",
     status2: "unpublished",

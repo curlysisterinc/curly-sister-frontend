@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-shadow */
 /* eslint-disable import/order */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -8,35 +9,51 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from "react";
 import AdminRow from "./adminRow";
-import { adminData } from "../data";
+import clsx from "clsx";
 import InviteAdminModal from "./inviteAdminModal";
 import SideBarComponent from "../../../../sidebar/sidebar";
 import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
+import trashIcon from "../../../../../assets/images/trash.svg";
 import admin from "../../../../../api/admin";
+import dropdownIcon from "../../../../../assets/images/dropdown.svg";
+import DeleteContentModal from "./deleteContentModal";
 
 function AdminTab({ active }) {
   const navigate = useNavigate();
   const [getAdmin, setGetAdmin] = useState([]);
-  const [masterChecked, setMasterChecked] = useState(false);
   const [openInviteAdminModal, setOpenInviteAdminModal] = useState(false);
+  const [callToAction, setCallToAction] = useState(false);
+  const [selectedId, setSelectedId] = useState([]);
+  const [toggleActions, setToggleActions] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+
   const onMasterCheck = (e) => {
-    const tempList = adminData;
-    tempList.map((admin) => (admin.selected = e.target.checked));
-    setMasterChecked(e.target.checked);
-    // setStylistsList(tempList);
+    if (e.target.checked) {
+      setCallToAction(true);
+      setSelectedId(getAdmin.map((admin) => admin._id));
+    } else {
+      setCallToAction(false);
+      setSelectedId([]);
+    }
   };
   useEffect(() => {
     admin
       .GetAllAdmin()
       .then((response) => {
         console.log(response.data);
-        setGetAdmin(response.data.data);
+        setGetAdmin(response.data.data.filter((admin) => !admin.is_deleted));
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+  const openDeleteModal = () => {
+    setDeleteModal(true);
+  };
+  const closeDeleteModal = () => {
+    setDeleteModal(false);
+  };
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" />
@@ -116,19 +133,47 @@ function AdminTab({ active }) {
             <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
               Admins
               <span className="text-gray-300 ml-2 text-sm">
-                {adminData.length}
+                {getAdmin.length}
               </span>
             </div>
-            <div className="">
-              {/* filters */}
-              <button
-                type="button"
-                onClick={() => setOpenInviteAdminModal(true)}
-                className="bg-purple-100 text-white text-sm py-2 px-4 rounded-full "
+            {callToAction ? (
+              <div
+                onClick={() => setToggleActions(!toggleActions)}
+                className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
               >
-                Invite admin
-              </button>
-            </div>
+                Actions
+                <img
+                  className={clsx(
+                    toggleActions && "transform rotate-180",
+                    "ml-6"
+                  )}
+                  src={dropdownIcon}
+                  alt=""
+                />
+                {toggleActions && (
+                  <div className="absolute bg-white rounded-xl top-10 shadow w-full right-0">
+                    <div
+                      onClick={openDeleteModal}
+                      className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
+                    >
+                      <img className="mr-2" src={trashIcon} alt="" />
+                      Delete
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="">
+                {/* filters */}
+                <button
+                  type="button"
+                  onClick={() => setOpenInviteAdminModal(true)}
+                  className="bg-purple-100 text-white text-sm py-2 px-4 rounded-full "
+                >
+                  Invite admin
+                </button>
+              </div>
+            )}
           </div>
 
           {/* table */}
@@ -143,9 +188,8 @@ function AdminTab({ active }) {
                           <input
                             type="checkbox"
                             className="ml-3"
-                            checked={masterChecked}
                             id="mastercheck"
-                            onChange={(e) => onMasterCheck(e)}
+                            onChange={onMasterCheck}
                           />
                         </th>
                         <th
@@ -179,7 +223,13 @@ function AdminTab({ active }) {
                       </tr>
                     </thead>
                     <tbody className="">
-                      <AdminRow getAdmin={getAdmin} setGetAdmin={setGetAdmin} />
+                      <AdminRow
+                        setCallToAction={setCallToAction}
+                        selectedId={selectedId}
+                        setSelectedId={setSelectedId}
+                        getAdmin={getAdmin}
+                        setGetAdmin={setGetAdmin}
+                      />
                     </tbody>
                   </table>
                   <div className="my-10" />
@@ -192,6 +242,7 @@ function AdminTab({ active }) {
               handleClose={() => setOpenInviteAdminModal(false)}
             />
           )}
+          {deleteModal && <DeleteContentModal handleClose={closeDeleteModal} />}
         </div>
       </div>
     </div>

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-shadow */
 /* eslint-disable import/no-cycle */
@@ -24,7 +25,13 @@ import allynAvatar from "../../../../../assets/images/allyn.svg";
 import Moment from "moment";
 import admin from "../../../../../api/admin";
 
-function AdminRow({ getAdmin, setGetAdmin, query }) {
+function AdminRow({
+  getAdmin,
+  setGetAdmin,
+  setCallToAction,
+  selectedId,
+  setSelectedId,
+}) {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [adminValue, setAdminValue] = useState({
     status: false,
@@ -37,44 +44,43 @@ function AdminRow({ getAdmin, setGetAdmin, query }) {
       .then((response) => {
         console.log(response.data);
         setGetAdmin(response.data.data);
-        setAdminValue({ ...admin, adminId: response.data.data._id });
+        let getAdminId = response.data.data.map((admin) => admin._id);
+        setAdminValue({ ...adminValue, adminId: getAdminId });
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
   // const [openDropdown, setOpenDropdown] = useState(false);
-  const onItemCheck = (e, data) => {
-    const { checked } = e.target;
-    setGetAdmin(
-      getAdmin.map((user) => {
-        if (user.id === data.id) {
-          user.selected = checked;
-        }
-        return user;
-      })
-    );
+  const handleCheck = (e, id) => {
+    if (e.target.checked) {
+      setSelectedId((prev) => [...prev, id]);
+      setCallToAction(true);
+    } else {
+      setSelectedId((prev) => prev.filter((item) => item !== id));
+      setCallToAction(false);
+    }
   };
 
   const toggleDropdownStyle = (index) => {
     const mylist = [...getAdmin];
-    if (mylist[index].id === activeDropdown) {
+    if (mylist[index]._id === activeDropdown) {
       return "block";
     } else return "hidden";
   };
 
   const handleDropdownOpen = (index) => {
     const newList = [...getAdmin];
-    setActiveDropdown(newList[index].id);
+    setActiveDropdown(newList[index]._id);
 
-    if (newList[index].id === activeDropdown) {
+    if (newList[index]._id === activeDropdown) {
       setActiveDropdown(null);
     }
   };
 
-  const handleDeactivateAdmin = () => {
+  const handleDeactivateAdmin = (id) => {
     admin
-      .SuspendOrActivateAdmin()
+      .SuspendOrActivateAdmin({ adminId: id, status: "false" })
       .then((response) => {
         console.log(response.data);
       })
@@ -82,28 +88,40 @@ function AdminRow({ getAdmin, setGetAdmin, query }) {
         console.log(error);
       });
   };
-  const handleActivateAdmin = () => {
+  const handleActivateAdmin = (id) => {
     admin
-      .SuspendOrActivateAdmin()
+      .SuspendOrActivateAdmin({ adminId: id, status: "true" })
       .then((response) => {
         console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
+      });
+  };
+  const handleDeleteAdmin = (id) => {
+    // const name = e.target.getAttribute("name");
+    admin
+      .DeleteAdmin({ userId: id })
+      .then((response) => {
+        console.log(response.data, "delete admin");
+        setGetAdmin(getAdmin.filter((admin) => admin._id !== id));
+      })
+      .catch((error) => {
+        console.log(error, "error delete admin");
       });
   };
   return (
     <>
       {getAdmin.map((admin, index) => {
         return (
-          <tr key={admin.id} className="bg-white border-b border-gray-600">
+          <tr key={admin._id} className="bg-white border-b border-gray-600">
             <th scope="row">
               <input
                 type="checkbox"
-                checked={admin.selected}
                 className="ml-3"
-                id={admin.id}
-                onChange={(e) => onItemCheck(e, admin)}
+                id={admin._id}
+                checked={selectedId.includes(admin._id)}
+                onChange={(e) => handleCheck(e, admin._id)}
               />
             </th>
             <td
@@ -120,7 +138,7 @@ function AdminRow({ getAdmin, setGetAdmin, query }) {
               </div>
             </td>
             <td className="text-left text-sm text-gray-400 capitalize  py-4 whitespace-nowrap">
-              Super Admin
+              {admin.role}
             </td>
             <td className="text-sm text-gray-400 capitalize  py-4 whitespace-nowrap">
               <div
@@ -135,7 +153,7 @@ function AdminRow({ getAdmin, setGetAdmin, query }) {
               </div>
             </td>
             <td className="text-left text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {admin.status === "active" ? (
+              {admin.active === true ? (
                 <img src={greenIndicator} alt="" />
               ) : (
                 <img src={grayIndicator} alt="" />
@@ -158,13 +176,16 @@ function AdminRow({ getAdmin, setGetAdmin, query }) {
                 {admin.active === true ? (
                   <>
                     <div
-                      onClick={handleDeactivateAdmin}
+                      onClick={() => handleDeactivateAdmin(admin._id)}
                       className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
                     >
                       <img className="mr-3" src={activateIcon} alt="key icon" />
                       Deactivate
                     </div>
-                    <div className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500">
+                    <div
+                      onClick={() => handleDeleteAdmin(admin._id)}
+                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
+                    >
                       <img className="mr-3" src={trashIcon} alt="key icon" />
                       Delete
                     </div>
@@ -172,7 +193,7 @@ function AdminRow({ getAdmin, setGetAdmin, query }) {
                 ) : (
                   <>
                     <div
-                      onClick={handleActivateAdmin}
+                      onClick={() => handleActivateAdmin(admin._id)}
                       className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2"
                     >
                       <img className="mr-3" src={activateIcon} alt="key icon" />

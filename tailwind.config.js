@@ -16,10 +16,14 @@ module.exports = {
           200: "#72687B",
           250: "#E2E0E4",
           300: "#8E8695",
+          350: "#443C4D",
           400: "#443C4D",
           450: "rgba(68, 60, 77, 0.5)",
           500: "#E1E6EB",
+          550: "rgba(89, 11, 169, 0.05)",
           600: "#EEEDEF",
+          650: "rgba(89, 11, 169, 0.25)",
+          650: "#F7F7F8",
           700: "#A49DAA",
           800: "#D5D2D7",
         },
@@ -28,7 +32,9 @@ module.exports = {
           100: "rgba(255, 133, 0, 0.25)",
           150: "rgba(254, 247, 239, 1)",
           200: "rgba(255, 133, 0, 1)",
+          250: "rgba(255, 133, 0, 0.05)",
           300: "rgba(255, 133, 0, 0.03)",
+          350: "rgba(255, 133, 0, 0.15)",
         },
         black: {
           100: "rgba(0, 0, 0, 0.6)",
@@ -37,6 +43,7 @@ module.exports = {
       height: {
         36: "36px",
         46: "46px",
+        500: "500px",
       },
       width: {
         36: "36px",
@@ -44,10 +51,12 @@ module.exports = {
         120: "120px",
         140: "140px",
         196: "196px",
-        300: "300px"
+        300: "300px",
+        358: "358px",
+        543: "543px",
       },
       minWidth: {
-        '30': "30%",
+        30: "30%",
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",
@@ -71,5 +80,5 @@ module.exports = {
       opacity: ["disabled"],
     },
   },
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/line-clamp")],
 };

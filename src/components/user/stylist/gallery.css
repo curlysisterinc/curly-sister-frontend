@@ -1,0 +1,12 @@
+.custom-indicator {
+  bottom: -74px;
+}
+
+.custom-indicator li {
+  width: 112px;
+  height: 64px;
+}
+
+.custom-indicator li.slick-active {
+  border: 2px #ff8500 solid;
+}

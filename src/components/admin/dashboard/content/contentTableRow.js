@@ -25,49 +25,35 @@ import publishIcon from "../../../../assets/images/publish.svg";
 import colorHairVideo from "../../../../assets/images/color-hair-video.png";
 import moment from "moment";
 import admin from "../../../../api/admin";
+import ReactPlayer from "react-player";
 
 function ContentRow({
-  contentsList,
-  setContentsList,
-  query,
+  allContent,
+  setAllContent,
   selectedId,
   setSelectedId,
   typeValue,
   getVideos,
+  setGetVideos,
+  setGetArticles,
   getArticles,
+  setCallToAction,
 }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const navigate = useNavigate();
   const onCheck = (e, id) => {
     if (e.target.checked) {
+      setCallToAction(true);
       setSelectedId((prev) => [...prev, id]);
     } else {
+      setCallToAction(false);
       setSelectedId((prev) => prev.filter((item) => item !== id));
     }
   };
 
-  // const handleCheck = (event) => {
-  //   var updatedList = [...checkItem];
-  //   if (event.target.checked) {
-  //     updatedList = [...checkItem, event.target.value];
-  //   } else {
-  //     updatedList.splice(checkItem.indexOf(event.target.value), 1);
-  //   }
-  //   setCheckItem(updatedList);
-  // };
-  useEffect(() => {
-    admin
-      .GetAllContents()
-      .then((response) => {
-        console.log(response.data, "contents");
-      })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
-  }, []);
   const toggleDropdownStyle = (index) => {
-    const mylist = [...contentsList];
-    if (mylist[index].id === activeDropdown) {
+    const mylist = [...allContent];
+    if (mylist[index]._id === activeDropdown) {
       return "block";
     } else return "hidden";
   };
@@ -84,10 +70,10 @@ function ContentRow({
     } else return "hidden";
   };
   const handleDropdownOpen = (index) => {
-    const newList = [...contentsList];
-    setActiveDropdown(newList[index].id);
+    const newList = [...allContent];
+    setActiveDropdown(newList[index]._id);
 
-    if (newList[index].id === activeDropdown) {
+    if (newList[index]._id === activeDropdown) {
       setActiveDropdown(null);
     }
   };
@@ -107,11 +93,23 @@ function ContentRow({
       setActiveDropdown(null);
     }
   };
+  const handleDeleteContent = (id) => {
+    admin
+      .DeleteContent(id)
+      .then((response) => {
+        console.log(response.data);
+        setAllContent(allContent.filter((content) => content._id !== id));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleDeleteArticle = (id) => {
     admin
       .DeleteArticleById(id)
       .then((response) => {
         console.log(response.data);
+        setGetArticles(getArticles.filter((article) => article._id !== id));
       })
       .catch((error) => {
         console.log(error);
@@ -122,6 +120,8 @@ function ContentRow({
       .DeleteVideoById(id)
       .then((response) => {
         console.log(response.data);
+        setGetVideos(getVideos.filter((video) => video._id !== id));
+        // setAllContent()
       })
       .catch((error) => {
         console.log(error);
@@ -130,15 +130,16 @@ function ContentRow({
   return (
     <>
       {typeValue === "all types" &&
-        contentsList.map((content, index) => {
+        allContent?.map((content, index) => {
           return (
-            <tr key={content.id} className="bg-white border-b border-gray-600">
+            <tr key={content._id} className="bg-white border-b border-gray-600">
               <th scope="row">
                 <input
                   type="checkbox"
-                  value={content.name}
+                  value={content.title}
                   className="ml-3"
-                  id={content.id}
+                  id={content._id}
+                  checked={selectedId.includes(content._id)}
                   onChange={(e) => onCheck(e, content._id)}
                 />
               </th>
@@ -146,29 +147,36 @@ function ContentRow({
                 className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
                 onClick={() => navigate(AuthRoutes.addcontent)}
               >
-                <img className="" src={content.avatar} alt="profile pix" />
+                <img
+                  className="w-12 h-12 rounded-lg"
+                  src={content.image ? content.image : colorHairVideo}
+                  alt=""
+                />
                 <div className="ml-2">
-                  <p className="text-sm text-gray-400 mb-1">{content.name}</p>
-                  <p className="text-xs text-gray-200 ">{content.about}</p>
+                  <p className="text-sm text-gray-400 mb-1">{content.title}</p>
+                  <p className="text-xs text-gray-200 ">
+                    By {content.created_by.firstName}{" "}
+                    {content.created_by.lastName}
+                  </p>
                 </div>
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
                 {content.type}
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-                {content.date}
+                {moment(content.createdAt).format("DD MM YYYY")}
               </td>{" "}
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
                 {content.views}
               </td>{" "}
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-                {content.likes}
+                {content.likes.length}
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
                 {content.saves}
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-                {content.status === "published" ? (
+                {content.status === "PUBLISHED" ? (
                   <img src={greenIndicator} alt="" />
                 ) : (
                   <img src={grayIndicator} alt="" />
@@ -256,7 +264,16 @@ function ContentRow({
                 className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
                 onClick={() => navigate(AuthRoutes.addcontent)}
               >
-                <img className="" src={colorHairVideo} alt="profile pix" />
+                <ReactPlayer
+                  url={content.link}
+                  onStart={() => {
+                    navigate(`/learn/video/${content._id}`);
+                  }}
+                  light
+                  controls={false}
+                  width="64px"
+                  height="44px"
+                />
                 <div className="ml-2">
                   <p className="text-sm text-gray-400 mb-1">{content.title}</p>
                   <p className="text-xs text-gray-200 ">By {content.source}</p>
@@ -364,6 +381,7 @@ function ContentRow({
                   value={content.title}
                   className="ml-3"
                   id={content._id}
+                  checked={selectedId.includes(content._id)}
                   onChange={(e) => onCheck(e, content._id)}
                 />
               </th>
@@ -371,7 +389,11 @@ function ContentRow({
                 className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
                 onClick={() => navigate(AuthRoutes.addcontent)}
               >
-                <img className="" src={colorHairVideo} alt="profile pix" />
+                <img
+                  className="h-11 w-16"
+                  src={content.image}
+                  alt="profile pix"
+                />
                 <div className="ml-2">
                   <p className="text-sm text-gray-400 mb-1">{content.title}</p>
                   <p className="text-xs text-gray-200 ">By {content.source}</p>

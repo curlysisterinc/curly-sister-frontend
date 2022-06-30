@@ -29,29 +29,41 @@ function ContentTab({ active }) {
   const [typeValue, setTypeValue] = useState("all types");
   const [query, setQuery] = useState("");
   const [deleteModal, setDeleteModal] = useState(false);
-  const [list, setList] = useState(contents);
-  const [masterChecked, setMasterChecked] = useState(false);
-  const [checkItem, setCheckItem] = useState([]);
   const [getVideos, setGetVideos] = useState([]);
   const [getArticles, setGetArticles] = useState([]);
   const [selectedId, setSelectedId] = useState([]);
-
-  // const [callToAction, setCallToAction] = useState(false);
+  const [allContent, setAllContent] = useState([]);
+  const [callToAction, setCallToAction] = useState(false);
   const navigate = useNavigate();
-
-  const onMasterCheck = (e) => {
-    const tempList = list;
-    tempList.map((user) => (user.selected = e.target.checked));
-    setMasterChecked(e.target.checked);
-    setList(tempList);
-  };
 
   const checkAll = (e) => {
     switch (typeValue) {
+      case "all types":
+        if (e.target.checked) {
+          setSelectedId(allContent.map((content) => content._id));
+          setCallToAction(true);
+        } else {
+          setSelectedId([]);
+          setCallToAction(false);
+        }
+        break;
+      case "article":
+        if (e.target.checked) {
+          setCallToAction(true);
+          setSelectedId(getArticles.map((article) => article._id));
+        } else {
+          setSelectedId([]);
+          setCallToAction(false);
+        }
+        break;
       case "video":
         if (e.target.checked) {
+          setCallToAction(true);
+
           setSelectedId(getVideos.map((video) => video._id));
         } else {
+          setCallToAction(false);
+
           setSelectedId([]);
         }
         break;
@@ -60,24 +72,35 @@ function ContentTab({ active }) {
         break;
     }
   };
+
   const openDeleteModal = () => {
     setDeleteModal(true);
   };
   const closeDeleteModal = () => {
     setDeleteModal(false);
   };
-
+  useEffect(() => {
+    admin
+      .GetAllContents()
+      .then((response) => {
+        console.log(response.data, "contents");
+        setAllContent(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.message, "error");
+      });
+  }, [getVideos, getArticles]);
   useEffect(() => {
     const ac = new AbortController();
 
     admin
       .GetAllVideos()
       .then((response) => {
-        console.log(response.data, "video");
+        // console.log(response.data, "video");
         setGetVideos(response.data.data);
       })
       .catch((error) => {
-        console.log(error.message, "error");
+        // console.log(error.message, "error");
       });
     return function cleanup() {
       ac.abort();
@@ -89,11 +112,11 @@ function ContentTab({ active }) {
     admin
       .GetAllArticles()
       .then((response) => {
-        console.log(response.data, "article");
+        // console.log(response.data, "article");
         setGetArticles(response.data.data);
       })
       .catch((error) => {
-        console.log(error.message, "error");
+        // console.log(error.message, "error");
       });
     return function cleanup() {
       ac.abort();
@@ -148,12 +171,12 @@ function ContentTab({ active }) {
             <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
               Content
               <span className="text-gray-300 ml-2 text-sm">
-                {contents.length}
+                {allContent.length}
               </span>
             </div>
             <div className="">
               {/* filters */}
-              {masterChecked || checkItem.length ? (
+              {callToAction ? (
                 <div
                   onClick={() => setToggleActions(!toggleActions)}
                   className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
@@ -269,7 +292,6 @@ function ContentTab({ active }) {
                             type="checkbox"
                             className="ml-3"
                             id="mastercheck"
-                            // onChange={(e) => onMasterCheck(e)}
                             onChange={checkAll}
                           />
                         </th>
@@ -324,13 +346,16 @@ function ContentTab({ active }) {
                     <tbody className="">
                       <ContentRow
                         getVideos={getVideos}
+                        setGetVideos={setGetVideos}
                         getArticles={getArticles}
+                        setGetArticles={setGetArticles}
                         typeValue={typeValue}
-                        contentsList={list}
+                        allContent={allContent}
                         query={query}
-                        setContentsList={setList}
+                        setAllContent={setAllContent}
                         selectedId={selectedId}
                         setSelectedId={setSelectedId}
+                        setCallToAction={setCallToAction}
                         // checkItem={checkItem}
                         // setCheckItem={setCheckItem}
                       />

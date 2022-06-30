@@ -1,35 +1,41 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/order */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-return-assign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import IndividualsRow from "./individualRow";
-import { individualsData } from "../data";
 import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
 import SideBarComponent from "../../../../sidebar/sidebar";
 import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
+import admin from "../../../../../api/admin";
 
 function InvidiualsTab({ active }) {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [list, setList] = useState(individualsData);
-  const [masterChecked, setMasterChecked] = useState(false);
-  const [checkItem, setCheckItem] = useState([]);
+  const [selectedId, setSelectedId] = useState([]);
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [allIndividuals, setAllIndividuals] = useState([]);
+  const [callToAction, setCallToAction] = useState(false);
 
   const onMasterCheck = (e) => {
-    const tempList = list;
-    tempList.map((user) => (user.selected = e.target.checked));
-    setMasterChecked(e.target.checked);
-    setList(tempList);
+    if (e.target.checked) {
+      setSelectedId(allIndividuals.map((individual) => individual._id));
+      setCallToAction(true);
+    } else {
+      setSelectedId([]);
+      setCallToAction(false);
+    }
   };
 
   const openDeleteModal = () => {
@@ -39,6 +45,20 @@ function InvidiualsTab({ active }) {
     setDeleteModal(false);
   };
 
+  useEffect(() => {
+    admin
+      .GetAllIndividuals()
+      .then((response) => {
+        console.log(response.data.data.users, "individuals");
+
+        setAllIndividuals(
+          response.data.data.users.filter((user) => !user.is_deleted)
+        );
+      })
+      .catch((error) => {
+        console.log(error.message, "error");
+      });
+  }, []);
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" />
@@ -117,11 +137,13 @@ function InvidiualsTab({ active }) {
           <div className="flex items-end justify-between">
             <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
               Individuals
-              <span className="text-gray-300 ml-2 text-sm">11,439</span>
+              <span className="text-gray-300 ml-2 text-sm">
+                {allIndividuals.length}
+              </span>
             </div>
             <div className="">
               {/* filters */}
-              {masterChecked || checkItem.length ? (
+              {callToAction ? (
                 <div
                   onClick={() => setToggleActions(!toggleActions)}
                   className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
@@ -184,7 +206,7 @@ function InvidiualsTab({ active }) {
           <div className="flex flex-col mt-4">
             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="overflow-hidden">
+                <div className="min-h-screen">
                   <table className="min-w-full text-left border border-gray-600 ">
                     <thead className=" bg-gray-50">
                       <tr>
@@ -192,9 +214,8 @@ function InvidiualsTab({ active }) {
                           <input
                             type="checkbox"
                             className="ml-3"
-                            checked={masterChecked}
                             id="mastercheck"
-                            onChange={(e) => onMasterCheck(e)}
+                            onChange={onMasterCheck}
                           />
                         </th>
                         <th
@@ -229,11 +250,10 @@ function InvidiualsTab({ active }) {
                     </thead>
                     <tbody className="">
                       <IndividualsRow
-                        stylistsList={list}
-                        query={query}
-                        setList={setList}
-                        checkItem={checkItem}
-                        setCheckItem={setCheckItem}
+                        individualList={allIndividuals}
+                        selectedId={selectedId}
+                        setSelectedId={setSelectedId}
+                        setCallToAction={setCallToAction}
                       />
                     </tbody>
                   </table>
