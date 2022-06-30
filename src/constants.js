@@ -37,6 +37,9 @@ const NonAuthRoutes = {
   resetPassword: "/reset-password/:token",
   about: "/about",
   stylists: "/stylists",
+  stylistProfile: "/stylists/profile",
+  bookedStylistProfile: "/stylists/booked-stylist-profile",
+  confirmBooking: "/stylists/confirm-booking",
   learn: "/learn-more",
   termsAndPrivacy: "/terms-and-privacy",
 };

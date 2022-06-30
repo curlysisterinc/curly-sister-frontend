@@ -36,10 +36,16 @@ function InviteAdminModal({ handleClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    admin.AddAdmin(emailValue).then((response) => {
-      console.log(response.data);
-      setEmailValue("");
-    });
+    admin
+      .AddAdmin(emailValue)
+      .then((response) => {
+        console.log(response.data);
+        setEmailValue("");
+        handleClose();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

@@ -23,6 +23,9 @@ export default {
   async GetVideoCategories() {
     return curlySistersApi.get(`/admin/find-all-video-category`);
   },
+  async GetVideoByCategories() {
+    return curlySistersApi.get(`/v1/user/get-videos-by-category`);
+  },
   async DeleteVideoById(videoId) {
     const data = { videoId };
     return curlySistersApi.post(`/v1/admin/delete-video`, data);
@@ -45,6 +48,18 @@ export default {
       reaction,
     };
     return curlySistersApi.post(`/v1/user/react-to-video`, data);
+  },
+  async SaveVideo(videoId) {
+    return curlySistersApi.post(`v1/user/save-video`, videoId);
+  },
+  async DeleteSavedVideo(videoId) {
+    return curlySistersApi.post(`v1/user/delete-saved-video`, videoId);
+  },
+  async SaveArticle(articleId) {
+    return curlySistersApi.post(`v1/user/save-article`, articleId);
+  },
+  async DeleteSavedArticle(articleId) {
+    return curlySistersApi.post(`v1/user/delete-saved-article`, articleId);
   },
   async ReactToArticle(articleId, reaction) {
     const data = {

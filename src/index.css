@@ -19,6 +19,9 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.book-stylist .slick-slide {
+  margin: 0 5px;
+}
 
 .toggle-bg:after {
   content: "";

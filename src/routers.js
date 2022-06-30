@@ -14,21 +14,21 @@ import TermsAndPrivacy from "./components/termsAndPrivacy/termsAndPrivacy";
 import ResetPasswordComponent from "./components/resetPassword/resetPassword";
 import UserHome from "./components/userHome/userHome";
 import AdminDashbaord from "./components/admin/dashboard";
-import AddStylist from "./components/admin/dashboard/users/addStylist";
+import AddStylist from "./components/admin/dashboard/users/addStylists/addStylist";
 import IndividualsBookings from "./components/admin/dashboard/users/individuals/bookings/bookings";
 import NewArticle from "./components/admin/dashboard/content/article/newArticle";
 import NewVideo from "./components/admin/dashboard/content/video/addVideo";
-import IsLoggedInLearnComponent from "./components/isLoggedInLearn/learn";
-import LearnComponent from "./components/learn/learn";
-import VideoContent from "./components/isLoggedInLearn/videoContent";
-import ArticleContent from "./components/isLoggedInLearn/articleContent";
-import CommunityContent from "./components/isLoggedInLearn/communityContent";
-import VideoTab from "./components/isLoggedInLearn/videoTab";
-import ArticleTab from "./components/isLoggedInLearn/articleTab";
-import CommunityTab from "./components/isLoggedInLearn/communityTab";
-import LearnMoreArticleTab from "./components/learn/articleTab";
-import LearnMoreTabComponent from "./components/learn/videoTab";
-import LearnMoreCommunityTab from "./components/learn/communityTab";
+// import IsLoggedInLearnComponent from "./components/user/learn/learn";
+import LearnComponent from "./components/user/learn/learn";
+import VideoContent from "./components/user/learn/videoContent";
+import ArticleContent from "./components/user/learn/articleContent";
+import CommunityContent from "./components/user/learn/communityContent";
+import VideoTab from "./components/user/learn/videoTab";
+import ArticleTab from "./components/user/learn/articleTab";
+import CommunityTab from "./components/user/learn/communityTab";
+// import LearnMoreArticleTab from "./components/user/learn/articleTab";
+// import LearnMoreTabComponent from "./components/learn/videoTab";
+// import LearnMoreCommunityTab from "./components/learn/communityTab";
 import UsersTab from "./components/admin/dashboard/users/users";
 import AdminTab from "./components/admin/dashboard/users/admin/admin";
 import IndividualTab from "./components/admin/dashboard/users/individuals/individuals";
@@ -36,6 +36,10 @@ import ContentTab from "./components/admin/dashboard/content/contentTable";
 import DataTab from "./components/admin/dashboard/data/data";
 import EditVideo from "./components/admin/dashboard/content/video/updateVideo";
 import EditArticle from "./components/admin/dashboard/content/article/editArticle";
+import Stylist from "./components/user/stylist/stylist";
+import StylistProfile from "./components/user/stylist/stylistProfile";
+import BookedStylistProfile from "./components/user/stylist/bookedStylist";
+import ConfirmBooking from "./components/user/stylist/confirmBooking";
 
 function Routers() {
   return (
@@ -80,12 +84,12 @@ function Routers() {
             path={NonAuthRoutes.termsAndPrivacy}
             element={<TermsAndPrivacy />}
           />
-          <Route
+          {/* <Route
             exact
             path={NonAuthRoutes.learn}
             element={<LearnComponent />}
-          />
-          <Route
+          /> */}
+          {/* <Route
             exact
             path={NonAuthRoutes.videos}
             element={<LearnMoreTabComponent />}
@@ -99,12 +103,12 @@ function Routers() {
             exact
             path={NonAuthRoutes.communities}
             element={<LearnMoreCommunityTab />}
-          />
-          <Route
+          /> */}
+          {/* <Route
             exact
             path={AuthRoutes.learn}
             element={<IsLoggedInLearnComponent />}
-          />
+          /> */}
           <Route path={AuthRoutes.home} element={<UserHome />} />
           <Route path={AuthRoutes.dashboard} element={<AdminDashbaord />} />
           <Route path={AuthRoutes.addStylist} element={<AddStylist />} />
@@ -116,6 +120,7 @@ function Routers() {
           <Route path={AuthRoutes.videos} element={<VideoTab />} />
           <Route path={AuthRoutes.articles} element={<ArticleTab />} />
           <Route path={AuthRoutes.communities} element={<CommunityTab />} />
+          <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
           <Route
             path={AuthRoutes.articleContent}
             element={<ArticleContent />}
@@ -131,6 +136,19 @@ function Routers() {
           <Route path={AuthRoutes.data} element={<DataTab />} />
           <Route path={AuthRoutes.editVideoById} element={<EditVideo />} />
           <Route path={AuthRoutes.editArticleById} element={<EditArticle />} />
+          <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
+          <Route
+            path={NonAuthRoutes.stylistProfile}
+            element={<StylistProfile />}
+          />
+          <Route
+            path={NonAuthRoutes.bookedStylistProfile}
+            element={<BookedStylistProfile />}
+          />
+          <Route
+            path={NonAuthRoutes.confirmBooking}
+            element={<ConfirmBooking />}
+          />
         </Routes>
       </Suspense>
     </div>

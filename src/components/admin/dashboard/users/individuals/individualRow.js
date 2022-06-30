@@ -1,3 +1,7 @@
+/* eslint-disable import/no-cycle */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable import/order */
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-var */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
@@ -17,151 +21,174 @@ import kebabIcon from "../../../../../assets/images/kebab.svg";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import activateIcon from "../../../../../assets/images/activate.svg";
 import rightArrow from "../../../../../assets/images/right-arrow.svg";
+import moment from "moment";
+import spencerAvatar from "../../../../../assets/images/spencer.svg";
+import admin from "../../../../../api/admin";
 
 function IndividualsRow({
-  stylistsList,
-  setStylistsList,
-  query,
-  checkItem,
-  setCheckItem,
+  individualList,
+  setCallToAction,
+  selectedId,
+  setSelectedId,
 }) {
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleCheck = (event) => {
-    var updatedList = [...checkItem];
-    if (event.target.checked) {
-      updatedList = [...checkItem, event.target.value];
+  const handleCheck = (e, id) => {
+    if (e.target.checked) {
+      setCallToAction(true);
+      setSelectedId((prev) => [...prev, id]);
     } else {
-      updatedList.splice(checkItem.indexOf(event.target.value), 1);
+      setCallToAction(false);
+      setSelectedId((prev) => prev.filter((item) => item !== id));
     }
-    setCheckItem(updatedList);
   };
 
   const toggleDropdownStyle = (index) => {
-    const mylist = [...stylistsList];
-    if (mylist[index].id === activeDropdown) {
+    const mylist = [...individualList];
+    if (mylist[index]._id === activeDropdown) {
       return "block";
     } else return "hidden";
   };
 
   const handleDropdownOpen = (index) => {
-    const newList = [...stylistsList];
-    setActiveDropdown(newList[index].id);
+    const newList = [...individualList];
+    setActiveDropdown(newList[index]._id);
 
-    if (newList[index].id === activeDropdown) {
+    if (newList[index]._id === activeDropdown) {
       setActiveDropdown(null);
     }
   };
+  const handleDeleteUser = (id) => {
+    const data = {
+      userId: id,
+    };
+    console.log(data, "payload user");
+    admin
+      .DeleteIndividual(data)
+      .then((response) => {
+        console.log(response.data, "delete user");
+      })
+      .catch((error) => {
+        console.log(error, "error delete user");
+      });
+  };
+  const handleDeactivateUser = (id) => {
+    admin.SuspendOrActivateUser({ status: "false", userId: id });
+  };
 
+  // .filter((filteredindividual) => {
+  //   if (query === "") {
+  //     return filteredindividual;
+  //   } else if (
+  //     filteredindividual.name.toLowerCase().includes(query.toLowerCase())
+  //   ) {
+  //     return filteredindividual;
+  //   }
+  // })
   return (
     <>
-      {stylistsList
-        .filter((filteredStylist) => {
-          if (query === "") {
-            return filteredStylist;
-          } else if (
-            filteredStylist.name.toLowerCase().includes(query.toLowerCase())
-          ) {
-            return filteredStylist;
-          }
-        })
-        .map((stylist, index) => {
-          return (
-            <tr key={stylist.id} className="bg-white border-b border-gray-600">
-              <th scope="row">
-                <input
-                  type="checkbox"
-                  value={stylist.name}
-                  className="ml-3"
-                  id={stylist.id}
-                  onChange={handleCheck}
-                />
-              </th>
-              <td
-                className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-                onClick={() => navigate(AuthRoutes.addStylist)}
+      {individualList.map((individual, index) => {
+        return (
+          <tr
+            key={individual._id}
+            className="bg-white border-b border-gray-600"
+          >
+            <th scope="row">
+              <input
+                type="checkbox"
+                value={individual._id}
+                id={individual._id}
+                checked={selectedId.includes(individual._id)}
+                className="ml-3"
+                onChange={(e) => handleCheck(e, individual._id)}
+              />
+            </th>
+            <td
+              className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
+              onClick={() => navigate(AuthRoutes.addindividual)}
+            >
+              <img
+                className="h-10 w-10"
+                src={spencerAvatar}
+                alt="profile pix"
+              />
+              <div className="ml-2">
+                <p className="text-sm text-gray-400 mb-1">Adun Tope</p>
+                <p className="text-xs text-gray-200 ">{individual.email}</p>
+              </div>
+            </td>
+            <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
+              {moment(individual.createdAt).format("DD MM YYYY")}
+            </td>
+            <td
+              onClick={() => navigate(AuthRoutes.bookings)}
+              className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap cursor-pointer"
+            >
+              <div className="flex items-center ">
+                {individual.bookings}
+                <img className="ml-2 h-3" src={rightArrow} alt="" />
+              </div>
+            </td>
+            <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
+              {individual.status === "active" ? (
+                <img src={greenIndicator} alt="" />
+              ) : (
+                <img src={grayIndicator} alt="" />
+              )}
+            </td>
+            <td className="px-2 py-y relative cursor-pointer ">
+              <div
+                className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
+                onClick={() => handleDropdownOpen(index)}
               >
-                <img
-                  className="h-10 w-10"
-                  src={stylist.avatar}
-                  alt="profile pix"
-                />
-                <div className="ml-2">
-                  <p className="text-sm text-gray-400 mb-1">{stylist.name}</p>
-                  <p className="text-xs text-gray-200 ">{stylist.email}</p>
-                </div>
-              </td>
-              <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                {stylist.date}
-              </td>
-              <td
-                onClick={() => navigate(AuthRoutes.bookings)}
-                className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap cursor-pointer"
-              >
-                <div className="flex items-center ">
-                  {stylist.bookings}
-                  <img className="ml-2 h-3" src={rightArrow} alt="" />
-                </div>
-              </td>
-              <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                {stylist.status === "active" ? (
-                  <img src={greenIndicator} alt="" />
-                ) : (
-                  <img src={grayIndicator} alt="" />
-                )}
-              </td>
-              <td className="px-2 py-y relative cursor-pointer ">
-                <div
-                  className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
-                  onClick={() => handleDropdownOpen(index)}
-                >
-                  <img src={kebabIcon} alt="kebab icon" />
-                </div>
+                <img src={kebabIcon} alt="kebab icon" />
+              </div>
 
-                <div
-                  className={clsx(
-                    toggleDropdownStyle(index),
-                    "absolute bg-white rounded-lg shadow-lg w-40 right-10 overflow-hidden text-sm text-gray-400"
-                  )}
-                >
-                  {stylist.status === "active" ? (
-                    <>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 ">
-                        <img
-                          className="mr-3"
-                          src={activateIcon}
-                          alt="key icon"
-                        />
-                        Deactivate
-                      </div>
-                      <div className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500">
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2">
-                        <img
-                          className="mr-3"
-                          src={activateIcon}
-                          alt="key icon"
-                        />
-                        Activate
-                      </div>
-                      <div className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500">
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  )}
-                </div>
-              </td>
-            </tr>
-          );
-        })}
+              <div
+                className={clsx(
+                  toggleDropdownStyle(index),
+                  "absolute bg-white rounded-lg shadow-lg w-40 right-10 overflow-hidden text-sm text-gray-400"
+                )}
+              >
+                {individual.status === "active" ? (
+                  <>
+                    <div
+                      onClick={() => handleDeactivateUser(individual._id)}
+                      className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
+                    >
+                      <img className="mr-3" src={activateIcon} alt="key icon" />
+                      Deactivate
+                    </div>
+                    <div
+                      onClick={() => handleDeleteUser(individual._id)}
+                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
+                    >
+                      <img className="mr-3" src={trashIcon} alt="key icon" />
+                      Delete
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2">
+                      <img className="mr-3" src={activateIcon} alt="key icon" />
+                      Activate
+                    </div>
+                    <div
+                      onClick={() => handleDeleteUser(individual._id)}
+                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
+                    >
+                      <img className="mr-3" src={trashIcon} alt="key icon" />
+                      Delete
+                    </div>
+                  </>
+                )}
+              </div>
+            </td>
+          </tr>
+        );
+      })}
     </>
   );
 }

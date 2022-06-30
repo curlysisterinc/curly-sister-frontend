@@ -46,7 +46,9 @@ function SideBarComponent({ active }) {
   return (
     <div className="w-80 bg-gray-50 px-12 h-screen fixed border-r border-gray-100 shadow flex flex-col justify-between">
       <div className="pt-8">
-        <img src={brandLogo} alt="brand logo" />
+        <Link to="/">
+          <img src={brandLogo} alt="brand logo" />
+        </Link>
         {!isLoggedIn ? (
           <div className="mt-10 text-gray-400 text-lg font-semibold">
             <Link to="/">

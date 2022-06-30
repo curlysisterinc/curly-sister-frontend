@@ -15,8 +15,17 @@ export default {
   async GetAllAdmin() {
     return curlySistersApi.get("/v1/admin/get-all-admin");
   },
+  async DeleteContent(data) {
+    return curlySistersApi.get("/v1/admin/delete-content-by-id", data);
+  },
+  async DeleteAdmin(data) {
+    return curlySistersApi.post("/v1/admin/delete-admin", data);
+  },
   async SuspendOrActivateAdmin(data) {
     return curlySistersApi.post("/v1/admin/update-admin", data);
+  },
+  async SuspendOrActivateUser(data) {
+    return curlySistersApi.post("/v1/admin/suspend-user", data);
   },
   async EditVideo(data) {
     return curlySistersApi.post("/v1/admin/update-video", data);
@@ -34,8 +43,14 @@ export default {
   async GetServices() {
     return curlySistersApi.get("/v1/admin/find-all-service");
   },
+  async GetAllIndividuals() {
+    return curlySistersApi.get("/v1/admin/view-users");
+  },
+  async DeleteIndividual(data) {
+    return curlySistersApi.post("/v1/admin/delete-user", data);
+  },
   async GetAllContents() {
-    return curlySistersApi.post("/v1/admin/find-all-content");
+    return curlySistersApi.post("/v1/admin/fetch-all-content");
   },
   async UploadPhoto(data) {
     return curlySistersFormDataApi.post("/v1/file/upload", data);
