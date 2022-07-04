@@ -22,7 +22,7 @@ import avatar from "../../../assets/images/avatar1.png";
 import banner from "../../../assets/images/stylist-profile-banner.png";
 import Reviews from "./reviews";
 import { useNavigate } from "react-router-dom";
-import { NonAuthRoutes } from "constants";
+import { AuthRoutes } from "constants";
 
 const BookServiceCard = () => {
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ const BookServiceCard = () => {
       </div>
       <div className="p-6">
         <button
-          onClick={() => navigate(NonAuthRoutes.confirmBooking)}
+          onClick={() => navigate(AuthRoutes.confirmBooking)}
           className="mt-4 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold"
         >
           Continue

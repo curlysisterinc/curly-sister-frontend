@@ -17,7 +17,7 @@ import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
 
-function ManageCertificationModal({ handleClose }) {
+function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [inputList, setInputList] = useState([{ name: "", checked: false }]);
@@ -39,6 +39,7 @@ function ManageCertificationModal({ handleClose }) {
 
     return function cleanup() {
       ac.abort();
+      setIsCertificationUpdate(false);
     };
   }, []);
   // handle input change
@@ -144,6 +145,7 @@ function ManageCertificationModal({ handleClose }) {
   };
 
   const handleSubmit = (e) => {
+    console.log("new cert");
     e.preventDefault();
     const list = [...inputList];
     let newName;
@@ -156,11 +158,14 @@ function ManageCertificationModal({ handleClose }) {
     admin.CreateCertification(newName).then((response) => {
       if (response.status === 200) {
         const res = response.data;
+
         const newstate = inputList.map((item) => {
           return { ...item, name: "" };
         });
+        setIsCertificationUpdate(true);
         setInputList(newstate);
-        console.log(res);
+        handleClose();
+        console.log(res, "res");
       }
     });
   };
@@ -187,7 +192,7 @@ function ManageCertificationModal({ handleClose }) {
           <p className="text-gray-200 text-base">
             Add and remove certifications
           </p>
-          <form onSubmit={handleSubmit}>
+          <form>
             {inputList.map((certificate, index) => {
               return (
                 <div key={index}>
@@ -262,7 +267,8 @@ function ManageCertificationModal({ handleClose }) {
               );
             })}
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
             >
               Save changes

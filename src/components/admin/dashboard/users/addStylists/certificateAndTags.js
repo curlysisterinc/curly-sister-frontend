@@ -10,6 +10,8 @@ import MultiselectComponent from "../multiSelectComponent";
 
 function CertificateAndTags() {
   const [getCertificates, setGetCertificates] = useState([]);
+  const [isCertificationUpdate, setIsCertificationUpdate] = useState(false);
+  const [isTagUpdate, setIsTagUpdate] = useState(false);
   const [getTags, setGetTags] = useState([]);
   const [openCertificationModal, setOpenCertificationModal] = useState(false);
   const [openTagModal, setOpenTagModal] = useState(false);
@@ -28,7 +30,7 @@ function CertificateAndTags() {
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [isCertificationUpdate]);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -45,7 +47,7 @@ function CertificateAndTags() {
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [isTagUpdate]);
 
   // handle certification modal close
   const handleCloseCertificationModal = () => {
@@ -115,9 +117,17 @@ function CertificateAndTags() {
         </div>
       </div>
       {openCertificationModal && (
-        <ManageCertificationModal handleClose={handleCloseCertificationModal} />
+        <ManageCertificationModal
+          handleClose={handleCloseCertificationModal}
+          setIsCertificationUpdate={setIsCertificationUpdate}
+        />
       )}
-      {openTagModal && <ManageTagModal handleClose={handleCloseTagModal} />}
+      {openTagModal && (
+        <ManageTagModal
+          handleClose={handleCloseTagModal}
+          setIsTagUpdate={setIsTagUpdate}
+        />
+      )}
     </div>
   );
 }

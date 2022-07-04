@@ -16,7 +16,7 @@ import AuthSideBarComponent from "../authSidebar/authSideBar";
 import googleIcon from "../../assets/images/google-icon.svg";
 import facebookIcon from "../../assets/images/facebook-icon.svg";
 import authHandler from "../../authHandler";
-import { AuthRoutes } from "../../constants";
+import { NonAuthRoutes } from "../../constants";
 import { loginUser } from "../../redux/auth/authSlice";
 import onboarding from "../../api/onBoarding";
 import signedInImg from "../../assets/images/signed-in-img.svg";
@@ -297,7 +297,7 @@ function LoginComponent() {
                 <button
                   className="bg-orange-200 mt-4 rounded shadow text-white font-bold w-full py-3"
                   type="button"
-                  onClick={() => navigate(AuthRoutes.home)}
+                  onClick={() => navigate(NonAuthRoutes.home)}
                 >
                   Continue with your experience
                 </button>
