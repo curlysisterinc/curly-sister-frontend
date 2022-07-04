@@ -17,7 +17,7 @@ import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
 
-function ManageTagModal({ handleClose }) {
+function ManageTagModal({ handleClose, setIsTagUpdate }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [inputList, setInputList] = useState([{ tag: "", checked: false }]);
@@ -37,6 +37,7 @@ function ManageTagModal({ handleClose }) {
 
     return function cleanup() {
       ac.abort();
+      setIsTagUpdate(false);
     };
   }, []);
   // handle input change
@@ -155,6 +156,7 @@ function ManageTagModal({ handleClose }) {
           return { ...item, name: "" };
         });
         setInputList(newstate);
+        setIsTagUpdate(true);
         console.log(res);
       }
     });

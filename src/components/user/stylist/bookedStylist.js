@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import GalleryModal from "./galleryModal";
 import ChooseServiceModal from "./chooseServiceModal";
-import { NonAuthRoutes } from "constants";
+import { AuthRoutes } from "constants";
 
 const BookServiceCard = () => {
   const [hasService, setHasService] = React.useState(false);
@@ -76,7 +76,7 @@ const BookServiceCard = () => {
       <div className="px-6 ">
         <button
           disabled={!hasService}
-          onClick={() => navigate(NonAuthRoutes.confirmBooking)}
+          onClick={() => navigate(AuthRoutes.confirmBooking)}
           className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold"
         >
           Continue

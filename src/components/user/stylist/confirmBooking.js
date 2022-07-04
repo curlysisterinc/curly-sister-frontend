@@ -16,10 +16,12 @@ import brandLogo from "../../../assets/images/brand-logo.svg";
 import PayPal from "../../../assets/images/PayPal.svg";
 import avatar from "../../../assets/images/product-recommendation.png";
 import lock from "../../../assets/images/lock.svg";
+import { AuthRoutes } from "constants";
 
 const BookServiceCard = () => {
   // const [hasService, setHasService] = React.useState(false);
   const [chooseServiceVisible, setChooseServiceVisible] = React.useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-lg shadow-xl h-auto w-auto">
@@ -63,7 +65,10 @@ const BookServiceCard = () => {
         </div>
       </div>
       <div className="p-6 ">
-        <button className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold">
+        <button
+          onClick={() => navigate(AuthRoutes.successfullBooking)}
+          className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold"
+        >
           Pay and confirm booking
         </button>
       </div>
@@ -178,114 +183,59 @@ function ConfirmBooking() {
               </p>
             </div>
             <hr className="w-full border border-gray-600 my-10" />
-            {isClicked === "paypal" && (
-              <div
-                className={`p-5 rounded-lg border-2  ${
-                  checkGift
-                    ? "bg-gray-550 border-purple-100"
-                    : "bg-white border-gray-600"
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center space-x-4">
-                    <input
-                      id="default-checkbox"
-                      type="checkbox"
-                      checked={checkGift}
-                      onChange={handleChange}
-                      className="w-4 h-4 text-purple-100 bg-transparent rounded border-gray-250 "
-                    />
-                    <label
-                      htmlFor="default-checkbox"
-                      className=" w-full text-base text-purple-100"
-                    >
-                      Gift this booking
-                    </label>
 
-                    {/* <BsFillCheckSquareFill color="#590BA9" /> */}
+            <div
+              className={`p-5 rounded-lg border-2  ${
+                checkGift
+                  ? "bg-gray-550 border-purple-100"
+                  : "bg-white border-gray-600"
+              }`}
+            >
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                  <input
+                    id="default-checkbox"
+                    type="checkbox"
+                    checked={checkGift}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-purple-100 bg-transparent rounded border-gray-250 "
+                  />
+                  <label
+                    htmlFor="default-checkbox"
+                    className=" w-full text-base text-purple-100"
+                  >
+                    Gift this booking
+                  </label>
+
+                  {/* <BsFillCheckSquareFill color="#590BA9" /> */}
+                </div>
+                <RiGift2Line
+                  color={checkGift ? "#590BA9" : "#443C4D"}
+                  size={20}
+                />
+              </div>
+              {openForm && (
+                <div className="mt-3">
+                  <div className="grid grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      className="col-1 border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
+                      placeholder="Name of recipient"
+                    />
+                    <input
+                      type="text"
+                      className="col-1 border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
+                      placeholder="Email address"
+                    />
                   </div>
-                  <RiGift2Line
-                    color={checkGift ? "#590BA9" : "#443C4D"}
-                    size={20}
+                  <textarea
+                    className="mt-3 w-full border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
+                    placeholder="Message (optional)"
+                    rows="2"
                   />
                 </div>
-                {openForm && (
-                  <div className="mt-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        className="col-1 border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
-                        placeholder="Name of recipient"
-                      />
-                      <input
-                        type="text"
-                        className="col-1 border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
-                        placeholder="Email address"
-                      />
-                    </div>
-                    <textarea
-                      className="mt-3 w-full border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
-                      placeholder="Message (optional)"
-                      rows="2"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-            {isClicked === "card" && (
-              <div
-                className={`p-5 rounded-lg border-2  ${
-                  checkGift
-                    ? "bg-gray-550 border-purple-100"
-                    : "bg-white border-gray-600"
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center space-x-4">
-                    <input
-                      id="default-checkbox"
-                      type="checkbox"
-                      checked={checkGift}
-                      onChange={handleChange}
-                      className="w-4 h-4 text-purple-100 bg-transparent rounded border-gray-250 "
-                    />
-                    <label
-                      htmlFor="default-checkbox"
-                      className=" w-full text-base text-purple-100"
-                    >
-                      Gift this booking
-                    </label>
-
-                    {/* <BsFillCheckSquareFill color="#590BA9" /> */}
-                  </div>
-                  <RiGift2Line
-                    color={checkGift ? "#590BA9" : "#443C4D"}
-                    size={20}
-                  />
-                </div>
-                {openForm && (
-                  <div className="mt-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      <input
-                        type="text"
-                        className="col-1 border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
-                        placeholder="Name of recipient"
-                      />
-                      <input
-                        type="text"
-                        className="col-1 border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
-                        placeholder="Email address"
-                      />
-                    </div>
-                    <textarea
-                      className="mt-3 w-full border border-gray-650 rounded-lg bg-white placeholder:text-gray-700 text-gray-700 text-sm"
-                      placeholder="Message (optional)"
-                      rows="2"
-                    />
-                  </div>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
           <div className=" h-auto ">
             <BookServiceCard />

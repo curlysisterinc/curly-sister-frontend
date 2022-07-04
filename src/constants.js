@@ -1,6 +1,5 @@
 /* eslint-disable import/prefer-default-export */
 const AuthRoutes = {
-  home: "/home",
   about: "/stations",
   analytics: "/analytics",
   dashboard: "/dashboard",
@@ -17,13 +16,16 @@ const AuthRoutes = {
   videoContent: "/learn/video/:token",
   articleContent: "/learn/article/:token",
   communityContent: "/learn/communities/:token",
-  termsAndPrivacy: "/terms-and-privacy",
   users: "/dashboard/users/stylists",
   admin: "/dashboard/users/admin",
   individual: "/dashboard/users/individual",
   stylist: "/dashboard/users/stylist",
+  successfullBooking: "/stylists/successfull-booking",
   content: "/dashboard/content",
   data: "/dashboard/data",
+  stylistProfile: "/stylists/profile",
+  bookedStylistProfile: "/stylists/booked-stylist-profile",
+  confirmBooking: "/stylists/confirm-booking",
 };
 
 const NonAuthRoutes = {
@@ -37,9 +39,7 @@ const NonAuthRoutes = {
   resetPassword: "/reset-password/:token",
   about: "/about",
   stylists: "/stylists",
-  stylistProfile: "/stylists/profile",
-  bookedStylistProfile: "/stylists/booked-stylist-profile",
-  confirmBooking: "/stylists/confirm-booking",
+
   learn: "/learn-more",
   termsAndPrivacy: "/terms-and-privacy",
 };

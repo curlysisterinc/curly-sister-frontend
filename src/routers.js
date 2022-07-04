@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/function-component-definition */
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
 import React, { Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import HomeComponent from "./components/home/home";
 import AboutComponent from "./components/about/about";
 import { NonAuthRoutes, AuthRoutes } from "./constants";
@@ -40,76 +42,59 @@ import Stylist from "./components/user/stylist/stylist";
 import StylistProfile from "./components/user/stylist/stylistProfile";
 import BookedStylistProfile from "./components/user/stylist/bookedStylist";
 import ConfirmBooking from "./components/user/stylist/confirmBooking";
+import SuccessfullBooking from "./components/user/stylist/successfulBooking";
+import authHandler from "./authHandler";
+
+const AdminLayout = () => {
+  const details = localStorage.getItem("user");
+  const [isLoggedIn, setIsLoggedIn] = React.useState(details);
+  const userDetails = authHandler.getUser("users");
+  console.log(userDetails, details, "isloggedin");
+  if (!isLoggedIn) {
+    return <Navigate replace to={NonAuthRoutes.login} />;
+  }
+  return <Outlet />;
+};
 
 function Routers() {
   return (
     <div className="dark:bg-slate-800">
-      <Suspense
-        fallback={
-          <div className="flex justify-center mt-60">
-            {/* <LoadingIcon className="btn-loading" /> */}
-            loading...
-          </div>
-        }
-      >
-        <Routes>
-          <Route exact path={NonAuthRoutes.home} element={<HomeComponent />} />
+      <Routes>
+        <Route path={NonAuthRoutes.home} element={<HomeComponent />} />
+        <Route path={NonAuthRoutes.about} element={<AboutComponent />} />
+        <Route path={NonAuthRoutes.login} element={<LoginComponent />} />
+        <Route path={NonAuthRoutes.signup} element={<SignupComponent />} />
+        <Route
+          path={NonAuthRoutes.forgotPassword}
+          element={<ForgotPasswordComponent />}
+        />
+        <Route
+          path={NonAuthRoutes.resetPassword}
+          element={<ResetPasswordComponent />}
+        />
+        <Route
+          path={NonAuthRoutes.termsAndPrivacy}
+          element={<TermsAndPrivacy />}
+        />
+        <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
+
+        <Route element={<AdminLayout />}>
           <Route
-            exact
-            path={NonAuthRoutes.about}
-            element={<AboutComponent />}
+            path={AuthRoutes.stylistProfile}
+            element={<StylistProfile />}
           />
           <Route
-            exact
-            path={NonAuthRoutes.login}
-            element={<LoginComponent />}
+            path={AuthRoutes.bookedStylistProfile}
+            element={<BookedStylistProfile />}
           />
           <Route
-            exact
-            path={NonAuthRoutes.signup}
-            element={<SignupComponent />}
+            path={AuthRoutes.confirmBooking}
+            element={<ConfirmBooking />}
           />
           <Route
-            exact
-            path={NonAuthRoutes.forgotPassword}
-            element={<ForgotPasswordComponent />}
+            path={AuthRoutes.successfullBooking}
+            element={<SuccessfullBooking />}
           />
-          <Route
-            exact
-            path={NonAuthRoutes.resetPassword}
-            element={<ResetPasswordComponent />}
-          />
-          <Route
-            exact
-            path={NonAuthRoutes.termsAndPrivacy}
-            element={<TermsAndPrivacy />}
-          />
-          {/* <Route
-            exact
-            path={NonAuthRoutes.learn}
-            element={<LearnComponent />}
-          /> */}
-          {/* <Route
-            exact
-            path={NonAuthRoutes.videos}
-            element={<LearnMoreTabComponent />}
-          />{" "}
-          <Route
-            exact
-            path={NonAuthRoutes.articles}
-            element={<LearnMoreArticleTab />}
-          />{" "}
-          <Route
-            exact
-            path={NonAuthRoutes.communities}
-            element={<LearnMoreCommunityTab />}
-          /> */}
-          {/* <Route
-            exact
-            path={AuthRoutes.learn}
-            element={<IsLoggedInLearnComponent />}
-          /> */}
-          <Route path={AuthRoutes.home} element={<UserHome />} />
           <Route path={AuthRoutes.dashboard} element={<AdminDashbaord />} />
           <Route path={AuthRoutes.addStylist} element={<AddStylist />} />
           <Route path={AuthRoutes.bookings} element={<IndividualsBookings />} />
@@ -120,7 +105,6 @@ function Routers() {
           <Route path={AuthRoutes.videos} element={<VideoTab />} />
           <Route path={AuthRoutes.articles} element={<ArticleTab />} />
           <Route path={AuthRoutes.communities} element={<CommunityTab />} />
-          <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
           <Route
             path={AuthRoutes.articleContent}
             element={<ArticleContent />}
@@ -136,21 +120,8 @@ function Routers() {
           <Route path={AuthRoutes.data} element={<DataTab />} />
           <Route path={AuthRoutes.editVideoById} element={<EditVideo />} />
           <Route path={AuthRoutes.editArticleById} element={<EditArticle />} />
-          <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
-          <Route
-            path={NonAuthRoutes.stylistProfile}
-            element={<StylistProfile />}
-          />
-          <Route
-            path={NonAuthRoutes.bookedStylistProfile}
-            element={<BookedStylistProfile />}
-          />
-          <Route
-            path={NonAuthRoutes.confirmBooking}
-            element={<ConfirmBooking />}
-          />
-        </Routes>
-      </Suspense>
+        </Route>
+      </Routes>
     </div>
   );
 }

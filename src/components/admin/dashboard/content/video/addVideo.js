@@ -26,7 +26,7 @@ function NewVideo() {
     category: "",
     title: "",
     description: "",
-    status: "",
+    status: "published",
     source: "Super Admin",
   });
   // const [radioStatus, setRadioStatus] = useState(2);
@@ -51,8 +51,9 @@ function NewVideo() {
 
   useEffect(() => {
     admin.GetVideoCategory().then((result) => {
-      console.log(result.data.data, "data");
+      console.log(result.data.data[0].name, "data");
       setOptions(result.data.data);
+      setVideoInputs({ ...videoInputs, category: result.data.data[0].name });
     });
   }, []);
 

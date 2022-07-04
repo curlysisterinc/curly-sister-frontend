@@ -27,7 +27,7 @@ import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { AiTwotoneStar } from "react-icons/ai";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BsFillCheckCircleFill } from "react-icons/bs";
-import { NonAuthRoutes } from "constants";
+import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
 
 const data = [
@@ -117,8 +117,8 @@ const CommonCard = ({ stylist }) => {
     <div
       onClick={() => {
         stylist.booked
-          ? navigate(NonAuthRoutes.bookedStylistProfile)
-          : navigate(NonAuthRoutes.stylistProfile);
+          ? navigate(AuthRoutes.bookedStylistProfile)
+          : navigate(AuthRoutes.stylistProfile);
       }}
       className="col-1 rounded-2xl shadow-md relative overflow-hidden cursor-pointer"
     >
