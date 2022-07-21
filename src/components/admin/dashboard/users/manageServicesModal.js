@@ -6,12 +6,12 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
 import admin from "../../../../api/admin";
 
-function ManageServicesModal({ handleClose }) {
+function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
   const [serviceList, setServiceList] = useState({
     name: "",
     description: "",
@@ -30,6 +30,15 @@ function ManageServicesModal({ handleClose }) {
     setServiceList({ ...serviceList, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const ac = new AbortController();
+    document.title = "Curly sisters • Create services";
+
+    return function cleanup() {
+      ac.abort();
+      setIsServiceUpdate(false);
+    };
+  }, []);
   const handleSubmitService = (e) => {
     e.preventDefault();
     admin
@@ -41,9 +50,13 @@ function ManageServicesModal({ handleClose }) {
           name: "",
           description: "",
           default_price: "",
-          who_is_this_for: "Others",
+          who_is_this_for: "For everyone",
           duration: "",
         });
+        if (response.status === 200) {
+          handleClose();
+          setIsServiceUpdate(true);
+        }
       })
       .catch((error) => {
         console.log(error.message);
@@ -52,7 +65,7 @@ function ManageServicesModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
+      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full min-h-screen"
     >
       <div
         className="flex  justify-end items-start h-full"
@@ -186,8 +199,8 @@ function ManageServicesModal({ handleClose }) {
                   onChange={handleChange}
                   className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
-                  <option value="Every">Every every</option>
-                  <option value="Others">Others</option>
+                  <option value="Everyone">Everyone</option>
+                  <option value="Stylists">Stylists</option>
                 </select>
               </label>
             </div>

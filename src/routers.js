@@ -6,7 +6,7 @@
 /* eslint-disable prefer-regex-literals */
 import React, { Suspense } from "react";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
-import HomeComponent from "./components/home/home";
+import HomeComponent from "./components/home";
 import AboutComponent from "./components/about/about";
 import { NonAuthRoutes, AuthRoutes } from "./constants";
 import LoginComponent from "./components/login/login";
@@ -14,7 +14,6 @@ import SignupComponent from "./components/signup/signup";
 import ForgotPasswordComponent from "./components/forgotPassword/forgotPassword";
 import TermsAndPrivacy from "./components/termsAndPrivacy/termsAndPrivacy";
 import ResetPasswordComponent from "./components/resetPassword/resetPassword";
-import UserHome from "./components/userHome/userHome";
 import AdminDashbaord from "./components/admin/dashboard";
 import AddStylist from "./components/admin/dashboard/users/addStylists/addStylist";
 import IndividualsBookings from "./components/admin/dashboard/users/individuals/bookings/bookings";
@@ -39,7 +38,7 @@ import DataTab from "./components/admin/dashboard/data/data";
 import EditVideo from "./components/admin/dashboard/content/video/updateVideo";
 import EditArticle from "./components/admin/dashboard/content/article/editArticle";
 import Stylist from "./components/user/stylist/stylist";
-import StylistProfile from "./components/user/stylist/stylistProfile";
+import StylistProfile from "./components/user/stylist/profile/stylistProfile";
 import BookedStylistProfile from "./components/user/stylist/bookedStylist";
 import ConfirmBooking from "./components/user/stylist/confirmBooking";
 import SuccessfullBooking from "./components/user/stylist/successfulBooking";
@@ -77,7 +76,20 @@ function Routers() {
           element={<TermsAndPrivacy />}
         />
         <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
-
+        <Route path={NonAuthRoutes.learn} element={<LearnComponent />} />
+        <Route path={NonAuthRoutes.videoContent} element={<VideoContent />} />
+        <Route path={NonAuthRoutes.videos} element={<VideoTab />} />
+        <Route path={NonAuthRoutes.articles} element={<ArticleTab />} />
+        <Route path={NonAuthRoutes.communities} element={<CommunityTab />} />
+        <Route
+          path={NonAuthRoutes.articleContent}
+          element={<ArticleContent />}
+        />{" "}
+        <Route
+          path={NonAuthRoutes.communityContent}
+          element={<CommunityContent />}
+        />
+        {/* auth routes */}
         <Route element={<AdminLayout />}>
           <Route
             path={AuthRoutes.stylistProfile}
@@ -100,19 +112,7 @@ function Routers() {
           <Route path={AuthRoutes.bookings} element={<IndividualsBookings />} />
           <Route path={AuthRoutes.addArticle} element={<NewArticle />} />
           <Route path={AuthRoutes.addVideo} element={<NewVideo />} />
-          <Route path={AuthRoutes.learn} element={<LearnComponent />} />
-          <Route path={AuthRoutes.videoContent} element={<VideoContent />} />
-          <Route path={AuthRoutes.videos} element={<VideoTab />} />
-          <Route path={AuthRoutes.articles} element={<ArticleTab />} />
-          <Route path={AuthRoutes.communities} element={<CommunityTab />} />
-          <Route
-            path={AuthRoutes.articleContent}
-            element={<ArticleContent />}
-          />{" "}
-          <Route
-            path={AuthRoutes.communityContent}
-            element={<CommunityContent />}
-          />
+
           <Route path={AuthRoutes.users} element={<UsersTab />} />
           <Route path={AuthRoutes.admin} element={<AdminTab />} />
           <Route path={AuthRoutes.individual} element={<IndividualTab />} />

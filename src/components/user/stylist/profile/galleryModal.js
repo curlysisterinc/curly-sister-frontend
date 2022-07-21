@@ -8,11 +8,11 @@
 import React from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Slider from "react-slick";
-import profilePix1 from "../../../assets/images/stylist-profile1.png";
-import profilePix2 from "../../../assets/images/stylist-profile2.png";
-import profilePix3 from "../../../assets/images/stylist-profile3.png";
-import profilePix4 from "../../../assets/images/stylist-place-1.png";
-import profilePix5 from "../../../assets/images/stylist-place-2.png";
+import profilePix1 from "../../../../assets/images/stylist-profile1.png";
+import profilePix2 from "../../../../assets/images/stylist-profile2.png";
+import profilePix3 from "../../../../assets/images/stylist-profile3.png";
+import profilePix4 from "../../../../assets/images/stylist-place-1.png";
+import profilePix5 from "../../../../assets/images/stylist-place-2.png";
 import "./gallery.css";
 
 const data = [profilePix1, profilePix2, profilePix3, profilePix4, profilePix5];
@@ -28,8 +28,8 @@ function GalleryModal({ visible, setVisible }) {
           <img
             src={data[i]}
             alt=""
-            style={{ width: "112px", height: "64px" }}
-            className=" object-cover rounded-lg "
+            // style={{ width: "112px", height: "64px" }}
+            className=" object-cover rounded-lg m-0 w-full h-16"
           />
         </div>
       );
@@ -41,6 +41,8 @@ function GalleryModal({ visible, setVisible }) {
     slidesToShow: 1,
     initialSlide: 2,
     slidesToScroll: 1,
+    // autoplaySpeed: 1000,
+    // autoplay: true,
   };
   return (
     <>
@@ -60,7 +62,7 @@ function GalleryModal({ visible, setVisible }) {
                         <img
                           src={item}
                           alt=""
-                          className="w-full h-96 object-contain rounded-lg"
+                          className="w-full h-96 object-cover rounded-lg"
                         />
                       </div>
                     );

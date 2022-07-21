@@ -61,9 +61,6 @@ function LearnComponent({ activeTab }) {
           </div>
         </div>
         <AllTab />
-        {/* {activeTab === "videos" && <VideoTab />}
-          {activeTab === "articles" && <ArticleTab />}
-          {activeTab === "communities" && <CommunityTab />} */}
       </div>
     </div>
   );

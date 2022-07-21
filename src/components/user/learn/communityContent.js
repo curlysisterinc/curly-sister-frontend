@@ -171,7 +171,7 @@ function CommunityContent() {
       <SideBarComponent active="learn" />
       <div className="ml-80 bg-white px-10 pt-14 w-full">
         <div
-          onClick={() => navigate(AuthRoutes.communities)}
+          onClick={() => navigate(-1)}
           className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
         >
           <img src={backArrow} alt="go back" className="mr-4" />

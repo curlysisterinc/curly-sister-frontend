@@ -16,18 +16,15 @@ import allyn from "../../../assets/images/allyn-antoine.png";
 import serena from "../../../assets/images/serena.png";
 import learn from "../../../api/learn";
 import admin from "../../../api/admin";
-import curly1 from "../../../assets/images/curly-sister.png";
-
 import pix1 from "../../../assets/images/pix1.png";
 import pix2 from "../../../assets/images/pix2.png";
 import pix3 from "../../../assets/images/pix3.png";
-
 import play from "../../../assets/images/play-btn.svg";
 import more from "../../../assets/images/there's-more.png";
 import course from "../../../assets/images/course-bg.png";
 import bookmark from "../../../assets/images/book-mark.png";
 import bookmarkfilled from "../../../assets/images/bookmark-filled.png";
-import { AuthRoutes, NonAuthRoutes } from "../../../constants";
+import { NonAuthRoutes } from "../../../constants";
 import moment from "moment";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import ReactPlayer from "react-player";
@@ -42,12 +39,18 @@ function AllTab() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
+    const ac = new AbortController();
     const details = localStorage.getItem("user");
     if (details) {
       setIsLoggedIn(true);
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
-  useEffect(async () => {
+  console.log("console.log");
+  useEffect(() => {
+    const ac = new AbortController();
     learn
       .GetAllQuestions()
       .then((response) => {
@@ -59,36 +62,33 @@ function AllTab() {
         console.log(error);
         setIsLoading(false);
       });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
-  useEffect(async () => {
-    learn
-      .GetVideoByCategories()
-      .then((response) => {
-        setIsLoading(false);
-        console.log(response.data.data, "video category");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  useEffect(() => {
+    const ac = new AbortController();
 
-  useEffect(async () => {
     admin
       .GetAllVideos()
       .then((response) => {
         console.log(response.data.data, "Success");
         setIsLoading(false);
-
         setGetVideos(response.data.data);
       })
       .catch((error) => {
         console.log(error);
         setIsLoading(false);
       });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
-  useEffect(async () => {
+  useEffect(() => {
+    const ac = new AbortController();
+
     admin
       .GetAllArticles()
       .then((response) => {
@@ -102,6 +102,26 @@ function AllTab() {
 
         console.log(error);
       });
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    const ac = new AbortController();
+
+    learn
+      .GetVideoByCategories()
+      .then((response) => {
+        setIsLoading(false);
+        console.log(response.data.data, "video category");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   return (
@@ -110,7 +130,7 @@ function AllTab() {
         <h2 className="text-gray-400 text-2xl font-semibold">Popular videos</h2>
         {getVideos.length > 0 && (
           <Link
-            to={AuthRoutes.videos}
+            to={NonAuthRoutes.videos}
             className="text-purple-100 text-sm font-normal"
           >
             View all videos
@@ -126,7 +146,10 @@ function AllTab() {
               <div className="grid grid-cols-3 gap-6">
                 {getVideos.slice(0, 3).map((video) => {
                   return (
-                    <div className="relative col-1 h-80 overflow-hidden rounded-lg">
+                    <div
+                      key={video._id}
+                      className="relative col-1 h-80 overflow-hidden rounded-lg"
+                    >
                       <ReactPlayer
                         url={video.link}
                         onStart={() => {
@@ -198,7 +221,7 @@ function AllTab() {
         </h2>
         {getArticles.length > 0 && (
           <Link
-            to={AuthRoutes.articles}
+            to={NonAuthRoutes.articles}
             className="text-purple-100 text-sm font-normal"
           >
             View all articles
@@ -214,6 +237,7 @@ function AllTab() {
               {getArticles.slice(0, 3).map((article) => {
                 return (
                   <div
+                    key={article._id}
                     onClick={() => {
                       isLoggedIn
                         ? navigate(`/learn/article/${article._id}`)
@@ -275,7 +299,7 @@ function AllTab() {
         </h2>
         {getQuestions.length > 0 && (
           <Link
-            to={AuthRoutes.communities}
+            to={NonAuthRoutes.communities}
             className="text-purple-100 text-sm font-normal"
           >
             View all questions
@@ -291,7 +315,7 @@ function AllTab() {
               {getQuestions.slice(0, 3).map((question) => {
                 return (
                   <div
-                    key={question.id}
+                    key={question._id}
                     className="cursor-pointer flex mb-5 align-center justify-between border-gray-100 rounded-md shadow p-4"
                   >
                     <div className="flex">

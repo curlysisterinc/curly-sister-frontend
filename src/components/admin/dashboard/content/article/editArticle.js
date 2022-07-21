@@ -68,7 +68,7 @@ function EditArticle() {
     content: initialValue,
     articleId: "",
   });
-  console.log(initialValue, "initial valus");
+
   useEffect(() => {
     const ac = new AbortController();
 

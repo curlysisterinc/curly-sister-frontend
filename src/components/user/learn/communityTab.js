@@ -9,16 +9,13 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
-import { AuthRoutes } from "../../../constants";
+import { AuthRoutes, NonAuthRoutes } from "../../../constants";
 import learn from "../../../api/learn";
 import authHandler from "../../../authHandler";
 import serena from "../../../assets/images/serena.png";
-import funmi from "../../../assets/images/funmi.png";
-import theresa from "../../../assets/images/theresa.png";
 import pix1 from "../../../assets/images/pix1.png";
 import pix2 from "../../../assets/images/pix2.png";
 import pix3 from "../../../assets/images/pix3.png";
-
 import bookmark from "../../../assets/images/book-mark.png";
 import orangePin from "../../../assets/images/orange-pin.svg";
 import bookmarkfilled from "../../../assets/images/bookmark-filled.png";
@@ -33,11 +30,27 @@ function CommunityTab() {
   const [questionModal, setQuestionModal] = useState(false);
   const [saveQst, setSaveQst] = useState(false);
   const [clicked, setClicked] = useState(null);
-  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState();
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    const ac = new AbortController();
+
+    const details = localStorage.getItem("user");
+    if (details) {
+      setIsLoggedIn(true);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
   // open question dialog
   const openQuestionModal = () => {
-    setQuestionModal(true);
+    if (isLoggedIn) {
+      setQuestionModal(true);
+    } else {
+      navigate(NonAuthRoutes.login);
+    }
   };
 
   // close question dialog
@@ -45,13 +58,6 @@ function CommunityTab() {
     setQuestionModal(false);
   };
 
-  const toggleBookmark = (index) => {
-    setClicked(index);
-    setSaveQst(!saveQst);
-    if (clicked === index) {
-      setSaveQst(false);
-    }
-  };
   const userDetails = authHandler.getUser("users");
 
   useEffect(async () => {
@@ -212,7 +218,7 @@ function CommunityTab() {
                     {getQuestions.map((question) => {
                       return (
                         <div
-                          key={question.id}
+                          key={question._id}
                           className="cursor-pointer flex mb-5 align-center justify-between border-gray-100 rounded-md shadow p-4"
                         >
                           <div className="flex">

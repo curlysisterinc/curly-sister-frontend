@@ -63,13 +63,13 @@ function SideBarComponent({ active }) {
             <Link to="/stylists">
               <p
                 className={
-                  active === "about" ? " mb-4 text-purple-100" : " mb-4 "
+                  active === "stylists" ? " mb-4 text-purple-100" : " mb-4 "
                 }
               >
                 Stylists
               </p>
             </Link>
-            <Link to={AuthRoutes.learn}>
+            <Link to={NonAuthRoutes.learn}>
               <p
                 className={
                   active === "learn" ? " mb-4 text-purple-100" : " mb-4 "
@@ -122,7 +122,7 @@ function SideBarComponent({ active }) {
                 Stylists
               </p>
             </Link>
-            <Link to={AuthRoutes.learn}>
+            <Link to={NonAuthRoutes.learn}>
               <p
                 className={
                   active === "learn" ? " mb-4 text-purple-100" : " mb-4 "
@@ -173,7 +173,7 @@ function SideBarComponent({ active }) {
               {firstName} {lastName}
             </p>
             <img
-              className={open && "transform rotate-180"}
+              className={`${open === true && "transform rotate-180"}`}
               src={dropdownIcon}
               alt="dropdwon icon"
             />
@@ -188,7 +188,7 @@ function SideBarComponent({ active }) {
                   </div>
                   <div
                     className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2"
-                    onClick={() => navigate(AuthRoutes.termsAndPrivacy)}
+                    onClick={() => navigate(NonAuthRoutes.termsAndPrivacy)}
                   >
                     Terms & Privacy
                   </div>

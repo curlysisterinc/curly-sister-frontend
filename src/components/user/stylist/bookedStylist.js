@@ -26,11 +26,11 @@ import profilePix2 from "../../../assets/images/stylist-profile2.png";
 import Reviews from "./reviews";
 import { useNavigate } from "react-router-dom";
 import Slider from "react-slick";
-import GalleryModal from "./galleryModal";
+import GalleryModal from "./profile/galleryModal";
 import ChooseServiceModal from "./chooseServiceModal";
 import { AuthRoutes } from "constants";
 
-const BookServiceCard = () => {
+export const BookServiceCard = () => {
   const [hasService, setHasService] = React.useState(false);
   const [chooseServiceVisible, setChooseServiceVisible] = React.useState(false);
   const navigate = useNavigate();
@@ -156,7 +156,6 @@ function BookedStylistProfile() {
               <HiOutlinePhotograph color="black" size={20} />
               <p className="text-sm text-gray-400">View gallery</p>
             </div>
-
             <Slider {...settings}>
               <div>
                 <img src={profilePix2} alt="" className="w-full " />

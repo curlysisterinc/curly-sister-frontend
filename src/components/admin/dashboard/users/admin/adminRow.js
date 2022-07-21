@@ -18,12 +18,10 @@ import clsx from "clsx";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
-import kebabIcon from "../../../../../assets/images/kebab.svg";
-import trashIcon from "../../../../../assets/images/trash.svg";
-import activateIcon from "../../../../../assets/images/activate.svg";
 import allynAvatar from "../../../../../assets/images/allyn.svg";
 import Moment from "moment";
 import admin from "../../../../../api/admin";
+import AdminDropDown from "../../../../customdropdown/dashboard/admin/adminitm";
 
 function AdminRow({
   getAdmin,
@@ -62,22 +60,6 @@ function AdminRow({
     }
   };
 
-  const toggleDropdownStyle = (index) => {
-    const mylist = [...getAdmin];
-    if (mylist[index]._id === activeDropdown) {
-      return "block";
-    } else return "hidden";
-  };
-
-  const handleDropdownOpen = (index) => {
-    const newList = [...getAdmin];
-    setActiveDropdown(newList[index]._id);
-
-    if (newList[index]._id === activeDropdown) {
-      setActiveDropdown(null);
-    }
-  };
-
   const handleDeactivateAdmin = (id) => {
     admin
       .SuspendOrActivateAdmin({ adminId: id, status: "false" })
@@ -112,7 +94,7 @@ function AdminRow({
   };
   return (
     <>
-      {getAdmin.map((admin, index) => {
+      {getAdmin.map((admin) => {
         return (
           <tr key={admin._id} className="bg-white border-b border-gray-600">
             <th scope="row">
@@ -160,52 +142,23 @@ function AdminRow({
               )}
             </td>
             <td className="px-2 py-y relative cursor-pointer ">
-              <div
-                className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
-                onClick={() => handleDropdownOpen(index)}
-              >
-                <img src={kebabIcon} alt="kebab icon" />
-              </div>
-
-              <div
-                className={clsx(
-                  toggleDropdownStyle(index),
-                  "absolute bg-white rounded-lg shadow-lg w-40 right-10 overflow-hidden text-sm text-gray-400"
-                )}
-              >
-                {admin.active === true ? (
-                  <>
-                    <div
-                      onClick={() => handleDeactivateAdmin(admin._id)}
-                      className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                    >
-                      <img className="mr-3" src={activateIcon} alt="key icon" />
-                      Deactivate
-                    </div>
-                    <div
-                      onClick={() => handleDeleteAdmin(admin._id)}
-                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                    >
-                      <img className="mr-3" src={trashIcon} alt="key icon" />
-                      Delete
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div
-                      onClick={() => handleActivateAdmin(admin._id)}
-                      className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2"
-                    >
-                      <img className="mr-3" src={activateIcon} alt="key icon" />
-                      Activate
-                    </div>
-                    <div className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500">
-                      <img className="mr-3" src={trashIcon} alt="key icon" />
-                      Delete
-                    </div>
-                  </>
-                )}
-              </div>
+              {admin.active === true ? (
+                <AdminDropDown
+                  status={admin.active}
+                  activateAction={handleDeactivateAdmin(admin._id)}
+                  deteleAction={handleDeleteAdmin(admin._id)}
+                  mkStylistAction={() => null}
+                  mkadminAction={() => null}
+                />
+              ) : (
+                <AdminDropDown
+                  status={admin.active}
+                  activateAction={handleActivateAdmin(admin._id)}
+                  deteleAction={handleDeleteAdmin(admin._id)}
+                  mkStylistAction={() => null}
+                  mkadminAction={() => null}
+                />
+              )}
             </td>
           </tr>
         );
