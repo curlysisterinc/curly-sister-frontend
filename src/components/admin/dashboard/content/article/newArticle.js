@@ -4,11 +4,12 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Node } from "slate";
 import admin from "../../../../../api/admin";
 import SideBarComponent from "../../../../sidebar/sidebar";
-import { AuthRoutes } from "../../../../../constants";
+// import { AuthRoutes } from "../../../../../constants";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import uploadFile from "../../../../../assets/images/upload-file.png";
 import SlateContent from "../slateContent";
@@ -26,44 +27,66 @@ const initialValue = [
       { text: "!" },
     ],
   },
-  {
-    type: "paragraph",
-    children: [
-      {
-        text: "Since it's rich text, you can do things like turn a selection of text ",
-      },
-      { text: "bold", bold: true },
-      {
-        text: ", or add a semantically rendered block quote in the middle of the page, like this:",
-      },
-    ],
-  },
-  {
-    type: "block-quote",
-    children: [{ text: "A wise quote." }],
-  },
-  {
-    type: "paragraph",
-    children: [{ text: "Try it out for yourself!" }],
-  },
+  // {
+  //   type: "paragraph",
+  //   children: [
+  //     {
+  //       text: "Since it's rich text, you can do things like turn a selection of text ",
+  //     },
+  //     { text: "bold", bold: true },
+  //     {
+  //       text: ", or add a semantically rendered block quote in the middle of the page, like this:",
+  //     },
+  //   ],
+  // },
+  // {
+  //   type: "block-quote",
+  //   children: [{ text: "A wise quote." }],
+  // },
+  // {
+  //   type: "paragraph",
+  //   children: [{ text: "Try it out for yourself!" }],
+  // },
 ];
+
+// Define a serializing function that takes a value and returns a string.
+const serialize = (value) => {
+  return (
+    value
+      // Return the string content of each paragraph in the value's children.
+      .map((n) => Node.string(n))
+      // Join them all with line breaks denoting paragraphs.
+      .join("\n")
+  );
+};
+
+// Define a deserializing function that takes a string and returns a value.
+const deserialize = (string) => {
+  // Return a value array of children derived by splitting the string.
+  return string.split("\n").map((line) => {
+    return {
+      children: [{ text: line }],
+    };
+  });
+};
 
 function NewArticle() {
   const navigate = useNavigate();
-  const inputRef = useRef();
+  // const inputRef = useRef();
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [draftBtn, setDraftBtn] = useState(false);
   const [image, setImage] = useState(null);
   const [filePreview, setFilePreview] = useState("");
+  const [content, setContent] = useState(initialValue);
   const [inputValues, setInputValues] = useState({
     title: "",
     source: "curly sister",
     file: null,
     status1: "published",
     status2: "unpublished",
-    content: initialValue,
+    // content: "",
   });
-  console.log(initialValue, "initial valus");
+  // console.log(initialValue, "initial valus");
 
   const handlePublishArticle = (e) => {
     e.preventDefault();
@@ -72,7 +95,7 @@ function NewArticle() {
     formData.append("file", inputValues.file);
     formData.append("source", inputValues.source);
     formData.append("status", inputValues.status1);
-    // formData.append("content", inputValues.content);
+    formData.append("content", serialize(content));
     admin
       .AddArticleToContent(formData)
       .then((response) => {
@@ -127,9 +150,11 @@ function NewArticle() {
     setInputValues({ ...inputValues, [e.target.name]: value });
   };
 
-  const handleSlateChange = ({ value }) => {
-    const content = JSON.stringify(value.toJSON());
-    setInputValues({ ...inputValues, content });
+  const handleSlateChange = (value) => {
+    // const content = JSON.stringify(value.toJSON());
+    setContent(value);
+    // console.log(value);
+    // setInputValues({ ...inputValues, content });
   };
 
   useEffect(() => {
@@ -259,10 +284,7 @@ function NewArticle() {
 
                 <div className="mt-5">
                   <p>Content</p>
-                  <SlateContent
-                    value={inputValues.content}
-                    onChange={handleSlateChange}
-                  />
+                  <SlateContent value={content} onChange={handleSlateChange} />
                 </div>
               </div>
             </div>

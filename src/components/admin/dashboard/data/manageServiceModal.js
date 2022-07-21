@@ -157,7 +157,7 @@ function ManageServicesModal({ handleClose }) {
                   className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option>Everyone</option>
-                  <option>Not everyone</option>
+                  <option>Stylist</option>
                 </select>
               </label>
             </div>

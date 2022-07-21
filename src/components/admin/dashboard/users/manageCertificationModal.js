@@ -31,12 +31,6 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
     const ac = new AbortController();
     document.title = "Curly sisters • Create certifications";
 
-    // if (authenticated === null) {
-    //   navigate(NonAuthRoutes.login);
-    // } else {
-    //   navigate(AuthRoutes.home);
-    // }
-
     return function cleanup() {
       ac.abort();
       setIsCertificationUpdate(false);

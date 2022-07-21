@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable global-require */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   purge: [],
@@ -23,7 +25,7 @@ module.exports = {
           550: "rgba(89, 11, 169, 0.05)",
           600: "#EEEDEF",
           650: "rgba(89, 11, 169, 0.25)",
-          650: "#F7F7F8",
+          // 650: "#F7F7F8",
           700: "#A49DAA",
           800: "#D5D2D7",
         },
@@ -37,17 +39,21 @@ module.exports = {
           350: "rgba(255, 133, 0, 0.15)",
         },
         black: {
+          50: "rgba(0, 0, 0, 0.2)",
           100: "rgba(0, 0, 0, 0.6)",
         },
       },
       height: {
         36: "36px",
         46: "46px",
+        86: "86px",
+        120: "120px",
         500: "500px",
       },
       width: {
         36: "36px",
         55: "55%",
+        86: "86px",
         120: "120px",
         140: "140px",
         196: "196px",

@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable import/order */
 /* eslint-disable import/no-cycle */
@@ -13,19 +14,21 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import clsx from "clsx";
+// import clsx from "clsx";
 import { AuthRoutes } from "../../../../constants";
 import grayIndicator from "../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../assets/images/green-indicator.svg";
-import kebabIcon from "../../../../assets/images/kebab.svg";
-import trashIcon from "../../../../assets/images/trash.svg";
-import activateIcon from "../../../../assets/images/activate.svg";
-import editIcon from "../../../../assets/images/edit.svg";
-import publishIcon from "../../../../assets/images/publish.svg";
+// import kebabIcon from "../../../../assets/images/kebab.svg";
+// import trashIcon from "../../../../assets/images/trash.svg";
+// import activateIcon from "../../../../assets/images/activate.svg";
+// import editIcon from "../../../../assets/images/edit.svg";
+// import publishIcon from "../../../../assets/images/publish.svg";
 import colorHairVideo from "../../../../assets/images/color-hair-video.png";
 import moment from "moment";
 import admin from "../../../../api/admin";
 import ReactPlayer from "react-player";
+import ContentDropDown from "../../../customdropdown/dashboard/content/contentitem";
+import { BsFillPlayFill } from "react-icons/bs";
 
 function ContentRow({
   allContent,
@@ -39,7 +42,6 @@ function ContentRow({
   getArticles,
   setCallToAction,
 }) {
-  const [activeDropdown, setActiveDropdown] = useState(null);
   const navigate = useNavigate();
   const onCheck = (e, id) => {
     if (e.target.checked) {
@@ -51,48 +53,6 @@ function ContentRow({
     }
   };
 
-  const toggleDropdownStyle = (index) => {
-    const mylist = [...allContent];
-    if (mylist[index]._id === activeDropdown) {
-      return "block";
-    } else return "hidden";
-  };
-  const toggleDropdownStyleVideo = (index) => {
-    const mylist = [...getVideos];
-    if (mylist[index]._id === activeDropdown) {
-      return "block";
-    } else return "hidden";
-  };
-  const toggleDropdownStyleArticle = (index) => {
-    const mylist = [...getArticles];
-    if (mylist[index]._id === activeDropdown) {
-      return "block";
-    } else return "hidden";
-  };
-  const handleDropdownOpen = (index) => {
-    const newList = [...allContent];
-    setActiveDropdown(newList[index]._id);
-
-    if (newList[index]._id === activeDropdown) {
-      setActiveDropdown(null);
-    }
-  };
-  const handleDropdownOpenVideo = (index) => {
-    const newList = [...getVideos];
-    setActiveDropdown(newList[index]._id);
-
-    if (newList[index]._id === activeDropdown) {
-      setActiveDropdown(null);
-    }
-  };
-  const handleDropdownOpenArticle = (index) => {
-    const newList = [...getArticles];
-    setActiveDropdown(newList[index]._id);
-
-    if (newList[index]._id === activeDropdown) {
-      setActiveDropdown(null);
-    }
-  };
   const handleDeleteContent = (id) => {
     admin
       .DeleteContent(id)
@@ -130,7 +90,7 @@ function ContentRow({
   return (
     <>
       {typeValue === "all types" &&
-        allContent?.map((content, index) => {
+        allContent?.map((content) => {
           return (
             <tr key={content._id} className="bg-white border-b border-gray-600">
               <th scope="row">
@@ -145,7 +105,7 @@ function ContentRow({
               </th>
               <td
                 className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-                onClick={() => navigate(AuthRoutes.addcontent)}
+                onClick={() => navigate(`/learn/article/${content._id}`)}
               >
                 <img
                   className="w-12 h-12 rounded-lg"
@@ -183,71 +143,18 @@ function ContentRow({
                 )}
               </td>
               <td className="px-2 py-y relative cursor-pointer ">
-                <div
-                  className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
-                  onClick={() => handleDropdownOpen(index)}
-                >
-                  <img src={kebabIcon} alt="kebab icon" />
-                </div>
-
-                <div
-                  className={clsx(
-                    toggleDropdownStyle(index),
-                    "absolute z-40 bg-white rounded-lg shadow-lg w-40 right-10 overflow-hidden text-sm text-gray-400"
-                  )}
-                >
-                  {content.status === "published" ? (
-                    <>
-                      <div
-                        className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                        onClick={() => navigate(AuthRoutes.addArticle)}
-                      >
-                        <img className="mr-3" src={editIcon} alt="" />
-                        Edit
-                      </div>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 ">
-                        <img
-                          className="mr-3"
-                          src={publishIcon}
-                          alt="key icon"
-                        />
-                        Unpublish
-                      </div>
-                      <div className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500">
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div
-                        className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                        onClick={() => navigate(AuthRoutes.addArticle)}
-                      >
-                        <img className="mr-3" src={editIcon} alt="" />
-                        Edit
-                      </div>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 ">
-                        <img
-                          className="mr-3"
-                          src={publishIcon}
-                          alt="key icon"
-                        />
-                        Publish
-                      </div>
-                      <div className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500">
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  )}
-                </div>
+                <ContentDropDown
+                  deleteAction={handleDeleteContent}
+                  editAction={() => navigate(AuthRoutes.addArticle)}
+                  publishAction={() => console.log("publish")}
+                  status={content.status}
+                />
               </td>
             </tr>
           );
         })}
       {typeValue === "video" &&
-        getVideos?.map((content, index) => {
+        getVideos?.map((content) => {
           return (
             <tr key={content._id} className="bg-white border-b border-gray-600">
               <th scope="row">
@@ -264,16 +171,19 @@ function ContentRow({
                 className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
                 onClick={() => navigate(AuthRoutes.addcontent)}
               >
-                <ReactPlayer
-                  url={content.link}
-                  onStart={() => {
-                    navigate(`/learn/video/${content._id}`);
-                  }}
-                  light
-                  controls={false}
-                  width="64px"
-                  height="44px"
-                />
+                <div className="rounded-lg overflow-hidden">
+                  <ReactPlayer
+                    url={content.link}
+                    onStart={() => {
+                      navigate(`/learn/video/${content._id}`);
+                    }}
+                    light
+                    controls={false}
+                    playIcon={<BsFillPlayFill color="#fff" size={16} />}
+                    width="64px"
+                    height="44px"
+                  />
+                </div>
                 <div className="ml-2">
                   <p className="text-sm text-gray-400 mb-1">{content.title}</p>
                   <p className="text-xs text-gray-200 ">By {content.source}</p>
@@ -302,77 +212,18 @@ function ContentRow({
                 )}
               </td>
               <td className="px-2 py-y relative cursor-pointer ">
-                <div
-                  className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
-                  onClick={() => handleDropdownOpenVideo(index)}
-                >
-                  <img src={kebabIcon} alt="kebab icon" />
-                </div>
-
-                <div
-                  className={clsx(
-                    toggleDropdownStyleVideo(index),
-                    "absolute z-40 bg-white rounded-lg shadow-lg w-40  right-10 text-sm text-gray-400"
-                  )}
-                >
-                  {content.status === "UNPUPLISHED" ? (
-                    <>
-                      <div
-                        className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                        onClick={() => navigate(`/edit-video/${content._id}`)}
-                      >
-                        <img className="mr-3" src={editIcon} alt="" />
-                        Edit
-                      </div>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 ">
-                        <img
-                          className="mr-3"
-                          src={publishIcon}
-                          alt="key icon"
-                        />
-                        publish
-                      </div>
-                      <div
-                        onClick={() => handleDeleteVideo(content._id)}
-                        className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                      >
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div
-                        className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                        onClick={() => navigate(`/edit-video/${content._id}`)}
-                      >
-                        <img className="mr-3" src={editIcon} alt="" />
-                        Edit
-                      </div>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 ">
-                        <img
-                          className="mr-3"
-                          src={publishIcon}
-                          alt="key icon"
-                        />
-                        Unpublish
-                      </div>
-                      <div
-                        onClick={() => handleDeleteVideo(content._id)}
-                        className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                      >
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  )}
-                </div>
+                <ContentDropDown
+                  deleteAction={handleDeleteVideo}
+                  editAction={() => navigate(`/edit-video/${content._id}`)}
+                  publishAction={() => console.log("publish  video")}
+                  status={content.status}
+                />
               </td>
             </tr>
           );
         })}
       {typeValue === "article" &&
-        getArticles?.map((content, index) => {
+        getArticles?.map((content) => {
           return (
             <tr key={content._id} className="bg-white border-b border-gray-600">
               <th scope="row">
@@ -387,7 +238,7 @@ function ContentRow({
               </th>
               <td
                 className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-                onClick={() => navigate(AuthRoutes.addcontent)}
+                onClick={() => navigate(`/learn/article/${content._id}`)}
               >
                 <img
                   className="h-11 w-16"
@@ -422,71 +273,12 @@ function ContentRow({
                 )}
               </td>
               <td className="px-2 py-y relative cursor-pointer ">
-                <div
-                  className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
-                  onClick={() => handleDropdownOpenArticle(index)}
-                >
-                  <img src={kebabIcon} alt="kebab icon" />
-                </div>
-
-                <div
-                  className={clsx(
-                    toggleDropdownStyleArticle(index),
-                    "absolute z-40 bg-white rounded-lg shadow-lg w-40 right-10  text-sm text-gray-400"
-                  )}
-                >
-                  {content.status === "PUBLISHED" ? (
-                    <>
-                      <div
-                        className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                        onClick={() => navigate(`/edit-article/${content._id}`)}
-                      >
-                        <img className="mr-3" src={editIcon} alt="" />
-                        Edit
-                      </div>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 ">
-                        <img
-                          className="mr-3"
-                          src={publishIcon}
-                          alt="key icon"
-                        />
-                        Unpublish
-                      </div>
-                      <div
-                        onClick={() => handleDeleteArticle(content._id)}
-                        className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                      >
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div
-                        className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                        onClick={() => navigate(`/edit-article/${content._id}`)}
-                      >
-                        <img className="mr-3" src={editIcon} alt="" />
-                        Edit
-                      </div>
-                      <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 ">
-                        <img
-                          className="mr-3"
-                          src={publishIcon}
-                          alt="key icon"
-                        />
-                        Publish
-                      </div>
-                      <div
-                        onClick={() => handleDeleteArticle(content._id)}
-                        className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                      >
-                        <img className="mr-3" src={trashIcon} alt="key icon" />
-                        Delete
-                      </div>
-                    </>
-                  )}
-                </div>
+                <ContentDropDown
+                  deleteAction={handleDeleteArticle}
+                  editAction={() => navigate(`/edit-article/${content._id}`)}
+                  publishAction={() => console.log("green")}
+                  status={content.status}
+                />
               </td>
             </tr>
           );

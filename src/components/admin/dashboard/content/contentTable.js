@@ -12,19 +12,17 @@ import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { AuthRoutes } from "../../../../constants";
 import DeleteContentModal from "./deleteContentModal";
-import whiteDropdownIcon from "../../../../assets/images/white-dropdown.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
 import searchIcon from "../../../../assets/images/search-normal-2.svg";
 import ContentRow from "./contentTableRow";
-import { contents } from "../users/data";
-import articleIcon from "../../../../assets/images/article.svg";
-import videoIcon from "../../../../assets/images/video.svg";
+// import { contents } from "../users/data";
 import admin from "../../../../api/admin";
 import SideBarComponent from "../../../sidebar/sidebar";
+import TypesContent from "../../../customdropdown/dashboard/types";
+import Newcontent from "../../../customdropdown/dashboard/content/newcontent";
 
 function ContentTab({ active }) {
-  const [toggleAddContent, setToggleAddContent] = useState(false);
   const [toggleActions, setToggleActions] = useState(false);
   const [typeValue, setTypeValue] = useState("all types");
   const [query, setQuery] = useState("");
@@ -90,6 +88,7 @@ function ContentTab({ active }) {
         console.log(error.message, "error");
       });
   }, [getVideos, getArticles]);
+
   useEffect(() => {
     const ac = new AbortController();
 
@@ -207,15 +206,11 @@ function ContentTab({ active }) {
                   <div className="flex justify-between items-center">
                     <div className="flex justify-between items-center">
                       {/* stylist type */}
-                      <select
-                        value={typeValue}
-                        onChange={(e) => setTypeValue(e.target.value)}
-                        className="mr-2 w-140 border border-gray-800  rounded-full px-3 h-10 flex justify-center items-center"
-                      >
-                        <option value="all types">All types</option>
-                        <option value="video">Video</option>
-                        <option value="article">Article</option>
-                      </select>
+
+                      <TypesContent
+                        typeValue={typeValue}
+                        setTypeValue={setTypeValue}
+                      />
 
                       <div className="mr-2 w-140 border border-gray-800  rounded-full px-3 h-10 flex justify-center items-center">
                         More filters
@@ -240,38 +235,7 @@ function ContentTab({ active }) {
                         />
                       </div>
 
-                      <div
-                        onClick={() => setToggleAddContent(!toggleAddContent)}
-                        className="cursor-pointer bg-purple-100 relative text-white h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
-                      >
-                        New content
-                        <img
-                          className={clsx(
-                            toggleAddContent && "transform rotate-180",
-                            "ml-6"
-                          )}
-                          src={whiteDropdownIcon}
-                          alt=""
-                        />
-                        {toggleAddContent && (
-                          <div className="absolute bg-white rounded-xl top-10 shadow w-44 right-0">
-                            <div
-                              onClick={() => navigate(AuthRoutes.addArticle)}
-                              className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
-                            >
-                              <img className="mr-2" src={articleIcon} alt="" />
-                              Article
-                            </div>
-                            <div
-                              onClick={() => navigate(AuthRoutes.addVideo)}
-                              className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer "
-                            >
-                              <img className="mr-2" src={videoIcon} alt="" />
-                              Video
-                            </div>{" "}
-                          </div>
-                        )}
-                      </div>
+                      <Newcontent />
                     </div>
                   </div>
                 </div>
@@ -356,8 +320,6 @@ function ContentTab({ active }) {
                         selectedId={selectedId}
                         setSelectedId={setSelectedId}
                         setCallToAction={setCallToAction}
-                        // checkItem={checkItem}
-                        // setCheckItem={setCheckItem}
                       />
                     </tbody>
                   </table>

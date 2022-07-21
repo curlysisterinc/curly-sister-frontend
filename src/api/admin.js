@@ -8,6 +8,9 @@ export default {
   async GetAllStylists() {
     return curlySistersApi.get("/v1/admin/get-all-stylists");
   },
+  async GetOneStylist(id) {
+    return curlySistersApi.get(`/v1/admin/get-stylist/${id}`);
+  },
   async AddAdmin(email) {
     const data = { email };
     return curlySistersApi.post("/v1/admin/add-admin", data);
@@ -36,7 +39,12 @@ export default {
   async CreateStylist(data) {
     return curlySistersApi.post("/v1/admin/add-stylist", data);
   },
-
+  async UpdateStylist(data) {
+    return curlySistersApi.post("/api/stylist/update-stylist", data);
+  },
+  async CreateAvailability(data) {
+    return curlySistersApi.post("/v1/admin/add-availability", data);
+  },
   async CreateServices(data) {
     return curlySistersApi.post("/v1/admin/create-service", data);
   },
@@ -52,8 +60,17 @@ export default {
   async GetAllContents() {
     return curlySistersApi.post("/v1/admin/fetch-all-content");
   },
-  async UploadPhoto(data) {
-    return curlySistersFormDataApi.post("/v1/file/upload", data);
+  async UploadPhoto(formData) {
+    return curlySistersFormDataApi.post(
+      "/api/v1/file/upload/profile-pic",
+      formData
+    );
+  },
+  async UploadtoGallery(formData) {
+    return curlySistersFormDataApi.post(
+      "/api/v1/file/upload-to-gallery",
+      formData
+    );
   },
 
   async CreateCertification(name) {

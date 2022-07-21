@@ -3,7 +3,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 // import { BrowserRouter as Router } from "react-router-dom";
 import { BrowserRouter } from "react-router-dom";
 import { createBrowserHistory } from "history";
@@ -12,6 +11,7 @@ import configureStore from "./redux";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
+import "./index.css";
 
 const store = configureStore;
 

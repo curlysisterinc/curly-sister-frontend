@@ -1,212 +1,276 @@
+/* eslint-disable import/no-cycle */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable camelcase */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
-import React, { useState } from "react";
-import { weekList } from "../data";
-import dash from "../../../../../assets/images/dash.svg";
+
+import React, { useEffect, useMemo, useState } from "react";
+import { DateRangePicker } from "react-date-range";
+import { addDays as addDaysfn } from "date-fns";
+import { useLocation } from "react-router-dom";
 import cancel from "../../../../../assets/images/cancel.svg";
+import TimeRange from "./availablity/timeRange";
+import DaysRange from "./availablity/daysRange";
+import admin from "../../../../../api/admin";
+import { Select, SelectItem } from "../../../../customSelect";
 
-function AvailabilityTab() {
-  const [inputList, setInputList] = useState([
-    {
-      timezone: "GMT +1: Central European Time",
-      timeInAm: "09:00 Am",
-      timeInPm: "05:00 PM",
-    },
+function AvailabilityTab({ ariaHidden, idx, setActiveTab, state, dispatch }) {
+  const [availabledays, setAvailabledays] = useState([
+    { day: "Mon", available: true, triggerby: "" },
+    { day: "Tue", available: true, triggerby: "" },
+    { day: "Wed", available: true, triggerby: "" },
+    { day: "Thu", available: true, triggerby: "" },
+    { day: "Fri", available: true, triggerby: "" },
+    { day: "Sat", available: true, triggerby: "" },
+    { day: "Sun", available: true, triggerby: "" },
   ]);
-  const [dateRangeList, setDateRangeList] = useState([{ dateRange: "" }]);
-  const [days, setDays] = useState(weekList);
-  const { timezone } = inputList;
+  const [buttonAction, setButtonAction] = useState("Save");
+  const [isloading, setIsloading] = useState(false);
 
-  const changeTimeZone = (event, dataIndex) => {
-    setInputList(
-      inputList.map((value, index) => {
-        if (index === dataIndex) {
-          value.timezone = event.target.value;
-        }
-      })
-    );
-  };
-  const changeTimeInAm = (event, dataIndex) => {
-    setInputList(
-      inputList.map((value, index) => {
-        if (index === dataIndex) {
-          value.timeInAm = event.target.value;
-        }
-      })
-    );
-    // setInputList({ ...inputList, timeInAm: event.target.value });
-  };
-  const changeTimeInPm = (event, dataIndex) => {
-    setInputList(
-      inputList.map((value, index) => {
-        if (index === dataIndex) {
-          value.timeInPm = event.target.value;
-        }
-      })
-    );
-  };
-  const onDayCheck = (e, data) => {
-    const { checked } = e.target;
-    setDays(
-      days.map((day) => {
-        if (day.id === data.id) {
-          day.selected = checked;
-        }
-        return day;
-      })
-    );
+  const { state: locationState } = useLocation();
+  const localId = localStorage.getItem("createdStylist");
+
+  useEffect(() => {
+    dispatch({ type: "ADD_STYLISTID", payload: localId });
+    console.log(localId);
+    if (locationState._id !== undefined) {
+      dispatch({ type: "ADD_STYLISTID", payload: locationState._id });
+      setButtonAction("Edit");
+    }
+  }, []);
+
+  const makeavailable = (day) => {
+    const daysavail = availabledays.map((weekday) => {
+      if (weekday.day !== day) {
+        return weekday;
+      }
+      return { ...weekday, available: true, triggerby: "" };
+    });
+    setAvailabledays([...daysavail]);
   };
 
-  // // handle click event of the Remove button
-  // const handleRemoveClick = (index) => {
-  //   const list = [...inputList];
-  //   list.splice(index, 1);
-  //   setInputList(list);
-  // };
+  const makeunavailable = (day, id) => {
+    const daysavail = availabledays.map((weekday) => {
+      if (weekday.day !== day) {
+        return weekday;
+      }
+      return { ...weekday, available: false, triggerby: id };
+    });
+    setAvailabledays([...daysavail]);
+  };
+
+  const handleCreateStylist = () => {
+    setIsloading(true);
+    const {
+      stylistId,
+      timezone,
+      range: tempRange,
+      blocked_dates: tempBlockeDates,
+    } = state;
+    const range = tempRange.map(({ days, time_range }) => {
+      return { days, time_range };
+    });
+    const blocked_dates = tempBlockeDates.map((date) => {
+      const { endDate, startDate } = date[1];
+      return { endDate, startDate };
+    });
+
+    const data = {
+      stylistId,
+      timezone,
+      range,
+      blocked_dates,
+    };
+
+    admin
+      .CreateAvailability(data)
+      .then((response) => {
+        console.log(response.data, "availabilty sent");
+        setActiveTab((prev) => ({ ...prev, galleryTab: true }));
+        setButtonAction("Edit");
+        setIsloading(false);
+      })
+      .catch((error) => console.log(error.message, "availability error"));
+    console.log(data, "availability");
+  };
+
+  const clickHandler = () => {
+    if (buttonAction === "Save" || buttonAction === "Update") {
+      handleCreateStylist();
+    }
+    if (buttonAction === "Edit") {
+      setButtonAction("Update");
+    }
+  };
+
+  const memLength = useMemo(
+    () => availabledays.filter((item) => item.available === false).length
+  ); //eslint-disable-line
+
+  useEffect(() => {
+    if (availabledays.filter((item) => item.available === false).length === 7) {
+      dispatch({ type: "REMOVE_EMPTY_RANGE" });
+    }
+  }, [memLength]);
+
+  const changeTimeZone = (e) => {
+    dispatch({ type: "CHANGE_TIMEZONE", payload: e });
+  };
+
+  const addDays = (id, value) => {
+    availabledays.forEach((itm) => {
+      const { available, day, triggerby } = itm;
+      if (day === value && available === true && triggerby === "") {
+        dispatch({ type: "ADD_DAY", payload: { id, value } });
+        makeunavailable(value, id);
+      }
+    });
+  };
+
+  const removeDays = (id, value) => {
+    availabledays.forEach((itm) => {
+      const { day, triggerby, available } = itm;
+      if (day === value && triggerby === id && available === false) {
+        dispatch({ type: "REMOVE_DAY", payload: { id, value } });
+        makeavailable(value);
+      }
+    });
+  };
+
+  const bookingStarttime = (id, value1, value2) => {
+    dispatch({ type: "ADD_START_TIME", payload: { id, value1, value2 } });
+  };
+  const bookingEndtime = (id, value) => {
+    dispatch({ type: "END_START_TIME", payload: { id, value } });
+  };
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setInputList([
-      ...inputList,
-      {
-        timezone: "GMT +1: Central European Time",
-        timeInAm: "09:00 Am",
-        timeInPm: "05:00 PM",
-      },
-    ]);
+    dispatch({ type: "ADD_RANGE" });
   };
 
   // handle click event of the Remove button
   const handleRemoveClick = (index) => {
-    const list = [...inputList];
-    list.splice(index, 1);
-    setInputList(list);
+    const reset = availabledays.map((itm) => {
+      if (itm.triggerby === index) {
+        return { ...itm, triggerby: "", available: true };
+      }
+      return itm;
+    });
+    setAvailabledays([...reset]);
+    dispatch({ type: "REMOVE_RANGE", payload: index });
   };
 
   // handle click event of the Add button
   const handleAddRangeClick = () => {
-    setDateRangeList([
-      ...dateRangeList,
-      {
-        dateRange: "",
-      },
-    ]);
+    dispatch({
+      type: "ADD_BLOCK",
+      payload: [
+        Math.floor(Math.random() * 10000),
+        {
+          start: new Date(),
+          end: addDaysfn(new Date(), 7),
+          key: "selection",
+        },
+      ],
+    });
   };
 
   // handle click event of the Remove button
   const handleRemoveRangeClick = (index) => {
-    const list = [...dateRangeList];
-    list.splice(index, 1);
-    setDateRangeList(list);
+    dispatch({
+      type: "REMOVE_BLOCK",
+      payload: index,
+    });
   };
+
   return (
-    <div className="mt-5">
+    <div aria-hidden={ariaHidden} id={idx} className="mt-5 relative">
+      {isloading && (
+        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black-50">
+          <div className="loader" />
+        </div>
+      )}
       <label htmlFor="timezone">
         TimeZone
-        <select
+        <Select
+          disabled={buttonAction === "Edit"}
           id="timezone"
-          value={timezone}
+          value={state.timezone}
+          onChange={changeTimeZone}
+          name="timezone"
+          className=" flex items-center justify-between shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
+          <SelectItem value="GMT +1: Central European Time">
+            GMT +1: Central European Time
+          </SelectItem>
+          <SelectItem value="GMT : Greenwich Meridain Time">
+            GMT : Greenwich Meridain Time
+          </SelectItem>
+        </Select>
+        {/* <select
+          id="timezone"
+          value={state.timezone}
           onChange={changeTimeZone}
           name="timezone"
           className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
         >
-          <option value="Gmt">GMT +1: Central European Time</option>
-          <option value="Gmtt">GMT +1: Central European Time</option>
-        </select>
+          <option value="GMT +1: Central European Time">
+            GMT +1: Central European Time
+          </option>
+          <option value="GMT : Greenwich Meridain Time">
+            GMT : Greenwich Meridain Time
+          </option>
+        </select> */}
       </label>
       <div className="mt-5">
         <p className="text-gray-400 text-sm mb-3">Recurring time ranges</p>
-        {inputList.map((list, index) => {
+        {state.range.map((list, index) => {
           return (
-            <>
+            <React.Fragment key={list.rangeid}>
               <div className="flex items-center justify-between mb-5 relative">
-                {inputList.length > 1 && (
-                  <div
-                    onClick={handleRemoveClick}
+                {state.range.length > 1 && (
+                  <button
+                    type="button"
+                    disabled={buttonAction === "Edit"}
+                    onClick={() => handleRemoveClick(list.rangeid)}
                     className="absolute -right-10 cursor-pointer flex items-center justify-center border-gray-800"
                   >
                     <img className="" src={cancel} alt="trash icon" />
-                  </div>
+                  </button>
                 )}
-                {/* weekday list */}
-                <div className="flex justify-center">
-                  {days.map((day) => {
-                    return (
-                      <div key={day.id} className="mr-6">
-                        <label
-                          className="flex flex-col justify-center items-center text-gray-800"
-                          htmlFor={day.id}
-                        >
-                          <input
-                            className="form-check-input appearance-none h-5 w-5 rounded-md border border-gray-300 bg-white checked:bg-purple-100 checked:border-purple-100 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain  cursor-pointer"
-                            type="checkbox"
-                            id={day.id}
-                            checked={day.selected}
-                            onChange={(e) => onDayCheck(e, day)}
-                          />
-                          <p className="text-sm text-gray-400 mt-4">
-                            {day.day}
-                          </p>
-                        </label>
-                      </div>
-                    );
-                  })}
-                </div>
-                {/* time dropdown */}
-                <div className="flex items-center">
-                  <select
-                    id="time1"
-                    value={list.timeInAm}
-                    onChange={changeTimeInAm}
-                    name="timeAm"
-                    className="shadow-sm appearance-none border border-gray-800 rounded w-32 py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    <option value="1am">01:00 AM</option>
-                    <option value="2am">02:00 AM</option>
-                    <option value="3am">03:00 AM</option>
-                    <option value="4am">04:00 AM</option>
-                    <option value="5am">05:00 AM</option>
-                    <option value="6am">06:00 AM</option>
-                    <option value="7am">07:00 AM</option>
-                    <option value="8am">08:00 AM</option>
-                    <option value="9am">09:00 AM</option>
-                    <option value="10am">10:00 AM</option>
-                    <option value="11am">11:00 AM</option>
-                  </select>
-                  <img className="mx-2" src={dash} alt="" />
-                  <select
-                    id="time2"
-                    value={list.timeInPm}
-                    onChange={changeTimeInPm}
-                    name="timePm"
-                    className="shadow-sm appearance-none border border-gray-800 rounded w-32 py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    <option value="12pm">12:00 PM</option>
-                    <option value="1pm">01:00 PM</option>
-                    <option value="2pm">02:00 PM</option>
-                    <option value="3pm">03:00 PM</option>
-                    <option value="4pm">04:00 PM</option>
-                    <option value="5pm">05:00 PM</option>
-                    <option value="6pm">06:00 PM</option>
-                    <option value="7pm">07:00 PM</option>
-                    <option value="8pm">08:00 PM</option>
-                    <option value="9pm">09:00 PM</option>
-                    <option value="10pm">10:00 PM</option>
-                    <option value="11pm">11:00 PM</option>
-                  </select>
-                </div>
+                <DaysRange
+                  selectedid={list.rangeid}
+                  selected={list.days}
+                  addDays={addDays}
+                  removeDays={removeDays}
+                  buttonAction={buttonAction}
+                />
+                <TimeRange
+                  selectedid={list.rangeid}
+                  selected={list.time_range}
+                  bookingStarttime={bookingStarttime}
+                  bookingEndtime={bookingEndtime}
+                  buttonAction={buttonAction}
+                  defaultval="Time"
+                />
               </div>
-              {inputList.length - 1 === index && inputList.length < 4 && (
-                <div
-                  onClick={handleAddClick}
-                  className="text-purple-100 text-sm mt-4 cursor-pointer"
-                >
-                  Add another recurring time range
-                </div>
-              )}
-            </>
+              {state.range.length - 1 === index &&
+                state.range.length < 4 &&
+                availabledays.filter((itm) => itm.available === false).length <
+                  7 && (
+                  <button
+                    type="button"
+                    disabled={buttonAction === "Edit"}
+                    onClick={handleAddClick}
+                    className="text-purple-100 text-sm mt-4 cursor-pointer"
+                  >
+                    Add another recurring time range
+                  </button>
+                )}
+            </React.Fragment>
           );
         })}
       </div>
@@ -214,13 +278,17 @@ function AvailabilityTab() {
       <div className="">
         <p className="text-gray-400 text-sm mb-3">Blocked dates</p>
         <div>
-          {dateRangeList.map((list, index) => {
+          {state.blocked_dates.map((days, index) => {
+            const [blockid, block] = days;
+
             return (
-              <>
+              <React.Fragment key={blockid}>
                 <div className="relative">
-                  {dateRangeList.length > 1 && (
-                    <div
-                      onClick={handleRemoveRangeClick}
+                  {state.blocked_dates.length > 1 && (
+                    <button
+                      type="button"
+                      disabled={buttonAction === "Edit"}
+                      onClick={() => handleRemoveRangeClick(blockid)}
                       className="  cursor-pointer"
                     >
                       <img
@@ -228,8 +296,22 @@ function AvailabilityTab() {
                         src={cancel}
                         alt="trash icon"
                       />
-                    </div>
+                    </button>
                   )}
+
+                  <DateRangePicker
+                    onChange={(item) =>
+                      dispatch({
+                        type: "UPDATE_BLOCK",
+                        payload: { id: blockid, value: [item.selection] },
+                      })
+                    }
+                    showSelectionPreview
+                    moveRangeOnFirstSelection={false}
+                    months={2}
+                    ranges={[block]}
+                    direction="horizontal"
+                  />
 
                   <input
                     type="date"
@@ -237,19 +319,30 @@ function AvailabilityTab() {
                     className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
                 </div>
-                {dateRangeList.length - 1 === index &&
-                  dateRangeList.length < 4 && (
-                    <div
+                {state.blocked_dates.length - 1 === index &&
+                  state.blocked_dates.length < 4 && (
+                    <button
+                      type="button"
+                      disabled={buttonAction === "Edit"}
                       onClick={handleAddRangeClick}
                       className="text-purple-100 text-sm mt-4 cursor-pointer"
                     >
                       Add another blocked date range
-                    </div>
+                    </button>
                   )}
-              </>
+              </React.Fragment>
             );
           })}
         </div>
+      </div>
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={clickHandler}
+          className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5"
+        >
+          {buttonAction}
+        </button>
       </div>
     </div>
   );
