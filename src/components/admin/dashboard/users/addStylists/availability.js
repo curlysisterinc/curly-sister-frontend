@@ -6,17 +6,21 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import { addDays as addDaysfn } from "date-fns";
 import { useLocation } from "react-router-dom";
 import cancel from "../../../../../assets/images/cancel.svg";
+// import { Loadersmall } from "../../../../loader";
 import TimeRange from "./availablity/timeRange";
 import DaysRange from "./availablity/daysRange";
 import admin from "../../../../../api/admin";
 import { Select, SelectItem } from "../../../../customSelect";
+import OrangeBtn from "../../../../customButton/orangeBtn";
+import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
+import reducer, { initialState } from "./availablity";
 
-function AvailabilityTab({ ariaHidden, idx, setActiveTab, state, dispatch }) {
+function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
   const [availabledays, setAvailabledays] = useState([
     { day: "Mon", available: true, triggerby: "" },
     { day: "Tue", available: true, triggerby: "" },
@@ -28,16 +32,55 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab, state, dispatch }) {
   ]);
   const [buttonAction, setButtonAction] = useState("Save");
   const [isloading, setIsloading] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const { state: locationState } = useLocation();
-  const localId = localStorage.getItem("createdStylist");
+  const stylist = localStorage.getItem("createdStylist");
+
+  useChangeBtnTitle("availablity", setButtonAction, dispatch);
 
   useEffect(() => {
-    dispatch({ type: "ADD_STYLISTID", payload: localId });
-    console.log(localId);
-    if (locationState._id !== undefined) {
-      dispatch({ type: "ADD_STYLISTID", payload: locationState._id });
-      setButtonAction("Edit");
+    // console.log(localId);
+    // if (localId) {
+    //   dispatch({ type: "ADD_STYLISTID", payload: localId });
+    //   // dispatch({ type: "ADD_STYLISTID", payload: locationState._id });
+    //   setButtonAction("Edit");
+    // }
+
+    if (locationState) {
+      admin
+        .GetStylistById(stylist)
+        .then((res) => {
+          console.log(res.data.stylist, "stylistbyid");
+          const { availability } = res.data.stylist;
+
+          if (availability.length > 0) {
+            dispatch({ type: "CLEAR_INITIAL_BLOCK" });
+            dispatch({ type: "CLEAR_INITIAL_RANGE" });
+            availability.forEach(({ blocked_dates, range }) => {
+              blocked_dates.forEach(({ endDate, startDate }) => {
+                dispatch({
+                  type: "ADD_BLOCK",
+                  payload: [
+                    Math.floor(Math.random() * 10000),
+                    {
+                      start: new Date(startDate),
+                      end: new Date(endDate),
+                      key: "selection",
+                    },
+                  ],
+                });
+              });
+              range.forEach(({ days, time_range }) => {
+                dispatch({
+                  type: "ADD_OLD_RANGE",
+                  payload: { olddays: days, oldtimes: time_range },
+                });
+              });
+            });
+          }
+        })
+        .catch((err) => console.log(err));
     }
   }, []);
 
@@ -188,11 +231,6 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab, state, dispatch }) {
 
   return (
     <div aria-hidden={ariaHidden} id={idx} className="mt-5 relative">
-      {isloading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black-50">
-          <div className="loader" />
-        </div>
-      )}
       <label htmlFor="timezone">
         TimeZone
         <Select
@@ -336,13 +374,20 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab, state, dispatch }) {
         </div>
       </div>
       <div className="flex justify-end">
-        <button
+        <OrangeBtn
+          buttonAction={buttonAction}
+          // disabled={disableBtn()}
+          onClick={clickHandler}
+          isloading={isloading}
+        />
+        {/* <button
           type="button"
           onClick={clickHandler}
-          className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5"
+          className="text-sm disabled:opacity-50 font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5 flex items-center gap-x-2"
         >
           {buttonAction}
-        </button>
+          {isloading && <Loadersmall />}
+        </button> */}
       </div>
     </div>
   );

@@ -11,43 +11,56 @@ import admin from "../../../../../api/admin";
 import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
 import ManageServicesModal from "../manageServicesModal";
 import { IoMdClose } from "react-icons/io";
+import OrangeBtn from "../../../../customButton/orangeBtn";
+import { useLocation } from "react-router-dom";
+import { serviceInitials } from "./helper";
+import DropDown from "../../../../customdropdown/primitive/DropDown";
+import DropDownItem from "../../../../customdropdown/primitive/DropDownItem";
 
-function ServicesTab({
-  ariaHidden,
-  idx,
-  setActiveTab,
-  stylistValues,
-  setStylistValues,
-}) {
-  const [services, setServices] = useState([]);
+function ServicesTab({ ariaHidden, idx, setActiveTab }) {
+  const [stylistServices, setStylistServices] = useState(serviceInitials);
+  const [allServices, setAllServices] = useState([]);
+  const [iServiceUpdate, setIServiceUpdate] = useState(false);
   const [openServiceModal, setOpenServiceModal] = useState(false);
   const [buttonAction, setButtonAction] = useState("Save");
   const [isloading, setIsloading] = useState(false);
-  const [btnDisabled, setBtnDisabled] = useState(true);
-  const [iServiceUpdate, setIsServiceUpdate] = useState(false);
-  // const localId = localStorage.getItem("createdStylist");
 
-  useChangeBtnTitle(setButtonAction, setStylistValues);
+  const { state } = useLocation();
+  const stylistId = localStorage.getItem("createdStylist");
+
+  useChangeBtnTitle("service", setButtonAction, setStylistServices);
 
   useEffect(() => {
     const ac = new AbortController();
-    if (stylistValues.services.length > 0) {
-      setServices([...stylistValues.services]);
-      // setButtonAction("Edit");
-    }
-    if (stylistValues.services.length === 0) {
+
+    if (state) {
+      setIsloading(true);
       admin
-        .GetServices()
-        .then((response) => {
-          console.log(response.data, "services");
-          setServices(response.data.data);
-          const tempArr = response.data.data.map((el) => el._id);
-          setStylistValues((prev) => ({ ...prev, services: [...tempArr] }));
+        .GetStylistById(stylistId)
+        .then((res) => {
+          console.log(res.data.stylist, "services stylist");
+          const { services } = res.data.stylist;
+          const temp = services.map((service) => service._id);
+          setStylistServices((prev) => ({ ...prev, services: [...temp] }));
+          setIsloading(false);
         })
-        .catch((error) => {
-          console.log(error.message, "error");
+        .catch((err) => {
+          console.log(err, "error fetching existing stylist information");
+          setIsloading(false);
         });
     }
+
+    // if (allServices.length === 0) {
+    admin
+      .GetServices()
+      .then((response) => {
+        console.log(response.data, "services");
+        setAllServices(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.message, "error");
+      });
+    // }
 
     return function cleanup() {
       ac.abort();
@@ -56,13 +69,15 @@ function ServicesTab({
 
   // handle click event of the Remove button
   const handleRemoveServiceClick = (index) => {
-    const list = services.filter((serv) => serv._id !== index);
-    setServices([...list]);
+    const tempServices = stylistServices.services.filter(
+      (serv) => serv !== index
+    );
+    setStylistServices((prev) => ({ ...prev, services: [...tempServices] }));
   };
   const handleCreateStylist = () => {
     setIsloading(true);
     admin
-      .UpdateStylist(stylistValues)
+      .UpdateStylist(stylistServices)
       .then((res) => {
         setActiveTab((prev) => ({ ...prev, availabilityTab: true }));
         setButtonAction("Edit");
@@ -82,24 +97,22 @@ function ServicesTab({
   // handle certification modal change
   useEffect(() => {
     const ac = new AbortController();
-    // setStylistValues((prev) => ({ ...prev, id: localId }));
     document.title = "CurlySisters • Add Stylists";
     if (openServiceModal) {
       document.body.style.overflow = "hidden";
     }
-    // setServices(getService);
     return function cleanup() {
       ac.abort();
     };
   }, []);
-  useEffect(() => {
-    const isValid = stylistValues.services.length;
-    if (isValid) {
-      setBtnDisabled(false);
-    } else {
-      setBtnDisabled(true);
-    }
-  }, [stylistValues]);
+
+  const onServiceSelectHandler = (e) => {
+    const { id } = e.target.dataset;
+    setStylistServices((prev) => ({
+      ...prev,
+      services: [...prev.services, id],
+    }));
+  };
 
   // handle certification modal close
   const handleCloseServiceModal = () => {
@@ -115,13 +128,15 @@ function ServicesTab({
       document.body.style.overflow = "hidden";
     }
   };
+  const disableBtn = () => {
+    const isValid = stylistServices.services.length;
+    if (isValid || buttonAction === "Edit") {
+      return false;
+    }
+    return true;
+  };
   return (
     <div aria-hidden={ariaHidden} id={idx} className="mt-5 relative">
-      {isloading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black-50">
-          <div className="loader" />
-        </div>
-      )}
       <div className="flex justify-between items-center">
         <p className="">Services</p>
 
@@ -134,49 +149,122 @@ function ServicesTab({
           Add new service
         </button>
       </div>
-      {services.map((service) => {
-        return (
-          <div key={service._id}>
-            <div className="border border-gray-800 rounded grid grid-cols-12 h-12 mt-5">
-              <div className=" col-span-5 flex  items-center border-r border-gray-800 pl-3">
-                <div className="bg-purple-100 rounded-full text-white text-sm px-3 py-1 w-auto inline-block">
-                  {service.name}
-                </div>
-              </div>
-              <div className="col-span-3 flex justify-between items-center border-r border-gray-800 px-3">
-                <p>{service.default_price}</p>
-                <p>$USD</p>
-              </div>
-              <div className="col-span-3 flex justify-between items-center border-r border-gray-800 px-3">
-                <p>{service.duration}</p>
-                <p>mins</p>
-              </div>
-              {services.length > 0 && (
+      <table
+        style={{ borderSpacing: "0 .5rem" }}
+        className="w-full border-separate"
+      >
+        <tbody>
+          {allServices
+            .filter((service) => stylistServices.services.includes(service._id))
+            .map((service) => {
+              return (
+                <tr className="rounded-lg" key={service._id}>
+                  <td
+                    style={{
+                      borderRightColor: "transparent",
+                      borderTopLeftRadius: "0.5rem",
+                      borderBottomLeftRadius: "0.5rem",
+                    }}
+                    className="p-1.5 border border-solid border-gray-800"
+                  >
+                    <div className="bg-purple-100 rounded-full text-white text-sm px-3 py-1.5 w-auto inline-block">
+                      {service.name}
+                    </div>
+                  </td>
+                  <td
+                    style={{ borderRightColor: "transparent" }}
+                    className="px-4 py-3 border border-solid border-gray-800"
+                  >
+                    <div className="flex justify-between">
+                      <p>{service.default_price}</p>
+                      <p>$USD</p>
+                    </div>
+                  </td>
+                  <td
+                    style={{ borderRightColor: "transparent" }}
+                    className="px-4 py-3 border border-solid border-gray-800"
+                  >
+                    <div className="flex justify-between">
+                      <p>{service.duration}</p>
+                      <p>mins</p>
+                    </div>
+                  </td>
+                  {allServices.length > 0 && (
+                    <td
+                      style={{
+                        borderTopRightRadius: "0.5rem",
+                        borderBottomRightRadius: "0.5rem",
+                      }}
+                      className=" border border-solid border-gray-800 "
+                    >
+                      <button
+                        disabled={buttonAction === "Edit"}
+                        type="button"
+                        onClick={() => handleRemoveServiceClick(service._id)}
+                        className="flex justify-center items-center mx-auto px-2 "
+                      >
+                        <IoMdClose
+                          style={{ fill: "#8E8695" }}
+                          className="cursor-pointer m-0 fill-[#8E8695]"
+                          size={24}
+                        />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
+      {allServices.filter(
+        (service) => stylistServices.services.includes(service._id) === false
+      ).length > 0 ? (
+        <DropDown
+          disabled={buttonAction === "Edit"}
+          contentClassName="bg-white border border-solid border-gray-800 p-2 rounded"
+          trigger={
+            <button
+              className={`text-purple-100 cursor-pointer ${
+                stylistServices.services.length > 0 ? "" : "w-full"
+              }`}
+              type="button"
+            >
+              {stylistServices.services.length > 0
+                ? "Select another service"
+                : "Select a service"}
+            </button>
+          }
+        >
+          {allServices
+            .filter(
+              (service) =>
+                stylistServices.services.includes(service._id) === false
+            )
+            .map((service) => (
+              <DropDownItem key={service._id}>
                 <button
-                  disabled={buttonAction === "Edit"}
+                  data-id={service._id}
+                  onClick={onServiceSelectHandler}
                   type="button"
-                  onClick={() => handleRemoveServiceClick(service._id)}
-                  className="col-span-1 flex justify-center items-center "
+                  className="w-full text-left hover:bg-purple-100 hover:text-white"
                 >
-                  <IoMdClose className="cursor-pointer" size={24} />
+                  {service.name}
                 </button>
-              )}
-            </div>
-          </div>
-        );
-      })}
+              </DropDownItem>
+            ))}
+        </DropDown>
+      ) : null}
+
       {openServiceModal && (
         <ManageServicesModal handleClose={handleCloseServiceModal} />
       )}
       <div className="flex justify-end">
-        <button
-          type="button"
-          disabled={btnDisabled}
+        <OrangeBtn
+          buttonAction={buttonAction}
+          disabled={disableBtn()}
           onClick={clickHandler}
-          className="text-sm disabled:opacity-50 font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5"
-        >
-          {buttonAction}
-        </button>
+          isloading={isloading}
+        />
       </div>
     </div>
   );

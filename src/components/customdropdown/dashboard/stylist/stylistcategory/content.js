@@ -9,7 +9,10 @@ function content({ setTypeValue, setHiddenTabs }) {
         <button
           type="button"
           onClick={() => {
-            setTypeValue((prev) => ({ ...prev, categoryType: "walk-in only" }));
+            setTypeValue((prev) => ({
+              ...prev,
+              category_type: "walk-in only",
+            }));
             setHiddenTabs(false);
           }}
           className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
@@ -23,7 +26,7 @@ function content({ setTypeValue, setHiddenTabs }) {
           onClick={() => {
             setTypeValue((prev) => ({
               ...prev,
-              categoryType: "curly sister stylist",
+              category_type: "curly sister stylist",
             }));
             setHiddenTabs(true);
           }}
@@ -38,7 +41,7 @@ function content({ setTypeValue, setHiddenTabs }) {
           onClick={() => {
             setTypeValue((prev) => ({
               ...prev,
-              categoryType: "master stylist",
+              category_type: "master stylist",
             }));
             setHiddenTabs(true);
           }}

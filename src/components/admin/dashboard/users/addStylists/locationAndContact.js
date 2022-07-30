@@ -12,19 +12,19 @@ import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
+// import { Loadersmall } from "../../../../loader";
 import admin from "../../../../../api/admin";
 import ExtraLinks from "../extraLinks";
 import "react-phone-input-2/lib/style.css";
 import { PersistUserContext } from "./addStylist";
+import OrangeBtn from "../../../../customButton/orangeBtn";
+import { locationInitials } from "./helper";
 
-function LocationAndContact({
-  ariaHidden,
-  idx,
-  setActiveTab,
-  stylistValues,
-  setStylistValues,
-}) {
+function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
+  const [stylistLocation, setStylistLocation] = useState(locationInitials);
   const { state } = useLocation();
+  // console.log(admin);
+
   const link = [
     { link: "website", id: 1 },
     { link: "facebook", id: 2 },
@@ -40,17 +40,16 @@ function LocationAndContact({
   const [buttonAction, setButtonAction] = useState("Save");
   const [isloading, setIsloading] = useState(false);
 
-  // const stylistId = localStorage.getItem("createdStylist");
-  useChangeBtnTitle(setButtonAction, setStylistValues);
+  // changes the title of the save button to update if user is from stylistrow
+  // add id to the initialstate to be sent
+  useChangeBtnTitle(
+    "location",
+    setButtonAction,
+    setStylistLocation,
+    stylistLocation
+  );
 
   const add = (key, randomid) => {
-    // if (key !== undefined) {
-    //   template = {
-    //     id: randomid,
-    //     key,
-    //   };
-    // }
-
     setCount((prev) => [...prev, { key, id: randomid }]);
   };
   // active: true
@@ -70,64 +69,80 @@ function LocationAndContact({
 
   console.log(userResponse, stylistId, "stylistid");
 
-  useEffect(() => {
-    if (stylistId !== "" && stylistId !== null && stylistId !== undefined) {
-      fetchUserResponse();
-    }
-  }, []);
+  // const [userResponse, fetchUserResponse] = useContext(PersistUserContext);
 
   useEffect(() => {
-    // setStylistValues((prev) => ({ ...prev, id: stylistId }));
-
-    if (state?._id !== undefined) {
-      // setButtonAction("Edit");
-      const { facebook, instagram, website } = stylistValues;
-      const socials = { facebook, instagram, website };
-      const socialKeys = Object.keys(socials);
-      const socialValues = Object.values(socials);
-      if (
-        socialValues.filter((itm) => itm !== undefined && itm !== "").length > 0
-      ) {
-        setCount([]);
-      }
-      socialValues.forEach((element, i, itm) => {
-        const randomid = Math.floor(Math.random() * 10000);
-        if (element !== undefined && element !== "") {
-          add(socialKeys[i], randomid);
-        }
-      });
+    if (state) {
+      setIsloading(true);
+      admin
+        .GetStylistById(stylistId)
+        .then((res) => {
+          const {
+            facebook,
+            instagram,
+            website,
+            address,
+            phone_no,
+            zipcode,
+            email,
+          } = res.data.stylist;
+          setStylistLocation((prev) => ({
+            ...prev,
+            address,
+            phone_no,
+            zipcode,
+            email,
+          }));
+          const socials = { facebook, instagram, website };
+          const socialKeys = Object.keys(socials);
+          const socialValues = Object.values(socials);
+          if (
+            socialValues.filter((itm) => itm !== undefined && itm !== "")
+              .length > 0
+          ) {
+            setCount([]);
+          }
+          socialValues.forEach((element, i, itm) => {
+            const randomid = Math.floor(Math.random() * 10000);
+            if (element !== undefined && element !== "") {
+              setStylistLocation((prev) => ({
+                ...prev,
+                [socialKeys[i]]: element,
+              }));
+              add(socialKeys[i], randomid);
+            }
+          });
+          setIsloading(false);
+        })
+        .catch((err) => {
+          console.log(err, "error fetching existing stylist information");
+          setIsloading(false);
+        });
     }
   }, []);
 
   const disableBtn = () => {
     const isValid =
-      stylistValues.email?.trim()?.length &&
-      stylistValues.address?.trim()?.length &&
-      stylistValues?.phone_no !== null;
-    // if (stylistValues?.phone_no === undefined) {
-    //   return false;
-    // }
+      stylistLocation.email?.trim()?.length &&
+      stylistLocation.address?.trim()?.length &&
+      stylistLocation?.phone_no !== null;
+
     if (isValid || buttonAction === "Edit") {
       return false;
     }
     return true;
   };
 
-  // const deleteR = (id, selected) => {
-  //   setCount((prev) => prev.filter((item) => item.id !== id));
-  //   handleSelectChange({ name: selected, value: "" });
-  // };
-
   const handleChange = (e, data) => {
     if (e.target) {
-      setStylistValues((prev) => ({
+      setStylistLocation((prev) => ({
         ...prev,
         [e.target.name]: e.target.value,
       }));
     }
     if (!e.target) {
       const { dialCode } = data;
-      setStylistValues((prev) => ({
+      setStylistLocation((prev) => ({
         ...prev,
         phone_no: e,
         zipcode: dialCode,
@@ -138,14 +153,15 @@ function LocationAndContact({
   const handleCreateStylist = () => {
     setIsloading(true);
     if (
-      stylistValues.email.trim() !== "" &&
-      stylistValues.address.trim() !== ""
+      stylistLocation.email.trim() !== "" &&
+      stylistLocation.address.trim() !== ""
     ) {
       admin
-        .UpdateStylist(stylistValues)
+        .UpdateStylist(stylistLocation)
         .then((res) => {
           console.log(res.data.stylist, "data");
           setButtonAction("Edit");
+          console.log("changedbtn to edit");
           setIsloading(false);
           setActiveTab((prev) => ({ ...prev, certifificationTab: true }));
         })
@@ -164,11 +180,6 @@ function LocationAndContact({
 
   return (
     <div aria-hidden={ariaHidden} id={idx} className="relative">
-      {isloading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black-50">
-          <div className="loader" />
-        </div>
-      )}
       <label
         className="block text-black text-sm font-bold mt-5"
         htmlFor="address"
@@ -176,13 +187,14 @@ function LocationAndContact({
         Address
         <input
           disabled={buttonAction === "Edit"}
+          autoComplete="off"
           className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="text"
           placeholder="Type and select address..."
           name="address"
           label="address"
           id="address"
-          value={stylistValues.address}
+          value={stylistLocation.address}
           onChange={handleChange}
         />
       </label>
@@ -194,13 +206,14 @@ function LocationAndContact({
           Email address
           <input
             disabled={buttonAction === "Edit"}
+            autoComplete="off"
             className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="email"
             placeholder="Enter email address"
             name="email"
             label="email"
             id="email"
-            value={stylistValues.email}
+            value={stylistLocation.email}
             onChange={handleChange}
           />
         </label>
@@ -222,7 +235,7 @@ function LocationAndContact({
                 name: "phone_no",
                 autoFocus: true,
               }}
-              value={stylistValues.phone_no}
+              value={stylistLocation.phone_no}
               onChange={handleChange}
             />
           </div>
@@ -237,8 +250,8 @@ function LocationAndContact({
                 <React.Fragment key={id}>
                   <ExtraLinks
                     buttonAction={buttonAction}
-                    globalInput={stylistValues}
-                    setGlobalInput={setStylistValues}
+                    globalInput={stylistLocation}
+                    setGlobalInput={setStylistLocation}
                     idx={id}
                     opt={key}
                     setCount={setCount}
@@ -266,14 +279,12 @@ function LocationAndContact({
         </div>
       </div>
       <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={handleClick}
+        <OrangeBtn
+          buttonAction={buttonAction}
           disabled={disableBtn()}
-          className="text-sm disabled:opacity-50 font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5"
-        >
-          {buttonAction}
-        </button>
+          onClick={handleClick}
+          isloading={isloading}
+        />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React from "react";
 
 function Certifications({ getStylist }) {
@@ -9,7 +10,10 @@ function Certifications({ getStylist }) {
           <div className="flex justify-start flex-wrap items-center mt-5">
             {getStylist.certifications.map((item) => {
               return (
-                <div className="rounded-full mb-3 mr-3 px-3 py-2 border whitespace-nowrap border-purple-100 bg-white text-purple-100 text-sm">
+                <div
+                  key={item?._id}
+                  className="rounded-full mb-3 mr-3 px-3 py-2 border whitespace-nowrap border-purple-100 bg-white text-purple-100 text-sm"
+                >
                   {item.name}
                 </div>
               );

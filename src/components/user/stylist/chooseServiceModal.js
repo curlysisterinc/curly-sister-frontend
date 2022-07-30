@@ -1,3 +1,7 @@
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable import/no-cycle */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable camelcase */
 /* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -8,58 +12,125 @@
 /* eslint-disable func-names */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-no-useless-fragment */
-import React from "react";
+import React, { useState } from "react";
+import Calendar from "react-calendar";
+import "./calender.css";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import wallet from "../../../assets/images/wallet.svg";
 import timer from "../../../assets/images/timer.svg";
+import { timeArr } from "../../admin/dashboard/users/data";
+import TimeInvtervals from "./timeRange";
 
-function ChooseServiceModal({ visible, setVisible, setHasService }) {
+function ChooseServiceModal({
+  availability,
+  serviceOffered,
+  visible,
+  setData,
+  data,
+  setVisible,
+  setBookingFee,
+  setHasService,
+  setBookingTotal,
+}) {
   const [isActive, setIsActive] = React.useState("everyone");
+  const [booking, setBooking] = useState(new Date());
+  const [time_r, setTime_r] = useState("");
+
+  console.log(availability, "availability");
+  const BOOKING_FEE_PERCENT = 0;
+  React.useEffect(() => {
+    if (data?.bookedservice?.default_price) {
+      const fee = parseFloat(
+        (data?.bookedservice?.default_price * BOOKING_FEE_PERCENT) / 100
+      );
+      console.log(fee, "fee");
+      const total = parseInt(data.bookedservice.default_price, 10) + fee;
+      setBookingTotal(total);
+      setBookingFee(fee);
+    }
+  }, [data]);
+  // const {
+  //   blocked_dates: [{ startDate, endDate }],
+  //   range: [{ days, time_range }],
+  // } = availability;
+
+  // console.log(days, time_range, "days");
+  // console.log(startDate, endDate, "startend");
+  // console.log(new Date(startDate), "start", new Date(endDate), "end");
+
+  const styleDates = ({ date, view }) => {
+    const current = new Date();
+    // const start_date = new Date(startDate);
+    // const end_date = new Date(endDate);
+
+    if (view === "month") {
+      if (
+        date.getDate() === current.getDate() &&
+        current.getMonth() === date.getMonth() &&
+        current.getFullYear() === date.getFullYear()
+      ) {
+        return "text-white text-sm bg-purple-100 rounded-full w-8 h-8 flex-none";
+      }
+      if (
+        booking.getDate() === date.getDate() &&
+        booking.getMonth() === date.getMonth()
+      ) {
+        return "text-white text-sm bg-orange-200 rounded-full w-8 h-8 flex-none";
+      }
+      // if ([1, 7, 13, 9].includes(date.getDate())) {
+      //   return "text-purple-100 font-semibold";
+      // }
+      // if (
+      //   start_date.getFullYear() >= date.getFullYear() &&
+      //   end_date.getFullYear() >= date.getFullYear() &&
+      //   start_date.getMonth() >= date.getMonth() &&
+      //   end_date.getMonth() >= date.getMonth()
+      // ) {
+      //   return "text-purple-100 font-semibold";
+      // }
+
+      return "text-gray-700 text-sm w-8 h-8 flex-none";
+    }
+    return "";
+  };
+
+  // eslint-disable-next-line no-unused-vars
+  const disableDates = ({ date }) => {
+    // const start_date = new Date(startDate);
+    // const end_date = new Date(endDate);
+
+    // if (start_date.getDate() > date.getDate() > end_date.getDate()) {
+    //   return true;
+    // }
+
+    // if (.includes(date.getDate())) {
+    // }
+    return false;
+  };
 
   const closeModal = () => {
     setVisible(false);
   };
-  const continueButton = () => {
+  const continueButton = (e) => {
+    e.preventDefault();
+    setData((prev) => ({ ...prev, day: booking, time: time_r }));
     setVisible(false);
     setHasService(true);
   };
-  const getServices2 = [
-    {
-      id: 1,
-      name: "Stylist training",
-      description:
-        "This training is for professional stylists to have a deep dive in the art of curly hair.",
-      default_price: "35",
-      duration: "35",
-    },
-    {
-      id: 2,
-      name: "Micro teaching session",
-      description:
-        "This is for the stylist who needs tuning on your skills to help improve services your are giving to your clients. Generally only 1 -2 two topics can be covered here.",
-      default_price: "35",
-      duration: "35",
-    },
-  ];
 
-  const getServices1 = [
-    {
-      id: 1,
-      name: "Product recommendation",
-      description:
-        "This is an intro scheduling call, to discuss product selection or application and basics of how to live a wavy and curly life.",
-      default_price: "35",
-      duration: "35",
-    },
-    {
-      id: 2,
-      name: "Consultation",
-      description:
-        "For clients looking for assistance with their own hair or their dependents hair. This is an in-depth tutorial to teach you specific details from amazing stylists around the world.",
-      default_price: "35",
-      duration: "35",
-    },
-  ];
+  const getServices2 = serviceOffered?.filter(
+    (service) =>
+      service?.who_is_this_for === "Every" ||
+      service?.who_is_this_for === "Others"
+  );
+
+  const getServices1 = serviceOffered?.filter(
+    (service) =>
+      service?.who_is_this_for !== "Every" ||
+      service?.who_is_this_for !== "Others"
+  );
+
+  console.log(getServices1, "stylist", getServices2, "every");
 
   return (
     <>
@@ -70,7 +141,10 @@ function ChooseServiceModal({ visible, setVisible, setHasService }) {
               <AiOutlineCloseCircle onClick={closeModal} size={24} />
             </div>
 
-            <div className="bg-white rounded-2xl shadow-md overflow-hidden h-full relative  w-full grid grid-cols-12 ">
+            <form
+              onSubmit={continueButton}
+              className="bg-white rounded-2xl shadow-md overflow-hidden h-full relative  w-full grid grid-cols-12 "
+            >
               <div className=" col-span-5 border-r border-gray-250">
                 <div>
                   <div className="p-8">
@@ -98,16 +172,26 @@ function ChooseServiceModal({ visible, setVisible, setHasService }) {
                       </p>
                     </div>
                   </div>
-                  <div className="">
+                  <div className="h-400 overflow-y-scroll">
                     {isActive === "everyone" && (
                       <div className="divide-y divide-gray-250">
                         {getServices1.map((service) => {
                           return (
-                            <div className="bg-gray-50 p-8 flex items-start space-x-4">
+                            <div
+                              key={service?._id}
+                              className="bg-gray-50 p-8 flex items-start space-x-4"
+                            >
                               <input
                                 id="default-checkbox"
-                                type="checkbox"
-                                value=""
+                                type="radio"
+                                name="everyone"
+                                onChange={() =>
+                                  setData((prev) => ({
+                                    ...prev,
+                                    bookedservice: { ...service },
+                                  }))
+                                }
+                                value={service}
                                 className="w-6 h-6 text-blue-600 bg-transparent rounded-full border-gray-250 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                               />
                               <label
@@ -144,11 +228,21 @@ function ChooseServiceModal({ visible, setVisible, setHasService }) {
                       <div>
                         {getServices2.map((service) => {
                           return (
-                            <div className="bg-gray-50 p-8 flex items-start space-x-4">
+                            <div
+                              key={service?._id}
+                              className="bg-gray-50 p-8 flex items-start space-x-4"
+                            >
                               <input
                                 id="default-checkbox"
-                                type="checkbox"
-                                value=""
+                                type="radio"
+                                name="stylist"
+                                onChange={() =>
+                                  setData((prev) => ({
+                                    ...prev,
+                                    bookedservice: { ...service },
+                                  }))
+                                }
+                                value={service}
                                 className="w-6 h-6 text-blue-600 bg-transparent rounded-full border-gray-250 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                               />
                               <label
@@ -184,17 +278,77 @@ function ChooseServiceModal({ visible, setVisible, setHasService }) {
                   </div>
                 </div>
               </div>
-              <div className=" col-span-7 p-8 flex justify-end items-end">
-                <div className="flex justify-end items-end">
-                  <button
-                    onClick={continueButton}
-                    className="mt-4 bg-orange-200 rounded-full w-auto px-10 h-12 inline-block text-white font-BeatriceSemiBold"
-                  >
-                    Continue
-                  </button>
-                </div>
+              <div className=" col-span-7 px-10 py-8 ">
+                <section>
+                  <header>
+                    <h4 className="text-sm">Choose a date and time</h4>
+                  </header>
+                  <div className="py-4">
+                    <section className="grid grid-cols-bookings pb-6">
+                      <Calendar
+                        className="col-start-1 col-end-2"
+                        tileClassName={styleDates}
+                        tileDisabled={disableDates}
+                        // tileDisabled={({ date }) =>
+                        //   [1, 7, 13, 9].includes(date.getDate())
+                        // }
+                        view="month"
+                        onClickDay={(e) => console.log(e)}
+                        onChange={setBooking}
+                        value={booking}
+                      />
+                      <section className="col-start-3 col-end-4">
+                        <header className="pb-3 border-b border-gray-800 text-center">
+                          <h5 className="text-sm">Tue, 22 Mar 2022</h5>
+                        </header>
+                        <div className="pt-8 flex h-80 overflow-y-scroll flex-col gap-y-2">
+                          {timeArr
+                            // .filter((time, index) => {
+                            //   const from = timeArr.indexOf(
+                            //     (itm) => itm.value === time_range.from
+                            //   );
+                            //   const to = timeArr.indexOf(
+                            //     (itm) => itm.value === time_range.to
+                            //   );
+                            //   if (from >= index >= to) {
+                            //     return true;
+                            //   }
+                            //   return false;
+                            // })
+                            ?.map((time) => (
+                              <TimeInvtervals
+                                key={time.label}
+                                changeHandler={setTime_r}
+                                selected={time_r}
+                                title={time.label}
+                                value={time.value}
+                              />
+                            ))}
+                        </div>
+                      </section>
+                    </section>
+                    <section className="border-t border-solid border-gray-800 pt-6 grid grid-cols-bookings">
+                      <div>
+                        <img src={timer} alt="timezone" />
+                        <p>GMT +1: Central European Time (01:28)</p>
+                      </div>
+                      <div>
+                        <p>Virtual</p>
+                      </div>
+                    </section>
+                  </div>
+                  <div className="flex justify-end items-end">
+                    <button
+                      type="submit"
+                      // onClick={continueButton}
+                      className="mt-4 bg-orange-200 rounded-full w-auto px-10 h-12 inline-block text-white font-BeatriceSemiBold"
+                    >
+                      Continue
+                    </button>
+                  </div>
+                </section>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       ) : null}

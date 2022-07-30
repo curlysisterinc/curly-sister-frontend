@@ -1,3 +1,6 @@
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable prefer-const */
+/* eslint-disable import/no-cycle */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable import/order */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -30,53 +33,74 @@ import GalleryModal from "./profile/galleryModal";
 import ChooseServiceModal from "./chooseServiceModal";
 import { AuthRoutes } from "constants";
 
-export const BookServiceCard = () => {
+export const BookServiceCard = ({
+  serviceOffered,
+  availability,
+  stylistId,
+}) => {
   const [hasService, setHasService] = React.useState(false);
   const [chooseServiceVisible, setChooseServiceVisible] = React.useState(false);
+  const [data, setData] = React.useState({ stylistId });
   const navigate = useNavigate();
+  console.log(data);
+  const [bookingFee, setBookingFee] = React.useState(0);
+  const [bookingTotal, setBookingTotal] = React.useState(0);
 
   return (
     <div className="bg-white rounded-lg shadow-xl h-auto w-auto">
-      <div className="px-6 pt-6">
+      <div className="px-4 pt-6">
         <p className="text-base font-BeatriceSemiBold text-gray-400">
           Book a service
         </p>
-        <div className="border border-gray-250 rounded-full w-full my-4 flex justify-between items-center h-12 px-3">
-          <p className="text-sm text-gray-400">Select service, day and time</p>
-          <MdArrowForwardIos
-            color="#8E8695"
-            onClick={() => setChooseServiceVisible(true)}
-          />
-        </div>
+        <button
+          onClick={() => setChooseServiceVisible((prev) => !prev)}
+          className="border border-gray-250 rounded-full w-full my-4 flex justify-between items-center h-12 px-3"
+        >
+          <span className="text-sm text-gray-400">
+            Select service, day and time
+          </span>
+          <MdArrowForwardIos color="#8E8695" />
+        </button>
       </div>
       {hasService && (
-        <div className="bg-gray-50 p-6">
+        <div className="bg-gray-50 p-4">
           <div className="flex justify-between items-start mb-4">
             <div className="">
-              <p className="text-sm text-gray-400">Product recommendation</p>
+              <p className="text-sm text-gray-400">
+                {data?.bookedservice.name}
+              </p>
               <p className="text-xs text-gray-200 mb-1">
-                Tues, 22 Mar · 12:00 PM (GMT+1)
+                {/* Tues, 22 Mar · 12:00 PM (GMT+1) */}
+                {data?.day.toString()}
               </p>
             </div>
-            <p className="text-sm text-gray-400">$35</p>
+            <p className="text-sm text-gray-400">
+              ${data?.bookedservice?.default_price}
+            </p>
           </div>
           <div className="flex justify-between items-center ">
             <p className="text-sm text-gray-400">Booking fee</p>
 
-            <p className="text-sm text-gray-400">$5</p>
+            <p className="text-sm text-gray-400">${bookingFee}</p>
           </div>
           <hr className="w-full border border-gray-600 my-4" />
           <div className="flex justify-between items-center ">
             <p className="text-sm text-gray-400">Total</p>
 
-            <p className="text-base text-gray-400 font-BeatriceSemiBold">$40</p>
+            <p className="text-base text-gray-400 font-BeatriceSemiBold">
+              ${bookingTotal}
+            </p>
           </div>
         </div>
       )}
       <div className="px-6 ">
         <button
           disabled={!hasService}
-          onClick={() => navigate(AuthRoutes.confirmBooking)}
+          onClick={() =>
+            navigate(AuthRoutes.confirmBooking, {
+              state: { ...data, bookingTotal, bookingFee },
+            })
+          }
           className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold"
         >
           Continue
@@ -113,11 +137,19 @@ export const BookServiceCard = () => {
           <MdOutlineBookmark color="white" size={26} />
         </span>
       </div>
-      <ChooseServiceModal
-        visible={chooseServiceVisible}
-        setVisible={setChooseServiceVisible}
-        setHasService={setHasService}
-      />
+      {chooseServiceVisible && (
+        <ChooseServiceModal
+          serviceOffered={serviceOffered}
+          availability={availability}
+          setData={setData}
+          data={data}
+          visible={chooseServiceVisible}
+          setVisible={setChooseServiceVisible}
+          setHasService={setHasService}
+          setBookingFee={setBookingFee}
+          setBookingTotal={setBookingTotal}
+        />
+      )}
     </div>
   );
 };

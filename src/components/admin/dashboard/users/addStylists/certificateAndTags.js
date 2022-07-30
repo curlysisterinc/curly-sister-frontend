@@ -4,22 +4,26 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import admin from "../../../../../api/admin";
-import useFetchData from "../../../../../hooks/useFetchData";
 import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
 import ManageCertificationModal from "../manageCertificationModal";
+// import { Loadersmall } from "../../../../loader";
 import ManageTagModal from "../manageTagModal";
 import MultiselectComponent from "../multiSelectComponent";
+import OrangeBtn from "../../../../customButton/orangeBtn";
+import { certificateInitials } from "./helper";
 
 function CertificateAndTags({
   ariaHidden,
   idx,
   hiddenTabs,
   setActiveTab,
-  stylistValues,
-  setStylistValues,
+  // stylistCert,
+  // setStylistCert,
 }) {
+  const [stylistCert, setStylistCert] = useState(certificateInitials);
   const [getCertificates, setGetCertificates] = useState([]);
   const [isCertificationUpdate, setIsCertificationUpdate] = useState(false);
   const [isloading, setIsloading] = useState(false);
@@ -28,23 +32,72 @@ function CertificateAndTags({
   const [openCertificationModal, setOpenCertificationModal] = useState(false);
   const [openTagModal, setOpenTagModal] = useState(false);
   const [buttonAction, setButtonAction] = useState("Save");
+  const { state } = useLocation();
+  const stylistId = localStorage.getItem("createdStylist");
 
-  useChangeBtnTitle(setButtonAction, setStylistValues);
+  useChangeBtnTitle("certificate", setButtonAction, setStylistCert);
 
-  // fetch get certificate endpoint
-  useFetchData(
-    admin.GetCertification(),
-    setGetCertificates,
-    "certification",
-    isCertificationUpdate
-  );
+  const disableInput = () => {
+    if (buttonAction === "Edit") {
+      return true;
+    }
+    return false;
+  };
 
-  // fetch get tags endpoint
-  useFetchData(admin.GetTags(), setGetTags, "tags", isTagUpdate);
+  useEffect(() => {
+    if (state !== "" || state !== undefined || state !== null) {
+      setIsloading(true);
+      admin
+        .GetStylistById(stylistId)
+        .then((res) => {
+          const { certifications, tags } = res.data.stylist;
+          setStylistCert((prev) => ({
+            ...prev,
+            certifications,
+            tags,
+          }));
+          setIsloading(false);
+        })
+        .catch((err) => {
+          console.log(err, "error fetching existing stylist information");
+          setIsloading(false);
+        });
+    }
+  }, []);
 
-  const btnHandler = () => {
+  useEffect(() => {
+    const ac = new AbortController();
+    admin
+      .GetCertification()
+      .then((response) => {
+        console.log(response.data, `data fetched certification`);
+        setGetCertificates(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.message, `error fetching certification`);
+      });
+
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [isCertificationUpdate]);
+
+  useEffect(() => {
+    const ac = new AbortController();
+    admin
+      .GetTags()
+      .then((response) => {
+        console.log(response.data, `data fetched tags`);
+        setGetTags(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.message, `error fetching tags`);
+      });
+  }, [isTagUpdate]);
+
+  const disableBtn = () => {
     const isValid =
-      stylistValues.certifications.length > 0 && stylistValues.tags.length > 0;
+      stylistCert.certifications.length > 0 && stylistCert.tags.length > 0;
     if (isValid || buttonAction === "Edit") {
       return false;
     }
@@ -53,7 +106,7 @@ function CertificateAndTags({
 
   const handleCreateStylist = () => {
     setIsloading(true);
-    const { id, certifications, tags } = stylistValues;
+    const { id, certifications, tags } = stylistCert;
     admin
       .UpdateStylist({
         id,
@@ -73,7 +126,7 @@ function CertificateAndTags({
   };
 
   const handleItm = (e, name) => {
-    setStylistValues((prev) => ({
+    setStylistCert((prev) => ({
       ...prev,
       [name]: [...e],
     }));
@@ -119,17 +172,12 @@ function CertificateAndTags({
 
   return (
     <div aria-hidden={ariaHidden} id={idx} className="mt-5 text-sm relative">
-      {isloading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black-50">
-          <div className="loader" />
-        </div>
-      )}
       {/* certifications */}
       <div className="flex justify-between items-center">
         <p className="e">Certifications</p>
         <button
           type="button"
-          disabled={buttonAction === "Edit"}
+          disabled={disableInput()}
           onClick={handleOpenCertificationModal}
           className="text-purple-100 cursor-pointer"
         >
@@ -138,11 +186,11 @@ function CertificateAndTags({
       </div>
       <div className="mt-5">
         <MultiselectComponent
-          buttonAction={buttonAction}
+          buttonAction={disableInput()}
           onRemove={(e) => handleItm(e, "certifications")}
           onSelect={(e) => handleItm(e, "certifications")}
           values={getCertificates.filter((itm) =>
-            stylistValues.certifications.find((cert) => cert?._id === itm?._id)
+            stylistCert.certifications.find((cert) => cert?._id === itm?._id)
           )}
           data={getCertificates}
           placeholder="Type to search and select certifications"
@@ -156,7 +204,7 @@ function CertificateAndTags({
           <p className="e">Tags</p>
           <button
             type="button"
-            disabled={buttonAction === "Edit"}
+            disabled={disableInput()}
             onClick={handleOpenTagModal}
             className="text-purple-100 cursor-pointer"
           >
@@ -166,9 +214,9 @@ function CertificateAndTags({
 
         <div className="mt-5">
           <MultiselectComponent
-            buttonAction={buttonAction}
+            buttonAction={disableInput()}
             values={getTags.filter((itm) =>
-              stylistValues.tags.find((tag) => tag?._id === itm?._id)
+              stylistCert.tags.find((tag) => tag?._id === itm?._id)
             )}
             onRemove={(e) => handleItm(e, "tags")}
             onSelect={(e) => handleItm(e, "tags")}
@@ -190,14 +238,12 @@ function CertificateAndTags({
         />
       )}
       <div className="flex justify-end">
-        <button
-          type="button"
+        <OrangeBtn
+          buttonAction={buttonAction}
+          disabled={disableBtn()}
           onClick={clickHandler}
-          disabled={btnHandler()}
-          className="text-sm disabled:opacity-50 font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5"
-        >
-          {buttonAction}
-        </button>
+          isloading={isloading}
+        />
       </div>
     </div>
   );

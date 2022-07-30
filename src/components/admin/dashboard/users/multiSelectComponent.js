@@ -11,7 +11,7 @@ function MultiselectComponent({
   values,
   onSelect,
   data,
-  buttonAction,
+  disable,
   onRemove,
 }) {
   const style = {
@@ -30,7 +30,7 @@ function MultiselectComponent({
   };
   return (
     <Multiselect
-      disable={buttonAction === "Edit"}
+      disable={disable}
       selectedValues={values}
       onSelect={onSelect}
       onRemove={onRemove}

@@ -123,7 +123,7 @@ function Reviews() {
     <div className="flex flex-col space-y-3">
       <GeneralReviewCard />
       {reviewLists.map((review) => {
-        return <ViewReview review={review} />;
+        return <ViewReview key={review.id} review={review} />;
       })}
     </div>
   );

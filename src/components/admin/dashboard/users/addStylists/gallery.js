@@ -9,20 +9,51 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import uploadFile from "../../../../../assets/images/upload-file.png";
+// import { Loadersmall } from "../../../../loader";
 import trashWhite from "../../../../../assets/images/trash-white.svg";
 import admin from "../../../../../api/admin";
+import OrangeBtn from "../../../../customButton/orangeBtn";
+import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
+import { galleryInitials } from "./helper";
 
-function GalleryTab({ ariaHidden, idx, data, setData }) {
+function GalleryTab({ ariaHidden, idx }) {
+  const [stylistGallery, setStylistGallery] = useState(galleryInitials);
   const [buttonAction, setButtonAction] = useState("Save");
   const [isloading, setIsloading] = useState(false);
   const stylistId = localStorage.getItem("createdStylist");
   const [uploadnewData, setUploadnewData] = useState(false);
   const { state } = useLocation();
 
+  useChangeBtnTitle("gallery", setButtonAction, setStylistGallery);
+
   useEffect(() => {
-    setData((prev) => ({ ...prev, update: { ...prev.update, id: stylistId } }));
-    if (state._id !== undefined) {
-      setButtonAction("Edit");
+    if (state !== "" || state !== undefined || state !== null) {
+      setIsloading(true);
+      admin
+        .GetStylistById(stylistId)
+        .then((res) => {
+          const { gallery } = res.data.stylist;
+
+          gallery.forEach((picture) => {
+            setStylistGallery((prev) => ({
+              ...prev,
+              preview: [
+                ...prev.preview,
+                { img: picture, name: picture.substring(picture.length - 10) },
+              ],
+              update: {
+                ...prev.update,
+                gallery: [...prev.update.gallery, picture],
+              },
+            }));
+          });
+
+          setIsloading(false);
+        })
+        .catch((err) => {
+          console.log(err, "error fetching existing stylist information");
+          setIsloading(false);
+        });
     }
   }, []);
 
@@ -32,7 +63,7 @@ function GalleryTab({ ariaHidden, idx, data, setData }) {
     );
     const [imgObj] = e.target.files;
     const { name } = imgObj;
-    setData((prev) => ({
+    setStylistGallery((prev) => ({
       ...prev,
       preview: [...prev.preview, { img: displayImage, name }],
       toUpload: [...prev.toUpload, imgObj],
@@ -42,7 +73,7 @@ function GalleryTab({ ariaHidden, idx, data, setData }) {
   useEffect(() => {
     if (uploadnewData === true) {
       admin
-        .UpdateStylist(data.update)
+        .UpdateStylist(stylistGallery.update)
         .then((response) => {
           console.log(response.data, "updating stylist with gallery");
           setButtonAction("Edit");
@@ -59,13 +90,13 @@ function GalleryTab({ ariaHidden, idx, data, setData }) {
     setIsloading(true);
     const formdata = new FormData();
 
-    data.toUpload.forEach((photo) => {
+    stylistGallery.toUpload.forEach((photo) => {
       formdata.append(`file`, photo);
     });
     admin
       .UploadtoGallery(formdata)
       .then((res) => {
-        setData((prev) => ({
+        setStylistGallery((prev) => ({
           ...prev,
           update: { ...prev.update, gallery: [...res.data?.uploaded_imges] }, //eslint-disable-line
         }));
@@ -86,10 +117,14 @@ function GalleryTab({ ariaHidden, idx, data, setData }) {
   // handle click event of the Remove button
   const removeImage = (path) => {
     const { img, name } = path;
-    const otherPreviewData = data.preview.filter((itm) => itm.img !== img);
-    const otherUploadData = data.toUpload.filter((itm) => itm.name !== name);
+    const otherPreviewData = stylistGallery.preview.filter(
+      (itm) => itm.img !== img
+    );
+    const otherUploadData = stylistGallery.toUpload.filter(
+      (itm) => itm.name !== name
+    );
 
-    setData((prev) => ({
+    setStylistGallery((prev) => ({
       ...prev,
       preview: [...otherPreviewData],
       toUpload: [...otherUploadData],
@@ -122,11 +157,6 @@ function GalleryTab({ ariaHidden, idx, data, setData }) {
 
   return (
     <div className="relative" aria-hidden={ariaHidden} id={idx}>
-      {isloading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black-50">
-          <div className="loader" />
-        </div>
-      )}
       <div className="mt-5 flex flex-wrap justify-start">
         <div className="mb-5 mx-2">
           <input
@@ -141,16 +171,23 @@ function GalleryTab({ ariaHidden, idx, data, setData }) {
 
           <img src={uploadFile} className="h-16 w-120" alt="" />
         </div>
-        {renderPhotos(data.preview)}
+        {renderPhotos(stylistGallery.preview)}
       </div>
       <div className="flex justify-end">
-        <button
+        <OrangeBtn
+          buttonAction={buttonAction}
+          // disabled={disableBtn()}
+          onClick={btnClickHandler}
+          isloading={isloading}
+        />
+        {/* <button
           onClick={btnClickHandler}
           type="button"
-          className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5"
+          className="text-sm disabled:opacity-50 font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5 flex items-center gap-x-2"
         >
           {buttonAction}
-        </button>
+          {isloading && <Loadersmall />}
+        </button> */}
       </div>
     </div>
   );
