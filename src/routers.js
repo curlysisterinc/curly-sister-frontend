@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/function-component-definition */
 /* eslint-disable import/no-cycle */
@@ -5,6 +6,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
 import React, { Suspense } from "react";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import HomeComponent from "./components/home";
 import AboutComponent from "./components/about/about";
@@ -43,6 +45,12 @@ import BookedStylistProfile from "./components/user/stylist/bookedStylist";
 import ConfirmBooking from "./components/user/stylist/confirmBooking";
 import SuccessfullBooking from "./components/user/stylist/successfulBooking";
 import authHandler from "./authHandler";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51LQ4MZBHdUN0GiBt1CZsfNAPvWydnkEX1xL5ZiUXSsC2ErjI9LOQwT4K48YOQbJtcp8vXJX0TT5aP7XAXNmXSt2j00BlrHqanQ"
+);
 
 const AdminLayout = () => {
   const details = localStorage.getItem("user");
@@ -57,72 +65,92 @@ const AdminLayout = () => {
 
 function Routers() {
   return (
-    <div className="dark:bg-slate-800">
-      <Routes>
-        <Route path={NonAuthRoutes.home} element={<HomeComponent />} />
-        <Route path={NonAuthRoutes.about} element={<AboutComponent />} />
-        <Route path={NonAuthRoutes.login} element={<LoginComponent />} />
-        <Route path={NonAuthRoutes.signup} element={<SignupComponent />} />
-        <Route
-          path={NonAuthRoutes.forgotPassword}
-          element={<ForgotPasswordComponent />}
-        />
-        <Route
-          path={NonAuthRoutes.resetPassword}
-          element={<ResetPasswordComponent />}
-        />
-        <Route
-          path={NonAuthRoutes.termsAndPrivacy}
-          element={<TermsAndPrivacy />}
-        />
-        <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
-        <Route path={NonAuthRoutes.learn} element={<LearnComponent />} />
-        <Route path={NonAuthRoutes.videoContent} element={<VideoContent />} />
-        <Route path={NonAuthRoutes.videos} element={<VideoTab />} />
-        <Route path={NonAuthRoutes.articles} element={<ArticleTab />} />
-        <Route path={NonAuthRoutes.communities} element={<CommunityTab />} />
-        <Route
-          path={NonAuthRoutes.articleContent}
-          element={<ArticleContent />}
-        />{" "}
-        <Route
-          path={NonAuthRoutes.communityContent}
-          element={<CommunityContent />}
-        />
-        {/* auth routes */}
-        <Route element={<AdminLayout />}>
-          <Route
-            path={AuthRoutes.stylistProfile}
-            element={<StylistProfile />}
-          />
-          <Route
-            path={AuthRoutes.bookedStylistProfile}
-            element={<BookedStylistProfile />}
-          />
-          <Route
-            path={AuthRoutes.confirmBooking}
-            element={<ConfirmBooking />}
-          />
-          <Route
-            path={AuthRoutes.successfullBooking}
-            element={<SuccessfullBooking />}
-          />
-          <Route path={AuthRoutes.dashboard} element={<AdminDashbaord />} />
-          <Route path={AuthRoutes.addStylist} element={<AddStylist />} />
-          <Route path={AuthRoutes.bookings} element={<IndividualsBookings />} />
-          <Route path={AuthRoutes.addArticle} element={<NewArticle />} />
-          <Route path={AuthRoutes.addVideo} element={<NewVideo />} />
+    <Elements stripe={stripePromise}>
+      <PayPalScriptProvider
+        options={{
+          "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
+        }}
+      >
+        <div className="dark:bg-slate-800">
+          <Routes>
+            <Route path={NonAuthRoutes.home} element={<HomeComponent />} />
+            <Route path={NonAuthRoutes.about} element={<AboutComponent />} />
+            <Route path={NonAuthRoutes.login} element={<LoginComponent />} />
+            <Route path={NonAuthRoutes.signup} element={<SignupComponent />} />
+            <Route
+              path={NonAuthRoutes.forgotPassword}
+              element={<ForgotPasswordComponent />}
+            />
+            <Route
+              path={NonAuthRoutes.resetPassword}
+              element={<ResetPasswordComponent />}
+            />
+            <Route
+              path={NonAuthRoutes.termsAndPrivacy}
+              element={<TermsAndPrivacy />}
+            />
+            <Route path={NonAuthRoutes.stylists} element={<Stylist />} />
+            <Route path={NonAuthRoutes.learn} element={<LearnComponent />} />
+            <Route
+              path={NonAuthRoutes.videoContent}
+              element={<VideoContent />}
+            />
+            <Route path={NonAuthRoutes.videos} element={<VideoTab />} />
+            <Route path={NonAuthRoutes.articles} element={<ArticleTab />} />
+            <Route
+              path={NonAuthRoutes.communities}
+              element={<CommunityTab />}
+            />
+            <Route
+              path={NonAuthRoutes.articleContent}
+              element={<ArticleContent />}
+            />{" "}
+            <Route
+              path={NonAuthRoutes.communityContent}
+              element={<CommunityContent />}
+            />
+            {/* auth routes */}
+            <Route element={<AdminLayout />}>
+              <Route
+                path={AuthRoutes.stylistProfile}
+                element={<StylistProfile />}
+              />
+              <Route
+                path={AuthRoutes.bookedStylistProfile}
+                element={<BookedStylistProfile />}
+              />
+              <Route
+                path={AuthRoutes.confirmBooking}
+                element={<ConfirmBooking />}
+              />
+              <Route
+                path={AuthRoutes.successfullBooking}
+                element={<SuccessfullBooking />}
+              />
+              <Route path={AuthRoutes.dashboard} element={<AdminDashbaord />} />
+              <Route path={AuthRoutes.addStylist} element={<AddStylist />} />
+              <Route
+                path={AuthRoutes.bookings}
+                element={<IndividualsBookings />}
+              />
+              <Route path={AuthRoutes.addArticle} element={<NewArticle />} />
+              <Route path={AuthRoutes.addVideo} element={<NewVideo />} />
 
-          <Route path={AuthRoutes.users} element={<UsersTab />} />
-          <Route path={AuthRoutes.admin} element={<AdminTab />} />
-          <Route path={AuthRoutes.individual} element={<IndividualTab />} />
-          <Route path={AuthRoutes.content} element={<ContentTab />} />
-          <Route path={AuthRoutes.data} element={<DataTab />} />
-          <Route path={AuthRoutes.editVideoById} element={<EditVideo />} />
-          <Route path={AuthRoutes.editArticleById} element={<EditArticle />} />
-        </Route>
-      </Routes>
-    </div>
+              <Route path={AuthRoutes.users} element={<UsersTab />} />
+              <Route path={AuthRoutes.admin} element={<AdminTab />} />
+              <Route path={AuthRoutes.individual} element={<IndividualTab />} />
+              <Route path={AuthRoutes.content} element={<ContentTab />} />
+              <Route path={AuthRoutes.data} element={<DataTab />} />
+              <Route path={AuthRoutes.editVideoById} element={<EditVideo />} />
+              <Route
+                path={AuthRoutes.editArticleById}
+                element={<EditArticle />}
+              />
+            </Route>
+          </Routes>
+        </div>
+      </PayPalScriptProvider>
+    </Elements>
   );
 }
 

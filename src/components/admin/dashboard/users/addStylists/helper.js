@@ -4,7 +4,7 @@ export const detailsInitial = {
   license_number: "",
   photo: "",
   description: "",
-  categoryType: "walk-in only",
+  category_type: "walk-in only",
   active: true,
 };
 export const locationInitials = {

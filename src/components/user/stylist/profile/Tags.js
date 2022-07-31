@@ -9,7 +9,10 @@ function Tags({ getStylist }) {
           <div className="flex flex-wrap justify-start items-center mt-5">
             {getStylist?.tags.map((tag) => {
               return (
-                <div className="rounded-full px-3 mr-3 py-2 border whitespace-nowrap border-purple-100 bg-white text-purple-100 text-sm">
+                <div
+                  key={tag.name}
+                  className="rounded-full px-3 mr-3 py-2 border whitespace-nowrap border-purple-100 bg-white text-purple-100 text-sm"
+                >
                   {tag.name}
                 </div>
               );

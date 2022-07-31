@@ -4,9 +4,12 @@
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import admin from "../../../../../api/admin";
 import gradientAvatar from "../../../../../assets/images/gradient-avatar.svg";
-import { PersistUserContext } from "./addStylist";
+// import { Loadersmall } from "../../../../loader";
+import OrangeBtn from "../../../../customButton/orangeBtn";
+// import { PersistUserContext } from "./addStylist";
 
 function DetailsTab({
   ariaHidden,
@@ -20,73 +23,50 @@ function DetailsTab({
   setButtonAction,
 }) {
   const [coverPhoto, setCoverPhoto] = useState("");
-  const stylistId = localStorage.getItem("createdStylist");
-
-  // active: true
-  // availability: []
-  // certifications: []
-  // createdAt: "2022-07-17T13:02:10.920Z"
-  // description: "tade"
-  // gallery: []
-  // license_board: "tafde"
-  // license_number: "tade"
-  // photo: ""
-  // services: []
-  // stylist_name: "tade"
-  // tags: []
-  const [
-    { description, license_board, license_number, stylist_name, photo },
-    fetchUserResponse,
-    setActiveTab,
-    setOpenTab,
-  ] = useContext(PersistUserContext);
-
-  // console.log(userResponse, stylistId, "stylistid");
+  const [imgUpload, setImgUpload] = useState(false);
+  const { state } = useLocation();
 
   useEffect(() => {
-    if (stylistValues.photo !== "") {
+    if (state && stylistValues.photo !== "") {
       setCoverPhoto(stylistValues.photo);
     }
-    if (stylistId !== "" && stylistId !== null && stylistId !== undefined) {
-      fetchUserResponse();
-    }
-  }, []);
+  }, [stylistValues.photo]);
 
-  useEffect(() => {
-    if (stylist_name) {
-      const vals = {
-        stylist_name,
-        license_number,
-        license_board,
-        description,
-        photo,
-      };
-      const values = Object.values(vals);
+  // useEffect(() => {
+  // if (stylist_name) {
+  //   const vals = {
+  //     stylist_name,
+  //     license_number,
+  //     license_board,
+  //     description,
+  //     photo,
+  //   };
+  //   const values = Object.values(vals);
 
-      Object.keys(vals).forEach((ele, index) => {
-        if (ele !== "photo") {
-          setStylistValues((prev) => ({ ...prev, [ele]: values[index] }));
-        }
-        if (
-          ele === "photo" &&
-          values[index] !== "" &&
-          values[index] !== undefined &&
-          values[index] !== null
-        ) {
-          setStylistValues((prev) => ({ ...prev, [ele]: values[index] }));
-        }
-      });
+  //   Object.keys(vals).forEach((ele, index) => {
+  //     if (ele !== "photo") {
+  //       setStylistValues((prev) => ({ ...prev, [ele]: values[index] }));
+  //     }
+  //     if (
+  //       ele === "photo" &&
+  //       values[index] !== "" &&
+  //       values[index] !== undefined &&
+  //       values[index] !== null
+  //     ) {
+  //       setStylistValues((prev) => ({ ...prev, [ele]: values[index] }));
+  //     }
+  //   });
 
-      if (values.includes("") === false) {
-        setActiveTab((prev) => ({ ...prev, locationTab: true }));
-        setOpenTab((prev) => ({ ...prev, locationTab: true }));
-      }
-      if (values.includes("") === true) {
-        setActiveTab((prev) => ({ ...prev, detailsTab: true }));
-        setOpenTab((prev) => ({ ...prev, detailsTab: true }));
-      }
-    }
-  }, [stylist_name]);
+  //   if (values.includes("") === false) {
+  //     setActiveTab((prev) => ({ ...prev, locationTab: true }));
+  //     setOpenTab((prev) => ({ ...prev, locationTab: true }));
+  //   }
+  //   if (values.includes("") === true) {
+  //     setActiveTab((prev) => ({ ...prev, detailsTab: true }));
+  //     setOpenTab((prev) => ({ ...prev, detailsTab: true }));
+  //   }
+  // }
+  // }, [stylist_name]);
 
   const disableBtn = () => {
     const isValid =
@@ -100,22 +80,32 @@ function DetailsTab({
     return true;
   };
 
+  const disableInput = () => {
+    if (buttonAction === "Edit") {
+      return true;
+    }
+    return false;
+  };
+
   // handle file change
   const handleFileChange = (e) => {
     const [addimage] = e.target.files;
 
     if (addimage) {
-      setCoverPhoto(URL.createObjectURL(addimage));
-      console.log(addimage, "targeted file");
+      setImgUpload(true);
+      // console.log(addimage, "targeted file");
       const formData = new FormData();
       formData.append("file", addimage);
       admin
         .UploadPhoto(formData)
         .then((response) => {
           setStylistValues({ ...stylistValues, photo: response.data.file });
+          setCoverPhoto(URL.createObjectURL(addimage));
+          setImgUpload(false);
         })
         .catch((error) => {
-          console.log(error.message);
+          // console.log(error.message);
+          setImgUpload(false);
         });
     }
   };
@@ -138,36 +128,46 @@ function DetailsTab({
 
   return (
     <div aria-hidden={ariaHidden} id={id} className="mt-5 relative">
-      {isloading && (
-        <div className="absolute inset-0 flex justify-center items-center z-10 bg-black-50">
-          <div className="loader" />
-        </div>
-      )}
       <div className="flex justify-between items-center w-full ">
-        {coverPhoto.length > 0 ? (
-          <div>
-            <img
-              className="w-20 h-20 rounded-full object-cover"
-              src={coverPhoto}
-              alt=""
-            />
-          </div>
-        ) : (
-          <img src={gradientAvatar} alt="" />
-        )}
+        <div className="relative w-20 h-20 rounded-full">
+          <img
+            className=" absolute inset-0 w-20 h-20 object-cover rounded-full "
+            src={coverPhoto.length > 0 ? coverPhoto : gradientAvatar}
+            alt="user profile"
+          />
+          {imgUpload && (
+            <div
+              style={{ transform: "translate(-50%,-50%)" }}
+              className="absolute top-1/2 left-1/2"
+            >
+              <div
+                style={{
+                  borderTopColor: "transparent",
+                }}
+                className="  w-10 h-10 border-4 border-purple-100 border-solid rounded-full animate-spin"
+              />
+            </div>
+          )}
+        </div>
 
-        <div className="relative h-20 flex justify-center items-center w-32 ">
+        <label
+          htmlFor="profileimg"
+          className="relative h-20 cursor-pointer inline-flex justify-center items-center w-32"
+        >
           <input
-            disabled={buttonAction === "Edit"}
-            className="cursor-pointer opacity-0 border-2 inline-block  w-full absolute right-0 top-1/2 transform -translate-y-1/2"
+            disabled={disableInput()}
+            className=" hidden border-2  w-full absolute right-0 top-1/2 transform -translate-y-1/2"
             type="file"
             name="file"
+            id="profileimg"
             placeholder="upload photo"
-            onChange={(e) => handleFileChange(e)}
+            onChange={handleFileChange}
           />
-
-          <p className="text-sm text-purple-100">Upload photo</p>
-        </div>
+          <span className="text-sm inline-block text-purple-100 ">
+            Upload photo
+          </span>
+        </label>
+        {/* </div> */}
       </div>
       <label
         className="block text-black text-sm font-bold mt-5"
@@ -177,7 +177,7 @@ function DetailsTab({
         <input
           className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="text"
-          disabled={buttonAction === "Edit"}
+          disabled={disableInput()}
           placeholder="Enter name here..."
           name="stylist_name"
           id="stylist_name"
@@ -193,7 +193,7 @@ function DetailsTab({
         <textarea
           className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="textarea"
-          disabled={buttonAction === "Edit"}
+          disabled={disableInput()}
           placeholder="Enter a bio for this stylist"
           name="description"
           label="description"
@@ -210,7 +210,7 @@ function DetailsTab({
           <input
             className="shadow-sm appearance-none  border-0  col-1 py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none "
             type="text"
-            disabled={buttonAction === "Edit"}
+            disabled={disableInput()}
             placeholder="Licensing board"
             name="license_board"
             id="license_board"
@@ -221,7 +221,7 @@ function DetailsTab({
           <input
             className="shadow-sm appearance-none  border-0  col-1 py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none "
             type="text"
-            disabled={buttonAction === "Edit"}
+            disabled={disableInput()}
             placeholder="Licensing number"
             name="license_number"
             id="license_number"
@@ -231,14 +231,12 @@ function DetailsTab({
         </div>
       </div>
       <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={clickHandler}
+        <OrangeBtn
+          buttonAction={buttonAction}
           disabled={disableBtn()}
-          className="text-sm disabled:opacity-50 font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5"
-        >
-          {buttonAction}
-        </button>
+          onClick={clickHandler}
+          isloading={isloading}
+        />
       </div>
     </div>
   );

@@ -68,8 +68,9 @@ const NotBookServiceCard = () => {
 };
 function StylistProfile() {
   const [hasReview, setHasReview] = React.useState(true);
-  const [getGallery, setGetGallery] = React.useState([]);
+  // const [getGallery, setGetGallery] = React.useState([]);
   const [bookedService, setBookedService] = React.useState(false);
+  const [avail, setAvail] = React.useState({});
   const [galleryVisible, setGalleryVisible] = React.useState(false);
   const [getStylist, setGetStylist] = React.useState({});
   const navigate = useNavigate();
@@ -79,23 +80,46 @@ function StylistProfile() {
     admin.GetOneStylist(token).then((response) => {
       console.log(response.data);
       setGetStylist(response.data.stylist);
-      setGetGallery(response.data.stylist.gallery);
+      // setGetGallery(response.data.stylist.gallery);
     });
   }, []);
 
-  const sliders = () => {
-    return getGallery.map((gallery) => {
-      return (
-        <div key={gallery} className=" px-2 overflow-hidden w-1/2 h-80">
-          <img
-            src={gallery}
-            alt=""
-            className="rounded-lg w-full h-full object-cover"
-          />
-        </div>
-      );
-    });
-  };
+  const availabilityLength = React.useMemo(
+    () => getStylist?.availability?.length,
+    [getStylist?.availability?.length]
+  );
+
+  // console.log(availabilityLength);
+
+  // useMemo(() => first, [second])
+
+  React.useEffect(() => {
+    if (getStylist?.availability?.length > 0) {
+      const [id] = getStylist?.availability; // eslint-disable-line
+      console.log(id);
+      admin
+        .GetAvailabilityById(id)
+        .then((res) => setAvail(res.data.data))
+        .catch((err) => console.log(err, "avail test err"));
+    }
+  }, [availabilityLength]);
+
+  console.log(avail, "avail");
+
+  // const sliders = () => {
+  //   console.log("test");
+  //   return getGallery.map((gallery) => {
+  //     return (
+  //       <div key={gallery} className=" px-2 overflow-hidden w-1/2 h-80">
+  //         <img
+  //           src={gallery}
+  //           alt=""
+  //           className="rounded-lg w-full h-full object-cover"
+  //         />
+  //       </div>
+  //     );
+  //   });
+  // };
   const settings = {
     dots: true,
     infinite: true,
@@ -107,7 +131,7 @@ function StylistProfile() {
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="stylist" />
       <div className="ml-80 bg-white px-0 pt-4 pb-10 w-full min-h-screen ">
-        <div
+        <button
           className="flex space-x-0 items-center cursor-pointer pt-4  px-6 mb-6"
           onClick={() => navigate(-1)}
         >
@@ -115,21 +139,42 @@ function StylistProfile() {
           <p className="text-sm font-AvenirLTPro-Heavy text-gray-400 uppercase">
             GO Back
           </p>
-        </div>
+        </button>
         <div className="  mt-5 ">
           <div className=" book-stylist">
-            <div
+            <button
               onClick={() => setGalleryVisible(true)}
               className="absolute z-40 right-10 top-10 bg-white p-1 rounded-lg flex items-center space-x-1 cursor-pointer"
             >
               <HiOutlinePhotograph color="black" size={20} />
               <p className="text-sm text-gray-400">View gallery</p>
-            </div>
+            </button>
             {getStylist?.gallery?.length > 0 ? (
               <>
-                {getStylist?.gallery?.length > 2 && (
+                {getStylist?.gallery?.length > 1 ? (
                   <div className="flex flex-nowrap overflow-x-auto px-8">
-                    {sliders()}
+                    {getStylist?.gallery?.map((gallery) => {
+                      return (
+                        <div
+                          key={gallery}
+                          className=" px-2 overflow-hidden w-1/2 h-80"
+                        >
+                          <img
+                            src={gallery}
+                            alt=""
+                            className="rounded-lg w-full h-full object-cover"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className=" px-2 overflow-hidden w-full h-80">
+                    <img
+                      src={getStylist?.gallery[0]}
+                      alt=""
+                      className="w-full h-80 object-cover"
+                    />
                   </div>
                 )}
               </>
@@ -179,7 +224,11 @@ function StylistProfile() {
           </div>
           <div className="col-span-4 content-end  h-auto relative z-30">
             {getStylist?.services?.length > 0 ? (
-              <BookServiceCard />
+              <BookServiceCard
+                stylistId={token}
+                availability={avail}
+                serviceOffered={getStylist?.services}
+              />
             ) : (
               <NotBookServiceCard />
             )}

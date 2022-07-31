@@ -34,6 +34,8 @@ function StylistRow({
     }
   };
 
+  console.log(stylistsList);
+
   return (
     // eslint-disable-next-line
     <>
@@ -57,9 +59,12 @@ function StylistRow({
               </th>
               <td
                 className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-                onClick={() =>
-                  navigate(AuthRoutes.addStylist, { state: stylist })
-                }
+                onClick={() => {
+                  navigate(AuthRoutes.addStylist, {
+                    state: stylist.category_type,
+                  });
+                  localStorage.setItem("createdStylist", stylist._id);
+                }}
               >
                 <img
                   src={stylist.photo ? stylist.photo : Avatar}
@@ -74,7 +79,7 @@ function StylistRow({
                 </div>
               </td>
               <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                {/* {!stylist.type } */} Walkin stylist
+                {stylist.category_type}
               </td>
               <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
                 {/* {stylist.location} */} Nigeria
