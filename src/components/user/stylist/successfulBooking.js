@@ -1,6 +1,5 @@
 /* eslint-disable import/order */
 import React from "react";
-import SideBarComponent from "../../sidebar/sidebar";
 import Hurray from "../../../assets/images/hurray.svg";
 import questionnaire from "../../../assets/images/questionnaire.svg";
 import hairProfile from "../../../assets/images/hair-profile.svg";
@@ -14,8 +13,7 @@ function SuccessfullBooking() {
   const [openSessionDetails, setOpenSessionDetails] = React.useState(false);
   const [openHairProfile, setOpenHairProfile] = React.useState(false);
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="stylist" />
+    <div className="">
       <div className="ml-80 bg-white  pt-14 w-full min-h-screen">
         <div className="border border-orange-100 bg-orange-300 rounded-xl w-1/2 mx-auto p-8">
           <img src={Hurray} alt="" />

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-expressions */
@@ -35,6 +36,8 @@ function UserHome({
   getQuestions,
   saveQst,
   setSaveQst,
+  upcomingBookings,
+  setUpcomingBookings,
 }) {
   const navigate = useNavigate();
 
@@ -78,39 +81,27 @@ function UserHome({
                 View all bookings
               </Link>
             </div>
-            <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-full p-3">
-              <img className="mr-3" src={productRecommendation} alt="circle" />
-              <div>
-                <p className="font-semibold text-gray-400 text-base">
-                  Product recommendation
-                </p>
-                <p className="text-sm text-gray-200">
-                  All Naturals · Fri, 18 Mar · 4:30 PM (GMT +1)
-                </p>
-              </div>
-            </div>
-            <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-full p-3">
-              <img className="mr-3" src={productRecommendation} alt="circle" />
-              <div>
-                <p className="font-semibold text-gray-400 text-base">
-                  Micro teaching lesson
-                </p>
-                <p className="text-sm text-gray-200">
-                  Curly Helen · Mon, 21 Mar · 06:00 AM (GMT +1)
-                </p>
-              </div>
-            </div>
-            <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-full p-3">
-              <img className="mr-3" src={productRecommendation} alt="circle" />
-              <div>
-                <p className="font-semibold text-gray-400 text-base">
-                  Consultation
-                </p>
-                <p className="text-sm text-gray-200">
-                  All Naturals · Tue, 22 Mar · 05:00 PM (GMT +1)
-                </p>
-              </div>
-            </div>
+            {upcomingBookings &&
+              upcomingBookings.slice(0, 3).map((booking) => {
+                return (
+                  <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-full p-3">
+                    <img
+                      className="mr-3"
+                      src={productRecommendation}
+                      alt="circle"
+                    />
+                    <div>
+                      <p className="font-semibold text-gray-400 text-base">
+                        {booking.service.name}
+                      </p>
+                      <p className="text-sm text-gray-200">
+                        {booking.stylist.stylist_name} ·{" "}
+                        {moment(booking.booked_date).format("LLLL")} · (GMT +1)
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
 
           {/* popular stylists arund you */}

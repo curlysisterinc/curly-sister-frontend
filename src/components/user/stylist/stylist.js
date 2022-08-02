@@ -109,21 +109,18 @@ function Stylist() {
   }, [selectBookableStylist, categories]);
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="stylists" />
-      <div className="ml-80 bg-white px-10 pt-14 w-full min-h-screen">
-        <FilterPanel
-          selectToggle={handleSelectToggle}
-          selectBookableStylist={selectBookableStylist}
-          certifications={certifications}
-          handleOnCheckboxChange={handleOnCheckboxChange}
-          categories={categories}
-          handleSelectCategory={handleSelectCategory}
-          getServices={getServices}
-        />
-        <hr className="w-full border border-gray-600 mt-8" />
-        <StylistList list={getStylist} />
-      </div>
+    <div className="ml-80 bg-white px-10 pt-14 w-full min-h-screen">
+      <FilterPanel
+        selectToggle={handleSelectToggle}
+        selectBookableStylist={selectBookableStylist}
+        certifications={certifications}
+        handleOnCheckboxChange={handleOnCheckboxChange}
+        categories={categories}
+        handleSelectCategory={handleSelectCategory}
+        getServices={getServices}
+      />
+      <hr className="w-full border border-gray-600 mt-8" />
+      <StylistList list={getStylist} />
     </div>
   );
 }

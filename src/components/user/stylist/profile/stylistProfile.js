@@ -128,8 +128,7 @@ function StylistProfile() {
     slidesToScroll: 2.5,
   };
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="stylist" />
+    <div className="max-w-screen-2xl w-full flex m-auto">
       <div className="ml-80 bg-white px-0 pt-4 pb-10 w-full min-h-screen ">
         <button
           className="flex space-x-0 items-center cursor-pointer pt-4  px-6 mb-6"

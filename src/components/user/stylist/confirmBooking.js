@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable radix */
 /* eslint-disable prefer-const */
 /* eslint-disable no-underscore-dangle */
@@ -29,13 +30,8 @@ import PayPalCheckoutButton from "./checkout/PayPalCheckoutButton";
 // import StripeCheckout from "react-stripe-checkout";
 import admin from "../../../api/admin";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import axios from "axios";
-import { moment } from "moment";
-import SideBarComponent from "../../sidebar/sidebar";
 
 const BookServiceCard = ({
-  product,
-  handleToken,
   service,
   paymentOption,
   handleStripeSubmit,
@@ -44,11 +40,13 @@ const BookServiceCard = ({
   hasGifting,
   discountCheck,
   setDiscountCheck,
-  bookingFee,
-  BOOKING_FEE_TOTAL,
+  giftingDetails,
+  setBooking,
+  bookingFeeTotal,
 }) => {
   const [chooseServiceVisible, setChooseServiceVisible] = React.useState(false);
   const navigate = useNavigate();
+  console.log(bookingFeeTotal, "bookingFeeTotal");
   const cardElementOptions = {
     style: {
       base: {
@@ -64,10 +62,7 @@ const BookServiceCard = ({
   // create a payment intent
 
   return (
-    <form
-      onSubmit={handleStripeSubmit}
-      className="bg-white rounded-lg shadow-xl h-auto w-80"
-    >
+    <form className="bg-white rounded-lg shadow-xl h-auto w-80">
       <div className="px-6 pt-6">
         <p className="text-base text-gray-400">Booking details</p>
         <div className="flex items-center space-x-3 mt-3">
@@ -114,33 +109,38 @@ const BookServiceCard = ({
         </div>
       </div>
       <div className="p-6 ">
-        {/* <div className="paypal-button-container absolute opacity-0">
+        <div className="paypal-button-container opacity-1 w-full">
           {paymentOption === "paypal" && (
-            <PayPalCheckoutButton product={product} />
+            <PayPalCheckoutButton
+              giftingDetails={giftingDetails}
+              setBooking={setBooking}
+              service={service}
+              bookingFeeTotal={bookingFeeTotal}
+            />
           )}
-        </div> */}
+        </div>
         {paymentOption === "stripe" && (
           <div className="mb-3 ">
             <CardElement options={cardElementOptions} />
           </div>
         )}
 
-        {paymentOption === "paypal" && (
+        {/* {paymentOption === "paypal" && (
           <button
             type="button"
-            disabled={isProcessing}
-            onClick={handlePaypalSubmit}
+            // disabled={isProcessing}
+            // onClick={handlePaypalSubmit}
             // onClick={() => navigate(AuthRoutes.successfullBooking)}
             className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold"
           >
             Pay and confirm booking
           </button>
-        )}
+        )} */}
         {paymentOption === "stripe" && (
           <button
             type="button"
             disabled={isProcessing}
-            onClick={handlePaypalSubmit}
+            onClick={handleStripeSubmit}
             // onClick={() => navigate(AuthRoutes.successfullBooking)}
             className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold"
           >
@@ -196,21 +196,22 @@ function ConfirmBooking() {
   const [discountCheck, setDiscountCheck] = React.useState(false);
   const [bookingFee, setBookingFee] = React.useState(0);
   const [paymentOption, setPaymentOption] = React.useState("paypal");
+  const [booking, setBooking] = React.useState({});
   const stripe = useStripe();
   const elements = useElements();
   const user = localStorage.getItem("user");
+  const [bookingTotal, setBookingTotal] = React.useState(0);
   const [giftingDetails, setGiftingDetails] = React.useState({
     name: "",
     email: "",
     message: "",
   });
   const BOOKING_FEE_PERCENT = 0;
-  let BOOKING_FEE_TOTAL = 0;
+
   const handleStripeCheckout = async (e) => {
     e.preventDefault();
+
     try {
-      setIsProcessing(true);
-      const cardElement = elements.getElement(CardElement);
       let hasGifting =
         giftingDetails.name.trim().length ||
         giftingDetails.email.trim().length ||
@@ -230,19 +231,18 @@ function ConfirmBooking() {
             stylist: service.stylistId,
             price: service.bookingTotal,
             date: service.day.toString(),
-            partialPayment: discountCheck,
+            // partialPayment: discountCheck,
           };
+      const data = await admin.BookService(bookedServiceData);
+      setBooking(data.data.data.booking);
+      setIsProcessing(true);
+      console.log(booking, "myBooking");
+      const response = await admin.StripeCheckout({
+        amount: bookingTotal * 100,
+      });
+      setClientSecret(response.data.data);
+      const cardElement = elements.getElement(CardElement);
 
-      const bookedService = await admin
-        .BookService(bookedServiceData)
-        .then((response) => {
-          console.log(response);
-        })
-
-        .catch((error) => {
-          console.log(error);
-        });
-      console.log(bookedService, "booked service");
       const {
         paymentIntent: { status },
       } = await stripe.confirmCardPayment(clientSecret, {
@@ -252,6 +252,12 @@ function ConfirmBooking() {
       });
       setIsProcessing(false);
       if (status === "succeeded") {
+        const confirmBooking = await admin.ConfirmBookedService({
+          success: true,
+          bookingId: booking._id,
+        });
+        console.log(confirmBooking, "confirm booking");
+
         navigate(AuthRoutes.successfullBooking);
       }
     } catch (error) {
@@ -286,16 +292,10 @@ function ConfirmBooking() {
             partialPayment: discountCheck,
           };
 
-      const bookedService = await admin
-        .BookService(bookedServiceData)
-        .then((response) => {
-          console.log(response);
-        })
+      const data = await admin.BookService(bookedServiceData);
+      setBooking(data.data.data.booking);
 
-        .catch((error) => {
-          console.log(error);
-        });
-      console.log(bookedService, "booked service");
+      console.log(booking, "booked service");
 
       setIsProcessing(false);
     } catch (error) {
@@ -321,16 +321,11 @@ function ConfirmBooking() {
       (service.bookedservice.default_price * BOOKING_FEE_PERCENT) / 100
     );
     setBookingFee(fee);
-    BOOKING_FEE_TOTAL = bookingFee + service.bookedservice.default_price;
-    const response = await admin.StripeCheckout({
-      amount: BOOKING_FEE_TOTAL * 100,
-    });
-    setClientSecret(response.data.data);
+    setBookingTotal(bookingFee + service.bookedservice.default_price);
   }, []);
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border relative border-gray-50">
-      <SideBarComponent active="stylist" />
+    <div className="max-w-screen-2xl w-full flex m-auto relative">
       <div className="ml-80 bg-white px-0 pt-10 pb-20 w-full min-h-screen relative">
         <button
           className="flex space-x-0 items-center cursor-pointer pt-4  px-6 mb-6"
@@ -481,7 +476,9 @@ function ConfirmBooking() {
               discountCheck={discountCheck}
               setDiscountCheck={setDiscountCheck}
               bookingFee={bookingFee}
-              BOOKING_FEE_TOTAL={BOOKING_FEE_TOTAL}
+              giftingDetails={giftingDetails}
+              setBooking={setBooking}
+              bookingFeeTotal={bookingTotal}
             />
           </div>
         </div>
