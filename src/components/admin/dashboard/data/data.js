@@ -24,6 +24,7 @@ import SideBarComponent from "../../../sidebar/sidebar";
 import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
 import admin from "../../../../api/admin";
+import AdminDashbaord from "../../dashboard";
 
 function DataTab({ active }) {
   const navigate = useNavigate();
@@ -147,223 +148,180 @@ function DataTab({ active }) {
   }, []);
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="dashboard" />
-      <div className="ml-80 bg-white px-10 py-14 w-full">
-        {/* tabs */}
-        <div className="flex justify-center items-center w-1/2 mx-auto mb-6">
-          <div
-            onClick={() => navigate(AuthRoutes.dashboard)}
-            className={
-              active === "overview"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer "
-            }
-          >
-            Overview
-          </div>
-          <div
-            onClick={() => navigate(AuthRoutes.users)}
-            className={
-              active === "users"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer"
-            }
-          >
-            Users
-          </div>{" "}
-          <div
-            onClick={() => navigate(AuthRoutes.content)}
-            className={
-              active === "content"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer"
-            }
-          >
-            Content
-          </div>
-          <div
-            onClick={() => navigate(AuthRoutes.data)}
-            className="text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
-          >
-            Data
-          </div>
-        </div>
-        <div>
-          {/* services and pricing */}
-          <div className="mx-auto w-full mt-8 text-sm">
-            <div
-              onClick={() => setOpenService(!openService)}
-              className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
-            >
-              Services
-              <div className="flex items-center">
-                <div
-                  onClick={handleOpenServiceModal}
-                  className="  text-purple-100 cursor-pointer flex items-center"
-                >
-                  <img className="mr-2" src={add} alt="" />
-                  <p className="">Add new service</p>
-                </div>
+    <>
+      {/* tabs */}
 
-                <img
-                  className={clsx(
-                    openService && "transform rotate-180",
-                    "ml-3 "
-                  )}
-                  src={dropdownIcon}
-                  alt=""
-                />
+      <div>
+        {/* services and pricing */}
+        <div className="mx-auto w-full mt-8 text-sm">
+          <div
+            onClick={() => setOpenService(!openService)}
+            className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
+          >
+            Services
+            <div className="flex items-center">
+              <div
+                onClick={handleOpenServiceModal}
+                className="  text-purple-100 cursor-pointer flex items-center"
+              >
+                <img className="mr-2" src={add} alt="" />
+                <p className="">Add new service</p>
               </div>
+
+              <img
+                className={clsx(openService && "transform rotate-180", "ml-3 ")}
+                src={dropdownIcon}
+                alt=""
+              />
             </div>
-            {openService && (
-              <div className="mt-5 ">
-                <div className="">
-                  <div className="flex justify-center space-x-8 py-6">
-                    {getServices &&
-                      getServices.map((service, index) => {
-                        return (
-                          <div
-                            onClick={handleOpenEditServiceModal}
-                            className="bg-white cursor-pointer shadow-lg rounded-md  grid grid-cols-12 mt-5 w-5/12 h-40 overflow-hidden"
-                          >
-                            <div className="p-5 col-span-8">
-                              <h6 className="text-base font-BeatriceSemiBold mb-3">
-                                {service.name}
-                              </h6>
-                              <p className="text-sm text-gray-300">
-                                {service.description}
-                              </p>
-                            </div>
-                            <div className="bg-service-image col-span-4 bg-cover bg-no-repeat  h-full w-full flex justify-end p-2 text-right">
-                              <div className="flex flex-col h-full justify-between items-end">
-                                <div className="cursor-pointer bg-gray-400 rounded-full h-8 w-8 text-white flex justify-center items-center">
-                                  <img src={ellipses} alt="" />
-                                </div>
-                                <div className=" ">
-                                  <div className="mb-3">
-                                    <div className="bg-white inline-block w-auto rounded-md  p-1">
-                                      <div className="flex items-center">
-                                        <img src={wallet} alt="" />$
-                                        {service.default_price}
-                                      </div>
-                                    </div>
-                                  </div>
+          </div>
+          {openService && (
+            <div className="mt-5 ">
+              <div className="">
+                <div className="flex justify-center space-x-8 py-6">
+                  {getServices &&
+                    getServices.map((service, index) => {
+                      return (
+                        <div
+                          onClick={handleOpenEditServiceModal}
+                          className="bg-white cursor-pointer shadow-lg rounded-md  grid grid-cols-12 mt-5 w-5/12 h-40 overflow-hidden"
+                        >
+                          <div className="p-5 col-span-8">
+                            <h6 className="text-base font-BeatriceSemiBold mb-3">
+                              {service.name}
+                            </h6>
+                            <p className="text-sm text-gray-300">
+                              {service.description}
+                            </p>
+                          </div>
+                          <div className="bg-service-image col-span-4 bg-cover bg-no-repeat  h-full w-full flex justify-end p-2 text-right">
+                            <div className="flex flex-col h-full justify-between items-end">
+                              <div className="cursor-pointer bg-gray-400 rounded-full h-8 w-8 text-white flex justify-center items-center">
+                                <img src={ellipses} alt="" />
+                              </div>
+                              <div className=" ">
+                                <div className="mb-3">
                                   <div className="bg-white inline-block w-auto rounded-md  p-1">
                                     <div className="flex items-center">
-                                      <img src={timer} alt="" />
-                                      {service.duration} mins
+                                      <img src={wallet} alt="" />$
+                                      {service.default_price}
                                     </div>
+                                  </div>
+                                </div>
+                                <div className="bg-white inline-block w-auto rounded-md  p-1">
+                                  <div className="flex items-center">
+                                    <img src={timer} alt="" />
+                                    {service.duration} mins
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        );
-                      })}
-                  </div>
+                        </div>
+                      );
+                    })}
                 </div>
-              </div>
-            )}
-          </div>
-          {/* Certifications */}
-          <div className="mx-auto w-full mt-8 text-sm">
-            <div
-              onClick={() => setOpenCertification(!openCertification)}
-              className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
-            >
-              Certifications
-              <div className="flex">
-                <div
-                  onClick={handleOpenCertificationModal}
-                  className="  text-purple-100 cursor-pointer flex items-center"
-                >
-                  <img className="mr-2" src={purpleSettings} alt="" />
-
-                  <p className="">Manage Certifications</p>
-                </div>
-                <img
-                  className={clsx(
-                    openCertification && "transform rotate-180",
-                    "ml-3 "
-                  )}
-                  src={dropdownIcon}
-                  alt=""
-                />
               </div>
             </div>
-            {openCertification && (
-              <div className="mt-5">
-                <div className="py-6">
-                  <div className="flex flex-wrap ">
-                    {getCertificates &&
-                      getCertificates.map((certification) => {
-                        return (
-                          <div className="rounded-full bg-purple-100 px-4 py-1 h-8 flex justify-center items-center mb-6 text-white text-sm mx-3">
-                            {certification.name}
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          {/* Tags */}
-          <div className="mx-auto w-full mt-8 text-sm">
-            <div
-              onClick={() => setOpenTag(!openTag)}
-              className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
-            >
-              Tags
-              <div className="flex">
-                <div
-                  onClick={handleOpenTagModal}
-                  className="  text-purple-100 cursor-pointer flex items-center"
-                >
-                  <img className="mr-2" src={purpleSettings} alt="" />
-
-                  <p className="">Manage Tags</p>
-                </div>
-                <img
-                  className={clsx(openTag && "transform rotate-180", "ml-3 ")}
-                  src={dropdownIcon}
-                  alt=""
-                />
-              </div>
-            </div>
-            {openTag && (
-              <div className="mt-5">
-                <div className="">
-                  <div className="flex">
-                    {getTags &&
-                      getTags.map((tag) => {
-                        return (
-                          <div className="rounded-full bg-purple-100 px-3 py-1 h-8 flex justify-center items-center text-white text-sm mx-3">
-                            {tag.name}
-                          </div>
-                        );
-                      })}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          {openEditServiceModal && (
-            <EditServiceModal handleClose={handleCloseEditServiceModal} />
           )}
-          {openServiceModal && (
-            <ManageServicesModal handleClose={handleCloseServiceModal} />
-          )}
-          {openCertificationModal && (
-            <ManageCertificationModal
-              handleClose={handleCloseCertificationModal}
-            />
-          )}{" "}
-          {openTagModal && <ManageTagModal handleClose={handleCloseTagModal} />}
         </div>
+        {/* Certifications */}
+        <div className="mx-auto w-full mt-8 text-sm">
+          <div
+            onClick={() => setOpenCertification(!openCertification)}
+            className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
+          >
+            Certifications
+            <div className="flex">
+              <div
+                onClick={handleOpenCertificationModal}
+                className="  text-purple-100 cursor-pointer flex items-center"
+              >
+                <img className="mr-2" src={purpleSettings} alt="" />
+
+                <p className="">Manage Certifications</p>
+              </div>
+              <img
+                className={clsx(
+                  openCertification && "transform rotate-180",
+                  "ml-3 "
+                )}
+                src={dropdownIcon}
+                alt=""
+              />
+            </div>
+          </div>
+          {openCertification && (
+            <div className="mt-5">
+              <div className="py-6">
+                <div className="flex flex-wrap ">
+                  {getCertificates &&
+                    getCertificates.map((certification) => {
+                      return (
+                        <div className="rounded-full bg-purple-100 px-4 py-1 h-8 flex justify-center items-center mb-6 text-white text-sm mx-3">
+                          {certification.name}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Tags */}
+        <div className="mx-auto w-full mt-8 text-sm">
+          <div
+            onClick={() => setOpenTag(!openTag)}
+            className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
+          >
+            Tags
+            <div className="flex">
+              <div
+                onClick={handleOpenTagModal}
+                className="  text-purple-100 cursor-pointer flex items-center"
+              >
+                <img className="mr-2" src={purpleSettings} alt="" />
+
+                <p className="">Manage Tags</p>
+              </div>
+              <img
+                className={clsx(openTag && "transform rotate-180", "ml-3 ")}
+                src={dropdownIcon}
+                alt=""
+              />
+            </div>
+          </div>
+          {openTag && (
+            <div className="mt-5">
+              <div className="">
+                <div className="flex">
+                  {getTags &&
+                    getTags.map((tag) => {
+                      return (
+                        <div className="rounded-full bg-purple-100 px-3 py-1 h-8 flex justify-center items-center text-white text-sm mx-3">
+                          {tag.name}
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        {openEditServiceModal && (
+          <EditServiceModal handleClose={handleCloseEditServiceModal} />
+        )}
+        {openServiceModal && (
+          <ManageServicesModal handleClose={handleCloseServiceModal} />
+        )}
+        {openCertificationModal && (
+          <ManageCertificationModal
+            handleClose={handleCloseCertificationModal}
+          />
+        )}{" "}
+        {openTagModal && <ManageTagModal handleClose={handleCloseTagModal} />}
       </div>
-    </div>
+    </>
   );
 }
 

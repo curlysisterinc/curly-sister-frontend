@@ -167,8 +167,7 @@ function ArticleContent() {
       });
   };
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="learn" />
+    <>
       <div className="ml-80 bg-white px-10 pt-14 w-full">
         <div
           onClick={() => navigate(-1)}
@@ -447,7 +446,7 @@ function ArticleContent() {
         </div>
       </div>
       <ToastContainer />
-    </div>
+    </>
   );
 }
 

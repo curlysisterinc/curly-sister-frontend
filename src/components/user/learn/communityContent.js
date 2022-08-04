@@ -8,7 +8,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthRoutes } from "../../../constants";
 import learn from "../../../api/learn";
-import SideBarComponent from "../../sidebar/sidebar";
 import gradientAvatar from "../../../assets/images/gradient-avatar.svg";
 import like from "../../../assets/images/like.svg";
 import dislike from "../../../assets/images/dislike.svg";
@@ -167,274 +166,269 @@ function CommunityContent() {
       });
   };
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="learn" />
-      <div className="ml-80 bg-white px-10 pt-14 w-full">
-        <div
-          onClick={() => navigate(-1)}
-          className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
-        >
-          <img src={backArrow} alt="go back" className="mr-4" />
-          Go Back
-        </div>
-        <div className="mx-20">
-          <div className="">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl">
-                {getQuestion?.question
-                  ? getQuestion.question
-                  : "How to style hair"}
-              </h3>
-              <div className="">
-                <img src={bgBookmark} alt="" />
-              </div>
+    <div className="ml-80 bg-white px-10 pt-14 w-full">
+      <div
+        onClick={() => navigate(-1)}
+        className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
+      >
+        <img src={backArrow} alt="go back" className="mr-4" />
+        Go Back
+      </div>
+      <div className="mx-20">
+        <div className="">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl">
+              {getQuestion?.question
+                ? getQuestion.question
+                : "How to style hair"}
+            </h3>
+            <div className="">
+              <img src={bgBookmark} alt="" />
             </div>
-            <div className="flex items-center">
-              <p className="text-sm text-gray-200 flex items-center">
-                {getQuestion?.created_by?.firstName}{" "}
-                {getQuestion?.created_by?.lastName} ·{" "}
-                {getQuestion?.createdAt
-                  ?.split("T")[0]
-                  .split("-")
-                  .reverse()
-                  .join(" ")}
-              </p>
-              <div className="ml-5 relative">
-                <span
-                  className=""
-                  onClick={() => setQuestionDropdown(!questionDropdown)}
-                >
-                  <img className="cursor-pointer" src={ellipses} alt="" />
-                </span>
+          </div>
+          <div className="flex items-center">
+            <p className="text-sm text-gray-200 flex items-center">
+              {getQuestion?.created_by?.firstName}{" "}
+              {getQuestion?.created_by?.lastName} ·{" "}
+              {getQuestion?.createdAt
+                ?.split("T")[0]
+                .split("-")
+                .reverse()
+                .join(" ")}
+            </p>
+            <div className="ml-5 relative">
+              <span
+                className=""
+                onClick={() => setQuestionDropdown(!questionDropdown)}
+              >
+                <img className="cursor-pointer" src={ellipses} alt="" />
+              </span>
 
-                {questionDropdown ? (
-                  <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                    <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                      {pinQuestion ? (
-                        <div
-                          className="flex items-center space-x-3"
-                          onClick={handlePinQuestion}
-                        >
-                          <BsPinAngle />
-                          <p className="">Pin</p>
-                        </div>
-                      ) : (
-                        <div
-                          className="flex items-center space-x-3"
-                          onClick={handleUnPinQuestion}
-                        >
-                          <BsPinAngleFill />
-                          <p className="">Unpin</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm my-3">
-                      <img src={edit} alt="pin" className="mr-3" />
-                      <p>Edit</p>
-                    </div>
-                    <div className="flex items-center justify-start cursor-pointer text-red-400 text-sm">
-                      <img src={trash} alt="pin" className="mr-3" />
-                      <p>Delete</p>
-                    </div>
+              {questionDropdown ? (
+                <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
+                  <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
+                    {pinQuestion ? (
+                      <div
+                        className="flex items-center space-x-3"
+                        onClick={handlePinQuestion}
+                      >
+                        <BsPinAngle />
+                        <p className="">Pin</p>
+                      </div>
+                    ) : (
+                      <div
+                        className="flex items-center space-x-3"
+                        onClick={handleUnPinQuestion}
+                      >
+                        <BsPinAngleFill />
+                        <p className="">Unpin</p>
+                      </div>
+                    )}
                   </div>
+                  <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm my-3">
+                    <img src={edit} alt="pin" className="mr-3" />
+                    <p>Edit</p>
+                  </div>
+                  <div className="flex items-center justify-start cursor-pointer text-red-400 text-sm">
+                    <img src={trash} alt="pin" className="mr-3" />
+                    <p>Delete</p>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <p className="text-gray-400 text-base leading-6 mt-5">
+            {getQuestion.question}
+          </p>
+        </div>
+
+        <hr className="w-full border border-gray-250 my-10" />
+        <div className="">
+          <div className="">
+            <div className="flex items-center">
+              <img src={gradientAvatar} alt="" className="h-10 w-10" />
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  value={commentValue}
+                  name="comment"
+                  id="comment"
+                  onChange={(e) => setCommentValue(e.target.value)}
+                  placeholder="Add your comment"
+                  className="ml-5 w-full border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-70 text-gray-400 text-sm"
+                />
+                {commentValue.length ? (
+                  <button
+                    type="button"
+                    onClick={handleSubmitComment}
+                    className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
+                  >
+                    post
+                  </button>
                 ) : null}
               </div>
             </div>
-
-            <p className="text-gray-400 text-base leading-6 mt-5">
-              {getQuestion.question}
-            </p>
-          </div>
-
-          <hr className="w-full border border-gray-250 my-10" />
-          <div className="">
-            <div className="">
-              <div className="flex items-center">
-                <img src={gradientAvatar} alt="" className="h-10 w-10" />
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    value={commentValue}
-                    name="comment"
-                    id="comment"
-                    onChange={(e) => setCommentValue(e.target.value)}
-                    placeholder="Add your comment"
-                    className="ml-5 w-full border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-70 text-gray-400 text-sm"
-                  />
-                  {commentValue.length ? (
-                    <button
-                      type="button"
-                      onClick={handleSubmitComment}
-                      className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
-                    >
-                      post
-                    </button>
-                  ) : null}
-                </div>
-              </div>
-              {getQuestion.comments &&
-                getQuestion.comments?.map((element) => {
-                  return (
-                    <div className="mt-8">
-                      <div className="flex items-start">
-                        <img
-                          className="h-10 w-10 mt-2"
-                          src={gradientAvatar}
-                          alt=""
-                        />
-                        <div className="ml-5 text-sm text-gray-400">
-                          <div className="flex items-center">
-                            <p className="mr-3">Serena Williams</p>
-                            <span className="text-gray-200 text-xs ">
-                              3 mins ago
+            {getQuestion.comments &&
+              getQuestion.comments?.map((element) => {
+                return (
+                  <div className="mt-8">
+                    <div className="flex items-start">
+                      <img
+                        className="h-10 w-10 mt-2"
+                        src={gradientAvatar}
+                        alt=""
+                      />
+                      <div className="ml-5 text-sm text-gray-400">
+                        <div className="flex items-center">
+                          <p className="mr-3">Serena Williams</p>
+                          <span className="text-gray-200 text-xs ">
+                            3 mins ago
+                          </span>
+                        </div>
+                        <p className="mt-3 leading-6">{element.comment}</p>
+                        <div className="flex space-x-4 mt-4 items-center">
+                          <div className="flex">
+                            <span
+                              className="mr-2 items-center"
+                              onClick={() => setIsLiked(!isLiked)}
+                            >
+                              {!isLiked ? (
+                                <AiOutlineLike color="#8E8695" />
+                              ) : (
+                                <AiTwotoneLike color="#8E8695" />
+                              )}
                             </span>
+                            <p>{element.likes.length}</p>
                           </div>
-                          <p className="mt-3 leading-6">{element.comment}</p>
-                          <div className="flex space-x-4 mt-4 items-center">
-                            <div className="flex">
-                              <span
-                                className="mr-2 items-center"
-                                onClick={() => setIsLiked(!isLiked)}
-                              >
-                                {!isLiked ? (
-                                  <AiOutlineLike color="#8E8695" />
-                                ) : (
-                                  <AiTwotoneLike color="#8E8695" />
-                                )}
-                              </span>
-                              <p>{element.likes.length}</p>
-                            </div>
-                            <div className="flex items-center">
-                              <span
-                                className="mr-2"
-                                onClick={() => setIsDisLiked(!isDisLiked)}
-                              >
-                                {!isDisLiked ? (
-                                  <AiOutlineDislike color="#8E8695" />
-                                ) : (
-                                  <AiTwotoneDislike color="#8E8695" />
-                                )}
-                              </span>
+                          <div className="flex items-center">
+                            <span
+                              className="mr-2"
+                              onClick={() => setIsDisLiked(!isDisLiked)}
+                            >
+                              {!isDisLiked ? (
+                                <AiOutlineDislike color="#8E8695" />
+                              ) : (
+                                <AiTwotoneDislike color="#8E8695" />
+                              )}
+                            </span>
 
-                              <p>{element.unlikes.length}</p>
-                            </div>
+                            <p>{element.unlikes.length}</p>
+                          </div>
+                          <img
+                            className="cursor-pointer"
+                            src={reply}
+                            alt=""
+                            onClick={() => setReplyComment(!replyComment)}
+                          />
+                          <span
+                            className="relative"
+                            onClick={() => setReportDropdown(!reportDropdown)}
+                          >
                             <img
                               className="cursor-pointer"
-                              src={reply}
+                              src={ellipses}
                               alt=""
-                              onClick={() => setReplyComment(!replyComment)}
                             />
-                            <span
-                              className="relative"
-                              onClick={() => setReportDropdown(!reportDropdown)}
-                            >
-                              <img
-                                className="cursor-pointer"
-                                src={ellipses}
-                                alt=""
-                              />
-                              {reportDropdown ? (
-                                <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                                  <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                                    <img
-                                      src={report}
-                                      alt="report"
-                                      className="mr-3"
-                                    />
-                                    Report
-                                  </div>
+                            {reportDropdown ? (
+                              <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
+                                <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
+                                  <img
+                                    src={report}
+                                    alt="report"
+                                    className="mr-3"
+                                  />
+                                  Report
                                 </div>
-                              ) : null}
-                            </span>
-                            <span
-                              onClick={() => setReplyComment(true)}
-                              className="text-purple-100 cursor-pointer"
-                            >
-                              {element?.replies?.length} replies
-                            </span>
-                          </div>
-                          {replyComment ? (
-                            <div className="m-6 flex items-center">
-                              <img
-                                src={gradientAvatar}
-                                alt=""
-                                className="h-10 w-10"
-                              />
-                              <div className="relative w-full">
-                                <input
-                                  type="text"
-                                  value={replyValue}
-                                  name="comment"
-                                  id="comment"
-                                  onChange={(e) =>
-                                    setReplyValue(e.target.value)
-                                  }
-                                  placeholder="Reply comment"
-                                  className="ml-5 w-300 border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
-                                />
-                                {replyValue.length ? (
-                                  <button
-                                    type="button"
-                                    onClick={handleSubmitReply}
-                                    className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
-                                  >
-                                    post
-                                  </button>
-                                ) : null}
                               </div>
-                            </div>
-                          ) : null}
+                            ) : null}
+                          </span>
+                          <span
+                            onClick={() => setReplyComment(true)}
+                            className="text-purple-100 cursor-pointer"
+                          >
+                            {element?.replies?.length} replies
+                          </span>
                         </div>
+                        {replyComment ? (
+                          <div className="m-6 flex items-center">
+                            <img
+                              src={gradientAvatar}
+                              alt=""
+                              className="h-10 w-10"
+                            />
+                            <div className="relative w-full">
+                              <input
+                                type="text"
+                                value={replyValue}
+                                name="comment"
+                                id="comment"
+                                onChange={(e) => setReplyValue(e.target.value)}
+                                placeholder="Reply comment"
+                                className="ml-5 w-300 border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
+                              />
+                              {replyValue.length ? (
+                                <button
+                                  type="button"
+                                  onClick={handleSubmitReply}
+                                  className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
+                                >
+                                  post
+                                </button>
+                              ) : null}
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
-                  );
-                })}
-            </div>
-          </div>
-
-          <div className="mt-20">
-            <p>Related questions</p>
-            <div
-              onClick={() => navigate(AuthRoutes.communityContent)}
-              className="flex mb-5 align-center justify-between border-gray-100 rounded-md shadow p-4"
-            >
-              <div className="flex">
-                <img src={serena} alt="serena" />
-                <div className="flex flex-col ml-4">
-                  <h4 className="text-base font-semibold mb-2 text-gray-400">
-                    Help, my hair is breaking.
-                  </h4>
-                  <div className="flex">
-                    <h4 className="text-sm text-gray-400 font-normal">
-                      Serena Williams
-                    </h4>
-                    <p className="ml-2 text-gray-200 font-normal text-sm">
-                      24 comments · 05 Dec 2021
-                    </p>
                   </div>
+                );
+              })}
+          </div>
+        </div>
+
+        <div className="mt-20">
+          <p>Related questions</p>
+          <div
+            onClick={() => navigate(AuthRoutes.communityContent)}
+            className="flex mb-5 align-center justify-between border-gray-100 rounded-md shadow p-4"
+          >
+            <div className="flex">
+              <img src={serena} alt="serena" />
+              <div className="flex flex-col ml-4">
+                <h4 className="text-base font-semibold mb-2 text-gray-400">
+                  Help, my hair is breaking.
+                </h4>
+                <div className="flex">
+                  <h4 className="text-sm text-gray-400 font-normal">
+                    Serena Williams
+                  </h4>
+                  <p className="ml-2 text-gray-200 font-normal text-sm">
+                    24 comments · 05 Dec 2021
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center">
-                <div className="-space-x-6 mr-4">
-                  <img
-                    src={pix7}
-                    alt="pix7"
-                    className="relative z-10 inline object-cover w-10 h-10"
-                  />
-                  <img
-                    src={pix8}
-                    alt="pix8"
-                    className="relative z-20 inline object-cover w-10 h-10"
-                  />
-                  <img
-                    src={pix1}
-                    alt="pix1"
-                    className="relative z-30 inline object-cover w-10 h-10"
-                  />
-                </div>
-                <div className="">
-                  <img src={bookmark} alt="bookmark" className="" />
-                </div>
+            </div>
+            <div className="flex items-center">
+              <div className="-space-x-6 mr-4">
+                <img
+                  src={pix7}
+                  alt="pix7"
+                  className="relative z-10 inline object-cover w-10 h-10"
+                />
+                <img
+                  src={pix8}
+                  alt="pix8"
+                  className="relative z-20 inline object-cover w-10 h-10"
+                />
+                <img
+                  src={pix1}
+                  alt="pix1"
+                  className="relative z-30 inline object-cover w-10 h-10"
+                />
+              </div>
+              <div className="">
+                <img src={bookmark} alt="bookmark" className="" />
               </div>
             </div>
           </div>

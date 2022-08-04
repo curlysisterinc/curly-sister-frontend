@@ -8,7 +8,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthRoutes } from "../../../constants";
 import admin from "../../../api/admin";
 
 // import allyn from "../../assets/images/allyn-antoine.png";
@@ -18,7 +17,6 @@ import admin from "../../../api/admin";
 // import bookmarkfilled from "../../assets/images/bookmark-filled.png";
 // import play from "../../assets/images/play-btn.svg";
 import videos from "./videoData";
-import SideBarComponent from "../../sidebar/sidebar";
 import LearnTabComponent from "./learnTabComponent";
 import videoThumbnail from "../../../assets/images/san-junipero.png";
 import allyn from "../../../assets/images/allyn-antoine.png";
@@ -32,7 +30,7 @@ import Loader from "../../loader";
 function VideoTab() {
   const navigate = useNavigate();
   const [getVideos, setGetVideos] = useState([]);
-  const [getVideoCategories, setGetVideoCategories] = useState([]);
+  // const [getVideoCategories, setGetVideoCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -69,89 +67,81 @@ function VideoTab() {
   // }, []);
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="learn" />
-      <div className="ml-80 bg-white px-10 pt-14 w-full">
+    <div className="my-20">
+      {isLoading ? (
+        <Loader />
+      ) : (
         <div>
-          <LearnTabComponent active="videos" />
-        </div>
-        <div className="my-20">
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <div>
-              {getVideos.length > 0 ? (
-                <div className="">
-                  <h2 className="font-BeatriceSemiBold text-2xl mb-8 text-gray-400">
-                    Hair styling
-                  </h2>
-                  <div className=" ">
-                    <div className="cursor-grab carousel overflow-x-hidden">
-                      <div className="grid grid-cols-3 gap-6">
-                        {getVideos?.map((video) => {
-                          return (
-                            <div className="relative col-1 h-80 overflow-hidden rounded-xl">
-                              <ReactPlayer
-                                url={video.link}
-                                onStart={() => {
-                                  navigate(`/learn/video/${video._id}`);
-                                }}
-                                light
-                                controls={false}
-                                width="100%"
-                                height="100%"
-                              />
-                              <div className="absolute  top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-gray-400 rounded-2xl" />
-                              <img
-                                src={play}
-                                onClick={() =>
-                                  navigate(`/learn/video/${video._id}`)
-                                }
-                                alt="play"
-                                className="mx-auto cursor-pointer z-2 absolute top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2"
-                              />
-                              <div className="absolute top-0 right-0 mr-4 mt-4 ">
-                                <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">
-                                  {video.number_of_saves.length > 0 ? (
-                                    <MdOutlineBookmarkBorder color="white" />
-                                  ) : (
-                                    <MdBookmark color="white" />
-                                  )}
-                                </span>
-                              </div>
+          {getVideos.length > 0 ? (
+            <div className="">
+              <h2 className="font-BeatriceSemiBold text-2xl mb-8 text-gray-400">
+                Hair styling
+              </h2>
+              <div className=" ">
+                <div className="cursor-grab carousel overflow-x-hidden">
+                  <div className="grid grid-cols-3 gap-6">
+                    {getVideos?.map((video) => {
+                      return (
+                        <div className="relative col-1 h-80 overflow-hidden rounded-xl">
+                          <ReactPlayer
+                            url={video.link}
+                            onStart={() => {
+                              navigate(`/learn/video/${video._id}`);
+                            }}
+                            light
+                            controls={false}
+                            width="100%"
+                            height="100%"
+                          />
+                          <div className="absolute  top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-gray-400 rounded-2xl" />
+                          <img
+                            src={play}
+                            onClick={() =>
+                              navigate(`/learn/video/${video._id}`)
+                            }
+                            alt="play"
+                            className="mx-auto cursor-pointer z-2 absolute top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2"
+                          />
+                          <div className="absolute top-0 right-0 mr-4 mt-4 ">
+                            <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">
+                              {video.number_of_saves.length > 0 ? (
+                                <MdOutlineBookmarkBorder color="white" />
+                              ) : (
+                                <MdBookmark color="white" />
+                              )}
+                            </span>
+                          </div>
 
-                              <div className="absolute top-0 left-0 mt-4 ml-4 bg-gray-400 bg-opacity-50 rounded-xl">
-                                <p className="py-1 px-2 text-xs text-white font-normal leading-5">
-                                  15:04
-                                </p>
-                              </div>
-                              <div className="absolute bottom-0 mb-4 ml-4">
-                                <h5 className="text-white text-base font-semibold">
-                                  {video.title}
-                                </h5>
-                                <p className="text-white text-opacity-50 text-sm font-normal">
-                                  {video.created_by.firstName}{" "}
-                                  {video.created_by.lastName} ·{" "}
-                                  {video.number_of_views} views ·{" "}
-                                  {moment(video.createdAt).fromNow()}
-                                </p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
+                          <div className="absolute top-0 left-0 mt-4 ml-4 bg-gray-400 bg-opacity-50 rounded-xl">
+                            <p className="py-1 px-2 text-xs text-white font-normal leading-5">
+                              15:04
+                            </p>
+                          </div>
+                          <div className="absolute bottom-0 mb-4 ml-4">
+                            <h5 className="text-white text-base font-semibold">
+                              {video.title}
+                            </h5>
+                            <p className="text-white text-opacity-50 text-sm font-normal">
+                              {video.created_by.firstName}{" "}
+                              {video.created_by.lastName} ·{" "}
+                              {video.number_of_views} views ·{" "}
+                              {moment(video.createdAt).fromNow()}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-              ) : (
-                <h3 className="text-center text-black text-xl font-BeatriceSemiBold">
-                  No content added
-                </h3>
-              )}
+              </div>
             </div>
+          ) : (
+            <h3 className="text-center text-black text-xl font-BeatriceSemiBold">
+              No content added
+            </h3>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

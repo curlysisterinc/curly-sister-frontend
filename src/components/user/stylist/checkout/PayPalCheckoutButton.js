@@ -1,14 +1,35 @@
+/* eslint-disable import/order */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable prefer-const */
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-else-return */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import admin from "../../../../api/admin";
+import { useNavigate } from "react-router-dom";
+import { AuthRoutes } from "constants";
 
-function PayPalCheckoutButton(props) {
+function PayPalCheckoutButton({
+  giftingDetails,
+  service,
+  booking,
+  setBooking,
+  bookingFeeTotal,
+}) {
+  const navigate = useNavigate();
+
   const [paidFor, setPaidFor] = useState(false);
   const [error, setError] = useState(null);
-  const { product } = props;
-  const handleApprove = (orderId) => {
+  const handleApprove = async (orderId) => {
     setPaidFor(true);
+    const confirmBooking = await admin.ConfirmBookedService({
+      success: true,
+      bookingId: booking._id,
+    });
+    console.log(confirmBooking, "confirm booking");
+
+    navigate(AuthRoutes.successfullBooking);
     // refresh user's account
   };
   if (paidFor) {
@@ -35,12 +56,35 @@ function PayPalCheckoutButton(props) {
           return actions.resolve();
         }
       }}
-      createOrder={(data, actions) => {
+      createOrder={async (data, actions) => {
+        let hasGifting =
+          giftingDetails.name.trim().length ||
+          giftingDetails.email.trim().length ||
+          giftingDetails.message.trim().length;
+        const bookedServiceData = hasGifting
+          ? {
+              service: service.bookedservice._id,
+              stylist: service.stylistId,
+              price: service.bookingTotal,
+              date: service.day.toString(),
+              booking_kind: "gift",
+              email: giftingDetails.email,
+              name: giftingDetails.name,
+            }
+          : {
+              service: service.bookedservice._id,
+              stylist: service.stylistId,
+              price: service.bookingTotal,
+              date: service.day.toString(),
+              // partialPayment: discountCheck,
+            };
+        const bookings = await admin.BookService(bookedServiceData);
+        setBooking(bookings.data.data.booking);
         return actions.order.create({
           purchase_units: [
             {
-              description: product.serviceName,
-              amount: { value: product.price },
+              description: bookings._id,
+              amount: { value: bookingFeeTotal },
             },
           ],
         });

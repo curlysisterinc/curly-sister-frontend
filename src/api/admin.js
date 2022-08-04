@@ -113,6 +113,12 @@ export default {
   async BookService(data) {
     return curlySistersApi.post("/v1/user/book-service", data);
   },
+  async ConfirmBookedService(data) {
+    return curlySistersApi.post("/v1/user/confirm-payment", data);
+  },
+  async GetUpcomingBookings(data) {
+    return curlySistersApi.post("/v1/user/get-bookings", data);
+  },
   /** Send a POST request to add video to content */
   async AddVideoToContent(data) {
     return curlySistersApi.post("/v1/admin/add-video", data);

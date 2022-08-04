@@ -27,6 +27,7 @@ function HomeComponent() {
   const [getVideos, setGetVideos] = useState([]);
   const [getArticles, setGetArticles] = useState([]);
   const [getStylist, setGetStylist] = React.useState([]);
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
 
   React.useEffect(() => {
     const ac = new AbortController();
@@ -55,14 +56,6 @@ function HomeComponent() {
         console.log(error);
         setIsLoading(false);
       });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
-  useEffect(async () => {
-    const ac = new AbortController();
-
     admin
       .GetAllVideos()
       .then((response) => {
@@ -74,14 +67,6 @@ function HomeComponent() {
         console.log(error);
         setIsLoading(false);
       });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
-  useEffect(async () => {
-    const ac = new AbortController();
-
     admin
       .GetAllArticles()
       .then((response) => {
@@ -95,12 +80,6 @@ function HomeComponent() {
 
         console.log(error);
       });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
-  useEffect(async () => {
     admin
       .GetAllStylists()
       .then((response) => {
@@ -110,11 +89,17 @@ function HomeComponent() {
       .catch((error) => {
         console.log(error.message);
       });
+    admin.GetUpcomingBookings().then((response) => {
+      setUpcomingBookings(response.data.data);
+      console.log(response, "upcoming bookings");
+    });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border-r border-gray-50">
-      <SideBarComponent active="home" />
+    <div>
       {!isLoggedIn ? (
         <LandingPage getStylist={getStylist} />
       ) : (
@@ -128,6 +113,7 @@ function HomeComponent() {
           getQuestions={getQuestions}
           saveQst={saveQst}
           setSaveQst={setSaveQst}
+          upcomingBookings={upcomingBookings}
         />
       )}
     </div>
