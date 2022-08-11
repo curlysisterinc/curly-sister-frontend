@@ -8,7 +8,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { Fragment, useState, useEffect } from "react";
-import SideBarComponent from "../../../sidebar/sidebar";
+import SideBarComponent from "../../../sidebar";
 import { useNavigate } from "react-router-dom";
 import { AuthRoutes } from "../../../../constants";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
@@ -31,6 +31,8 @@ import SelectPhoneDropdown from "./selectPhoneDropdown";
 import AvailabilityTab from "./availability";
 import GalleryTab from "./gallery";
 import cancel from "../../../../assets/images/cancel.svg";
+import Layout from "components/layout";
+// import Layout from "components/layout";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -165,8 +167,7 @@ function AddStylist() {
     setServiceList(list);
   };
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="dashboard" isLoggedIn />
+    <Layout>
       <div className="ml-80 bg-white px-10 py-14 w-full">
         <div className="flex items-start ">
           <div
@@ -751,7 +752,7 @@ function AddStylist() {
           )}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 

@@ -56,6 +56,7 @@ module.exports = {
       },
       backgroundImage: {
         "service-image": "url('/src/assets/images/service-image.png')",
+        "purple-pattern": "url('/src/assets/images/bg-one.png')",
       },
     },
   },

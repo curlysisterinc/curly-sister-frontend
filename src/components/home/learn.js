@@ -5,7 +5,7 @@ import playBtn from "../../assets/images/play-btn.svg";
 function LearnSection() {
   return (
     <div className="relative w-full ">
-      <img className="w-full" src={videoGirl} alt="video clip" />
+      <img className="w-full" src={videoGirl} alt="video clip" loading="lazy" />
       <img
         className="absolute left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2"
         src={playBtn}

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import facebookIcon from "../../assets/images/facebook.svg";
 import instagramIcon from "../../assets/images/instagram.svg";
 import smsIcon from "../../assets/images/sms.svg";
-import productImg from "../../assets/images/product-img.svg";
+import productImg from "../../assets/images/product-img.png";
 import bgOne2 from "../../assets/images/bg-one2.png";
 import stylistPlace1 from "../../assets/images/stylist-place-1.png";
 import ratingIcon from "../../assets/images/rating.svg";
@@ -14,7 +14,7 @@ function FooterComponent() {
     <div>
       <div className="bg-orange-50 p-10 flex justify-between items-center relative ">
         <img
-          className="absolute w-full object-fit top-0 z-0"
+          className="absolute w-full object-fit top-0 z-0 overflow-auto"
           src={bgOne2}
           alt=""
         />
@@ -113,7 +113,7 @@ function FooterComponent() {
           </Link>
         </div>
         <div className="w-1/3  border-2 border-orange-200 rounded-lg px-2 py-1 flex items-center">
-          <img src={productImg} alt="product-img" />
+          <img src={productImg} alt="product-img" loading="lazy" />
           <div className="ml-3">
             <h4 className="text-white font-bold text-base mb-2">
               Our curated products
