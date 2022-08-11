@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
@@ -16,7 +17,7 @@ import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
 
-function ManageCertificationModal({ handleClose }) {
+function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [inputList, setInputList] = useState([{ name: "", checked: false }]);
@@ -30,14 +31,9 @@ function ManageCertificationModal({ handleClose }) {
     const ac = new AbortController();
     document.title = "Curly sisters • Create certifications";
 
-    // if (authenticated === null) {
-    //   navigate(NonAuthRoutes.login);
-    // } else {
-    //   navigate(AuthRoutes.home);
-    // }
-
     return function cleanup() {
       ac.abort();
+      setIsCertificationUpdate(false);
     };
   }, []);
   // handle input change
@@ -143,14 +139,27 @@ function ManageCertificationModal({ handleClose }) {
   };
 
   const handleSubmit = (e) => {
+    console.log("new cert");
     e.preventDefault();
     const list = [...inputList];
+    let newName;
+    console.log(list);
+    const listed = list.map((item) => {
+      newName = item.name;
+    });
 
-    console.log(name, "data");
-    admin.CreateCertification(list[name]).then((response) => {
+    console.log(newName);
+    admin.CreateCertification(newName).then((response) => {
       if (response.status === 200) {
         const res = response.data;
-        console.log(res);
+
+        const newstate = inputList.map((item) => {
+          return { ...item, name: "" };
+        });
+        setIsCertificationUpdate(true);
+        setInputList(newstate);
+        handleClose();
+        console.log(res, "res");
       }
     });
   };
@@ -158,26 +167,26 @@ function ManageCertificationModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className="fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className="fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
     >
       <div
-        className="flex items-start h-full"
+        className="flex items-start justify-end h-full"
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          className="mt-10 mr-10 bg-white rounded-full p-2"
+          className="mt-20 mr-10 bg-white rounded-full p-2"
           onClick={handleClose}
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white min-h-screen  p-10">
+        <div className="bg-white min-h-screen  p-10 w-2/5">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Certifications
           </h4>
           <p className="text-gray-200 text-base">
             Add and remove certifications
           </p>
-          <form onSubmit={handleSubmit}>
+          <form>
             {inputList.map((certificate, index) => {
               return (
                 <div key={index}>
@@ -185,22 +194,31 @@ function ManageCertificationModal({ handleClose }) {
                     <div className=" grid grid-cols-12 ">
                       <label
                         htmlFor={certificate.name}
-                        className="col col-span-6"
+                        className={clsx(
+                          inputList.length > 1
+                            ? "col-span-7"
+                            : "xl:col-span-8 2xl:col-span-9",
+                          " "
+                        )}
                       >
                         <input
                           type="text"
                           name="name"
                           id={certificate.name}
-                          className={clsx(
-                            inputList.length > 1 ? "col-span-7" : "col-span-8",
-                            "col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
-                          )}
+                          className="col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
                           placeholder="Enter link here"
                           value={certificate.name}
                           onChange={(e) => handleInputChange(e, index)}
                         />
                       </label>
-                      <div className="col col-span-4 mr-2 py-2">
+                      <div
+                        className={clsx(
+                          inputList.length > 1
+                            ? "col-span-4"
+                            : "xl:col-span-4 2xl:col-span-3",
+                          "mr-2 py-2 "
+                        )}
+                      >
                         <label
                           htmlFor={index + 1}
                           className="flex items-center cursor-pointer"
@@ -243,7 +261,8 @@ function ManageCertificationModal({ handleClose }) {
               );
             })}
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
             >
               Save changes

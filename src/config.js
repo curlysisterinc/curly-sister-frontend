@@ -48,10 +48,10 @@ curlySistersApi.interceptors.request.use(
 );
 
 // Request Interceptor
-const curlySistersUploadImageApi = axios.create({
+const curlySistersFormDataApi = axios.create({
   baseURL: apiUrl,
 });
-curlySistersUploadImageApi.interceptors.request.use(
+curlySistersFormDataApi.interceptors.request.use(
   async (config) => {
     if (config.url.includes("/login")) return config;
     if (config.url.includes("/refresh-token")) return config;
@@ -89,7 +89,7 @@ curlySistersApi.interceptors.response.use(
 );
 
 // Response Interceptor
-curlySistersUploadImageApi.interceptors.response.use(
+curlySistersFormDataApi.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -136,7 +136,7 @@ curlySistersUploadImageApi.interceptors.response.use(
 
 export {
   curlySistersOnboarding,
-  curlySistersUploadImageApi,
+  curlySistersFormDataApi,
   curlySistersApi,
   curlySistersImageUrl,
 };

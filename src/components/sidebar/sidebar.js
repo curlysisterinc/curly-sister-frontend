@@ -13,23 +13,26 @@ import brandLogo from "../../assets/images/brand-logo.svg";
 import allynAvatar from "../../assets/images/allyn.svg";
 import dropdownIcon from "../../assets/images/dropdown.svg";
 
-function SideBarComponent({ active, isLoggedIn }) {
+function SideBarComponent({ active }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [open, setOpen] = useState(false);
 
+  const [open, setOpen] = useState(false);
+  const details = localStorage.getItem("user");
+  const [isLoggedIn, setIsLoggedIn] = useState(details);
   const onLogout = () => {
     navigate(NonAuthRoutes.login);
     dispatch(logoutUser());
     authHandler.deleteUser();
   };
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   useEffect(() => {
     const ac = new AbortController();
     if (isLoggedIn) {
       const userDetails = authHandler.getUser("users");
+      console.log(userDetails, "detailss");
       const userFirstName = userDetails.active.firstName;
       const userLastName = userDetails.active.lastName;
       setFirstName(userFirstName);
@@ -43,7 +46,9 @@ function SideBarComponent({ active, isLoggedIn }) {
   return (
     <div className="w-80 bg-gray-50 px-12 h-screen fixed border-r border-gray-100 shadow flex flex-col justify-between">
       <div className="pt-8">
-        <img src={brandLogo} alt="brand logo" />
+        <Link to="/">
+          <img src={brandLogo} alt="brand logo" />
+        </Link>
         {!isLoggedIn ? (
           <div className="mt-10 text-gray-400 text-lg font-semibold">
             <Link to="/">
@@ -58,13 +63,13 @@ function SideBarComponent({ active, isLoggedIn }) {
             <Link to="/stylists">
               <p
                 className={
-                  active === "about" ? " mb-4 text-purple-100" : " mb-4 "
+                  active === "stylists" ? " mb-4 text-purple-100" : " mb-4 "
                 }
               >
                 Stylists
               </p>
             </Link>
-            <Link to="/learn">
+            <Link to={NonAuthRoutes.learn}>
               <p
                 className={
                   active === "learn" ? " mb-4 text-purple-100" : " mb-4 "
@@ -99,7 +104,7 @@ function SideBarComponent({ active, isLoggedIn }) {
           </div>
         ) : (
           <div className="mt-10 text-gray-400 text-lg font-semibold">
-            <Link to="/home">
+            <Link to="/">
               <p
                 className={
                   active === "home" ? " mb-4 text-purple-100" : " mb-4 "
@@ -117,7 +122,7 @@ function SideBarComponent({ active, isLoggedIn }) {
                 Stylists
               </p>
             </Link>
-            <Link to="/learn">
+            <Link to={NonAuthRoutes.learn}>
               <p
                 className={
                   active === "learn" ? " mb-4 text-purple-100" : " mb-4 "
@@ -168,7 +173,7 @@ function SideBarComponent({ active, isLoggedIn }) {
               {firstName} {lastName}
             </p>
             <img
-              className={open && "transform rotate-180"}
+              className={`${open === true && "transform rotate-180"}`}
               src={dropdownIcon}
               alt="dropdwon icon"
             />
@@ -183,7 +188,7 @@ function SideBarComponent({ active, isLoggedIn }) {
                   </div>
                   <div
                     className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2"
-                    onClick={() => navigate(AuthRoutes.termsAndPrivacy)}
+                    onClick={() => navigate(NonAuthRoutes.termsAndPrivacy)}
                   >
                     Terms & Privacy
                   </div>
