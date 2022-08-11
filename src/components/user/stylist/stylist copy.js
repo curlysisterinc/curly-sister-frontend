@@ -10,7 +10,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/order */
 import React, { useState } from "react";
-import SideBarComponent from "../../sidebar/sidebar";
+import SideBarComponent from "../../sidebar";
 import { RiSearchLine } from "react-icons/ri";
 import bookIcon from "../../../assets/images/book.svg";
 import bookIconOutlined from "../../../assets/images/book-outlined.svg";

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { AuthRoutes } from "../../../../../constants";
 import admin from "../../../../../api/admin";
-import SideBarComponent from "../../../../sidebar/sidebar";
+import SideBarComponent from "../../../../sidebar";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import NewVideoCategory from "./newVideoCategory";
 

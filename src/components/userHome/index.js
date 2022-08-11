@@ -23,7 +23,7 @@ import curatedProduct from "../../assets/images/curated-product.png";
 import continueLearning from "../../assets/images/continue-learning.png";
 import arrowIcon from "../../assets/images/arrow.svg";
 
-function UserHome() {
+function UserHome({ upcomingBookings }) {
   const details = localStorage.getItem("user");
   const [isLoggedIn, setIsLoggedIn] = useState(details);
 

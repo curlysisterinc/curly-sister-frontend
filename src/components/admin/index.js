@@ -43,7 +43,7 @@ function AdminDashbaord() {
             key={link.title}
             className={({ isActive }) =>
               isActive
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
+                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-2 mx-5 cursor-pointer"
                 : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer"
             }
             to={link.path}

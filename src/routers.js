@@ -5,51 +5,79 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import HomeComponent from "components/home";
 import React, { lazy, Suspense } from "react";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { Routes, Route } from "react-router-dom";
 import AdminLayout from "./components/layout/admin";
-import HomeComponent from "./components/home";
-import AboutComponent from "./components/about/about";
 import { NonAuthRoutes, AuthRoutes } from "./constants";
-import LoginComponent from "./components/login/login";
-import SignupComponent from "./components/signup/signup";
-import ForgotPasswordComponent from "./components/forgotPassword/forgotPassword";
-import TermsAndPrivacy from "./components/termsAndPrivacy/termsAndPrivacy";
-import ResetPasswordComponent from "./components/resetPassword/resetPassword";
-import AdminDashbaord from "./components/admin/dashboard";
-import AddStylist from "./components/admin/dashboard/users/addStylists/addStylist";
-import IndividualsBookings from "./components/admin/dashboard/users/individuals/bookings/bookings";
-import NewArticle from "./components/admin/dashboard/content/article/newArticle";
-import NewVideo from "./components/admin/dashboard/content/video/addVideo";
-// import IsLoggedInLearnComponent from "./components/user/learn/learn";
-import LearnComponent from "./components/user/learn/learn";
-import VideoContent from "./components/user/learn/videoContent";
-import ArticleContent from "./components/user/learn/articleContent";
-import CommunityContent from "./components/user/learn/communityContent";
-import VideoTab from "./components/user/learn/videoTab";
-import ArticleTab from "./components/user/learn/articleTab";
-import CommunityTab from "./components/user/learn/communityTab";
-// import LearnMoreArticleTab from "./components/user/learn/articleTab";
-// import LearnMoreTabComponent from "./components/learn/videoTab";
-// import LearnMoreCommunityTab from "./components/learn/communityTab";
-import UsersTab from "./components/admin/dashboard/users/users";
-import AdminTab from "./components/admin/dashboard/users/admin/admin";
-import IndividualTab from "./components/admin/dashboard/users/individuals/individuals";
-import ContentTab from "./components/admin/dashboard/content/contentTable";
-import DataTab from "./components/admin/dashboard/data/data";
-import EditVideo from "./components/admin/dashboard/content/video/updateVideo";
-import EditArticle from "./components/admin/dashboard/content/article/editArticle";
-import Stylist from "./components/user/stylist/stylist";
-import StylistProfile from "./components/user/stylist/profile/stylistProfile";
-import BookedStylistProfile from "./components/user/stylist/bookedStylist";
-import ConfirmBooking from "./components/user/stylist/confirmBooking";
-import SuccessfullBooking from "./components/user/stylist/successfulBooking";
-import AppLayout from "./components/layout";
-// import OverviewTab from "./components/admin/dashboard/overview/overview";
-import StylistTab from "./components/admin/dashboard/users/stylists/stylists";
-import AllTab from "./components/user/learn/allTab";
+
+import authHandler from "./authHandler";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import LoaderComponent from "components/loader-component";
+// import AddStylist from "components/admin/dashboard/users/addStylists/addStylist";
+
+const IndividualsBookings = lazy(() =>
+  import("./components/admin/dashboard/users/individuals/bookings/bookings")
+);
+const NewArticle = lazy(() =>
+  import("./components/admin/dashboard/content/article/newArticle")
+);
+const NewVideo = lazy(() =>
+  import("./components/admin/dashboard/content/video/addVideo")
+);
+const LearnComponent = lazy(() => import("./components/user/learn/learn"));
+const VideoContent = lazy(() => import("./components/user/learn/videoContent"));
+const ArticleContent = lazy(() =>
+  import("./components/user/learn/articleContent")
+);
+const CommunityContent = lazy(() =>
+  import("./components/user/learn/communityContent")
+);
+const VideoTab = lazy(() => import("./components/user/learn/videoTab"));
+const ArticleTab = lazy(() => import("./components/user/learn/articleTab"));
+const CommunityTab = lazy(() => import("./components/user/learn/communityTab"));
+// const LearnMoreTabComponent = lazy(() => import("./components/learn/videoTab"));
+// const LearnMoreCommunityTab = lazy(() =>
+//   import("./components/learn/communityTab")
+// );
+const UsersTab = lazy(() => import("./components/admin/dashboard/users/users"));
+const AdminTab = lazy(() =>
+  import("./components/admin/dashboard/users/admin/admin")
+);
+const IndividualTab = lazy(() =>
+  import("./components/admin/dashboard/users/individuals/individuals")
+);
+const ContentTab = lazy(() =>
+  import("./components/admin/dashboard/content/contentTable")
+);
+const DataTab = lazy(() => import("./components/admin/dashboard/data/data"));
+const EditVideo = lazy(() =>
+  import("./components/admin/dashboard/content/video/updateVideo")
+);
+const EditArticle = lazy(() =>
+  import("./components/admin/dashboard/content/article/editArticle")
+);
+const Stylist = lazy(() => import("./components/user/stylist/stylist"));
+const StylistProfile = lazy(() =>
+  import("./components/user/stylist/profile/stylistProfile")
+);
+const BookedStylistProfile = lazy(() =>
+  import("./components/user/stylist/bookedStylist")
+);
+const ConfirmBooking = lazy(() =>
+  import("./components/user/stylist/confirmBooking")
+);
+const SuccessfullBooking = lazy(() =>
+  import("./components/user/stylist/successfulBooking")
+);
+const AppLayout = lazy(() => import("./components/layout"));
+const OverviewTab = lazy(() => import("./components/admin/dashboard/overview"));
+const StylistTab = lazy(() =>
+  import("./components/admin/dashboard/users/stylists/stylists")
+);
+const AllTab = lazy(() => import("./components/user/learn/allTab"));
+const HomeComponent = lazy(() => import("components/home"));
 
 const AboutComponent = lazy(() => import("./components/about"));
 const LoginComponent = lazy(() => import("./components/login"));
@@ -59,17 +87,13 @@ const ForgotPasswordComponent = lazy(() =>
 );
 const TermsAndPrivacy = lazy(() => import("./components/termsAndPrivacy"));
 const ResetPasswordComponent = lazy(() => import("./components/resetPassword"));
-const UserHome = lazy(() => import("./components/userHome"));
+// const UserHome = lazy(() => import("./components/userHome"));
 const AdminDashbaord = lazy(() => import("./components/admin"));
 const AddStylist = lazy(() =>
-  import("./components/admin/dashboard/users/addStylist")
+  import("components/admin/dashboard/users/addStylists/addStylist")
 );
 
 const PageNotFound = lazy(() => import("pages/404"));
-
-import authHandler from "./authHandler";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(
   "pk_test_51LQ4MZBHdUN0GiBt1CZsfNAPvWydnkEX1xL5ZiUXSsC2ErjI9LOQwT4K48YOQbJtcp8vXJX0TT5aP7XAXNmXSt2j00BlrHqanQ"
@@ -81,7 +105,7 @@ function Routers() {
       <Elements stripe={stripePromise}>
         <PayPalScriptProvider
           options={{
-            "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID
+            "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
           }}
         >
           <div className="dark:bg-slate-800">
@@ -158,10 +182,10 @@ function Routers() {
                     path={AuthRoutes.dashboard}
                     element={<AdminDashbaord />}
                   >
-                    {/* <Route
-                    path={AuthRoutes.dashboardOverview}
-                    element={<OverviewTab />}
-                  /> */}
+                    <Route
+                      path={AuthRoutes.dashboardOverview}
+                      element={<OverviewTab />}
+                    />
                     <Route path={AuthRoutes.users} element={<UsersTab />}>
                       <Route
                         path={AuthRoutes.stylists}
@@ -200,8 +224,8 @@ function Routers() {
                     element={<EditArticle />}
                   />
                 </Route>
-                <Route path="*" element={<PageNotFound />} />
               </Route>
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </div>
         </PayPalScriptProvider>

@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import admin from "../../../../../api/admin";
-import SideBarComponent from "../../../../sidebar/sidebar";
+import SideBarComponent from "../../../../sidebar";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import NewVideoCategory from "./newVideoCategory";
 import learn from "../../../../../api/learn";

@@ -10,9 +10,9 @@ import stylistAvatar from "../../assets/images/stylist-1.png";
 
 const CommonCard = ({ stylist }) => {
   const splitName = (fullname) => {
-    let name = fullname.stylist_name;
-    const firstName = name.split(" ");
-    return firstName[0];
+    let name = fullname?.stylist_name;
+    const firstName = name?.split(" ");
+    return firstName && firstName[0];
   };
   const navigate = useNavigate();
   return (

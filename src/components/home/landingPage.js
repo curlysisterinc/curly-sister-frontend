@@ -12,7 +12,8 @@ import CommunitySection from "./community";
 import FooterComponent from "../footer/footer";
 import searchIcon from "../../assets/images/search-normal.svg";
 
-function landingPage({ getStylist }) {
+function LandingPage({ getStylist }) {
+  console.log({ getStylist });
   return (
     <div className="ml-80 p-0">
       <div className="relative">
@@ -57,4 +58,4 @@ function landingPage({ getStylist }) {
   );
 }
 
-export default landingPage;
+export default LandingPage;

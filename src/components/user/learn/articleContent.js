@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AuthRoutes } from "../../../constants";
 import learn from "../../../api/learn";
 import imagineHairVideo from "../../../assets/images/imagine-video.png";
-import SideBarComponent from "../../sidebar/sidebar";
+import SideBarComponent from "../../sidebar";
 import gradientAvatar from "../../../assets/images/gradient-avatar.svg";
 import like from "../../../assets/images/like.svg";
 // import wideArticle from "../../../assets/images/wide-article.png";

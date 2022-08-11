@@ -10,10 +10,11 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/order */
 import React, { useState } from "react";
-import SideBarComponent from "../../sidebar/sidebar";
+import SideBarComponent from "../../sidebar";
 import admin from "../../../api/admin";
 import FilterPanel from "./filterPanel";
 import StylistList from "./StylistList";
+import useGetAllStylists from "hooks/data/stylist/useGetAllStylists";
 
 function Stylist() {
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);
@@ -81,18 +82,23 @@ function Stylist() {
     // }
     setGetStylist(updatedList);
   };
+  const { data: stylistData, loading, error } = useGetAllStylists();
+  const stylists = stylistData?.data?.stylists;
 
   React.useEffect(() => {
-    const fetchData = () => {
-      admin.GetAllStylists().then((response) => {
-        console.log(response.data);
-        setGetStylist(response.data.stylists);
+    // const fetchData = () => {
+    //   admin.GetAllStylists().then((response) => {
+    //     console.log(response.data);
+    //     setGetStylist(response.data.stylists);
 
-        setFilteredArr(response.data.stylists);
-      });
-    };
-    fetchData();
-  }, []);
+    //     setFilteredArr(response.data.stylists);
+    //   });
+    // };
+    // fetchData();
+    if (stylistData) {
+      setFilteredArr(stylists);
+    }
+  }, [stylistData]);
 
   React.useEffect(() => {
     const fetchData = () => {
@@ -120,7 +126,7 @@ function Stylist() {
         getServices={getServices}
       />
       <hr className="w-full border border-gray-600 mt-8" />
-      <StylistList list={getStylist} />
+      {stylistData && <StylistList list={stylists} />}
     </div>
   );
 }
