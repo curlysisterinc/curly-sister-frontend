@@ -1,23 +1,17 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable prefer-regex-literals */
+/* eslint-disable no-underscore-dangle */
 import axios from "axios";
 import Cookies from "js-cookie";
 import TokenValidate from "./tokenValidate";
 
-/** Base Url for api STAGING */
-const apiUrl = "https://curly-sisters.beargaze.com";
-/** Base Url for api PRODUCTION */
-// const apiUrl = "https://megaletrics.beargaze.com/";
+/** BASE URL STAGING */
+// const apiUrl = "https://curly-sisters.beargaze.com";
+// const curlySistersImageUrl = "https://curly-sisters.beargaze.com";
 
-/** Base Url for Images STAGING */
-const curlySistersImageUrl = "https://curly-sisters.beargaze.com";
-/** Base Url for Images PRODUCTION */
-// const imageBaseUrl = "https://megaletrics.beargaze.com/";
+/** BASE URL PRODUCTION */
+const apiUrl = "https://live.curly-sisters.beargaze.com/";
+const curlySistersImageUrl = "https://live.curly-sisters.beargaze.com/";
 
 /** axios API for Signup and Login users with no token  */
 const curlySistersOnboarding = axios.create({
@@ -109,30 +103,6 @@ curlySistersFormDataApi.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-/** axios API for sending internal requests with token  */
-// const megalectricsApi = axios.create({
-//   baseURL: apiUrl,
-// });
-// megalectricsApi.interceptors.request.use(function (config) {
-//   const TOKEN = authHandler.get();
-
-//   config.headers.Authorization = TOKEN;
-//   config.headers["Content-Type"] = `application/json`;
-//   return config;
-// });
-
-// /** axios API for Uploading files  */
-// const megalectricsUploadImageApi = axios.create({
-//   baseURL: apiUrl,
-// });
-// megalectricsUploadImageApi.interceptors.request.use(function (config) {
-//   const TOKEN = authHandler.get();
-
-//   config.headers.Authorization = TOKEN;
-//   config.headers["Content-Type"] = `multipart/form-data`;
-//   return config;
-// });
 
 export {
   curlySistersOnboarding,
