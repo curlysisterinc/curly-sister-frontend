@@ -6,14 +6,19 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
+import admin from "../../../../api/admin";
 
-function ManageServicesModal({ handleClose }) {
-  const [serviceList, setServiceList] = useState([
-    { serviceName: "", description: "", price: "", duration: "", people: "" },
-  ]);
+function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
+  const [serviceList, setServiceList] = useState({
+    name: "",
+    description: "",
+    default_price: "",
+    who_is_this_for: "Others",
+    duration: "",
+  });
   const [coverPhoto, setCoverPhoto] = useState(null);
   // handle file change
   const handleFileChange = (e) => {
@@ -22,28 +27,57 @@ function ManageServicesModal({ handleClose }) {
 
   // handle input change
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    const list = [...serviceList];
-    list[name] = value;
-    setServiceList(list);
+    setServiceList({ ...serviceList, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const ac = new AbortController();
+    document.title = "Curly sisters • Create services";
+
+    return function cleanup() {
+      ac.abort();
+      setIsServiceUpdate(false);
+    };
+  }, []);
+  const handleSubmitService = (e) => {
+    e.preventDefault();
+    admin
+      .CreateServices(serviceList)
+      .then((response) => {
+        console.log(response.data);
+        setServiceList({
+          ...serviceList,
+          name: "",
+          description: "",
+          default_price: "",
+          who_is_this_for: "For everyone",
+          duration: "",
+        });
+        if (response.status === 200) {
+          handleClose();
+          setIsServiceUpdate(true);
+        }
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full min-h-screen"
     >
       <div
-        className="flex items-start h-full"
+        className="flex  justify-end items-start h-full"
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          className="mt-10 mr-10 bg-white rounded-full p-2"
+          className="mt-20 mr-10 bg-white rounded-full p-2"
           onClick={handleClose}
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white p-10">
+        <div className="bg-white p-10 w-2/5">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Add a service
           </h4>
@@ -59,11 +93,11 @@ function ManageServicesModal({ handleClose }) {
                 Name of service
                 <input
                   className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="serviceName"
+                  id="name"
                   type="text"
-                  value={serviceList.serviceName}
+                  value={serviceList.name}
                   placeholder="Type a name here"
-                  name="serviceName"
+                  name="name"
                   onChange={handleChange}
                 />
               </label>
@@ -82,6 +116,8 @@ function ManageServicesModal({ handleClose }) {
                   label="description"
                   id="description"
                   rows="3"
+                  value={serviceList.description}
+                  onChange={handleChange}
                 />
               </label>
             </div>
@@ -98,8 +134,10 @@ function ManageServicesModal({ handleClose }) {
                       className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter price"
-                      name="price"
-                      id="price"
+                      name="default_price"
+                      value={serviceList.default_price}
+                      id="default_price"
+                      onChange={handleChange}
                     />
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
                       <select
@@ -127,17 +165,20 @@ function ManageServicesModal({ handleClose }) {
                       className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter time"
-                      name="time"
-                      id="time"
+                      name="duration"
+                      id="duration"
+                      value={serviceList.duration}
+                      onChange={handleChange}
                     />
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
                       <select
-                        id="currency"
-                        name="currency"
+                        id="duration"
+                        name="duration"
+                        // onChange={handleChange}
                         className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
                       >
-                        <option>mins</option>
-                        <option>hour</option>
+                        <option value="mins">mins</option>
+                        <option value="hour">hour</option>
                       </select>
                     </div>
                   </div>
@@ -152,12 +193,14 @@ function ManageServicesModal({ handleClose }) {
               >
                 Who is this for?
                 <select
-                  id="people"
-                  name="people"
+                  id="who_is_this_for"
+                  name="who_is_this_for"
+                  value={serviceList.who_is_this_for}
+                  onChange={handleChange}
                   className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
-                  <option>Everyone</option>
-                  <option>Not everyone</option>
+                  <option value="Everyone">Everyone</option>
+                  <option value="Stylists">Stylists</option>
                 </select>
               </label>
             </div>
@@ -182,7 +225,8 @@ function ManageServicesModal({ handleClose }) {
               </div>
             </div>
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmitService}
               className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
             >
               {/* <svg

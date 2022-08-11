@@ -1,0 +1,11 @@
+.custom-indicator li.slick-active div {
+  border-radius: 12px;
+  border: 2px #ff8500 solid;
+  padding: 4px;
+}
+.slick-dots{
+  display: flex !important;
+}
+.slick-dots li{
+  flex:  1;
+}

@@ -1,7 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+}
 body {
   margin: 0;
   padding: 0;
@@ -13,6 +23,9 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+.book-stylist .slick-slide {
+  margin: 0 5px;
 }
 
 .toggle-bg:after {
@@ -85,4 +98,27 @@ Font Weight	Numerical Weight
 "Extra Bold", "Ultra Bold", "Extra Bld", "Ultra Bld"	800
 "Black", "Heavy", "Ultra", "Fat", "Poster", "Ultra Black" 	 900 
 */
+}
+
+/* .phoneinput > div{
+  flex: 1;
+}
+.phoneinput input{
+  width: 100% !important;
+} */
+
+.rdrDefinedRangesWrapper {
+  display: none;
+}
+
+*{
+  /* outline: 1px solid red; */
+}
+
+[data-state="open"] > img {
+  transform: rotate(180deg);
+  transition: transform .5s ease;
+}
+[data-state="closed"] > img {
+  transition: all .5s ease;
 }

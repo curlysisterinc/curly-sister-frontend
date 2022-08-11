@@ -1,64 +1,122 @@
-/* eslint-disable import/no-unresolved */
+/* eslint-disable react/function-component-definition */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable import/no-cycle */
+/* eslint-disable import/order */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
-import React from "react";
-// eslint-disable-next-line import/no-unresolved
-import Layout from "components/layout";
-import FooterComponent from "components/footer";
-import searchIcon from "../../assets/images/search-normal.svg";
-import girl0 from "../../assets/images/girl-0.png";
-import girl1 from "../../assets/images/girl-1.png";
-import girl2 from "../../assets/images/girl-2.png";
-import girl3 from "../../assets/images/girl-3.png";
-import girl4 from "../../assets/images/girl-4.png";
-// import bgOne from "../../assets/images/bg-one.png";
-import LearnSection from "./learn";
-import BookStylist from "./bookStylist";
-import CommunitySection from "./community";
+import React, { useState, useEffect } from "react";
+import SideBarComponent from "../sidebar/sidebar";
+import { Link, useNavigate } from "react-router-dom";
+import authHandler from "../../authHandler";
+import learn from "../../api/learn";
+import admin from "../../api/admin";
+import LandingPage from "./landingPage";
+import UserHome from "./home";
 
 function HomeComponent() {
+  const details = localStorage.getItem("user");
+  const [isLoggedIn, setIsLoggedIn] = React.useState(details);
+  const [firstName, setFirstName] = React.useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [getQuestions, setGetQuestions] = useState([]);
+  const [saveQst, setSaveQst] = useState(false);
+  const [getVideos, setGetVideos] = useState([]);
+  const [getArticles, setGetArticles] = useState([]);
+  const [getStylist, setGetStylist] = React.useState([]);
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
+
+  React.useEffect(() => {
+    const ac = new AbortController();
+    if (isLoggedIn) {
+      const userDetails = authHandler.getUser("users");
+      const userFirstName = userDetails.active.firstName;
+      setFirstName(userFirstName);
+    }
+
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
+
+  useEffect(async () => {
+    const ac = new AbortController();
+
+    learn
+      .GetAllQuestions()
+      .then((response) => {
+        console.log(response.data.data);
+        setIsLoading(false);
+        setGetQuestions(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+    admin
+      .GetAllVideos()
+      .then((response) => {
+        console.log(response.data.data, "Success");
+        setIsLoading(false);
+        setGetVideos(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsLoading(false);
+      });
+    admin
+      .GetAllArticles()
+      .then((response) => {
+        console.log(response.data.data, "Success");
+        setIsLoading(false);
+
+        setGetArticles(response.data.data);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+
+        console.log(error);
+      });
+    admin
+      .GetAllStylists()
+      .then((response) => {
+        console.log(response.data.stylists, "stylists");
+        setGetStylist(response.data.stylists);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+    admin.GetUpcomingBookings().then((response) => {
+      setUpcomingBookings(response.data.data);
+      console.log(response, "upcoming bookings");
+    });
+    return function cleanup() {
+      ac.abort();
+    };
+  }, []);
+
   return (
-    <Layout>
-      <div className="ml-80 p-0">
-        <div className="relative">
-          {/* <img className="absolute w-full" src={bgOne} alt="" /> */}
-          <div className="absolute z-10 top-1/2 bg-white rounded-full w-3/4  left-1/2 transform -translate-x-1/2 p-3 shadow">
-            <div className="flex justify-between items-center">
-              <input
-                type="text"
-                placeholder="What city do you live in?"
-                className="border-0 outline-none w-11/12"
-              />
-              <div className="rounded-full bg-orange-200 h-11 w-11 flex justify-center items-center cursor-pointer">
-                <img src={searchIcon} alt="Search icon" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-purple-200  bg-purple-pattern px-10 pt-14">
-            <div className="relative text-center w-full border border-orange-100 flex flex-col justify-center items-center py-24">
-              <h1 className="text-white font-bold text-5xl font-GTSuperTextBlack">
-                Let’s find you a stylist
-              </h1>
-              <p className="text-white text-lg mt-6">
-                Find thousands of curly hair stylists right at your fingertips
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-start flex-nowrap overflow-x-hidden">
-            <img src={girl0} alt="girl with hair" />
-            <img src={girl1} alt="girl with hair" />
-            <img src={girl2} alt="girl with hair" />
-            <img src={girl3} alt="girl with hair" />
-            <img src={girl4} alt="girl with hair" />
-          </div>
-        </div>
-        <div className="mt-20">
-          <BookStylist />
-          <LearnSection />
-          <CommunitySection />
-        </div>
-        <FooterComponent />
-      </div>
-    </Layout>
+    <div>
+      {!isLoggedIn ? (
+        <LandingPage getStylist={getStylist} />
+      ) : (
+        <UserHome
+          isLoading={isLoading}
+          isLoggedIn={isLoggedIn}
+          firstName={firstName}
+          getVideos={getVideos}
+          getStylist={getStylist}
+          getArticles={getArticles}
+          getQuestions={getQuestions}
+          saveQst={saveQst}
+          setSaveQst={setSaveQst}
+          upcomingBookings={upcomingBookings}
+        />
+      )}
+    </div>
   );
 }
 

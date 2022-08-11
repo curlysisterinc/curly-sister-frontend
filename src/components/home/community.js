@@ -1,8 +1,13 @@
+/* eslint-disable import/order */
 import React from "react";
 import communityPix1 from "../../assets/images/community-pix1.png";
 import communityPix2 from "../../assets/images/community-pix2.png";
+import { NonAuthRoutes } from "../../constants";
+import { useNavigate } from "react-router-dom";
 
 function CommunitySection() {
+  const navigate = useNavigate();
+
   return (
     <div className=" p-10 flex justify-center items-center">
       <div className="flex justify-between w-full">
@@ -18,7 +23,10 @@ function CommunitySection() {
             globe. Share experiences and tips together.
           </p>
           <button
-            type="submit"
+            onClick={() => {
+              navigate(NonAuthRoutes.communities);
+            }}
+            type="button"
             className="bg-purple-100 text-sm rounded-full w-48 mt-5 py-3 text-white shadow"
           >
             Visit the community

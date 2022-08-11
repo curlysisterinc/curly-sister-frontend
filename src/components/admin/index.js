@@ -1,67 +1,59 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import Layout from "components/layout";
-import React, { useState } from "react";
-// eslint-disable-next-line import/no-cycle
-import DataTab from "./dashboard/data/data";
-// eslint-disable-next-line import/no-cycle
-import UsersTab from "./dashboard/users/users";
+import { AuthRoutes } from "constants";
+import React, { useEffect } from "react";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 function AdminDashbaord() {
-  const [openTab, setOpenTab] = useState("overview");
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (pathname === AuthRoutes.dashboard) {
+      navigate(AuthRoutes.dashboardOverview);
+    }
+  }, [pathname]);
+
+  const dashboardNavlink = [
+    {
+      title: "Overview",
+      path: AuthRoutes.dashboardOverview,
+    },
+    {
+      title: "Users",
+      path: AuthRoutes.users,
+    },
+    {
+      title: "Content",
+      path: AuthRoutes.content,
+    },
+    {
+      title: "Data",
+      path: AuthRoutes.data,
+    },
+  ];
+
   return (
-    <Layout>
-      <div className="ml-80 bg-white px-10 py-14 w-full">
-        {/* tabs */}
-        <div className="flex justify-center items-center w-1/2 mx-auto mb-6">
-          <div
-            onClick={() => setOpenTab("overview")}
-            className={
-              openTab === "overview"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer "
-            }
-          >
-            Overview
-          </div>
-          <div
-            onClick={() => setOpenTab("users")}
-            className={
-              openTab === "users"
+    <div className="ml-80 bg-white px-10 py-14 w-full">
+      <div className="flex justify-center items-center w-1/2 mx-auto mb-6">
+        {dashboardNavlink.map((link) => (
+          <NavLink
+            key={link.title}
+            className={({ isActive }) =>
+              isActive
                 ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
                 : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer"
             }
+            to={link.path}
           >
-            Users
-          </div>{" "}
-          <div
-            onClick={() => setOpenTab("content")}
-            className={
-              openTab === "content"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5 cursor-pointer"
-            }
-          >
-            Content
-          </div>
-          <div
-            onClick={() => setOpenTab("data")}
-            className={
-              openTab === "data"
-                ? "text-sm font-BeatriceRegular text-purple-100 border-purple-100 border-b-4  pb-3 mx-5 cursor-pointer"
-                : "text-sm font-BeatriceRegular text-gray-300  pb-3 mx-5  cursor-pointer"
-            }
-          >
-            Data
-          </div>
-        </div>
-        {/* content */}
-        {openTab === "overview" && <div>overview</div>}
-        {openTab === "users" && <UsersTab />}
-        {openTab === "content" && <div>content</div>}
-        {openTab === "data" && <DataTab />}
+            {link.title}
+          </NavLink>
+        ))}
       </div>
-    </Layout>
+      <Outlet />
+    </div>
   );
 }
 
