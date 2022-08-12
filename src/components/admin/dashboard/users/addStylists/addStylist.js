@@ -34,7 +34,7 @@ import { activeTabInitials, detailsInitial, openTabInitials } from "./helper";
 
 // export const PersistUserContext = createContext(null);
 
-export const PersistUserContext = createContext(null);
+export const PersistUserContext = createContext({});
 
 function AddStylist() {
   const [hiddenTabs, setHiddenTabs] = useState(false);

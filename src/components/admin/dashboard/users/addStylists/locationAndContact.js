@@ -64,10 +64,10 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
   // services: []
   // stylist_name: "tade"
   // tags: []
-  const [userResponse, fetchUserResponse] = useContext(PersistUserContext);
+  // const [userResponse, fetchUserResponse] = useContext(PersistUserContext);
   const stylistId = localStorage.getItem("stylistid");
 
-  console.log(userResponse, stylistId, "stylistid");
+  console.log(stylistId, "stylistid");
 
   // const [userResponse, fetchUserResponse] = useContext(PersistUserContext);
 

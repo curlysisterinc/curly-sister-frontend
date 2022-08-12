@@ -9,7 +9,7 @@
 import React, { useState, useEffect } from "react";
 import admin from "api/admin";
 import { useQuery } from "@tanstack/react-query";
-import useGetAllStylists from "hooks/data/stylist/useGetAllStylists";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import StylistRow from "./stylistRow";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";

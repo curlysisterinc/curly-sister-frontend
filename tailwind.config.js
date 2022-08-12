@@ -80,6 +80,10 @@ module.exports = {
         "service-image": "url('/src/assets/images/service-image.png')",
         "purple-pattern": "url('/src/assets/images/bg-one.png')",
       },
+      boxShadow: {
+        s01:"0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
+        s07:"0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)"
+      }
     },
   },
   variants: {

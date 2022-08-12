@@ -14,7 +14,7 @@ import SideBarComponent from "../../sidebar";
 import admin from "../../../api/admin";
 import FilterPanel from "./filterPanel";
 import StylistList from "./StylistList";
-import useGetAllStylists from "hooks/data/stylist/useGetAllStylists";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
 
 function Stylist() {
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);

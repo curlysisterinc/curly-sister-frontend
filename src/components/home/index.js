@@ -16,8 +16,10 @@ import learn from "../../api/learn";
 import admin from "../../api/admin";
 import LandingPage from "./landingPage";
 import UserHome from "components/userHome";
-import useGetAllStylists from "hooks/data/stylist/useGetAllStylists";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
+import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
 import { useAuthContext } from "../../redux/auth";
+import { useQueries } from "@tanstack/react-query";
 // import UserHome from "./home";
 
 function HomeComponent() {
@@ -25,6 +27,10 @@ function HomeComponent() {
     state: { isSignedIn },
   } = useAuthContext();
   console.log({ isSignedIn });
+
+  const { GetAllVideos, GetAllArticles, GetAllStylists, GetUpcomingBookings } =
+    admin;
+
   const details = localStorage.getItem("user");
   const [firstName, setFirstName] = React.useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +43,27 @@ function HomeComponent() {
 
   // const { data, loading, error: err } = useGetAllStylists();
   const { data, loading, error: err } = useGetAllStylists();
+  const {
+    data: questions,
+    loading: isQuestionsLoading,
+    error: QuestionsErr,
+  } = useGetAllQuestions();
+
   const getStylist = data?.data?.stylists;
+  const getQuestions2 = questions?.data?.data;
+  console.log({ getQuestions2 });
+
+  const results = useQueries({
+    queries: [
+      { queryKey: ["videos"], queryFn: GetAllVideos },
+      { queryKey: ["articles"], queryFn: GetAllArticles },
+      { queryKey: ["stylists"], queryFn: GetAllStylists },
+      { queryKey: ["upcomingBookings"], queryFn: GetUpcomingBookings },
+    ],
+  });
+
+  console.log("RESULT", results);
+  console.log("PROCESS", process.env);
 
   React.useEffect(() => {
     const ac = new AbortController();

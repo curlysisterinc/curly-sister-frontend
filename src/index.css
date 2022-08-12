@@ -86,7 +86,7 @@ input:checked + .toggle-bg {
       url(./assets/fonts/BeatriceRegularItalic.otf) format("opentype");
   }
 
-  /* 
+  /*
 Font Weight	Numerical Weight
 "Thin", "Hairline"	100
 "Extra Light", "Ultra Light"	200
@@ -96,7 +96,7 @@ Font Weight	Numerical Weight
 "Semi Bold", "Semi Bld", "Demi Bold", "Demi Bld"	600
 "Bold", "Bld"	700/Bold
 "Extra Bold", "Ultra Bold", "Extra Bld", "Ultra Bld"	800
-"Black", "Heavy", "Ultra", "Fat", "Poster", "Ultra Black" 	 900 
+"Black", "Heavy", "Ultra", "Fat", "Poster", "Ultra Black" 	 900
 */
 }
 
@@ -111,14 +111,54 @@ Font Weight	Numerical Weight
   display: none;
 }
 
-*{
+* {
   /* outline: 1px solid red; */
 }
 
 [data-state="open"] > img {
   transform: rotate(180deg);
-  transition: transform .5s ease;
+  transition: transform 0.5s ease;
 }
 [data-state="closed"] > img {
-  transition: all .5s ease;
+  transition: all 0.5s ease;
 }
+
+.pac-container {
+  max-width: 400px;
+  background: rgb(255, 255, 255);
+  border-radius: 16px;
+  margin-top: 8px;
+  box-shadow: rgb(68 60 77 / 12%) 0px 8px 22px -6px,
+    rgb(68 60 77 / 12%) 0px 14px 64px -4px;
+  border: none;
+  padding: 5px 20px;
+  /* padding-top: 0; */
+}
+.pac-item {
+  border-top: 1px solid #eeedef;
+  padding: 12px 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 170%;
+  color: #443c4d;
+  font-family: "BeatriceRegular", serif;
+}
+.pac-item:first-child {
+  border-top: none;
+}
+.pac-matched {
+  font-weight: 600;
+}
+.hdpi .pac-icon {
+  background-image: url("./assets/images/location.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 24px;
+  height: 24px;
+  width: 24px;
+  margin-top: 0;
+  margin-right: 15px;
+}
+/* .pac-logo {
+  display: none;
+} */
