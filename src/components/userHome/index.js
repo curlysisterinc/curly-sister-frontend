@@ -42,7 +42,7 @@ function UserHome({ upcomingBookings }) {
   }, []);
 
   return (
-    <div className="ml-80 bg-white px-10 py-14 w-full">
+    <div className="ml-80 bg-white px-10 py-8 w-full">
       <div className="flex flex-col w-full lg:flex-row justify-between items-center">
         <div className="flex justify-start items-center ">
           <img className="mr-3" src={profileDp} alt="profile pix" />

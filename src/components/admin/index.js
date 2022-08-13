@@ -36,7 +36,7 @@ function AdminDashbaord() {
   ];
 
   return (
-    <div className="ml-80 bg-white px-10 py-14 w-full">
+    <div className="ml-80 bg-white px-10 py-8 w-full">
       <div className="flex justify-center items-center w-1/2 mx-auto mb-6">
         {dashboardNavlink.map((link) => (
           <NavLink

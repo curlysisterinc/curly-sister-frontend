@@ -77,7 +77,7 @@ function BookStylist({ getStylist }) {
       </div>
 
       <div className="grid grid-cols-3 gap-6 mt-12">
-        {getStylist.slice(0, 3).map((item) => {
+        {[...getStylist].splice(0, 3).map((item) => {
           return <CommonCard key={item._id} stylist={item} />;
         })}
       </div>
