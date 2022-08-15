@@ -42,6 +42,12 @@ module.exports = {
           50: "rgba(0, 0, 0, 0.2)",
           100: "rgba(0, 0, 0, 0.6)",
         },
+        alert: {
+          success:"#47B881",
+          error: "#EE6D52",
+          warning: "#FF8500",
+          info:"#590BA9"
+        }
       },
       height: {
         36: "36px",
@@ -59,6 +65,7 @@ module.exports = {
         196: "196px",
         300: "300px",
         358: "358px",
+        489: "489px",
         543: "543px",
       },
       minWidth: {
@@ -78,7 +85,12 @@ module.exports = {
       },
       backgroundImage: {
         "service-image": "url('/src/assets/images/service-image.png')",
+        "purple-pattern": "url('/src/assets/images/bg-one.png')",
       },
+      boxShadow: {
+        s01:"0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
+        s07:"0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)"
+      }
     },
   },
   variants: {

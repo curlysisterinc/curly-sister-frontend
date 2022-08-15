@@ -20,11 +20,10 @@ import ellipses from "../../../../assets/images/ellipses.svg";
 import add from "../../../../assets/images/add.svg";
 import EditServiceModal from "./editServiceModal";
 import { certificationsList } from "../users/data";
-import SideBarComponent from "../../../sidebar/sidebar";
+import SideBarComponent from "../../../sidebar";
 import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
 import admin from "../../../../api/admin";
-import AdminDashbaord from "../../dashboard";
 
 function DataTab({ active }) {
   const navigate = useNavigate();

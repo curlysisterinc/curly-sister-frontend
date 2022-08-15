@@ -9,31 +9,67 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from "react";
-import SideBarComponent from "../sidebar/sidebar";
+import SideBarComponent from "../sidebar";
 import { Link, useNavigate } from "react-router-dom";
 import authHandler from "../../authHandler";
 import learn from "../../api/learn";
 import admin from "../../api/admin";
 import LandingPage from "./landingPage";
-import UserHome from "./home";
+import UserHome from "components/userHome";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
+import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
+import { useAuthContext } from "../../redux/auth";
+import { useQueries } from "@tanstack/react-query";
+// import UserHome from "./home";
 
 function HomeComponent() {
+  const {
+    state: { isSignedIn },
+  } = useAuthContext();
+  console.log({ isSignedIn });
+
+  const { GetAllVideos, GetAllArticles, GetAllStylists, GetUpcomingBookings } =
+    admin;
+
   const details = localStorage.getItem("user");
-  const [isLoggedIn, setIsLoggedIn] = React.useState(details);
   const [firstName, setFirstName] = React.useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [getQuestions, setGetQuestions] = useState([]);
   const [saveQst, setSaveQst] = useState(false);
   const [getVideos, setGetVideos] = useState([]);
   const [getArticles, setGetArticles] = useState([]);
-  const [getStylist, setGetStylist] = React.useState([]);
+  // const [getStylist, setGetStylist] = React.useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
+
+  // const { data, loading, error: err } = useGetAllStylists();
+  const { data, loading, error: err } = useGetAllStylists();
+  const {
+    data: questions,
+    loading: isQuestionsLoading,
+    error: QuestionsErr,
+  } = useGetAllQuestions();
+
+  const getStylist = data?.data?.stylists;
+  const getQuestions2 = questions?.data?.data;
+  console.log({ getQuestions2 });
+
+  const results = useQueries({
+    queries: [
+      { queryKey: ["videos"], queryFn: GetAllVideos },
+      { queryKey: ["articles"], queryFn: GetAllArticles },
+      { queryKey: ["stylists"], queryFn: GetAllStylists },
+      { queryKey: ["upcomingBookings"], queryFn: GetUpcomingBookings },
+    ],
+  });
+
+  console.log("RESULT", results);
+  console.log("PROCESS", process.env);
 
   React.useEffect(() => {
     const ac = new AbortController();
-    if (isLoggedIn) {
+    if (isSignedIn) {
       const userDetails = authHandler.getUser("users");
-      const userFirstName = userDetails.active.firstName;
+      const userFirstName = userDetails?.active?.firstName;
       setFirstName(userFirstName);
     }
 
@@ -80,15 +116,15 @@ function HomeComponent() {
 
         console.log(error);
       });
-    admin
-      .GetAllStylists()
-      .then((response) => {
-        console.log(response.data.stylists, "stylists");
-        setGetStylist(response.data.stylists);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    // admin
+    //   .GetAllStylists()
+    //   .then((response) => {
+    //     console.log(response.data.stylists, "stylists");
+    //     setGetStylist(response.data.stylists);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error.message);
+    //   });
     admin.GetUpcomingBookings().then((response) => {
       setUpcomingBookings(response.data.data);
       console.log(response, "upcoming bookings");
@@ -100,12 +136,12 @@ function HomeComponent() {
 
   return (
     <div>
-      {!isLoggedIn ? (
-        <LandingPage getStylist={getStylist} />
+      {!isSignedIn ? (
+        data && <LandingPage getStylist={getStylist} />
       ) : (
         <UserHome
           isLoading={isLoading}
-          isLoggedIn={isLoggedIn}
+          isLoggedIn={isSignedIn}
           firstName={firstName}
           getVideos={getVideos}
           getStylist={getStylist}

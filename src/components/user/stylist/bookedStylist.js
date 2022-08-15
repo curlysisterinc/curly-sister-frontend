@@ -22,7 +22,7 @@ import { ImFacebook2 } from "react-icons/im";
 import { FiInstagram } from "react-icons/fi";
 import { RiGlobalLine } from "react-icons/ri";
 import { AiTwotoneStar } from "react-icons/ai";
-import SideBarComponent from "../../sidebar/sidebar";
+import SideBarComponent from "../../sidebar";
 import avatar from "../../../assets/images/avatar1.png";
 import profilePix1 from "../../../assets/images/stylist-profile1.png";
 import profilePix2 from "../../../assets/images/stylist-profile2.png";

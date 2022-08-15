@@ -18,10 +18,8 @@ import searchIcon from "../../../../assets/images/search-normal-2.svg";
 import ContentRow from "./contentTableRow";
 // import { contents } from "../users/data";
 import admin from "../../../../api/admin";
-import SideBarComponent from "../../../sidebar/sidebar";
 import TypesContent from "../../../customdropdown/dashboard/types";
 import Newcontent from "../../../customdropdown/dashboard/content/newcontent";
-import AdminDashbaord from "../../dashboard";
 
 function ContentTab({ active }) {
   const [toggleActions, setToggleActions] = useState(false);
@@ -82,7 +80,6 @@ function ContentTab({ active }) {
     admin
       .GetAllContents()
       .then((response) => {
-        console.log(response.data, "contents");
         setAllContent(response.data.data);
       })
       .catch((error) => {
@@ -96,7 +93,6 @@ function ContentTab({ active }) {
     admin
       .GetAllVideos()
       .then((response) => {
-        // console.log(response.data, "video");
         setGetVideos(response.data.data);
       })
       .catch((error) => {

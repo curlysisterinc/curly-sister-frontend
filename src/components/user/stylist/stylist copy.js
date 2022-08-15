@@ -10,7 +10,7 @@
 /* eslint-disable no-shadow */
 /* eslint-disable import/order */
 import React, { useState } from "react";
-import SideBarComponent from "../../sidebar/sidebar";
+import SideBarComponent from "../../sidebar";
 import { RiSearchLine } from "react-icons/ri";
 import bookIcon from "../../../assets/images/book.svg";
 import bookIconOutlined from "../../../assets/images/book-outlined.svg";
@@ -116,7 +116,7 @@ function Stylist() {
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="stylists" />
-      <div className="ml-80 bg-white px-10 pt-14 w-full min-h-screen">
+      <div className="ml-80 bg-white px-10 pt-8 w-full min-h-screen">
         <div className="grid grid-cols-12 gap-3">
           <div className="relative col-span-9 h-12">
             <input

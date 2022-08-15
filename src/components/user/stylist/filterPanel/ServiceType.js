@@ -60,26 +60,23 @@ function ServiceType({ getServices }) {
   const [isActive, setIsActive] = useState("everyone");
   return (
     <div
-      className={`mx-3 relative flex items-center justify-between w-48 border outline-none focus:outline-none   rounded-full placeholder:text-sm placeholder:text-gray-300 h-12 px-4 ${
+      className={`mx-3 relative flex items-center justify-between w-48 border outline-none focus:outline-none   rounded-full placeholder:text-sm placeholder:text-gray-300 h-12 px-4 cursor-pointer ${
         toggleType
           ? "border-purple-100 bg-gray-550"
           : "border-gray-250 bg-white"
       }`}
+      onClick={() => setToggleType(!toggleType)}
     >
       <p>Type of service</p>
 
       {!toggleType ? (
         <IoIosArrowDown
-          onClick={() => setToggleType(!toggleType)}
+          // onClick={() => setToggleType(!toggleType)}
           size={20}
           className="cursor-pointer"
         />
       ) : (
-        <IoIosArrowUp
-          onClick={() => setToggleType(!toggleType)}
-          size={20}
-          className="cursor-pointer"
-        />
+        <IoIosArrowUp size={20} className="cursor-pointer" />
       )}
       {toggleType && (
         <div className="absolute z-20 top-14 left-0 bg-white shadow-lg rounded-xl p-8 w-543 h-500 overflow-auto">

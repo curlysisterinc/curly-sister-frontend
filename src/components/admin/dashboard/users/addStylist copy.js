@@ -12,7 +12,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { Fragment, useState, useEffect } from "react";
-import SideBarComponent from "../../../sidebar/sidebar";
+import SideBarComponent from "../../../sidebar";
 import { useNavigate } from "react-router-dom";
 import { AuthRoutes } from "../../../../constants";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
@@ -40,7 +40,7 @@ import admin from "../../../../api/admin";
 
 function AddStylist() {
   const [openDetails, setOpenDetails] = useState(false);
-  const [openLocation, setOpenLocation] = useState(false);
+  const [openLocation, setOpenLocation] = useState(true);
   const [openService, setOpenService] = useState(false);
   const [openCertification, setOpenCertification] = useState(false);
   const [openGallery, setOpenGallery] = useState(false);
@@ -208,9 +208,8 @@ function AddStylist() {
   };
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="dashboard" isLoggedIn />
-      <div className="ml-80 bg-white px-10 py-14 w-full">
+    <Layout>
+      <div className="ml-80 bg-white px-10 py-8 w-full">
         <div className="flex items-start ">
           <div
             className="flex items-center cursor-pointer"
@@ -635,7 +634,7 @@ function AddStylist() {
           )}
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 

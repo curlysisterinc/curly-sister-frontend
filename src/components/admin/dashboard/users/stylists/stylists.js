@@ -5,24 +5,32 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
+
 import React, { useState, useEffect } from "react";
+import admin from "api/admin";
+import { useQuery } from "@tanstack/react-query";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import StylistRow from "./stylistRow";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
-import admin from "../../../../../api/admin";
 import TypesContent from "../../../../customdropdown/dashboard/types";
 import NewStylist from "../../../../customdropdown/dashboard/stylist/newstylist";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import DeleteContentModal from "../../content/deleteContentModal";
 
 function StylistTab() {
+  const { GetAllStylists } = admin;
+
   const [typeValue, setTypeValue] = useState("All types");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState([]);
-  const [getStylist, setGetStylist] = useState([]);
+  // const [getStylist, setGetStylist] = useState([]);
   const [callToAction, setCallToAction] = useState(false);
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+
+  const { data, loading, error } = useGetAllStylists();
+  const stylists = data?.data?.stylists;
 
   const openDeleteModal = () => {
     setDeleteModal(true);
@@ -30,23 +38,23 @@ function StylistTab() {
   const closeDeleteModal = () => {
     setDeleteModal(false);
   };
-  useEffect(() => {
-    admin
-      .GetAllStylists()
-      .then((response) => {
-        console.log(response.data.stylists, "stylists");
-        setGetStylist(response.data.stylists);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  }, []);
+  // useEffect(() => {
+  //   admin
+  //     .GetAllStylists()
+  //     .then((response) => {
+  //       console.log(response.data.stylists, "stylists");
+  //       setGetStylist(response.data.stylists);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.message);
+  //     });
+  // }, []);
 
   const checkAll = (e) => {
     if (e.target.checked) {
       setCallToAction(true);
 
-      setSelectedId(getStylist.map((stylist) => stylist._id));
+      setSelectedId(stylists.map((stylist) => stylist._id));
     } else {
       setCallToAction(false);
 
@@ -57,10 +65,7 @@ function StylistTab() {
     <div>
       <div className="flex items-end justify-between">
         <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
-          Stylists
-          <span className="text-gray-300 ml-2 text-sm">
-            {getStylist.length}
-          </span>
+          <span className="text-gray-300 ml-2 text-sm">{stylists?.length}</span>
         </div>
         <div className="">
           {/* filters */}
@@ -179,7 +184,7 @@ function StylistTab() {
                     selectedId={selectedId}
                     setSelectedId={setSelectedId}
                     setCallToAction={setCallToAction}
-                    stylistsList={getStylist}
+                    stylistsList={stylists}
                     // setGetStylist={setGetStylist}
                   />
                 </tbody>

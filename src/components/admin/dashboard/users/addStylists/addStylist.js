@@ -34,7 +34,7 @@ import { activeTabInitials, detailsInitial, openTabInitials } from "./helper";
 
 // export const PersistUserContext = createContext(null);
 
-export const PersistUserContext = createContext(null);
+export const PersistUserContext = createContext({});
 
 function AddStylist() {
   const [hiddenTabs, setHiddenTabs] = useState(false);
@@ -72,6 +72,8 @@ function AddStylist() {
   };
 
   useEffect(() => {
+    localStorage.removeItem("createdStylist");
+
     if (state) {
       console.log(state);
       if (state !== "walk-in only") {
@@ -152,7 +154,10 @@ function AddStylist() {
           setDetailActionBtn("Edit");
           setIsDetailsLoading(false);
         })
-        .catch((err) => console.log(err, "error updating stylist"));
+        .catch((err) => {
+          setIsDetailsLoading(false);
+          console.log(err, "error updating stylist");
+        });
     }
   };
 
@@ -172,7 +177,7 @@ function AddStylist() {
   };
 
   return (
-    <div className="ml-80 bg-white px-10 py-14 w-full relative">
+    <div className="ml-80 bg-white px-10 py-8 w-full relative">
       <header className="fixed z-10 top-0 right-0 bg-white left-80 pt-7">
         <button
           onClick={backBtnHandler}
@@ -202,7 +207,7 @@ function AddStylist() {
         </div>
       </header>
 
-      <div className="mx-auto w-4/6 pt-3.5">
+      <div className="mx-auto w-4/6 pt-12">
         {/* <PersistUserContext.Provider
             // eslint-disable-next-line
             value={[userApiResponse, handlePresist, setActiveTab, setOpenTab]}
