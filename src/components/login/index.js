@@ -1,33 +1,16 @@
-/* eslint-disable no-console */
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-unused-vars */
-/* eslint-disable prefer-regex-literals */
-/* eslint-disable-next-line no-console */
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
-import AuthModalComponent from "../authModal";
 import AuthSideBarComponent from "../authSidebar";
 import googleIcon from "../../assets/images/google-icon.svg";
 import facebookIcon from "../../assets/images/facebook-icon.svg";
-import authHandler from "../../authHandler";
-import { NonAuthRoutes } from "../../constants";
-import { loginUser } from "../../redux/auth/authSlice";
-import onboarding from "../../api/onBoarding";
-import signedInImg from "../../assets/images/signed-in-img.svg";
-import failedSignin from "../../assets/images/failed-signin.svg";
+import useLoginUser from "../../hooks/data/onboarding/useLoginUser";
 
 function LoginComponent() {
-  // const authenticated = authHandler.get();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { mutate, isLoading: btnIsLoading, error: Err, data } = useLoginUser();
+
   const [showPassword, setShowPassword] = useState(false);
-  const [btnIsLoading, setBtnIsLoading] = useState(false);
   const [disableBtn, setBtnDisabled] = useState(true);
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [emailFailure, setEmailFailure] = useState(false);
@@ -35,12 +18,6 @@ function LoginComponent() {
   useEffect(() => {
     const ac = new AbortController();
     document.title = "Curly sisters • Log In";
-
-    // if (authenticated === null) {
-    //   navigate(NonAuthRoutes.login);
-    // } else {
-    //   navigate(AuthRoutes.home);
-    // }
 
     return function cleanup() {
       ac.abort();
@@ -52,57 +29,18 @@ function LoginComponent() {
     setShowPassword(!showPassword);
   };
 
-  // handle modal close
-  const hideModal = () => {
-    setEmailSuccess(false);
-    setEmailFailure(false);
-  };
-
   const formik = useFormik({
     initialValues: {
       password: "",
       userEmail: "",
     },
     onSubmit: (values) => {
-      onboarding
-        .LogIn(values.userEmail, values.password)
-        .then((response) => {
-          if (response.status === 200) {
-            setEmailSuccess(true);
-            const res = response.data;
-            console.log(res);
-            // eslint-disable-next-line no-underscore-dangle
-
-            authHandler.setUserInfo(res.user);
-            // JWT DECODE SETUP
-            const accessToken = res.access_token;
-            const refreshToken = res.refresh_token;
-            Cookies.set("accessToken", accessToken);
-            authHandler.handle(refreshToken);
-            // const accessToken = res.access_token;
-            // authHandler.handle(accessToken);
-            dispatch(
-              loginUser({
-                token: accessToken,
-                isSignedIn: true,
-              })
-            );
-          }
-        })
-        .catch((error) => {
-          if (error) {
-            setEmailSuccess(false);
-            setEmailFailure(true);
-            setBtnIsLoading(false);
-          }
-        });
+      mutate({ ...values });
     },
 
     validate: (values) => {
       const errors = {};
-      const passwordRegex = new RegExp(
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{8,}$/
-      );
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{8,}$/;
       const validPassword = passwordRegex.test(values.password);
       const isValid =
         values.userEmail.trim().length && values.password.trim().length;
@@ -135,42 +73,6 @@ function LoginComponent() {
     },
   });
 
-  // const handleLogin = (e) => {
-  //   e.preventDefault();
-  //   setBtnIsLoading(true);
-  //   onboarding
-  //     .LogIn(userEmail, password)
-  //     .then((response) => {
-  //       if (response.status === 200) {
-  //         const res = response.data;
-  //         // eslint-disable-next-line no-console
-  //         console.log("handleLogIn", res);
-  //         // JWT DECODE SETUP
-  //         const accessToken = res.access_token;
-  //         const refreshToken = res.refresh_token;
-  //         Cookies.set("accessToken", accessToken);
-  //         authHandler.handle(refreshToken);
-  //         // const accessToken = res.access_token;
-  //         // authHandler.handle(accessToken);
-  //         dispatch(
-  //           loginUser({
-  //             token: accessToken,
-  //             isSignedIn: true,
-  //           })
-  //         );
-  //         navigate(AuthRoutes.home);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       if (error.response.data.message) {
-  //         setErrorMessage(error.response.data.message, setWarning(true));
-  //         setBtnIsLoading(false);
-  //       }
-  //       setTimeout(() => {
-  //         setWarning(false);
-  //       }, 5000);
-  //     });
-  // };
   return (
     <div className="max-w-screen-2xl w-full flex flex-col lg:flex-row  m-auto border border-gray-50">
       <AuthSideBarComponent signin="back" />
@@ -246,7 +148,7 @@ function LoginComponent() {
             </div>
             <button
               type="submit"
-              disabled={disableBtn}
+              disabled={btnIsLoading}
               className="mt-6 bg-orange-200 rounded shadow text-white font-bold disabled:opacity-50 w-full py-3"
             >
               {btnIsLoading ? (
@@ -284,43 +186,6 @@ function LoginComponent() {
               </button>
             </div>
           </form>
-          {emailSuccess && (
-            <AuthModalComponent handleClose={hideModal}>
-              <>
-                <h2 className="text-2xl lg:text-4xl font-bold mb-5">
-                  Welcome to the Community
-                </h2>
-                <img src={signedInImg} alt="successful sign in" />
-                <p className="text-gray-150 mt-8">
-                  You have successfully subscribed to Curly Sister.
-                </p>
-                <button
-                  className="bg-orange-200 mt-4 rounded shadow text-white font-bold w-full py-3"
-                  type="button"
-                  onClick={() => navigate(NonAuthRoutes.home)}
-                >
-                  Continue with your experience
-                </button>
-              </>
-            </AuthModalComponent>
-          )}
-
-          {emailFailure && (
-            <AuthModalComponent handleClose={hideModal}>
-              <h2>Ooops! Something went wrong</h2>
-              <img src={failedSignin} alt="failed sign in" />
-              <p className="text-gray-150">
-                Looks like there is a problem, please try signing in again.
-              </p>
-              <button
-                className="bg-orange-200 rounded shadow text-white font-bold w-full py-3"
-                onClick={hideModal}
-                type="button"
-              >
-                Try Again
-              </button>
-            </AuthModalComponent>
-          )}
         </div>
       </div>
     </div>

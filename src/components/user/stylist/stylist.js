@@ -1,4 +1,10 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
 import useGetCurrentLocation from "hooks/useGetCurrentLocation";
 
@@ -10,7 +16,7 @@ import StylistList from "./StylistList";
 import StylistMap from "./StylistMap";
 
 function Stylist() {
-  const { position, status: currentLocationStatus } = useGetCurrentLocation();
+  const positionData = useGetCurrentLocation();
 
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);
   const [categories, setCategories] = useState("all-stylist");
@@ -72,14 +78,6 @@ function Stylist() {
       // console.log(updatedList, "all stylist");
     }
 
-    // const checkCertificates = certificationsAndTags
-    //   .filter((item) => item.checked)
-    //   .map((item) => item.label.toLocaleLowerCase());
-    // if (checkCertificates.length) {
-    //   updatedList = updatedList.filter((item) =>
-    //     checkCertificates.includes(item.certifications)
-    //   );
-    // }
     setGetStylist(updatedList);
   };
   const { data: stylistData, loading, error } = useGetAllStylists();
@@ -108,30 +106,10 @@ function Stylist() {
   // This is done because refs do not trigger a re-render when changed.
   const autocompleteRef = useRef(null);
 
-  // const choi = useCallback(() => {
-  //   if (isLoaded) {
-  //     const container = document.querySelector(".pac-container");
-  //     container.addEventListener("mousedown", (e) => {
-  //       e.stopPropagation();
-  //       console.log("target", e);
-  //     });
-  //   }
-  // }, [isLoaded]);
-
-  // useEffect(() => {
-  //   const container = document.querySelector(".pac-container");
-  //   const currentLocation = document.querySelector(".currentLocation");
-  //   if (container && container?.style?.display !== "none") {
-  //     container.innerHTML = test;
-  //     setIsLoaded(true);
-  //     choi();
-  //   }
-  // });
-
-  const getLocation = () => {
-    setLat(position.lat);
-    setLng(position.lng);
-  };
+  const getLocation = useMemo(() => {
+    setLat(positionData.position.lat);
+    setLng(positionData.position.lng);
+  }, [positionData.position]);
 
   const handlePlaceSelect = () => {
     const places = autocompleteRef.current.getPlaces();
@@ -187,7 +165,11 @@ function Stylist() {
       />
       <hr className="w-full border border-gray-600 mt-8" />
       {stylistData && (
-        <StylistList list={stylists} selectedPlace={{ lat, lng }} />
+        <StylistList
+          list={stylists}
+          selectedPlace={{ lat, lng }}
+          positionData={positionData}
+        />
       )}
     </div>
   );

@@ -42,6 +42,12 @@ module.exports = {
           50: "rgba(0, 0, 0, 0.2)",
           100: "rgba(0, 0, 0, 0.6)",
         },
+        alert: {
+          success:"#47B881",
+          error: "#EE6D52",
+          warning: "#FF8500",
+          info:"#590BA9"
+        }
       },
       height: {
         36: "36px",

@@ -3,7 +3,9 @@ import React from "react";
 import "./App.css";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ToastProvider } from "react-toast-notifications";
 import Routers from "./routers";
+import CustomToast from "./components/toast";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-date-range/dist/styles.css"; // main style file
@@ -22,11 +24,18 @@ export const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* The rest of your application */}
-      <Routers />;
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <ToastProvider
+      autoDismiss
+      autoDismissTimeout={4000}
+      components={{ Toast: CustomToast }}
+      placement="top-right"
+    >
+      <QueryClientProvider client={queryClient}>
+        {/* The rest of your application */}
+        <Routers />;
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ToastProvider>
   );
 }
 

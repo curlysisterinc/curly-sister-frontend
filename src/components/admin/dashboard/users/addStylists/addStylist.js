@@ -72,6 +72,8 @@ function AddStylist() {
   };
 
   useEffect(() => {
+    localStorage.removeItem("createdStylist");
+
     if (state) {
       console.log(state);
       if (state !== "walk-in only") {
@@ -152,7 +154,10 @@ function AddStylist() {
           setDetailActionBtn("Edit");
           setIsDetailsLoading(false);
         })
-        .catch((err) => console.log(err, "error updating stylist"));
+        .catch((err) => {
+          setIsDetailsLoading(false);
+          console.log(err, "error updating stylist");
+        });
     }
   };
 

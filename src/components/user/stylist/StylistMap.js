@@ -10,11 +10,9 @@ const K_SIZE = 40;
 
 function AnyReactComponent({ text, $hover, ...rest }) {
   const style = $hover ? "flex" : "hidden";
-  console.log({ text, $hover, ...rest });
   return (
     <div className="relative bg-red-600 ">
-      {/* <LocationIcon /> */}
-      <div className="bg-white border border-gray-600 shadow-s07 absolute rounded-2xl w-5 h-5" />
+      <LocationIcon />
       <div
         className={`bg-white border border-gray-600 shadow-s07 absolute rounded-2xl -top-10 left-10  w-489 flex overflow-hidden ${style}`}
       >
@@ -46,8 +44,8 @@ function AnyReactComponent({ text, $hover, ...rest }) {
   );
 }
 
-export default function StylistMap({ stylelist, selectedPlace }) {
-  const { position, status: currentLocationStatus } = useGetCurrentLocation();
+export default function StylistMap({ stylelist, selectedPlace, positionData }) {
+  const { position, status: currentLocationStatus } = positionData;
   const { lat, lng } = position;
 
   const [mapGeo, setMapGeo] = useState({

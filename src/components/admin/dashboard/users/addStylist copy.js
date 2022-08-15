@@ -40,7 +40,7 @@ import admin from "../../../../api/admin";
 
 function AddStylist() {
   const [openDetails, setOpenDetails] = useState(false);
-  const [openLocation, setOpenLocation] = useState(false);
+  const [openLocation, setOpenLocation] = useState(true);
   const [openService, setOpenService] = useState(false);
   const [openCertification, setOpenCertification] = useState(false);
   const [openGallery, setOpenGallery] = useState(false);

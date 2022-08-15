@@ -4,7 +4,7 @@ import React from "react";
 import CommonCard from "../../stylistCard";
 import StylistMap from "./StylistMap";
 
-function StylistList({ list, selectedPlace }) {
+function StylistList({ list, selectedPlace, positionData }) {
   const [openMap, setOpenMap] = React.useState(true);
 
   return (
@@ -37,7 +37,11 @@ function StylistList({ list, selectedPlace }) {
         <div
           className={`${openMap ? "col-span-4" : "hidden"} h-1/2 sticky top-0`}
         >
-          <StylistMap stylelist={list} selectedPlace={selectedPlace} />
+          <StylistMap
+            stylelist={list}
+            selectedPlace={selectedPlace}
+            positionData={positionData}
+          />
         </div>
       </div>
     </div>
