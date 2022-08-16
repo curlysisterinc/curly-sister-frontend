@@ -31,6 +31,8 @@ import admin from "../../../../../api/admin";
 import StylistCategory from "../../../../customdropdown/dashboard/stylist/stylistcategory";
 import ActiveStylist from "../../../../customdropdown/dashboard/stylist/activestylist";
 import { activeTabInitials, detailsInitial, openTabInitials } from "./helper";
+import useCreateStylists from "hooks/data/admin/useCreateStylists";
+import useGetStylistById from "hooks/data/admin/useGetStylistById";
 
 // export const PersistUserContext = createContext(null);
 
@@ -42,12 +44,54 @@ function AddStylist() {
   const [openTab, setOpenTab] = useState(openTabInitials);
   const [activeTab, setActiveTab] = useState(activeTabInitials);
   const [detailActionBtn, setDetailActionBtn] = useState("Save");
-  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+  const [, setIsDetailsLoading] = useState(false);
   const [stylistValues, setStylistValues] = useState(detailsInitial);
   // const [userApiResponse, setUserApiResponse] = useState({});
   const navigate = useNavigate();
   const { state } = useLocation();
   const stylist = localStorage.getItem("createdStylist");
+
+  const {
+    isLoading: isDetailsLoading,
+    data: detailsData,
+    isError,
+    mutate: createStylist,
+  } = useCreateStylists();
+  const {
+    isLoading: isStylistLoading,
+    data: stylistData,
+    isError: stylistError,
+  } = useGetStylistById(state);
+  const {
+    isLoading: isStylistUpdateLoading,
+    data: stylistUpdateData,
+    isError: stylistUpdateError,
+    mutate: updateStylist,
+  } = useGetStylistById(state);
+
+  useEffect(() => {
+    if (detailsData) {
+      setDetailActionBtn("Edit");
+      localStorage.setItem("createdStylist", detailsData.data.data.stylist._id);
+      setActiveTab((prev) => ({ ...prev, locationTab: true }));
+    }
+  }, [detailsData]);
+
+  useEffect(() => {
+    if (stylistData) {
+      setDetailActionBtn("Edit");
+      setStylistValues((prev) => ({
+        ...prev,
+        ...stylistData.data.data.stylist,
+      }));
+    }
+  }, [stylistData]);
+
+  useEffect(() => {
+    if (stylistUpdateData) {
+      setDetailActionBtn("Edit");
+    }
+  }, [stylistUpdateData]);
 
   const toggletab = (e) => {
     const { name } = e.target;
@@ -75,7 +119,6 @@ function AddStylist() {
     localStorage.removeItem("createdStylist");
 
     if (state) {
-      console.log(state);
       if (state !== "walk-in only") {
         setHiddenTabs(true);
       }
@@ -84,35 +127,35 @@ function AddStylist() {
         setOpenTab((prev) => ({ ...prev, [itm]: true }));
         setActiveTab((prev) => ({ ...prev, [itm]: true }));
       });
-      admin
-        .GetStylistById(stylist)
-        .then((res) => {
-          console.log(res.data.stylist, "stylistbyid");
-          const {
-            description,
-            license_board,
-            license_number,
-            photo,
-            stylist_name,
-          } = res.data.stylist;
-          const { active, category_type } = res.data.stylist;
+      // admin
+      //   .GetStylistById(stylist)
+      //   .then((res) => {
+      //     console.log(res.data.stylist, "stylistbyid");
+      //     const {
+      //       description,
+      //       license_board,
+      //       license_number,
+      //       photo,
+      //       stylist_name,
+      //     } = res.data.stylist;
+      //     const { active, category_type } = res.data.stylist;
 
-          setStylistValues((prev) => ({
-            ...prev,
-            active,
-            description,
-            license_board,
-            license_number,
-            photo,
-            stylist_name,
-            category_type,
-          }));
+      //     setStylistValues((prev) => ({
+      //       ...prev,
+      //       active,
+      //       description,
+      //       license_board,
+      //       license_number,
+      //       photo,
+      //       stylist_name,
+      //       category_type,
+      //     }));
 
-          // setStylistServices({ id: _id, services });
-          setDetailActionBtn("Edit");
-          console.log("changed to edit");
-        })
-        .catch((error) => console.log(error));
+      //     // setStylistServices({ id: _id, services });
+      //     setDetailActionBtn("Edit");
+      //     console.log("changed to edit");
+      //   })
+      //   .catch((error) => console.log(error));
     }
 
     return () => {
@@ -130,7 +173,7 @@ function AddStylist() {
       setIsDetailsLoading(true);
       const update = JSON.stringify({ id });
       admin
-        .UpdateStylist(update)
+        .updateStylist(update)
         .then((res) => {
           console.log(res.data, "updating stylist");
           // setUserApiResponse(res.data.stylist);
@@ -144,36 +187,39 @@ function AddStylist() {
   const handleUpdateStyistDetail = () => {
     const id = localStorage.getItem("createdStylist");
     if (id !== null) {
-      setIsDetailsLoading(true);
-      console.log(id);
-      const update = JSON.stringify({ ...stylistValues, id });
-      admin
-        .UpdateStylist(update)
-        .then((res) => {
-          console.log(res.data, "updating stylist");
-          setDetailActionBtn("Edit");
-          setIsDetailsLoading(false);
-        })
-        .catch((err) => {
-          setIsDetailsLoading(false);
-          console.log(err, "error updating stylist");
-        });
+      // setIsDetailsLoading(true);
+      // console.log(id);
+      const updateValue = JSON.stringify({ ...stylistValues, id });
+      updateStylist(updateValue);
+
+      // admin
+      //   .UpdateStylist(updateValue)
+      //   .then((res) => {
+      //     console.log(res.data, "updating stylist");
+      //     setDetailActionBtn("Edit");
+      //     setIsDetailsLoading(false);
+      //   })
+      //   .catch((err) => {
+      //     setIsDetailsLoading(false);
+      //     console.log(err, "error updating stylist");
+      //   });
     }
   };
 
   const handleCreateStylist = () => {
-    setIsDetailsLoading(true);
-    admin
-      .CreateStylist(stylistValues)
-      .then((res) => {
-        console.log(res.data.stylist, "response after creating stylist");
-        setDetailActionBtn("Edit");
-        console.log("changed details btn to edit");
-        localStorage.setItem("createdStylist", res.data.stylist._id);
-        setActiveTab((prev) => ({ ...prev, locationTab: true }));
-        setIsDetailsLoading(false);
-      })
-      .catch((err) => console.log(err, "error creating stylist"));
+    createStylist(stylistValues);
+    // setIsDetailsLoading(true);
+    // admin
+    //   .CreateStylist(stylistValues)
+    //   .then((res) => {
+    //     console.log(res.data.stylist, "response after creating stylist");
+    //     setDetailActionBtn("Edit");
+    //     console.log("changed details btn to edit");
+    //     localStorage.setItem("createdStylist", res.data.stylist._id);
+    //     setActiveTab((prev) => ({ ...prev, locationTab: true }));
+    //     setIsDetailsLoading(false);
+    //   })
+    //   .catch((err) => console.log(err, "error creating stylist"));
   };
 
   return (
@@ -208,12 +254,6 @@ function AddStylist() {
       </header>
 
       <div className="mx-auto w-4/6 pt-12">
-        {/* <PersistUserContext.Provider
-            // eslint-disable-next-line
-            value={[userApiResponse, handlePresist, setActiveTab, setOpenTab]}
-          > */}
-        {/* accordion */}
-        {/* details */}
         <div className="mx-auto w-full mt-8">
           <button
             aria-controls="content-details"
@@ -241,7 +281,9 @@ function AddStylist() {
               handleUpdateStyistDetail={handleUpdateStyistDetail}
               handleCreateStylist={handleCreateStylist}
               stylistValues={stylistValues}
-              isloading={isDetailsLoading}
+              isloading={
+                isDetailsLoading || isStylistLoading || isStylistUpdateLoading
+              }
               setStylistValues={setStylistValues}
               ariaHidden={!openTab.detailsTab.toString()}
               idx="content-details"

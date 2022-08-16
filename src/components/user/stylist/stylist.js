@@ -9,6 +9,7 @@ import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
 import useGetCurrentLocation from "hooks/useGetCurrentLocation";
 
 import admin from "api/admin";
+import Loader from "components/loader-component/loader";
 import SideBarComponent from "../../sidebar";
 // import admin from "../../../api/admin";
 import FilterPanel from "./filterPanel";
@@ -40,7 +41,6 @@ function Stylist() {
       label: "Ketch",
     },
   ]);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [getServices, setGetServices] = useState([]);
   const [filteredArr, setFilteredArr] = useState([]);
   const [getStylist, setGetStylist] = React.useState([]);
@@ -80,12 +80,13 @@ function Stylist() {
 
     setGetStylist(updatedList);
   };
-  const { data: stylistData, loading, error } = useGetAllStylists();
+  const { data: stylistData, isLoading, isError } = useGetAllStylists();
   const stylists = stylistData?.data?.stylists;
 
   React.useEffect(() => {
     if (stylistData) {
       setFilteredArr(stylists);
+      setGetStylist(stylists);
     }
   }, [stylistData]);
 
@@ -102,14 +103,20 @@ function Stylist() {
     applyFilter();
   }, [selectBookableStylist, categories]);
 
+  useEffect(() => {
+    if (positionData.status === "data") {
+      getLocation();
+    }
+  }, [positionData]);
+
   // Store autocomplete object in a ref.
   // This is done because refs do not trigger a re-render when changed.
   const autocompleteRef = useRef(null);
 
-  const getLocation = useMemo(() => {
+  const getLocation = () => {
     setLat(positionData.position.lat);
     setLng(positionData.position.lng);
-  }, [positionData.position]);
+  };
 
   const handlePlaceSelect = () => {
     const places = autocompleteRef.current.getPlaces();
@@ -152,25 +159,29 @@ function Stylist() {
 
   return (
     <div className="ml-80 bg-white px-10 pt-8 w-full min-h-screen">
-      <FilterPanel
-        selectToggle={handleSelectToggle}
-        selectBookableStylist={selectBookableStylist}
-        certifications={certifications}
-        handleOnCheckboxChange={handleOnCheckboxChange}
-        categories={categories}
-        handleSelectCategory={handleSelectCategory}
-        getServices={getServices}
-        handleScriptLoad={handleScriptLoad}
-        handleClick={handleClick}
-      />
-      <hr className="w-full border border-gray-600 mt-8" />
+      {isLoading && <Loader />}
       {stylistData && (
-        <StylistList
-          list={stylists}
-          selectedPlace={{ lat, lng }}
-          positionData={positionData}
-        />
+        <>
+          <FilterPanel
+            selectToggle={handleSelectToggle}
+            selectBookableStylist={selectBookableStylist}
+            certifications={certifications}
+            handleOnCheckboxChange={handleOnCheckboxChange}
+            categories={categories}
+            handleSelectCategory={handleSelectCategory}
+            getServices={getServices}
+            handleScriptLoad={handleScriptLoad}
+            handleClick={handleClick}
+          />
+          <hr className="w-full border border-gray-600 mt-8" />
+          <StylistList
+            list={stylists}
+            selectedPlace={{ lat, lng }}
+            positionData={positionData}
+          />
+        </>
       )}
+      {isError && <p>Error </p>}
     </div>
   );
 }

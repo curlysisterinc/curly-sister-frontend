@@ -61,8 +61,8 @@ function FilterPanel({
 }) {
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="relative w-3/4  ">
+      <div className="flex justify-between flex-wrap">
+        <div className="relative w-3/4 flex-1 mr-4">
           <SearchBar handleScriptLoad={handleScriptLoad} />
           <button
             type="button"
@@ -72,7 +72,7 @@ function FilterPanel({
             Use current location
           </button>
         </div>
-        <div className="col-span-3">
+        <div className="col-span-3 w-220 flex-shrink-0">
           <CategoryDropdown
             options={categoryList}
             selectOption={handleSelectCategory}

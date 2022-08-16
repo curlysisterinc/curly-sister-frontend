@@ -1,3 +1,4 @@
+/* eslint-disable prefer-regex-literals */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -40,10 +41,14 @@ function LoginComponent() {
 
     validate: (values) => {
       const errors = {};
-      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{8,}$/;
+      const passwordRegex = new RegExp(
+        "^(?=.*[A-Z])(?=.*[.!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$"
+      );
       const validPassword = passwordRegex.test(values.password);
       const isValid =
-        values.userEmail.trim().length && values.password.trim().length;
+        !!values.userEmail.trim().length &&
+        !!values.password.trim().length &&
+        validPassword;
 
       if (isValid) {
         setBtnDisabled(false);
@@ -53,20 +58,20 @@ function LoginComponent() {
 
       if (!values.userEmail) {
         errors.userEmail = "Required";
-      } else if (
+      }
+      if (
         !/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
           values.userEmail
         )
       ) {
         errors.userEmail = "*Please enter a valid email address";
       }
-
       if (!values.password) {
         errors.password = "Required";
       }
-      if (validPassword === true) {
+      if (!validPassword) {
         errors.password =
-          "*Please enter a password of atleast 8 characters with an uppercase, lowercase, numeric or special character. ";
+          "*Your pssword must be at least \n 8 characters long with an uppercase, lowercase, numeric or special character. ";
       }
 
       return errors;
@@ -139,6 +144,11 @@ function LoginComponent() {
                     />
                   )}
                 </div>
+                {formik.errors.password && formik.touched.password ? (
+                  <div className="text-red-400 text-sm font-normal">
+                    {formik.errors.password}
+                  </div>
+                ) : null}
               </label>
             </div>
             <div className="flex justify-end text-orange-200 text-sm mt-0 font-semibold">
@@ -148,7 +158,7 @@ function LoginComponent() {
             </div>
             <button
               type="submit"
-              disabled={btnIsLoading}
+              disabled={btnIsLoading || disableBtn}
               className="mt-6 bg-orange-200 rounded shadow text-white font-bold disabled:opacity-50 w-full py-3"
             >
               {btnIsLoading ? (

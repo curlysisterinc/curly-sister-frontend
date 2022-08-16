@@ -1,5 +1,5 @@
 import React from "react";
-import { Loadersmall } from "../loader";
+import { Loadersmall } from "../loader-component/loader";
 
 function OrangeBtn({ onClick, disabled, buttonAction, isloading }) {
   return (

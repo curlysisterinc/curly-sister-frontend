@@ -25,7 +25,7 @@ import bookmark from "../../../assets/images/book-mark.png";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import moment from "moment";
 import ReactPlayer from "react-player";
-import Loader from "../../loader";
+import Loader from "../../loader-component/loader";
 
 function VideoTab() {
   const navigate = useNavigate();
