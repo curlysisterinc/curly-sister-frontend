@@ -26,7 +26,7 @@ function HomeComponent() {
   const {
     state: { isSignedIn },
   } = useAuthContext();
-  console.log({ isSignedIn });
+  // console.log({ isSignedIn });
 
   const { GetAllVideos, GetAllArticles, GetAllStylists, GetUpcomingBookings } =
     admin;
@@ -38,20 +38,20 @@ function HomeComponent() {
   const [saveQst, setSaveQst] = useState(false);
   const [getVideos, setGetVideos] = useState([]);
   const [getArticles, setGetArticles] = useState([]);
-  // const [getStylist, setGetStylist] = React.useState([]);
+  const [getStylist, setGetStylist] = React.useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
 
   // const { data, loading, error: err } = useGetAllStylists();
-  const { data, loading, error: err } = useGetAllStylists();
-  const {
-    data: questions,
-    loading: isQuestionsLoading,
-    error: QuestionsErr,
-  } = useGetAllQuestions();
+  // const { data, loading, error: err } = useGetAllStylists();
+  // const {
+  //   data: questions,
+  //   loading: isQuestionsLoading,
+  //   error: QuestionsErr,
+  // } = useGetAllQuestions();
 
-  const getStylist = data?.data?.stylists;
-  const getQuestions2 = questions?.data?.data;
-  console.log({ getQuestions2 });
+  // const getStylist = data?.data?.stylists;
+  // const getQuestions2 = questions?.data?.data;
+  // console.log({ getQuestions2 });
 
   const results = useQueries({
     queries: [
@@ -62,8 +62,19 @@ function HomeComponent() {
     ],
   });
 
-  console.log("RESULT", results);
-  console.log("PROCESS", process.env);
+  // console.log("RESULT", results);
+  // console.log("PROCESS", process.env);
+  useEffect(() => {
+    const isDataLoading = results.some((result) => result.isLoading);
+    setIsLoading(isDataLoading);
+    const isSuccess = results.every((result) => result.isSuccess);
+    if (isSuccess) {
+      setGetVideos(results[0].data.data.data);
+      setGetArticles(results[1].data.data.data);
+      setGetStylist(results[2].data.data.stylists);
+      setUpcomingBookings(results[3].data.data.data);
+    }
+  }, [results]);
 
   React.useEffect(() => {
     const ac = new AbortController();
@@ -78,81 +89,84 @@ function HomeComponent() {
     };
   }, []);
 
-  useEffect(async () => {
-    const ac = new AbortController();
+  // useEffect(async () => {
+  //   const ac = new AbortController();
 
-    learn
-      .GetAllQuestions()
-      .then((response) => {
-        console.log(response.data.data);
-        setIsLoading(false);
-        setGetQuestions(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-      });
-    admin
-      .GetAllVideos()
-      .then((response) => {
-        console.log(response.data.data, "Success");
-        setIsLoading(false);
-        setGetVideos(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-        setIsLoading(false);
-      });
-    admin
-      .GetAllArticles()
-      .then((response) => {
-        console.log(response.data.data, "Success");
-        setIsLoading(false);
+  //   learn
+  //     .GetAllQuestions()
+  //     .then((response) => {
+  //       console.log(response.data.data);
+  //       setIsLoading(false);
+  //       setGetQuestions(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
+  //   admin
+  //     .GetAllVideos()
+  //     .then((response) => {
+  //       console.log(response.data.data, "Success");
+  //       setIsLoading(false);
+  //       setGetVideos(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       setIsLoading(false);
+  //     });
+  //   admin
+  //     .GetAllArticles()
+  //     .then((response) => {
+  //       console.log(response.data.data, "Success");
+  //       setIsLoading(false);
 
-        setGetArticles(response.data.data);
-      })
-      .catch((error) => {
-        setIsLoading(false);
+  //       setGetArticles(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
 
-        console.log(error);
-      });
-    // admin
-    //   .GetAllStylists()
-    //   .then((response) => {
-    //     console.log(response.data.stylists, "stylists");
-    //     setGetStylist(response.data.stylists);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error.message);
-    //   });
-    admin.GetUpcomingBookings().then((response) => {
-      setUpcomingBookings(response.data.data);
-      console.log(response, "upcoming bookings");
-    });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
+  //       console.log(error);
+  //     });
+  //   // admin
+  //   //   .GetAllStylists()
+  //   //   .then((response) => {
+  //   //     console.log(response.data.stylists, "stylists");
+  //   //     setGetStylist(response.data.stylists);
+  //   //   })
+  //   //   .catch((error) => {
+  //   //     console.log(error.message);
+  //   //   });
+  //   admin.GetUpcomingBookings().then((response) => {
+  //     setUpcomingBookings(response.data.data);
+  //     console.log(response, "upcoming bookings");
+  //   });
+  //   return function cleanup() {
+  //     ac.abort();
+  //   };
+  // }, []);
 
   return (
-    <div>
-      {!isSignedIn ? (
-        data && <LandingPage getStylist={getStylist} />
-      ) : (
-        <UserHome
-          isLoading={isLoading}
-          isLoggedIn={isSignedIn}
-          firstName={firstName}
-          getVideos={getVideos}
-          getStylist={getStylist}
-          getArticles={getArticles}
-          getQuestions={getQuestions}
-          saveQst={saveQst}
-          setSaveQst={setSaveQst}
-          upcomingBookings={upcomingBookings}
-        />
-      )}
-    </div>
+    !isLoading &&
+    getStylist && (
+      <div>
+        {!isSignedIn ? (
+          <LandingPage getStylist={getStylist} />
+        ) : (
+          <UserHome
+            isLoading={isLoading}
+            isLoggedIn={isSignedIn}
+            firstName={firstName}
+            getVideos={getVideos}
+            getStylist={getStylist}
+            getArticles={getArticles}
+            getQuestions={getQuestions}
+            saveQst={saveQst}
+            setSaveQst={setSaveQst}
+            upcomingBookings={upcomingBookings}
+          />
+        )}
+      </div>
+    )
   );
 }
 

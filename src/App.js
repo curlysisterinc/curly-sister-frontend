@@ -2,8 +2,13 @@
 import React from "react";
 import "./App.css";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { ToastProvider } from "react-toast-notifications";
+import { toast } from "react-toastify";
 import Routers from "./routers";
 import CustomToast from "./components/toast";
 import "slick-carousel/slick/slick.css";
@@ -16,10 +21,20 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: true,
-      retry: false,
+      retry: 0,
       staleTime: 30000,
     },
   },
+
+  queryCache: new QueryCache({
+    onError: (error, query) => {
+      if (query.state.data !== undefined) {
+        const mainError = error.response.data;
+
+        toast.error(mainError.message);
+      }
+    },
+  }),
 });
 
 function App() {
