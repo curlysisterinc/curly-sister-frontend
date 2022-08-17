@@ -21,8 +21,7 @@ function Stylist() {
 
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);
   const [categories, setCategories] = useState("all-stylist");
-  const [lat, setLat] = useState(null);
-  const [lng, setLng] = useState(null);
+  const [coord, setCoord] = useState({ lat: "", lng: "" });
   const [status, setStatus] = useState(null);
   const [certifications, setCertifications] = useState([
     {
@@ -103,20 +102,23 @@ function Stylist() {
     applyFilter();
   }, [selectBookableStylist, categories]);
 
-  useEffect(() => {
-    if (positionData.status === "data") {
-      getLocation();
-    }
-  }, [positionData]);
-
   // Store autocomplete object in a ref.
   // This is done because refs do not trigger a re-render when changed.
   const autocompleteRef = useRef(null);
 
-  const getLocation = () => {
-    setLat(positionData.position.lat);
-    setLng(positionData.position.lng);
-  };
+  const getLocation = useCallback(() => {
+    setCoord({
+      ...coord,
+      lat: positionData.position.lat,
+      lng: positionData.position.lng,
+    });
+  }, [positionData]);
+
+  useEffect(() => {
+    if (positionData.status === "data") {
+      getLocation();
+    }
+  }, [positionData.status]);
 
   const handlePlaceSelect = () => {
     const places = autocompleteRef.current.getPlaces();
@@ -126,8 +128,11 @@ function Stylist() {
     }
 
     const geo = places[0].geometry.location;
-    setLat(geo.lat());
-    setLng(geo.lng());
+    setCoord({
+      ...coord,
+      lat: geo.lat(),
+      lng: geo.lng(),
+    });
   };
 
   const handleScriptLoad = () => {
@@ -176,7 +181,7 @@ function Stylist() {
           <hr className="w-full border border-gray-600 mt-8" />
           <StylistList
             list={stylists}
-            selectedPlace={{ lat, lng }}
+            selectedPlace={{ lat: coord.lat, lng: coord.lng }}
             positionData={positionData}
           />
         </>

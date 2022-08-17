@@ -37,7 +37,7 @@ export default {
       lastName,
       reset_password,
       role,
-      source,
+      source
     };
     localStorage.setItem("user", JSON.stringify(user));
   },
@@ -45,9 +45,10 @@ export default {
     return JSON.parse(localStorage.getItem("user"));
   },
   deleteUser() {
-    return JSON.parse(localStorage.removeItem("user"));
+    JSON.parse(localStorage.removeItem("user"));
+    JSON.parse(localStorage.removeItem("token"));
   },
   userRole() {
-    return JSON.parse(localStorage.getItem("userRole"));
-  },
+    return JSON.parse(localStorage.getItem("token"));
+  }
 };
