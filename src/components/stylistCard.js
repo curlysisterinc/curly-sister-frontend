@@ -28,7 +28,12 @@ export default function CommonCard({ stylist }) {
         <>
           {[...stylist.gallery].splice(0, 1).map((gallery) => {
             return (
-              <img src={gallery} className="w-full h-40 object-cover " alt="" />
+              <img
+                src={gallery}
+                className="w-full h-40 object-cover "
+                alt=""
+                key={gallery}
+              />
             );
           })}
         </>
