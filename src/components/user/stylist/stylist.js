@@ -109,8 +109,8 @@ function Stylist() {
   const getLocation = useCallback(() => {
     setCoord({
       ...coord,
-      lat: positionData.position.lat,
-      lng: positionData.position.lng,
+      lat: positionData?.position.lat,
+      lng: positionData?.position.lng,
     });
   }, [positionData]);
 
@@ -148,18 +148,6 @@ function Stylist() {
   const handleClick = () => {
     getLocation();
     document.getElementById("searchInput").value = "";
-    // const geocoder = new google.maps.Geocoder(
-    //   document.getElementById("searchInput")
-    // );
-    // console.log({ position });
-    // geocoder
-    //   .geocode({ location: { lat: position.lat, lng: position.lng } })
-    //   .then((response) => {
-    //     console.log("response", response);
-    //     document.getElementById("searchInput").value = "";
-    //     // document.getElementById("searchInput").value =
-    //     //   response.results[0].formatted_address;
-    //   });
   };
 
   return (

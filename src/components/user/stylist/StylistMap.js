@@ -22,7 +22,7 @@ function MapMaker({ text, $hover, stylist, ...rest }) {
   const display = isMapLoaded ? "visible" : "invisible";
 
   return (
-    <div className={`relative ${display}`}>
+    <div className={`relative ${display} z-10`}>
       <LocationIcon />
       <div
         className={`bg-white border border-gray-600 shadow-s07 absolute rounded-2xl -top-10 left-10  w-489 flex overflow-hidden ${style} z-10`}
@@ -143,7 +143,7 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
         >
           toggle map
         </button> */}
-        {currentLocationStatus === "data" && (
+        {defaultProps?.center?.lat && (
           <GoogleMapReact
             bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API }}
             defaultCenter={defaultProps.center}
@@ -153,16 +153,18 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
             yesIWantToUseGoogleMapApiInternals
             center={[mapGeo.latitude, mapGeo.longitude]}
           >
-            <LocationMaker
-              lat={mapGeo.latitude}
-              lng={mapGeo.longitude}
-              text={isMapLoaded}
-            />
+            {mapGeo?.latitude && (
+              <LocationMaker
+                lat={mapGeo?.latitude}
+                lng={mapGeo?.longitude}
+                text={isMapLoaded}
+              />
+            )}
             {[...stylistsWithGeoInfo].map((item) => (
               <MapMaker
-                lat={item.latitude}
-                lng={item.longitude}
-                key={item._id}
+                lat={item?.latitude}
+                lng={item?.longitude}
+                key={item?._id}
                 text={{ data: item, isMapLoaded }}
               />
             ))}

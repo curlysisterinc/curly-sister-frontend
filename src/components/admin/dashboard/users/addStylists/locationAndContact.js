@@ -7,10 +7,11 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/label-has-for */
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 // import { PhoneInput } from "react-contact-number-input";
 import { useLocation } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
+import Script from "react-load-script";
 import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
 // import { Loadersmall } from "../../../../loader";
 import admin from "../../../../../api/admin";
@@ -39,6 +40,7 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
   const [count, setCount] = useState([template]);
   const [buttonAction, setButtonAction] = useState("Save");
   const [isloading, setIsloading] = useState(false);
+  const [coord, setCoord] = useState({ lat: "", lng: "" });
 
   // changes the title of the save button to update if user is from stylistrow
   // add id to the initialstate to be sent
@@ -65,9 +67,7 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
   // stylist_name: "tade"
   // tags: []
   // const [userResponse, fetchUserResponse] = useContext(PersistUserContext);
-  const stylistId = localStorage.getItem("stylistid");
-
-  console.log(stylistId, "stylistid");
+  const stylistId = localStorage.getItem("createdStylist");
 
   // const [userResponse, fetchUserResponse] = useContext(PersistUserContext);
 
@@ -122,9 +122,10 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
   }, []);
 
   const disableBtn = () => {
+    console.log({ stylistLocation });
     const isValid =
-      stylistLocation.email?.trim()?.length &&
-      stylistLocation.address?.trim()?.length &&
+      stylistLocation?.email?.trim()?.length &&
+      stylistLocation?.address?.trim()?.length &&
       stylistLocation?.phone_no !== null;
 
     if (isValid || buttonAction === "Edit") {
@@ -153,11 +154,15 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
   const handleCreateStylist = () => {
     setIsloading(true);
     if (
-      stylistLocation.email.trim() !== "" &&
-      stylistLocation.address.trim() !== ""
+      stylistLocation?.email?.trim() !== "" &&
+      stylistLocation?.address?.trim() !== ""
     ) {
       admin
-        .UpdateStylist(stylistLocation)
+        .UpdateStylist({
+          ...stylistLocation,
+          address: searchInput?.current?.value,
+          id: localStorage.getItem("createdStylist"),
+        })
         .then((res) => {
           console.log(res.data.stylist, "data");
           setButtonAction("Edit");
@@ -165,7 +170,10 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
           setIsloading(false);
           setActiveTab((prev) => ({ ...prev, certifificationTab: true }));
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          setIsloading(false);
+          console.log(err);
+        });
     }
   };
 
@@ -178,8 +186,45 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
     }
   };
 
+  const autocompleteRef = useRef(null);
+  const searchInput = useRef(null);
+
+  console.log("address", searchInput?.current?.value);
+
+  const handleScriptLoad = () => {
+    // Initialize Google Autocomplete
+    /* global google */ // To disable any eslint 'google not defined' errors
+    autocompleteRef.current = new google.maps.places.SearchBox(
+      document.getElementById("searchInput")
+    );
+
+    autocompleteRef.current.addListener("places_changed", handlePlaceSelect);
+  };
+
+  const handlePlaceSelect = () => {
+    console.log("whats happening");
+    const places = autocompleteRef.current.getPlaces();
+    console.log({ places });
+    if (places.length === 0) {
+      return;
+    }
+
+    const geo = places[0].geometry.location;
+
+    setStylistLocation({
+      ...stylistLocation,
+      address: searchInput?.current?.value,
+      latitude: geo.lat(),
+      longitude: geo.lng(),
+    });
+  };
+
   return (
     <div aria-hidden={ariaHidden} id={idx} className="relative">
+      <Script
+        url={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAP_API}&libraries=places`}
+        onLoad={handleScriptLoad}
+      />
       <label
         className="block text-black text-sm font-bold mt-5"
         htmlFor="address"
@@ -193,9 +238,10 @@ function LocationAndContact({ ariaHidden, idx, setActiveTab }) {
           placeholder="Type and select address..."
           name="address"
           label="address"
-          id="address"
-          value={stylistLocation.address}
-          onChange={handleChange}
+          id="searchInput"
+          ref={searchInput}
+          // value={stylistLocation.address}
+          // onChange={handleChange}
         />
       </label>
       <div className="grid grid-cols-2 gap-6 items-center ">

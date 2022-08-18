@@ -1,25 +1,10 @@
-/* eslint-disable camelcase */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unneeded-ternary */
-/* eslint-disable react/button-has-type */
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable no-else-return */
-/* eslint-disable consistent-return */
-/* eslint-disable array-callback-return */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable eqeqeq */
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/order */
-/* eslint-disable no-shadow */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { createContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import clsx from "clsx";
+import useCreateStylists from "hooks/data/admin/useCreateStylists";
+import useGetStylistById from "hooks/data/admin/useGetStylistById";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
-import clsx from "clsx";
 // import { phoneNumberCountries } from "../data";
 import AvailabilityTab from "./availability";
 import GalleryTab from "./gallery";
@@ -31,8 +16,6 @@ import admin from "../../../../../api/admin";
 import StylistCategory from "../../../../customdropdown/dashboard/stylist/stylistcategory";
 import ActiveStylist from "../../../../customdropdown/dashboard/stylist/activestylist";
 import { activeTabInitials, detailsInitial, openTabInitials } from "./helper";
-import useCreateStylists from "hooks/data/admin/useCreateStylists";
-import useGetStylistById from "hooks/data/admin/useGetStylistById";
 
 // export const PersistUserContext = createContext(null);
 
@@ -72,7 +55,8 @@ function AddStylist() {
   useEffect(() => {
     if (detailsData) {
       setDetailActionBtn("Edit");
-      localStorage.setItem("createdStylist", detailsData.data.data.stylist._id);
+      console.log("detailsData", detailsData);
+      localStorage.setItem("createdStylist", detailsData.data.stylist._id);
       setActiveTab((prev) => ({ ...prev, locationTab: true }));
     }
   }, [detailsData]);
@@ -116,7 +100,7 @@ function AddStylist() {
   };
 
   useEffect(() => {
-    localStorage.removeItem("createdStylist");
+    // localStorage.removeItem("createdStylist");
 
     if (state) {
       if (state !== "walk-in only") {
@@ -256,12 +240,13 @@ function AddStylist() {
       <div className="mx-auto w-4/6 pt-12">
         <div className="mx-auto w-full mt-8">
           <button
+            type="button"
             aria-controls="content-details"
             aria-expanded={openTab.detailsTab.toString()}
             id="accordion-details"
             name="detailsTab"
             onClick={toggletab}
-            disabled={activeTab.detailsTab ? false : true}
+            // disabled={!activeTab.detailsTab}
             className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
           >
             Details
@@ -293,12 +278,13 @@ function AddStylist() {
         {/* location and contact */}
         <div className="mx-auto w-full mt-8">
           <button
+            type="button"
             aria-controls="content-location"
             aria-expanded={openTab.locationTab.toString()}
             id="accordion-location"
             name="locationTab"
             onClick={toggletab}
-            disabled={activeTab.locationTab ? false : true}
+            // disabled={!activeTab.locationTab}
             className={`bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer ${
               activeTab.locationTab ? "opacity-100" : "opacity-60"
             }`}
@@ -328,8 +314,9 @@ function AddStylist() {
             aria-expanded={openTab.certifificationTab.toString()}
             id="accordion-certification"
             name="certifificationTab"
+            type="button"
             onClick={toggletab}
-            disabled={activeTab.certifificationTab ? false : true}
+            // disabled={!activeTab.certifificationTab}
             className={`bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer ${
               activeTab.certifificationTab ? "opacity-100" : "opacity-60"
             }`}
@@ -358,12 +345,13 @@ function AddStylist() {
             {/* services and pricing */}
             <div className="mx-auto w-full mt-8">
               <button
+                type="button"
                 aria-controls="content-service"
                 aria-expanded={openTab.serviceTab.toString()}
                 id="accordion-service"
                 name="serviceTab"
                 onClick={toggletab}
-                disabled={activeTab.serviceTab ? false : true}
+                disabled={!activeTab.serviceTab}
                 className={`bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer ${
                   activeTab.serviceTab ? "opacity-100" : "opacity-60"
                 }`}
@@ -389,12 +377,13 @@ function AddStylist() {
             {/* availability */}
             <div className="mx-auto w-full mt-8">
               <button
+                type="button"
                 aria-controls="content-availability"
                 aria-expanded={openTab.availabilityTab.toString()}
                 id="accordion-availability"
                 name="availabilityTab"
                 onClick={toggletab}
-                disabled={activeTab.availabilityTab ? false : true}
+                disabled={!activeTab.availabilityTab}
                 className={`bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer ${
                   activeTab.availabilityTab ? "opacity-100" : "opacity-60"
                 }`}
@@ -425,12 +414,13 @@ function AddStylist() {
         {/* gallery */}
         <div className="mx-auto w-full mt-8">
           <button
+            type="button"
             aria-controls="content-gallery"
             aria-expanded={openTab.galleryTab.toString()}
             id="accordion-gallery"
             name="galleryTab"
             onClick={toggletab}
-            disabled={activeTab.galleryTab ? false : true}
+            disabled={!activeTab.galleryTab}
             className={`bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer ${
               activeTab.galleryTab ? "opacity-100" : "opacity-60"
             }`}
