@@ -57,35 +57,26 @@ function ContentRow({
     admin
       .DeleteContent(id)
       .then((response) => {
-        console.log(response.data);
         setAllContent(allContent.filter((content) => content._id !== id));
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleDeleteArticle = (id) => {
     admin
       .DeleteArticleById(id)
       .then((response) => {
-        console.log(response.data);
         setGetArticles(getArticles.filter((article) => article._id !== id));
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleDeleteVideo = (id) => {
     admin
       .DeleteVideoById(id)
       .then((response) => {
-        console.log(response.data);
         setGetVideos(getVideos.filter((video) => video._id !== id));
         // setAllContent()
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   return (
     <>

@@ -10,9 +10,9 @@ import stylistAvatar from "../../assets/images/stylist-1.png";
 
 const CommonCard = ({ stylist }) => {
   const splitName = (fullname) => {
-    let name = fullname.stylist_name;
-    const firstName = name.split(" ");
-    return firstName[0];
+    let name = fullname?.stylist_name;
+    const firstName = name?.split(" ");
+    return firstName && firstName[0];
   };
   const navigate = useNavigate();
   return (
@@ -77,7 +77,7 @@ function BookStylist({ getStylist }) {
       </div>
 
       <div className="grid grid-cols-3 gap-6 mt-12">
-        {getStylist.slice(0, 3).map((item) => {
+        {[...getStylist].splice(0, 3).map((item) => {
           return <CommonCard key={item._id} stylist={item} />;
         })}
       </div>

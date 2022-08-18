@@ -12,7 +12,7 @@ import ReactPlayer from "react-player";
 import learn from "../../../api/learn";
 import wideVideo from "../../../assets/images/wide-video.png";
 import imagineHairVideo from "../../../assets/images/imagine-video.png";
-import SideBarComponent from "../../sidebar/sidebar";
+import SideBarComponent from "../../sidebar";
 import gradientAvatar from "../../../assets/images/gradient-avatar.svg";
 import like from "../../../assets/images/like.svg";
 import dislike from "../../../assets/images/dislike.svg";
@@ -181,7 +181,7 @@ function VideoContent() {
       });
   };
   return (
-    <div className="ml-80 bg-white px-10 pt-14 w-full">
+    <div className="ml-80 bg-white px-10 pt-8 w-full">
       <div
         onClick={() => navigate(-1)}
         className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"

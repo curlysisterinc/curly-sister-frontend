@@ -36,7 +36,7 @@ function LearnComponent() {
   ];
 
   return (
-    <div className="ml-80 bg-white px-10 pt-14 w-full">
+    <div className="ml-80 bg-white px-10 pt-8 w-full">
       <div>
         <div className="flex mx-auto items-center space-x-6 justify-center">
           {leanNavlinks.map((link) => (

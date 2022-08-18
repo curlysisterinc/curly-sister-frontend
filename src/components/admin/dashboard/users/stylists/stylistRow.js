@@ -17,7 +17,6 @@ import Avatar from "../../../../../assets/images/product-recommendation.png";
 
 function StylistRow({
   stylistsList,
-  // setStylistsList,
   query,
   selectedId,
   setSelectedId,

@@ -14,7 +14,7 @@ function IndividualsBookings() {
   const navigate = useNavigate();
 
   return (
-    <div className="ml-80 bg-white px-10 py-14 w-full flex items-start">
+    <div className="ml-80 bg-white px-10 py-8 w-full flex items-start">
       <div
         className="flex items-center cursor-pointer"
         onClick={() => navigate(AuthRoutes.dashboard)}

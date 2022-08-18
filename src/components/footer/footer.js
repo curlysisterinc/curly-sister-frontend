@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import facebookIcon from "../../assets/images/facebook.svg";
 import instagramIcon from "../../assets/images/instagram.svg";
 import smsIcon from "../../assets/images/sms.svg";
-import productImg from "../../assets/images/product-img.svg";
+import productImg from "../../assets/images/product-img.png";
 import WaitList from "./waitList";
 
 function FooterComponent({ getStylist }) {
@@ -42,7 +42,7 @@ function FooterComponent({ getStylist }) {
           </Link>
         </div>
         <div className="w-1/3  border-2 border-orange-200 rounded-lg px-2 py-1 flex items-center">
-          <img src={productImg} alt="product-img" />
+          <img src={productImg} alt="product-img" loading="lazy" />
           <div className="ml-3">
             <h4 className="text-white font-bold text-base mb-2">
               Our curated products

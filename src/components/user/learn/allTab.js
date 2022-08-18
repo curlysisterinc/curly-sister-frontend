@@ -28,7 +28,7 @@ import { NonAuthRoutes } from "../../../constants";
 import moment from "moment";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import ReactPlayer from "react-player";
-import Loader from "../../loader";
+import Loader from "../../loader-component/loader";
 
 function AllTab() {
   const navigate = useNavigate();

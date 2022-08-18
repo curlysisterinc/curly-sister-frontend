@@ -8,7 +8,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import admin from "../../../../../api/admin";
-import SideBarComponent from "../../../../sidebar/sidebar";
+import SideBarComponent from "../../../../sidebar";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import NewVideoCategory from "./newVideoCategory";
 import learn from "../../../../../api/learn";
@@ -148,7 +148,7 @@ function EditVideo() {
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" isLoggedIn />
-      <div className="ml-80 bg-white px-10 py-14 w-full">
+      <div className="ml-80 bg-white px-10 py-8 w-full">
         <div className="flex items-start ">
           <div
             className="flex items-center cursor-pointer"

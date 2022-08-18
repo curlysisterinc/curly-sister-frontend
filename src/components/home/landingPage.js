@@ -1,5 +1,6 @@
 /* eslint-disable import/no-cycle */
-import React from "react";
+import { useToasts } from "react-toast-notifications";
+import React, { useEffect } from "react";
 import girl0 from "../../assets/images/girl-0.png";
 import girl1 from "../../assets/images/girl-1.png";
 import girl2 from "../../assets/images/girl-2.png";
@@ -12,7 +13,7 @@ import CommunitySection from "./community";
 import FooterComponent from "../footer/footer";
 import searchIcon from "../../assets/images/search-normal.svg";
 
-function landingPage({ getStylist }) {
+function LandingPage({ getStylist }) {
   return (
     <div className="ml-80 p-0">
       <div className="relative">
@@ -57,4 +58,4 @@ function landingPage({ getStylist }) {
   );
 }
 
-export default landingPage;
+export default LandingPage;

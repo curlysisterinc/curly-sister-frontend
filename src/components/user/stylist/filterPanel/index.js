@@ -56,14 +56,23 @@ function FilterPanel({
   handleSelectCategory,
   categories,
   getServices,
+  handleScriptLoad,
+  handleClick,
 }) {
   return (
     <div>
-      <div className="flex justify-between">
-        <div className="relative w-3/4 h-12">
-          <SearchBar />
+      <div className="flex justify-between flex-wrap">
+        <div className="relative w-3/4 flex-1 mr-4">
+          <SearchBar handleScriptLoad={handleScriptLoad} />
+          <button
+            type="button"
+            onClick={handleClick}
+            className="col-span-3 cursor-pointer flex items-center space-x-2 border rounded-full placeholder:text-sm placeholder:text-gray-300 px-4 bg-white border-gray-600"
+          >
+            Use current location
+          </button>
         </div>
-        <div className="col-span-3">
+        <div className="col-span-3 w-220 flex-shrink-0">
           <CategoryDropdown
             options={categoryList}
             selectOption={handleSelectCategory}
