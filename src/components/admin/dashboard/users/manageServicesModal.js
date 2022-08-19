@@ -7,11 +7,19 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
 import React, { useEffect, useState } from "react";
+import useCreateServices from "hooks/data/admin/useCreateServices";
+import { Loadersmall } from "components/loader-component/loader";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
 import admin from "../../../../api/admin";
 
-function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
+function ManageServicesModal({ handleClose }) {
+  const {
+    data,
+    isLoading,
+    error,
+    mutate: createServices,
+  } = useCreateServices();
   const [serviceList, setServiceList] = useState({
     name: "",
     description: "",
@@ -31,37 +39,27 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
   };
 
   useEffect(() => {
-    const ac = new AbortController();
     document.title = "Curly sisters • Create services";
-
-    return function cleanup() {
-      ac.abort();
-      setIsServiceUpdate(false);
-    };
   }, []);
   const handleSubmitService = (e) => {
     e.preventDefault();
-    admin
-      .CreateServices(serviceList)
-      .then((response) => {
-        console.log(response.data);
-        setServiceList({
-          ...serviceList,
-          name: "",
-          description: "",
-          default_price: "",
-          who_is_this_for: "For everyone",
-          duration: "",
-        });
-        if (response.status === 200) {
-          handleClose();
-          setIsServiceUpdate(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    createServices(serviceList);
   };
+
+  useEffect(() => {
+    if (data) {
+      setServiceList({
+        ...serviceList,
+        name: "",
+        description: "",
+        default_price: "",
+        who_is_this_for: "For everyone",
+        duration: "",
+      });
+      handleClose();
+    }
+  }, [data]);
+
   return (
     <div
       onClick={handleClose}
@@ -77,7 +75,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white p-10 w-2/5">
+        <div className="bg-white p-10 w-2/5 h-screen">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Add a service
           </h4>
@@ -92,7 +90,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
               >
                 Name of service
                 <input
-                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="name"
                   type="text"
                   value={serviceList.name}
@@ -109,7 +107,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
               >
                 Description
                 <textarea
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="textarea"
                   placeholder="Enter a description for this service"
                   name="description"
@@ -131,7 +129,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                   Default price
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter price"
                       name="default_price"
@@ -162,7 +160,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                   Duration
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-400 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter time"
                       name="duration"
@@ -197,7 +195,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                   name="who_is_this_for"
                   value={serviceList.who_is_this_for}
                   onChange={handleChange}
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="Everyone">Everyone</option>
                   <option value="Stylists">Stylists</option>
@@ -227,16 +225,9 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
             <button
               type="button"
               onClick={handleSubmitService}
-              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
+              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm flex justify-center font-BeatriceSemiBold items-center"
             >
-              {/* <svg
-                  className="motion-reduce:hidden animate-spin ..."
-                  viewBox="0 0 24 24"
-                >
-                  {" "}
-                  ...{" "}
-                </svg> */}
-              Create service
+              {isLoading ? <Loadersmall /> : "Create service"}
             </button>
           </form>
         </div>

@@ -34,7 +34,7 @@ const CommonCard = ({ stylist }) => {
       <div className="mt-5 grid grid-cols-2 gap-3 w-full">
         <button
           onClick={() => {
-            navigate(AuthRoutes.bookedStylistProfile);
+            navigate(`/stylists/profile/${stylist._id}`);
           }}
           type="button"
           className="col-1 border text-sm border-gray-200 tracking-tight text-gray-400 font-BeatriceSemiBold rounded-full py-2"

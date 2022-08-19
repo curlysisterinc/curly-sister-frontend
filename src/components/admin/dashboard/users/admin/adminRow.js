@@ -1,25 +1,11 @@
-/* eslint-disable prefer-const */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-shadow */
-/* eslint-disable import/no-cycle */
-/* eslint-disable import/order */
-/* eslint-disable import/newline-after-import */
-/* eslint-disable consistent-return */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-unused-vars */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable no-else-return */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-param-reassign */
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import clsx from "clsx";
+import Moment from "moment";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
 import allynAvatar from "../../../../../assets/images/allyn.svg";
-import Moment from "moment";
 import admin from "../../../../../api/admin";
 import AdminDropDown from "../../../../customdropdown/dashboard/admin/adminitm";
 
@@ -37,18 +23,11 @@ function AdminRow({
   });
   const navigate = useNavigate();
   useEffect(() => {
-    admin
-      .GetAllAdmin()
-      .then((response) => {
-        console.log(response.data);
-        setGetAdmin(response.data.data);
-        let getAdminId = response.data.data.map((admin) => admin._id);
-        setAdminValue({ ...adminValue, adminId: getAdminId });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    if (getAdmin) {
+      const getAdminId = getAdmin.map((ad) => ad._id);
+      setAdminValue({ ...adminValue, adminId: getAdminId });
+    }
+  }, [getAdmin]);
   // const [openDropdown, setOpenDropdown] = useState(false);
   const handleCheck = (e, id) => {
     if (e.target.checked) {
@@ -86,7 +65,7 @@ function AdminRow({
       .DeleteAdmin({ userId: id })
       .then((response) => {
         console.log(response.data, "delete admin");
-        setGetAdmin(getAdmin.filter((admin) => admin._id !== id));
+        setGetAdmin(getAdmin.filter((ad) => ad._id !== id));
       })
       .catch((error) => {
         console.log(error, "error delete admin");
@@ -94,7 +73,7 @@ function AdminRow({
   };
   return (
     <>
-      {getAdmin.map((admin) => {
+      {getAdmin.map((ad) => {
         return (
           <tr key={admin._id} className="bg-white border-b border-gray-600">
             <th scope="row">
@@ -106,18 +85,21 @@ function AdminRow({
                 onChange={(e) => handleCheck(e, admin._id)}
               />
             </th>
-            <td
-              className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-              onClick={() => navigate(AuthRoutes.addadmin)}
-            >
-              <img className="h-10 w-10" src={allynAvatar} alt="profile pix" />
-              <div className="ml-2">
-                <p className="text-sm text-gray-400 mb-1">
-                  {admin.firstName}
-                  {admin.lastName}
-                </p>
-                <p className="text-xs text-gray-200 ">{admin.email}</p>
-              </div>
+            <td className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer">
+              <Link to={AuthRoutes.addadmin}>
+                <img
+                  className="h-10 w-10"
+                  src={allynAvatar}
+                  alt="profile pix"
+                />
+                <div className="ml-2">
+                  <p className="text-sm text-gray-400 mb-1">
+                    {admin.firstName}
+                    {admin.lastName}
+                  </p>
+                  <p className="text-xs text-gray-200 ">{admin.email}</p>
+                </div>
+              </Link>
             </td>
             <td className="text-left text-sm text-gray-400 capitalize  py-4 whitespace-nowrap">
               {admin.role}

@@ -1,23 +1,14 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/no-cycle */
-/* eslint-disable import/order */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-return-assign */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
+import { AuthRoutes } from "constants";
+import { useNavigate } from "react-router-dom";
+import useGetAllIndividuals from "hooks/data/admin/useGetAllIndividuals";
+import { Loadersmall } from "components/loader-component/loader";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import IndividualsRow from "./individualRow";
 import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
-import SideBarComponent from "../../../../sidebar";
-import { AuthRoutes } from "constants";
-import { useNavigate } from "react-router-dom";
-import admin from "../../../../../api/admin";
 
 function InvidiualsTab({ active }) {
   const navigate = useNavigate();
@@ -27,6 +18,9 @@ function InvidiualsTab({ active }) {
   const [deleteModal, setDeleteModal] = useState(false);
   const [allIndividuals, setAllIndividuals] = useState([]);
   const [callToAction, setCallToAction] = useState(false);
+
+  const { data, isLoading, error: err } = useGetAllIndividuals();
+  const individuals = data?.data?.data;
 
   const onMasterCheck = (e) => {
     if (e.target.checked) {
@@ -46,19 +40,10 @@ function InvidiualsTab({ active }) {
   };
 
   useEffect(() => {
-    admin
-      .GetAllIndividuals()
-      .then((response) => {
-        console.log(response.data.data.users, "individuals");
-
-        setAllIndividuals(
-          response.data.data.users.filter((user) => !user.is_deleted)
-        );
-      })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
-  }, []);
+    if (individuals) {
+      setAllIndividuals(individuals.users.filter((user) => !user.is_deleted));
+    }
+  }, [individuals]);
   return (
     <div>
       <div className="flex items-end justify-between">
@@ -71,7 +56,8 @@ function InvidiualsTab({ active }) {
         <div className="">
           {/* filters */}
           {callToAction ? (
-            <div
+            <button
+              type="button"
               onClick={() => setToggleActions(!toggleActions)}
               className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
             >
@@ -86,16 +72,17 @@ function InvidiualsTab({ active }) {
               />
               {toggleActions && (
                 <div className="absolute bg-white rounded-xl top-10 shadow w-full right-0">
-                  <div
+                  <button
+                    type="button"
                     onClick={openDeleteModal}
                     className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
                   >
                     <img className="mr-2" src={trashIcon} alt="" />
                     Delete
-                  </div>
+                  </button>
                 </div>
               )}
-            </div>
+            </button>
           ) : (
             <div className="">
               <div className="flex justify-between items-center">
@@ -170,11 +157,15 @@ function InvidiualsTab({ active }) {
                       Status
                     </th>
                     <th
+                      aria-label="extra action"
                       scope="col"
                       className="text-sm font-medium text-gray-400 px-6 py-4"
                     />
                   </tr>
                 </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {isLoading && <Loadersmall />}
+                </tbody>
                 <tbody className="">
                   <IndividualsRow
                     individualList={allIndividuals}

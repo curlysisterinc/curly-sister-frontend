@@ -5,7 +5,7 @@ export function Loadersmall() {
     <div>
       <div
         style={{ borderTopColor: "transparent" }}
-        className="w-5 h-5 border-4 border-purple-100 border-solid rounded-full animate-spin"
+        className="w-5 h-5 border-2 border-purple-100 border-solid rounded-full animate-spin"
       />
     </div>
   );

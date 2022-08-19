@@ -1,15 +1,8 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-return-assign */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-
 import React, { useState, useEffect } from "react";
 import admin from "api/admin";
 import { useQuery } from "@tanstack/react-query";
 import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
+import { Loadersmall } from "components/loader-component/loader";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import StylistRow from "./stylistRow";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
@@ -19,8 +12,6 @@ import trashIcon from "../../../../../assets/images/trash.svg";
 import DeleteContentModal from "../../content/deleteContentModal";
 
 function StylistTab() {
-  const { GetAllStylists } = admin;
-
   const [typeValue, setTypeValue] = useState("All types");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState([]);
@@ -29,7 +20,7 @@ function StylistTab() {
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const { data, loading, error } = useGetAllStylists();
+  const { data, isLoading, error } = useGetAllStylists();
   const stylists = data?.data?.stylists;
 
   const openDeleteModal = () => {
@@ -38,17 +29,6 @@ function StylistTab() {
   const closeDeleteModal = () => {
     setDeleteModal(false);
   };
-  // useEffect(() => {
-  //   admin
-  //     .GetAllStylists()
-  //     .then((response) => {
-  //       console.log(response.data.stylists, "stylists");
-  //       setGetStylist(response.data.stylists);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.message);
-  //     });
-  // }, []);
 
   const checkAll = (e) => {
     if (e.target.checked) {
@@ -65,13 +45,15 @@ function StylistTab() {
     <div>
       <div className="flex items-end justify-between">
         <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
+          Stylists
           <span className="text-gray-300 ml-2 text-sm">{stylists?.length}</span>
         </div>
         <div className="">
           {/* filters */}
 
           {callToAction ? (
-            <div
+            <button
+              type="button"
               onClick={() => setToggleActions(!toggleActions)}
               className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
             >
@@ -85,16 +67,17 @@ function StylistTab() {
               />
               {toggleActions && (
                 <div className="absolute bg-white rounded-xl top-10 shadow w-full right-0">
-                  <div
+                  <button
+                    type="button"
                     onClick={openDeleteModal}
                     className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
                   >
                     <img className="mr-2" src={trashIcon} alt="" />
                     Delete
-                  </div>
+                  </button>
                 </div>
               )}
-            </div>
+            </button>
           ) : (
             <div className="">
               <div className="flex justify-between items-center">
@@ -173,11 +156,15 @@ function StylistTab() {
                       Status
                     </th>
                     <th
+                      aria-label="extra action"
                       scope="col"
                       className="text-sm font-medium text-gray-400 px-6 py-4"
                     />
                   </tr>
                 </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {isLoading && <Loadersmall />}
+                </tbody>
                 <tbody className="">
                   <StylistRow
                     query={query}
