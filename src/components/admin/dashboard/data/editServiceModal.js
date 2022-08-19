@@ -43,7 +43,7 @@ function EditServiceModal({ handleClose }) {
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white p-10">
+        <div className="bg-white p-10 h-screen">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Edit service
           </h4>

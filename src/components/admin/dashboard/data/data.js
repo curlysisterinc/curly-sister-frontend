@@ -177,13 +177,15 @@ function DataTab({ active }) {
           {openService && (
             <div className="mt-5 ">
               <div className="">
-                <div className="flex justify-center space-x-8 py-6">
+                <div className="justify-center  pb-6 grid  grid-cols-1 md:grid-cols-2 gap-4">
                   {getServices &&
                     getServices.map((service, index) => {
                       return (
                         <div
                           onClick={handleOpenEditServiceModal}
-                          className="bg-white cursor-pointer shadow-lg rounded-md  grid grid-cols-12 mt-5 w-5/12 h-40 overflow-hidden"
+                          //   className="bg-white cursor-pointer shadow-lg rounded-md"
+                          // >
+                          className="bg-white cursor-pointer shadow-s01 rounded-xl grid grid-cols-12  h-40 border border-gray-600 overflow-hidden"
                         >
                           <div className="p-5 col-span-8">
                             <h6 className="text-base font-BeatriceSemiBold mb-3">
