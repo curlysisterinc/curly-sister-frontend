@@ -354,7 +354,7 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
                   <input
                     type="date"
                     placeholder="Monday, 01 April 2022 — Saturday, 22 May 2022"
-                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   />
                 </div>
                 {state.blocked_dates.length - 1 === index &&

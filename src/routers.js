@@ -92,6 +92,9 @@ const AdminDashbaord = lazy(() => import("./components/admin"));
 const AddStylist = lazy(() =>
   import("components/admin/dashboard/users/addStylists/addStylist")
 );
+const EditStylist = lazy(() =>
+  import("components/admin/dashboard/users/addStylists/editStylists")
+);
 
 const PageNotFound = lazy(() => import("pages/404"));
 
@@ -203,6 +206,10 @@ function Routers() {
                   <Route
                     path={AuthRoutes.addStylist}
                     element={<AddStylist />}
+                  />
+                  <Route
+                    path={AuthRoutes.editStylist}
+                    element={<EditStylist />}
                   />
 
                   <Route

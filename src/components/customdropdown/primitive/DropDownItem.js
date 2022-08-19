@@ -8,6 +8,7 @@ const DropDownItem = React.forwardRef(
         className={className}
         {...props} //eslint-disable-line
         ref={forwardedRef}
+        loading
       >
         {children}
       </DropdownMenuPrimitive.Item>

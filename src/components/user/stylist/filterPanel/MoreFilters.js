@@ -15,7 +15,7 @@ function MoreFilters({ certifications, tags, handleOnCheckboxChange }) {
         More filters
       </div>
       {toggleMoreFilters ? (
-        <div className="bg-white w-auto rounded-lg p-5 shadow-md absolute top-12 right-0">
+        <div className="bg-white w-auto rounded-lg p-5 shadow-md absolute top-12 right-0 z-20">
           <div className="flex items-start flex-nowrap space-x-4 justify-between">
             <div>
               <h3>Certifications</h3>

@@ -10,6 +10,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
+import { useQueries } from "@tanstack/react-query";
 import { AuthRoutes } from "../../../../constants";
 import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../assets/images/trash.svg";
@@ -20,6 +21,9 @@ import ContentRow from "./contentTableRow";
 import admin from "../../../../api/admin";
 import TypesContent from "../../../customdropdown/dashboard/types";
 import Newcontent from "../../../customdropdown/dashboard/content/newcontent";
+import useGetAllContents from "../../../../hooks/data/admin/useGetAllContents";
+import useGetAllArticles from "../../../../hooks/data/admin/useGetAllArticles";
+import useGetAllVideos from "../../../../hooks/data/admin/useGetAllVideos";
 
 function ContentTab({ active }) {
   const [toggleActions, setToggleActions] = useState(false);
@@ -32,6 +36,46 @@ function ContentTab({ active }) {
   const [allContent, setAllContent] = useState([]);
   const [callToAction, setCallToAction] = useState(false);
   const navigate = useNavigate();
+
+  const {
+    data: contentsData,
+    isLoading: isContentsLoading,
+    error: ContentsError,
+  } = useGetAllContents();
+  const {
+    data: videosData,
+    isLoading: isVideosLoading,
+    error: VideosError,
+  } = useGetAllVideos();
+  const {
+    data: articlesData,
+    isLoading: isArticlesLoading,
+    error: ArticlesError,
+  } = useGetAllArticles();
+
+  const results = useQueries({
+    queries: [
+      { queryKey: ["videos"], queryFn: admin.GetAllVideos },
+      { queryKey: ["articles"], queryFn: admin.GetAllArticles },
+      { queryKey: ["contents"], queryFn: admin.GetAllContents },
+    ],
+  });
+
+  useEffect(() => {
+    const ac = new AbortController();
+
+    const isDataLoading = results.some((result) => result.isLoading);
+    // setIsLoading(isDataLoading);
+    const isSuccess = results.every((result) => result.isSuccess);
+    if (isSuccess) {
+      setGetVideos(results[0].data.data.data);
+      setGetArticles(results[1].data.data.data);
+      setAllContent(results[2].data.data.data);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [results]);
 
   const checkAll = (e) => {
     switch (typeValue) {
@@ -76,48 +120,48 @@ function ContentTab({ active }) {
   const closeDeleteModal = () => {
     setDeleteModal(false);
   };
-  useEffect(() => {
-    admin
-      .GetAllContents()
-      .then((response) => {
-        setAllContent(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
-  }, [getVideos, getArticles]);
+  // useEffect(() => {
+  //   admin
+  //     .GetAllContents()
+  //     .then((response) => {
+  //       setAllContent(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error.message, "error");
+  //     });
+  // }, [getVideos, getArticles]);
 
-  useEffect(() => {
-    const ac = new AbortController();
+  // useEffect(() => {
+  //   const ac = new AbortController();
 
-    admin
-      .GetAllVideos()
-      .then((response) => {
-        setGetVideos(response.data.data);
-      })
-      .catch((error) => {
-        // console.log(error.message, "error");
-      });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-  useEffect(() => {
-    const ac = new AbortController();
+  //   admin
+  //     .GetAllVideos()
+  //     .then((response) => {
+  //       setGetVideos(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       // console.log(error.message, "error");
+  //     });
+  //   return function cleanup() {
+  //     ac.abort();
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   const ac = new AbortController();
 
-    admin
-      .GetAllArticles()
-      .then((response) => {
-        // console.log(response.data, "article");
-        setGetArticles(response.data.data);
-      })
-      .catch((error) => {
-        // console.log(error.message, "error");
-      });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
+  //   admin
+  //     .GetAllArticles()
+  //     .then((response) => {
+  //       // console.log(response.data, "article");
+  //       setGetArticles(response.data.data);
+  //     })
+  //     .catch((error) => {
+  //       // console.log(error.message, "error");
+  //     });
+  //   return function cleanup() {
+  //     ac.abort();
+  //   };
+  // }, []);
 
   return (
     <>

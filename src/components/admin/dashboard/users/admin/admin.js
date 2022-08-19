@@ -17,6 +17,8 @@ import trashIcon from "../../../../../assets/images/trash.svg";
 import admin from "../../../../../api/admin";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
 import DeleteContentModal from "./deleteContentModal";
+import { AdminTable } from "./adminTableHeader";
+import useGetAllAdmins from "hooks/data/admin/useGetAllAdmins";
 
 function AdminTab({ active }) {
   const navigate = useNavigate();
@@ -26,6 +28,9 @@ function AdminTab({ active }) {
   const [selectedId, setSelectedId] = useState([]);
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+
+  const { data, loading, error } = useGetAllAdmins();
+  const admins = data?.data?.data;
 
   const onMasterCheck = (e) => {
     if (e.target.checked) {
@@ -37,16 +42,11 @@ function AdminTab({ active }) {
     }
   };
   useEffect(() => {
-    admin
-      .GetAllAdmin()
-      .then((response) => {
-        console.log(response.data);
-        setGetAdmin(response.data.data.filter((admin) => !admin.is_deleted));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    if (admins) {
+      setGetAdmin(admins.filter((admin) => !admin.is_deleted));
+    }
+  }, [admins]);
+
   const openDeleteModal = () => {
     setDeleteModal(true);
   };
@@ -96,68 +96,15 @@ function AdminTab({ active }) {
           </div>
         )}
       </div>
-
-      {/* table */}
-      <div className="flex flex-col mt-4">
-        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="min-h-screen">
-              <table className="min-w-full text-left border border-gray-600 ">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col ">
-                      <input
-                        type="checkbox"
-                        className="ml-3"
-                        id="mastercheck"
-                        onChange={onMasterCheck}
-                      />
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Role
-                    </th>
-                    <th
-                      scope="col"
-                      className=" text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Date joined
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    />
-                  </tr>
-                </thead>
-                <tbody className="">
-                  <AdminRow
-                    setCallToAction={setCallToAction}
-                    selectedId={selectedId}
-                    setSelectedId={setSelectedId}
-                    getAdmin={getAdmin}
-                    setGetAdmin={setGetAdmin}
-                  />
-                </tbody>
-              </table>
-              <div className="my-10" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <AdminTable>
+        <AdminRow
+          setCallToAction={setCallToAction}
+          selectedId={selectedId}
+          setSelectedId={setSelectedId}
+          getAdmin={getAdmin}
+          setGetAdmin={setGetAdmin}
+        />
+      </AdminTable>
       {openInviteAdminModal && (
         <InviteAdminModal handleClose={() => setOpenInviteAdminModal(false)} />
       )}
