@@ -28,6 +28,7 @@ function SideNav() {
 
   const firstName = isLoggedIn?.active.firstName;
   const lastName = isLoggedIn?.active.lastName;
+  const role = isLoggedIn?.active.role;
   const profile_pic = isLoggedIn?.active.profile_pic;
 
   const onLogout = () => {
@@ -67,12 +68,14 @@ function SideNav() {
       path: "/profile",
       permission: "loggedin",
     },
-    {
-      title: "Dashboard",
-      path: AuthRoutes.dashboard,
-      permission: "loggedin",
-    },
   ];
+
+  const dashboardLink = {
+    title: "Dashboard",
+    path: AuthRoutes.dashboard,
+    permission: "loggedin",
+    role: "admin",
+  };
 
   return (
     <div className="w-80 bg-gray-50 px-12 h-screen fixed border-r border-gray-100 shadow flex flex-col justify-between">
@@ -87,23 +90,43 @@ function SideNav() {
               <NavLink
                 key={link.title}
                 to={link.path}
-                className={({ isActive }) =>
-                  isActive
-                    ? "mb-4 text-purple-100"
-                    : `mb-4 ${
-                        !isLoggedIn && link.permission === "loggedin"
-                          ? "hidden"
-                          : null
-                      } ${
+                className={
+                  ({ isActive }) =>
+                    isActive
+                      ? "mb-4 text-purple-100"
+                      : `mb-4 ${
+                          !isLoggedIn && link.permission === "loggedin"
+                            ? "hidden"
+                            : ""
+                        }
+                      ${
                         isLoggedIn && link.permission === "loggedout"
                           ? "hidden"
-                          : null
+                          : ""
                       }`
+                  // ${
+                  //   isLoggedIn &&
+                  //   link.role === "admin" &&
+                  //   link.permission === "loggedout"
+                  //     ? "hidden"
+                  //     : ""
+                  // }
                 }
               >
                 {link.title}
               </NavLink>
             ))}
+            {role.toLowerCase().includes("admin") && (
+              <NavLink
+                key={dashboardLink.title}
+                to={dashboardLink.path}
+                className={({ isActive }) =>
+                  isActive ? "mb-4 text-purple-100" : "mb-4"
+                }
+              >
+                {dashboardLink.title}
+              </NavLink>
+            )}
             {!isLoggedIn && (
               <>
                 <button

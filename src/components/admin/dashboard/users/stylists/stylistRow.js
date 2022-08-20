@@ -46,7 +46,13 @@ function StylistRow({
         )
         .map((stylist, index) => {
           return (
-            <tr key={stylist._id} className="bg-white border-b border-gray-600">
+            <tr
+              key={stylist._id}
+              className="bg-white border-b border-gray-600 cursor-pointer "
+              onClick={() => {
+                navigate(`/dashboard/users/edit-stylist/${stylist._id}`);
+              }}
+            >
               <th scope="row">
                 <input
                   type="checkbox"
@@ -56,15 +62,7 @@ function StylistRow({
                   onChange={(e) => onCheck(e, stylist._id)}
                 />
               </th>
-              <td
-                className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-                onClick={() => {
-                  navigate(AuthRoutes.addStylist, {
-                    state: stylist.category_type,
-                  });
-                  localStorage.setItem("createdStylist", stylist._id);
-                }}
-              >
+              <td className="px-6 py-4 whitespace-nowrap flex items-center ">
                 <img
                   src={stylist.photo ? stylist.photo : Avatar}
                   alt=""

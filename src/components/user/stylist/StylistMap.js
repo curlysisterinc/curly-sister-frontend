@@ -7,10 +7,22 @@ import girl from "../../../assets/images/girl-2.png";
 
 const K_SIZE = 40;
 
-function MapMaker({ text, $hover, stylist, ...rest }) {
-  const style = $hover ? "flex" : "hidden";
+function LocationMaker({ text, $hover, stylist, ...rest }) {
+  const display = text ? "visible" : "invisible";
   return (
-    <div className="relative">
+    <div className={`${display}`}>
+      <LocationIcon color="#590BA9" />
+    </div>
+  );
+}
+
+function MapMaker({ text, $hover, stylist, ...rest }) {
+  const { data, isMapLoaded } = text;
+  const style = $hover ? "flex" : "hidden";
+  const display = isMapLoaded ? "visible" : "invisible";
+
+  return (
+    <div className={`relative ${display} z-10`}>
       <LocationIcon />
       <div
         className={`bg-white border border-gray-600 shadow-s07 absolute rounded-2xl -top-10 left-10  w-489 flex overflow-hidden ${style} z-10`}
@@ -27,7 +39,7 @@ function MapMaker({ text, $hover, stylist, ...rest }) {
         <div className="m-3 w-3/5">
           <div className="flex  items-center mb-1">
             <p className="text-gray-350 font-semibold text-base mr-1">
-              {text.business_name}
+              {data.business_name}
             </p>
             <VerifyIcon />
           </div>
@@ -35,8 +47,8 @@ function MapMaker({ text, $hover, stylist, ...rest }) {
             Here’s a short version of a bio where one has been provided.
           </p>
           <p className="font-normal text-sm">
-            {text?.phone_no} · {text?.address} ·{" "}
-            {text?.certifications.length > 0 && "Certified"}
+            {data?.phone_no} · {data?.address} ·{" "}
+            {data?.certifications.length > 0 && "Certified"}
           </p>
         </div>
       </div>
@@ -48,12 +60,11 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
   const { position, status: currentLocationStatus } = positionData;
   const { lat, lng } = position;
 
-  console.log({ stylelist, selectedPlace, positionData });
-
   const [mapGeo, setMapGeo] = useState({
     longitude: null,
     latitute: null,
   });
+  const [isMapLoaded, setIsMapLoaded] = useState("false");
 
   useEffect(() => {
     if (currentLocationStatus === "data") {
@@ -67,18 +78,19 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
     }
   }, [selectedPlace]);
 
-  const defaultProps = currentLocationStatus === "data" && {
-    center: { lat, lng },
-    zoom: 11,
+  const defaultProps = {
+    center: { ...position },
+    zoom: 7,
   };
 
   const createMapOptions = (maps) => {
     return {
-      panControl: false,
       mapTypeControl: false,
       scrollwheel: true,
       fullscreenControl: false,
       scaleControl: true,
+      gestureHandling: "greedy",
+      minZoom: 2,
       // disableDefaultUI: true,
       // fullscreenControl: false,
       styles: [
@@ -131,23 +143,29 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
         >
           toggle map
         </button> */}
-        {currentLocationStatus === "data" && (
+        {defaultProps?.center?.lat && (
           <GoogleMapReact
             bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API }}
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
             options={createMapOptions}
-            //   onChildClick
-            // hoverDistance={20}
-
-            center={{ lng: mapGeo.longitude, lat: mapGeo.latitude }}
+            onGoogleApiLoaded={({ map, maps }) => setIsMapLoaded(true)}
+            yesIWantToUseGoogleMapApiInternals
+            center={[mapGeo.latitude, mapGeo.longitude]}
           >
+            {mapGeo?.latitude && (
+              <LocationMaker
+                lat={mapGeo?.latitude}
+                lng={mapGeo?.longitude}
+                text={isMapLoaded}
+              />
+            )}
             {[...stylistsWithGeoInfo].map((item) => (
               <MapMaker
-                lat={item.latitude}
-                lng={item.longitude}
-                key={item._id}
-                text={item}
+                lat={item?.latitude}
+                lng={item?.longitude}
+                key={item?._id}
+                text={{ data: item, isMapLoaded }}
               />
             ))}
           </GoogleMapReact>

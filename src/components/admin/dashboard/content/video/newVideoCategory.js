@@ -119,7 +119,7 @@ function NewVideoCategory({ handleClose }) {
                         name="name"
                         className={clsx(
                           inputList.length > 1 ? "col-span-11" : "col-span-12",
-                          "col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                          "col  pl-3 py-2 appearance-none border-0 w-full text-gray-400 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
                         )}
                         placeholder="Enter name of category"
                         value={category.name}

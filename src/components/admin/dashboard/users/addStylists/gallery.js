@@ -1,11 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable import/no-cycle */
-/* eslint-disable prefer-const */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-plusplus */
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import uploadFile from "../../../../../assets/images/upload-file.png";
@@ -98,7 +90,7 @@ function GalleryTab({ ariaHidden, idx }) {
       .then((res) => {
         setStylistGallery((prev) => ({
           ...prev,
-          update: { ...prev.update, gallery: [...res.data?.uploaded_imges] }, //eslint-disable-line
+          update: { ...prev.update, gallery: [...res.data?.uploaded_imges] } //eslint-disable-line
         }));
         setUploadnewData(true);
       })

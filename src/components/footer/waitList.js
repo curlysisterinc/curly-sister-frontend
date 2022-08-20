@@ -14,7 +14,7 @@ function WaitList({ getStylist }) {
       <div className="relative z-10 grid grid-cols-12 gap-16">
         <div className="col-span-5">
           {[...getStylist]?.splice(0, 1)?.map((item) => {
-            return <CommonCard key={item.id} stylist={item} />;
+            return <CommonCard key={item._id} stylist={item} />;
           })}
         </div>
         <div className="col-span-7 my-6">
