@@ -185,7 +185,7 @@ function DataTab({ active }) {
                           onClick={handleOpenEditServiceModal}
                           //   className="bg-white cursor-pointer shadow-lg rounded-md"
                           // >
-                          className="bg-white cursor-pointer shadow-s01 rounded-xl grid grid-cols-12  h-40 border border-gray-600 overflow-hidden"
+                          className="bg-white cursor-pointer shadow-s01 rounded-xl grid grid-cols-12  min-h-40 border border-gray-600 overflow-hidden"
                         >
                           <div className="p-5 col-span-8">
                             <h6 className="text-base font-BeatriceSemiBold mb-3">

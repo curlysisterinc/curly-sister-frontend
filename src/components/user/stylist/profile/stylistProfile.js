@@ -1,12 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable import/no-cycle */
-/* eslint-disable import/order */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/button-has-type */
-/* eslint-disable react/function-component-definition */
 import React from "react";
 import {
   MdArrowForwardIos,
@@ -20,21 +11,21 @@ import { ImFacebook2 } from "react-icons/im";
 import { FiInstagram } from "react-icons/fi";
 import { RiGlobalLine } from "react-icons/ri";
 import { AiTwotoneStar } from "react-icons/ai";
+import { useNavigate, useParams } from "react-router-dom";
+import { AuthRoutes } from "constants";
+import Slider from "react-slick";
 import SideBarComponent from "../../../sidebar";
 import avatar from "../../../../assets/images/gradient-avatar.svg";
 import galleryBanner from "../../../../assets/images/stylist-profile-banner.png";
 import Reviews from "../reviews";
-import { useNavigate, useParams } from "react-router-dom";
-import { AuthRoutes } from "constants";
 import admin from "../../../../api/admin";
 import Services from "./Services";
 import Certifications from "./Certifications";
 import Tags from "./Tags";
-import Slider from "react-slick";
 import { BookServiceCard } from "../bookedStylist";
 import GalleryModal from "./galleryModal";
 
-const NotBookServiceCard = () => {
+function NotBookServiceCard() {
   return (
     <div className="bg-white rounded-lg shadow-xl h-auto w-auto">
       <div className="p-6 flex flex-col space-y-3">
@@ -65,7 +56,7 @@ const NotBookServiceCard = () => {
       </div>
     </div>
   );
-};
+}
 function StylistProfile() {
   const [hasReview, setHasReview] = React.useState(true);
   // const [getGallery, setGetGallery] = React.useState([]);
@@ -129,8 +120,9 @@ function StylistProfile() {
   };
   return (
     <div className="max-w-screen-2xl w-full flex m-auto">
-      <div className="ml-80 bg-white px-0 pt-4 pb-10 w-full min-h-screen ">
+      <div className="bg-white px-0 pt-4 pb-10 w-full min-h-screen ">
         <button
+          type="button"
           className="flex space-x-0 items-center cursor-pointer pt-4  px-6 mb-6"
           onClick={() => navigate(-1)}
         >
@@ -142,47 +134,49 @@ function StylistProfile() {
         <div className="  mt-5 ">
           <div className=" book-stylist">
             <button
+              type="button"
               onClick={() => setGalleryVisible(true)}
               className="absolute z-40 right-10 top-10 bg-white p-1 rounded-lg flex items-center space-x-1 cursor-pointer"
             >
               <HiOutlinePhotograph color="black" size={20} />
               <p className="text-sm text-gray-400">View gallery</p>
             </button>
-            {getStylist?.gallery?.length > 0 ? (
-              <>
-                {getStylist?.gallery?.length > 1 ? (
-                  <div className="flex flex-nowrap overflow-x-auto px-8">
-                    {getStylist?.gallery?.map((gallery) => {
-                      return (
-                        <div
-                          key={gallery}
-                          className=" px-2 overflow-hidden w-1/2 h-80"
-                        >
-                          <img
-                            src={gallery}
-                            alt=""
-                            className="rounded-lg w-full h-full object-cover"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <div className=" px-2 overflow-hidden w-full h-80">
-                    <img
-                      src={getStylist?.gallery[0]}
-                      alt=""
-                      className="w-full h-80 object-cover"
-                    />
-                  </div>
-                )}
-              </>
-            ) : (
+
+            {getStylist?.gallery?.length === 0 && (
               <img
                 src={galleryBanner}
                 alt=""
                 className="w-full h-80 object-cover"
               />
+            )}
+
+            {getStylist?.gallery?.length === 1 && (
+              <div className=" px-2 overflow-hidden w-full h-80">
+                <img
+                  src={getStylist?.gallery[0]}
+                  alt=""
+                  className="w-full h-80 object-cover"
+                />
+              </div>
+            )}
+
+            {getStylist?.gallery?.length > 1 && (
+              <div className="flex flex-nowrap overflow-x-auto px-8">
+                {getStylist?.gallery?.map((gallery) => {
+                  return (
+                    <div
+                      key={gallery}
+                      className=" px-2 overflow-hidden w-1/2 h-80"
+                    >
+                      <img
+                        src={gallery}
+                        alt=""
+                        className="rounded-lg w-full h-full object-cover"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>

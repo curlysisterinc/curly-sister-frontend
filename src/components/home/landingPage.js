@@ -15,7 +15,7 @@ import searchIcon from "../../assets/images/search-normal.svg";
 
 function LandingPage({ getStylist }) {
   return (
-    <div className="ml-80 p-0">
+    <div className="p-0">
       <div className="relative">
         <img className="absolute w-full" src={bgOne} alt="" />
         <div className="absolute z-10 top-1/2 bg-white rounded-full w-3/4  left-1/2 transform -translate-x-1/2 p-3 shadow">

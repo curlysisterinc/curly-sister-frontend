@@ -22,7 +22,7 @@ import trashIcon from "../../../../../assets/images/trash.svg";
 import activateIcon from "../../../../../assets/images/activate.svg";
 import rightArrow from "../../../../../assets/images/right-arrow.svg";
 import moment from "moment";
-import spencerAvatar from "../../../../../assets/images/spencer.svg";
+import spencerAvatar from "../../../../../assets/images/spencer.png";
 import admin from "../../../../../api/admin";
 
 function IndividualsRow({
@@ -64,7 +64,6 @@ function IndividualsRow({
     const data = {
       userId: id,
     };
-    console.log(data, "payload user");
     admin
       .DeleteIndividual(data)
       .then((response) => {

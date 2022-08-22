@@ -42,7 +42,7 @@ export const BookServiceCard = ({
   const [chooseServiceVisible, setChooseServiceVisible] = React.useState(false);
   const [data, setData] = React.useState({ stylistId });
   const navigate = useNavigate();
-  console.log(data);
+  console.log({ serviceOffered, availability, stylistId });
   const [bookingFee, setBookingFee] = React.useState(0);
   const [bookingTotal, setBookingTotal] = React.useState(0);
 
@@ -67,7 +67,7 @@ export const BookServiceCard = ({
           <div className="flex justify-between items-start mb-4">
             <div className="">
               <p className="text-sm text-gray-400">
-                {data?.bookedservice.name}
+                {data?.bookedservice?.name}
               </p>
               <p className="text-xs text-gray-200 mb-1">
                 {/* Tues, 22 Mar · 12:00 PM (GMT+1) */}
@@ -168,7 +168,7 @@ function BookedStylistProfile() {
 
   return (
     <div>
-      <div className="ml-80 bg-white px-0 pt-4 pb-10 w-full min-h-screen relative">
+      <div className="bg-white px-0 pt-4 pb-10 w-full min-h-screen relative">
         <div
           className="flex space-x-0 items-center cursor-pointer pt-4  px-6"
           onClick={() => navigate(-1)}

@@ -166,7 +166,7 @@ function CommunityContent() {
       });
   };
   return (
-    <div className="ml-80 bg-white px-10 pt-8 w-full">
+    <div className="bg-white px-10 pt-8 w-full">
       <div
         onClick={() => navigate(-1)}
         className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
@@ -272,7 +272,7 @@ function CommunityContent() {
             {getQuestion.comments &&
               getQuestion.comments?.map((element) => {
                 return (
-                  <div className="mt-8">
+                  <div className="mt-8" key={element._id}>
                     <div className="flex items-start">
                       <img
                         className="h-10 w-10 mt-2"

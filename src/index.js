@@ -12,6 +12,7 @@ import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import "./index.css";
+import ErrorBoundary from "./components/errorBoundary";
 
 const store = configureStore;
 
@@ -31,7 +32,12 @@ function Root() {
 }
 
 const Render = () => {
-  ReactDOM.render(<Root />, document.getElementById("root"));
+  ReactDOM.render(
+    <ErrorBoundary>
+      <Root />
+    </ErrorBoundary>,
+    document.getElementById("root")
+  );
 };
 
 Render();

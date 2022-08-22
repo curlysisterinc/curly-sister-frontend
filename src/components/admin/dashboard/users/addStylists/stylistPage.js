@@ -80,7 +80,7 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
   };
 
   return (
-    <div className="ml-80 bg-white w-full ">
+    <div className="bg-white w-full ">
       <div className=" bg-white px-10 pb-8 w-full relative min-h-screen">
         <header className="sticky z-10 top-0 right-0 bg-white left-0 pt-7">
           <button

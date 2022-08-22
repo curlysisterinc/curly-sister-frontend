@@ -38,7 +38,7 @@ export function EditStylist() {
   }
   if (isStylistLoading) {
     return (
-      <div className="ml-80 bg-white w-full h-full flex items-center justify-center">
+      <div className="bg-white w-full h-full flex items-center justify-center">
         <Loader />
       </div>
     );

@@ -21,7 +21,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { BsCreditCard2Back } from "react-icons/bs";
 import { RiGift2Line } from "react-icons/ri";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import brandLogo from "../../../assets/images/brand-logo.svg";
+import brandLogo from "../../../assets/images/brand-logo.png";
 import PayPal from "../../../assets/images/PayPal.svg";
 import avatar from "../../../assets/images/product-recommendation.png";
 import lock from "../../../assets/images/lock.svg";
@@ -46,7 +46,6 @@ const BookServiceCard = ({
 }) => {
   const [chooseServiceVisible, setChooseServiceVisible] = React.useState(false);
   const navigate = useNavigate();
-  console.log(bookingFeeTotal, "bookingFeeTotal");
   const cardElementOptions = {
     style: {
       base: {
@@ -189,7 +188,6 @@ function ConfirmBooking() {
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [clientSecret, setClientSecret] = React.useState("");
   const { state } = useLocation();
-  console.log(state, "state");
   const [checkGift, setCheckGift] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [service, setService] = React.useState(state);
@@ -236,7 +234,6 @@ function ConfirmBooking() {
       const data = await admin.BookService(bookedServiceData);
       setBooking(data.data.data.booking);
       setIsProcessing(true);
-      console.log(booking, "myBooking");
       const response = await admin.StripeCheckout({
         amount: bookingTotal * 100,
       });
@@ -256,12 +253,10 @@ function ConfirmBooking() {
           success: true,
           bookingId: booking._id,
         });
-        console.log(confirmBooking, "confirm booking");
 
         navigate(AuthRoutes.successfullBooking);
       }
     } catch (error) {
-      console.log(error);
       setIsProcessing(false);
     }
   };
@@ -295,11 +290,8 @@ function ConfirmBooking() {
       const data = await admin.BookService(bookedServiceData);
       setBooking(data.data.data.booking);
 
-      console.log(booking, "booked service");
-
       setIsProcessing(false);
     } catch (error) {
-      console.log(error);
       setIsProcessing(false);
     }
   };
@@ -326,7 +318,7 @@ function ConfirmBooking() {
 
   return (
     <div className="max-w-screen-2xl w-full flex m-auto relative">
-      <div className="ml-80 bg-white px-0 pt-10 pb-20 w-full min-h-screen relative">
+      <div className="bg-white px-0 pt-10 pb-20 w-full min-h-screen relative">
         <button
           className="flex space-x-0 items-center cursor-pointer pt-4  px-6 mb-6"
           onClick={() => navigate(-1)}

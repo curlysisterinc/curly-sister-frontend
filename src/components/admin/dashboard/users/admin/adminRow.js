@@ -5,7 +5,7 @@ import Moment from "moment";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
-import allynAvatar from "../../../../../assets/images/allyn.svg";
+import allynAvatar from "../../../../../assets/images/allyn.png";
 import admin from "../../../../../api/admin";
 import AdminDropDown from "../../../../customdropdown/dashboard/admin/adminitm";
 
@@ -64,7 +64,6 @@ function AdminRow({
     admin
       .DeleteAdmin({ userId: id })
       .then((response) => {
-        console.log(response.data, "delete admin");
         setGetAdmin(getAdmin.filter((ad) => ad._id !== id));
       })
       .catch((error) => {

@@ -49,7 +49,6 @@ const TokenValidate = async () => {
             if (!res?.data?.access_token) {
               // the execution will never reach in this block, and if it did, it could be some backend issue.
               // eslint-disable-next-line no-console
-              console.log("refresh token is gone");
               history.push(NonAuthRoutes.login);
             } else {
               const isAccessToken = res.data.access_token;
@@ -67,7 +66,6 @@ const TokenValidate = async () => {
       authHandler.delete("token");
       history.push(NonAuthRoutes.login);
       // eslint-disable-next-line no-console
-      console.log("Your session has expired, please login again.");
       // eslint-disable-next-line no-alert
       alert("Your session has expired, please login again.");
     }

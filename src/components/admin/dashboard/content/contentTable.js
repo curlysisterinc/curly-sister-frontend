@@ -120,48 +120,6 @@ function ContentTab({ active }) {
   const closeDeleteModal = () => {
     setDeleteModal(false);
   };
-  // useEffect(() => {
-  //   admin
-  //     .GetAllContents()
-  //     .then((response) => {
-  //       setAllContent(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error.message, "error");
-  //     });
-  // }, [getVideos, getArticles]);
-
-  // useEffect(() => {
-  //   const ac = new AbortController();
-
-  //   admin
-  //     .GetAllVideos()
-  //     .then((response) => {
-  //       setGetVideos(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       // console.log(error.message, "error");
-  //     });
-  //   return function cleanup() {
-  //     ac.abort();
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   const ac = new AbortController();
-
-  //   admin
-  //     .GetAllArticles()
-  //     .then((response) => {
-  //       // console.log(response.data, "article");
-  //       setGetArticles(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       // console.log(error.message, "error");
-  //     });
-  //   return function cleanup() {
-  //     ac.abort();
-  //   };
-  // }, []);
 
   return (
     <>

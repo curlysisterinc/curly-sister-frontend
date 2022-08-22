@@ -9,7 +9,7 @@ function TermsAndPrivacy() {
   };
   return (
     <Layout>
-      <div className="ml-80 p-0">
+      <div className="p-0">
         <div className="w-1/2 mx-auto my-10">
           <div className="flex justify-start items-start">
             <button

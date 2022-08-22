@@ -14,7 +14,11 @@ function AuthSideBarComponent({ signin }) {
           <h3 className="text-lg lg:text-2xl font-bold text-black">
             Welcome {signin}, Curly Sister is always here for you.
           </h3>
-          <img className="mt-10 h-84" src={curlyGirls} alt="curly girls pix" />
+          <img
+            className="mt-10 h-84 hidden md:flex"
+            src={curlyGirls}
+            alt="curly girls pix"
+          />
         </div>
       </div>
     </div>

@@ -111,6 +111,7 @@ function ArticleTab() {
               {getArticles.map((article) => {
                 return (
                   <div
+                    key={article._id}
                     onClick={() => {
                       isLoggedIn
                         ? navigate(`/learn/article/${article._id}`)
@@ -178,6 +179,7 @@ function ArticleTab() {
                         : navigate(NonAuthRoutes.login);
                     }}
                     className="bg-white border rounded-2xl border-gray-100 shadow relative"
+                    key={article._id}
                   >
                     <img
                       src={article.image}
@@ -239,6 +241,7 @@ function ArticleTab() {
                         : navigate(NonAuthRoutes.login);
                     }}
                     className="bg-white border rounded-2xl border-gray-100 shadow relative"
+                    key={article._id}
                   >
                     <img
                       src={article.image}
@@ -300,6 +303,7 @@ function ArticleTab() {
                         : navigate(NonAuthRoutes.login);
                     }}
                     className="bg-white border rounded-2xl border-gray-100 shadow relative"
+                    key={article._id}
                   >
                     <img
                       src={article.image}
