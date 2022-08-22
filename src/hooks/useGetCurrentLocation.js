@@ -9,6 +9,7 @@ export default () => {
     lng: null,
   });
   useEffect(() => {
+    const ac = new AbortController();
     if (!navigator.geolocation) {
       setStatus("Geolocation is not supported by your browser");
       addToast("Geolocation is not supported by your browser", {
@@ -36,6 +37,9 @@ export default () => {
         }
       );
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
   return { status, position };
 };

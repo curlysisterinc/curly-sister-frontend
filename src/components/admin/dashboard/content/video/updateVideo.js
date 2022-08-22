@@ -77,10 +77,14 @@ function EditVideo() {
   }, []);
 
   useEffect(() => {
+    const ac = new AbortController();
     admin.GetVideoCategory().then((result) => {
       console.log(result.data.data, "data");
       setOptions(result.data.data);
     });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   useEffect(() => {

@@ -32,6 +32,7 @@ function LocationAndContact({
   const searchInput = useRef(null);
 
   useEffect(() => {
+    const ac = new AbortController();
     if (stylistData) {
       // setStylistLocation({ ...detailsValues, ...stylistData });
       searchInput.current.value = stylistData?.address || "";
@@ -70,6 +71,9 @@ function LocationAndContact({
         }
       });
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [stylistData]);
 
   const link = [

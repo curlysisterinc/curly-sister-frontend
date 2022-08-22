@@ -90,12 +90,16 @@ function Stylist() {
   }, [stylistData]);
 
   React.useEffect(() => {
+    const ac = new AbortController();
     const fetchData = () => {
       admin.GetServices().then((response) => {
         setGetServices(response.data.data);
       });
     };
     fetchData();
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   React.useEffect(() => {

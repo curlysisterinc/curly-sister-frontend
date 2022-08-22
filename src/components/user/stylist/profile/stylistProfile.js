@@ -68,11 +68,15 @@ function StylistProfile() {
   const { token } = useParams();
 
   React.useEffect(() => {
+    const ac = new AbortController();
     admin.GetOneStylist(token).then((response) => {
       console.log(response.data);
       setGetStylist(response.data.stylist);
       // setGetGallery(response.data.stylist.gallery);
     });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   const availabilityLength = React.useMemo(
@@ -85,6 +89,7 @@ function StylistProfile() {
   // useMemo(() => first, [second])
 
   React.useEffect(() => {
+    const ac = new AbortController();
     if (getStylist?.availability?.length > 0) {
       const [id] = getStylist?.availability; // eslint-disable-line
       console.log(id);
@@ -93,6 +98,9 @@ function StylistProfile() {
         .then((res) => setAvail(res.data.data))
         .catch((err) => console.log(err, "avail test err"));
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [availabilityLength]);
 
   console.log(avail, "avail");

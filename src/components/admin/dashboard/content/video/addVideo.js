@@ -50,11 +50,15 @@ function NewVideo() {
   };
 
   useEffect(() => {
+    const ac = new AbortController();
     admin.GetVideoCategory().then((result) => {
       console.log(result.data.data[0].name, "data");
       setOptions(result.data.data);
       setVideoInputs({ ...videoInputs, category: result.data.data[0].name });
     });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   useEffect(() => {
