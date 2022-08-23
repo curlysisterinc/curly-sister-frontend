@@ -58,6 +58,8 @@ module.exports = {
         120: "120px",
         316: "316px",
         500: "500px",
+        150: "150px",
+        520: "520px",
       },
       width: {
         36: "36px",
@@ -73,11 +75,16 @@ module.exports = {
         480: "480px",
         543: "543px",
       },
+      spacing: {
+        69: "69px",
+      },
       minWidth: {
         30: "30%",
       },
       maxWidth: {
         480: "480px",
+        280: "280px",
+        375: "375px"
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",

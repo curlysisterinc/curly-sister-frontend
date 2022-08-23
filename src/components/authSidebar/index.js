@@ -15,7 +15,7 @@ function AuthSideBarComponent({ signin }) {
             Welcome {signin}, Curly Sister is always here for you.
           </h3>
           <img
-            className="mt-10 h-84 hidden md:flex"
+            className="mt-10 h-84 hidden lg:flex"
             src={curlyGirls}
             alt="curly girls pix"
           />
