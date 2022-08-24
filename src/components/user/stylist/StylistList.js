@@ -21,7 +21,7 @@ function StylistList({ list, selectedPlace, positionData }) {
           </div>
           {list.length > 0 ? (
             <div
-              className={`grid  gap-6 mt-5 w-full ${
+              className={`grid  gap-6 mt-5 w-full grid-cols-1 md:${
                 openMap ? "grid-cols-2" : "grid-cols-3"
               }`}
             >

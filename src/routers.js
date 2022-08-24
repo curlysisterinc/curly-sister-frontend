@@ -98,9 +98,7 @@ const EditStylist = lazy(() =>
 
 const PageNotFound = lazy(() => import("pages/404"));
 
-const stripePromise = loadStripe(
-  "pk_test_51LQ4MZBHdUN0GiBt1CZsfNAPvWydnkEX1xL5ZiUXSsC2ErjI9LOQwT4K48YOQbJtcp8vXJX0TT5aP7XAXNmXSt2j00BlrHqanQ"
-);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
 function Routers() {
   return (

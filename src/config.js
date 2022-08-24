@@ -10,12 +10,14 @@ import Cookies from "js-cookie";
 import TokenValidate from "./tokenValidate";
 
 /** Base Url for api STAGING */
-const apiUrl = "https://curly-sisters.beargaze.com";
+// const apiUrl = "https://live.curly-sisters.beargaze.com";
+const apiUrl = process.env.REACT_APP_API_URL;
 /** Base Url for api PRODUCTION */
 // const apiUrl = "https://megaletrics.beargaze.com/";
 
 /** Base Url for Images STAGING */
-const curlySistersImageUrl = "https://curly-sisters.beargaze.com";
+// const curlySistersImageUrl = "https://live.curly-sisters.beargaze.com";
+const curlySistersImageUrl = process.env.REACT_APP_API_URL;
 /** Base Url for Images PRODUCTION */
 // const imageBaseUrl = "https://megaletrics.beargaze.com/";
 

@@ -17,7 +17,7 @@ export default function CommonCard({ stylist }) {
       onClick={() => {
         navigate(`/stylists/profile/${stylist._id}`);
       }}
-      className="col-1 rounded-2xl shadow-md relative overflow-hidden cursor-pointer max-w-375 m-auto"
+      className="col-1 rounded-2xl shadow-md relative overflow-hidden cursor-pointer w-full"
     >
       <div className="absolute top-0 right-0 mr-4 mt-4 ">
         <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">

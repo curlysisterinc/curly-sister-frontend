@@ -7,10 +7,12 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { useQueries } from "@tanstack/react-query";
+import { Loadersmall } from "components/loader-component/loader";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
 import { AuthRoutes } from "../../../../constants";
 import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../assets/images/trash.svg";
@@ -35,23 +37,10 @@ function ContentTab({ active }) {
   const [selectedId, setSelectedId] = useState([]);
   const [allContent, setAllContent] = useState([]);
   const [callToAction, setCallToAction] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
   const navigate = useNavigate();
-
-  const {
-    data: contentsData,
-    isLoading: isContentsLoading,
-    error: ContentsError,
-  } = useGetAllContents();
-  const {
-    data: videosData,
-    isLoading: isVideosLoading,
-    error: VideosError,
-  } = useGetAllVideos();
-  const {
-    data: articlesData,
-    isLoading: isArticlesLoading,
-    error: ArticlesError,
-  } = useGetAllArticles();
 
   const results = useQueries({
     queries: [
@@ -61,16 +50,25 @@ function ContentTab({ active }) {
     ],
   });
 
+  const refetchAll = useCallback(() => {
+    results.forEach((result) => result.refetch());
+  }, [results]);
+
   useEffect(() => {
     const ac = new AbortController();
 
     const isDataLoading = results.some((result) => result.isLoading);
-    // setIsLoading(isDataLoading);
-    const isSuccess = results.every((result) => result.isSuccess);
-    if (isSuccess) {
+    setIsLoading(isDataLoading);
+    const isDataSuccess = results.every((result) => result.isSuccess);
+    const isDataError = results.some((result) => result.error);
+    if (isDataSuccess) {
       setGetVideos(results[0].data.data.data);
       setGetArticles(results[1].data.data.data);
       setAllContent(results[2].data.data.data);
+      setIsSuccess(isDataSuccess);
+    }
+    if (isDataError) {
+      setIsError(isDataError);
     }
     return function cleanup() {
       ac.abort();
@@ -203,90 +201,95 @@ function ContentTab({ active }) {
         </div>
 
         {/* table */}
-        <div className="flex flex-col mt-4 min-h-screen">
-          <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
-              <div className="min-h-screen">
-                <table className="min-w-full text-left border border-gray-600 pb-40">
-                  <thead className=" bg-gray-50 uppercase text-sm text-gray-300">
-                    <tr>
-                      <th scope="col ">
-                        <input
-                          type="checkbox"
-                          className="ml-3"
-                          id="mastercheck"
-                          onChange={checkAll}
+        {isSuccess && (
+          <div className="flex flex-col mt-4 min-h-screen">
+            <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+              <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="min-h-screen">
+                  <table className="min-w-full text-left border border-gray-600 pb-40">
+                    <thead className=" bg-gray-50 uppercase text-sm text-gray-300">
+                      <tr>
+                        <th scope="col ">
+                          <input
+                            type="checkbox"
+                            className="ml-3"
+                            id="mastercheck"
+                            onChange={checkAll}
+                          />
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs   px-3 py-4 text-gray-300"
+                        >
+                          title
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs   px-3 py-4 text-gray-300"
+                        >
+                          Type
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs   px-3 py-4 text-gray-300"
+                        >
+                          created
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs   px-3 py-4 text-gray-300"
+                        >
+                          views
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs   px-3 py-4 text-gray-300"
+                        >
+                          likes
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs   px-3 py-4 text-gray-300"
+                        >
+                          saves
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs px-3 py-4 text-gray-300"
+                        >
+                          status
+                        </th>
+                        <th
+                          scope="col"
+                          className="text-xs  text-gray-400 px-3 py-4"
                         />
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs   px-3 py-4 text-gray-300"
-                      >
-                        title
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs   px-3 py-4 text-gray-300"
-                      >
-                        Type
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs   px-3 py-4 text-gray-300"
-                      >
-                        created
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs   px-3 py-4 text-gray-300"
-                      >
-                        views
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs   px-3 py-4 text-gray-300"
-                      >
-                        likes
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs   px-3 py-4 text-gray-300"
-                      >
-                        saves
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs px-3 py-4 text-gray-300"
-                      >
-                        status
-                      </th>
-                      <th
-                        scope="col"
-                        className="text-xs  text-gray-400 px-3 py-4"
+                      </tr>
+                    </thead>
+                    <tbody className="">
+                      <ContentRow
+                        getVideos={getVideos}
+                        setGetVideos={setGetVideos}
+                        getArticles={getArticles}
+                        setGetArticles={setGetArticles}
+                        typeValue={typeValue}
+                        allContent={allContent}
+                        query={query}
+                        setAllContent={setAllContent}
+                        selectedId={selectedId}
+                        setSelectedId={setSelectedId}
+                        setCallToAction={setCallToAction}
                       />
-                    </tr>
-                  </thead>
-                  <tbody className="">
-                    <ContentRow
-                      getVideos={getVideos}
-                      setGetVideos={setGetVideos}
-                      getArticles={getArticles}
-                      setGetArticles={setGetArticles}
-                      typeValue={typeValue}
-                      allContent={allContent}
-                      query={query}
-                      setAllContent={setAllContent}
-                      selectedId={selectedId}
-                      setSelectedId={setSelectedId}
-                      setCallToAction={setCallToAction}
-                    />
-                  </tbody>
-                </table>
-                <div className="my-10" />
+                    </tbody>
+                  </table>
+                  <div className="my-10" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {isLoading && <Loadersmall />}
+        {isError && <ErrorDisplayComponent refetch={refetchAll} />}
         {deleteModal && <DeleteContentModal handleClose={closeDeleteModal} />}
       </div>
     </>

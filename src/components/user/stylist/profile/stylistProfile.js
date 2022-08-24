@@ -149,43 +149,40 @@ function StylistProfile() {
               <HiOutlinePhotograph color="black" size={20} />
               <p className="text-sm text-gray-400">View gallery</p>
             </button>
+            <div className="flex flex-nowrap overflow-x-auto h-80 ">
+              {getStylist?.gallery?.length === 0 && (
+                <div className=" overflow-hidden w-full h-80 bg-gray-20">
+                  <img
+                    src={galleryBanner}
+                    alt=""
+                    className="w-full h-80 object-cover "
+                  />
+                </div>
+              )}
 
-            {getStylist?.gallery?.length === 0 && (
-              <img
-                src={galleryBanner}
-                alt=""
-                className="w-full h-80 object-cover"
-              />
-            )}
+              {getStylist?.gallery?.length === 1 && (
+                <div className="overflow-hidden w-full h-80 bg-gray-20">
+                  <img
+                    src={getStylist?.gallery[0]}
+                    alt=""
+                    className="w-full h-80 object-cover "
+                  />
+                </div>
+              )}
 
-            {getStylist?.gallery?.length === 1 && (
-              <div className=" px-2 overflow-hidden w-full h-80">
-                <img
-                  src={getStylist?.gallery[0]}
-                  alt=""
-                  className="w-full h-80 object-cover"
-                />
-              </div>
-            )}
-
-            {getStylist?.gallery?.length > 1 && (
-              <div className="flex flex-nowrap overflow-x-auto px-8">
-                {getStylist?.gallery?.map((gallery) => {
+              {getStylist?.gallery?.length > 1 &&
+                getStylist?.gallery?.map((gallery) => {
                   return (
-                    <div
-                      key={gallery}
-                      className=" px-2 overflow-hidden w-1/2 h-80"
-                    >
+                    <div key={gallery} className="overflow-hidden w-1/2 h-80 ">
                       <img
                         src={gallery}
                         alt=""
-                        className="rounded-lg w-full h-full object-cover"
+                        className="rounded-lg w-full h-full object-cover "
                       />
                     </div>
                   );
                 })}
-              </div>
-            )}
+            </div>
           </div>
         </div>
 
