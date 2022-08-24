@@ -42,12 +42,16 @@ function ServicesTab({
   } = useGetServices();
 
   useEffect(() => {
+    const ac = new AbortController();
     if (stylistData && servicesData) {
       setAllServices(servicesData.data.data);
       const { services } = stylistData;
       const temp = services.map((service) => service._id);
       setStylistServices((prev) => ({ ...prev, services: [...temp] }));
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [iServiceUpdate, servicesData]);
 
   // handle click event of the Remove button

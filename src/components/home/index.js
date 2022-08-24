@@ -41,18 +41,6 @@ function HomeComponent() {
   const [getStylist, setGetStylist] = React.useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
 
-  // const { data, loading, error: err } = useGetAllStylists();
-  // const { data, loading, error: err } = useGetAllStylists();
-  // const {
-  //   data: questions,
-  //   loading: isQuestionsLoading,
-  //   error: QuestionsErr,
-  // } = useGetAllQuestions();
-
-  // const getStylist = data?.data?.stylists;
-  // const getQuestions2 = questions?.data?.data;
-  // console.log({ getQuestions2 });
-
   const results = useQueries({
     queries: [
       { queryKey: ["videos"], queryFn: GetAllVideos },
@@ -65,6 +53,7 @@ function HomeComponent() {
   // console.log("RESULT", results);
   // console.log("PROCESS", process.env);
   useEffect(() => {
+    const ac = new AbortController();
     const isDataLoading = results.some((result) => result.isLoading);
     setIsLoading(isDataLoading);
     const isSuccess = results.every((result) => result.isSuccess);
@@ -74,6 +63,9 @@ function HomeComponent() {
       setGetStylist(results[2].data.data.stylists);
       setUpcomingBookings(results[3].data.data.data);
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [results]);
 
   React.useEffect(() => {
@@ -88,62 +80,6 @@ function HomeComponent() {
       ac.abort();
     };
   }, []);
-
-  // useEffect(async () => {
-  //   const ac = new AbortController();
-
-  //   learn
-  //     .GetAllQuestions()
-  //     .then((response) => {
-  //       console.log(response.data.data);
-  //       setIsLoading(false);
-  //       setGetQuestions(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-  //   admin
-  //     .GetAllVideos()
-  //     .then((response) => {
-  //       console.log(response.data.data, "Success");
-  //       setIsLoading(false);
-  //       setGetVideos(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-  //   admin
-  //     .GetAllArticles()
-  //     .then((response) => {
-  //       console.log(response.data.data, "Success");
-  //       setIsLoading(false);
-
-  //       setGetArticles(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-
-  //       console.log(error);
-  //     });
-  //   // admin
-  //   //   .GetAllStylists()
-  //   //   .then((response) => {
-  //   //     console.log(response.data.stylists, "stylists");
-  //   //     setGetStylist(response.data.stylists);
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     console.log(error.message);
-  //   //   });
-  //   admin.GetUpcomingBookings().then((response) => {
-  //     setUpcomingBookings(response.data.data);
-  //     console.log(response, "upcoming bookings");
-  //   });
-  //   return function cleanup() {
-  //     ac.abort();
-  //   };
-  // }, []);
 
   return (
     !isLoading &&

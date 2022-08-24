@@ -47,6 +47,7 @@ function ManageServicesModal({ handleClose }) {
   };
 
   useEffect(() => {
+    const ac = new AbortController();
     if (data) {
       setServiceList({
         ...serviceList,
@@ -58,6 +59,9 @@ function ManageServicesModal({ handleClose }) {
       });
       handleClose();
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [data]);
 
   return (

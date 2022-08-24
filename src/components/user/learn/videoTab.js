@@ -82,7 +82,10 @@ function VideoTab() {
                   <div className="grid grid-cols-3 gap-6">
                     {getVideos?.map((video) => {
                       return (
-                        <div className="relative col-1 h-80 overflow-hidden rounded-xl">
+                        <div
+                          className="relative col-1 h-80 overflow-hidden rounded-xl"
+                          key={video._id}
+                        >
                           <ReactPlayer
                             url={video.link}
                             onStart={() => {

@@ -1,17 +1,22 @@
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/no-cycle */
 /* eslint-disable no-underscore-dangle */
 import axios from "axios";
 import Cookies from "js-cookie";
 import TokenValidate from "./tokenValidate";
 
-/** BASE URL STAGING */
-// const apiUrl = "https://curly-sisters.beargaze.com";
-// const curlySistersImageUrl = "https://curly-sisters.beargaze.com";
+/** Base Url for api STAGING */
+// const apiUrl = "https://live.curly-sisters.beargaze.com";
+const apiUrl = process.env.REACT_APP_API_URL;
+/** Base Url for api PRODUCTION */
+// const apiUrl = "https://megaletrics.beargaze.com/";
 
-/** BASE URL PRODUCTION */
-const apiUrl = "https://live.curly-sisters.beargaze.com/";
-const curlySistersImageUrl = "https://live.curly-sisters.beargaze.com/";
+/** Base Url for Images STAGING */
+// const curlySistersImageUrl = "https://live.curly-sisters.beargaze.com";
+const curlySistersImageUrl = process.env.REACT_APP_API_URL;
+/** Base Url for Images PRODUCTION */
+// const imageBaseUrl = "https://megaletrics.beargaze.com/";
 
 /** axios API for Signup and Login users with no token  */
 const curlySistersOnboarding = axios.create({

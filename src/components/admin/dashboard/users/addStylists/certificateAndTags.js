@@ -32,6 +32,7 @@ function CertificateAndTags({
   const { state } = useLocation();
 
   useEffect(() => {
+    const ac = new AbortController();
     if (stylistData) {
       const { certifications, tags } = stylistData;
       setStylistCert((prev) => ({
@@ -43,6 +44,9 @@ function CertificateAndTags({
       setGetTags(tags);
       // setStylistCert({ ...detailsValues, ...stylistData });
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [stylistData]);
 
   // const stylistId = localStorage.getItem("createdStylist");

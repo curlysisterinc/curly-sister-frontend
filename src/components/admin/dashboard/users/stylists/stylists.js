@@ -3,6 +3,7 @@ import admin from "api/admin";
 import { useQuery } from "@tanstack/react-query";
 import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
 import { Loadersmall } from "components/loader-component/loader";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import StylistRow from "./stylistRow";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
@@ -20,7 +21,7 @@ function StylistTab() {
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const { data, isLoading, error } = useGetAllStylists();
+  const { data, isLoading, error, refetch } = useGetAllStylists();
   const stylists = data?.data?.stylists;
 
   const openDeleteModal = () => {
@@ -114,74 +115,75 @@ function StylistTab() {
           )}
         </div>
       </div>
-
       {/* table */}
-      <div className="flex flex-col mt-4">
-        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="overflow-hidden">
-              <table className="min-w-full text-left border border-gray-600 ">
-                <thead className=" bg-gray-50">
-                  <tr>
-                    <th scope="col ">
-                      <input
-                        type="checkbox"
-                        className="ml-3"
-                        id="checkallstylist"
-                        onChange={checkAll}
+      {data && (
+        <div className="flex flex-col mt-4">
+          <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
+              <div className="overflow-hidden">
+                <table className="min-w-full text-left border border-gray-600 ">
+                  <thead className=" bg-gray-50">
+                    <tr>
+                      <th scope="col ">
+                        <input
+                          type="checkbox"
+                          className="ml-3"
+                          id="checkallstylist"
+                          onChange={checkAll}
+                        />
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-400 px-6 py-4"
+                      >
+                        Name
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-400 px-6 py-4"
+                      >
+                        Type
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-400 px-6 py-4"
+                      >
+                        Location
+                      </th>
+                      <th
+                        scope="col"
+                        className="text-sm font-medium text-gray-400 px-6 py-4"
+                      >
+                        Status
+                      </th>
+                      <th
+                        aria-label="extra action"
+                        scope="col"
+                        className="text-sm font-medium text-gray-400 px-6 py-4"
                       />
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Type
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Location
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Status
-                    </th>
-                    <th
-                      aria-label="extra action"
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
+                    </tr>
+                  </thead>
+
+                  <tbody className="">
+                    <StylistRow
+                      query={query}
+                      selectedId={selectedId}
+                      setSelectedId={setSelectedId}
+                      setCallToAction={setCallToAction}
+                      stylistsList={stylists}
+                      // setGetStylist={setGetStylist}
                     />
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {isLoading && <Loadersmall />}
-                </tbody>
-                <tbody className="">
-                  <StylistRow
-                    query={query}
-                    selectedId={selectedId}
-                    setSelectedId={setSelectedId}
-                    setCallToAction={setCallToAction}
-                    stylistsList={stylists}
-                    // setGetStylist={setGetStylist}
-                  />
-                </tbody>
-              </table>
-              <div className="my-10" />
+                  </tbody>
+                </table>
+                <div className="my-10" />
+              </div>
             </div>
           </div>
+          {deleteModal && <DeleteContentModal handleClose={closeDeleteModal} />}
         </div>
-        {deleteModal && <DeleteContentModal handleClose={closeDeleteModal} />}
-      </div>
+      )}
+      {isLoading && <Loadersmall />}
+      {error && <ErrorDisplayComponent refetch={refetch} />}
     </div>
   );
 }

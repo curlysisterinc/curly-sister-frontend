@@ -10,7 +10,7 @@ import BecomeStylistSection from "./becomeStylist";
 
 function AboutComponent() {
   return (
-    <div className="ml-80 p-0">
+    <div className="p-0">
       <div className="relative">
         <div className="bg-purple-200 px-10 pt-14">
           <div className="border border-orange-100 relative">

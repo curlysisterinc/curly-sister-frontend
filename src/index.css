@@ -30,10 +30,10 @@ code {
 
 .toggle-bg:after {
   content: "";
-  @apply absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-5 w-5 transition shadow-sm;
+  @apply absolute top-0.5 left-0.5 bg-white border border-gray-300 rounded-full h-3 w-3 transition shadow-sm cursor-pointer;
 }
 input:checked + .toggle-bg:after {
-  transform: translateX(100%);
+  transform: translateX(40%);
   @apply border-white;
 }
 input:checked + .toggle-bg {
@@ -158,6 +158,27 @@ Font Weight	Numerical Weight
   margin-top: 0;
   margin-right: 15px;
 }
+.bg-gradient {
+  background: linear-gradient(
+    359deg,
+    #140226 10.29%,
+    rgba(20, 2, 38, 0.9196) 42.22%,
+    rgba(20, 2, 38, 0.8443) 56.32%,
+    rgba(20, 2, 38, 0) 97.7%
+  );
+}
+@media screen and (min-width: 720px) {
+  .bg-gradient {
+    background: linear-gradient(
+      89.69deg,
+      #140226 0.29%,
+      rgba(20, 2, 38, 0.9196) 42.22%,
+      rgba(20, 2, 38, 0.8443) 76.32%,
+      rgba(20, 2, 38, 0) 97.7%
+    );
+  }
+}
+
 /* .pac-logo {
   display: none;
 } */

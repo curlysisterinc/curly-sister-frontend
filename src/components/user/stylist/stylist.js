@@ -90,12 +90,16 @@ function Stylist() {
   }, [stylistData]);
 
   React.useEffect(() => {
+    const ac = new AbortController();
     const fetchData = () => {
       admin.GetServices().then((response) => {
         setGetServices(response.data.data);
       });
     };
     fetchData();
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   React.useEffect(() => {
@@ -151,7 +155,7 @@ function Stylist() {
   };
 
   return (
-    <div className="ml-80 bg-white px-10 pt-8 w-full min-h-screen">
+    <div className="bg-white px-10 pt-8 w-full min-h-screen">
       {isLoading && <Loader />}
       {stylistData && (
         <>

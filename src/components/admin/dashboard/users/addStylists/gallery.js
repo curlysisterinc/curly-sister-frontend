@@ -19,6 +19,7 @@ function GalleryTab({ ariaHidden, idx }) {
   useChangeBtnTitle("gallery", setButtonAction, setStylistGallery);
 
   useEffect(() => {
+    const ac = new AbortController();
     if (state !== "" || state !== undefined || state !== null) {
       setIsloading(true);
       admin
@@ -47,6 +48,9 @@ function GalleryTab({ ariaHidden, idx }) {
           setIsloading(false);
         });
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   const handleFileChange = (e) => {
@@ -63,6 +67,7 @@ function GalleryTab({ ariaHidden, idx }) {
   };
 
   useEffect(() => {
+    const ac = new AbortController();
     if (uploadnewData === true) {
       admin
         .UpdateStylist(stylistGallery.update)
@@ -76,6 +81,9 @@ function GalleryTab({ ariaHidden, idx }) {
           console.log(error, "error updating stylist with gallery")
         );
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [uploadnewData]);
 
   const onSavehandler = () => {

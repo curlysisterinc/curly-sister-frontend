@@ -14,12 +14,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
-import trashIcon from "../../../../assets/images/trash.svg";
+import trashIcon, {
+  ReactComponent as TrashIcon,
+} from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
+
+const initialCertification = {
+  id: new Date().getTime(),
+  name: "",
+  isMoreOptionChecked: false,
+  description: "",
+  url: "",
+  options: [{ text: "", id: new Date().getTime() + 1 }],
+};
 
 function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [certifications, setCertifications] = useState([initialCertification]);
   const [inputList, setInputList] = useState([{ name: "", checked: false }]);
   const [optionList, setOptionList] = useState([
     { option: "", openOption: false },
@@ -164,6 +176,90 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
     });
   };
 
+  const addMoreCertifications = () => {
+    const newCertification = [
+      ...certifications,
+      {
+        id: new Date().getTime(),
+        name: "",
+        isMoreOptionChecked: false,
+        description: "",
+        url: "",
+        option: [{ id: "", item: new Date().getTime() + 1 }],
+      },
+    ];
+    console.log("newCertification", newCertification);
+    setCertifications(newCertification);
+  };
+
+  const handleChangeCertInputs = (e, certId) => {
+    const { name, value } = e.target;
+    const newCertification = certifications.map((cert) => {
+      if (cert.id === certId) {
+        cert[name] = value;
+      }
+      return cert;
+    });
+    setCertifications(newCertification);
+  };
+  const handleChangeCertificateOption = (e, certId, certOptionId) => {
+    const { name, value } = e.target;
+    const newCertification = certifications.map((cert) => {
+      if (cert.id === certId) {
+        cert.options.map((option) => {
+          if (option.id === certOptionId) {
+            option.text = value;
+          }
+          return option;
+        });
+      }
+      return cert;
+    });
+    setCertifications(newCertification);
+  };
+
+  const addCertificateOption = (certId) => {
+    const newCertification = certifications.map((cert) => {
+      if (cert.id === certId) {
+        cert.options.push({
+          id: new Date().getTime(),
+          text: "",
+        });
+      }
+      return cert;
+    });
+    setCertifications(newCertification);
+  };
+
+  const deleteCertOption = (certId, certOptionId) => {
+    const newCertification = certifications.map((cert) => {
+      if (cert.id === certId) {
+        cert.options = cert.options.filter(
+          (option) => option.id !== certOptionId
+        );
+      }
+      return cert;
+    });
+    setCertifications(newCertification);
+  };
+
+  const deleteCertification = (id) => {
+    const newCertification = certifications.filter((item) => item.id !== id);
+    setCertifications(newCertification);
+  };
+
+  const handleToggleCertificateOption = (e, id) => {
+    const newCertification = certifications.map((item) => {
+      if (item.id === id) {
+        item.isMoreOptionChecked = !item.isMoreOptionChecked;
+        return item;
+      }
+      return item;
+    });
+    console.log(newCertification);
+    setCertifications(newCertification);
+  };
+
   return (
     <div
       onClick={handleClose}
@@ -179,13 +275,147 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white min-h-screen  p-10 w-2/5">
+        <div className="bg-white min-h-screen  p-10 w-full max-w-480 ">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Certifications
           </h4>
-          <p className="text-gray-200 text-base">
+          <p className="text-gray-200 text-base mb-10">
             Add and remove certifications
           </p>
+
+          <form>
+            {certifications.map((cert) => {
+              const {
+                id,
+                isMoreOptionChecked,
+                name,
+                description,
+                url,
+                options,
+              } = cert;
+
+              return (
+                <div
+                  className="rounded-lg border border-gray-800 mb-6"
+                  key={id}
+                >
+                  <div className="flex justify-between items-center px-3">
+                    <input
+                      type="text"
+                      className="border-0 w-3/4 p-0 pl-2 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                      placeholder="name"
+                      name="name"
+                      value={name}
+                      onChange={(e) => handleChangeCertInputs(e, id)}
+                    />
+                    <div className="flex  justify-between items-center flex-shrink-0">
+                      <div className="flex justify-between items-center m-4">
+                        <p className="text-gray-400 font-medium mr-3">
+                          Add options
+                        </p>
+
+                        <div className="relative">
+                          <input
+                            type="checkbox"
+                            // id={index + 1}
+                            checked={isMoreOptionChecked}
+                            className="sr-only"
+                          />
+                          <div
+                            className="toggle-bg bg-gray-200 border-2 border-gray-200 h-4 w-5 rounded-full"
+                            onClick={(e) =>
+                              handleToggleCertificateOption(e, id)
+                            }
+                          />
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => deleteCertification(id)}
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-gray-800 p-4">
+                    <textarea
+                      rows="3"
+                      type="text"
+                      className="border-0 w-full p-0 pl-1 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm resize-y overflow-auto"
+                      placeholder="Add a description"
+                      name="description"
+                      value={description}
+                      onChange={(e) => handleChangeCertInputs(e, id)}
+                    />
+                  </div>
+                  <div
+                    className={`border-t  border-gray-800 p-4 ${
+                      isMoreOptionChecked && "border-b"
+                    }`}
+                  >
+                    <input
+                      type="text"
+                      onChange={(e) => handleChangeCertInputs(e, id)}
+                      className={`border-0 p-0 pl-2 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm `}
+                      placeholder="URL"
+                      name="url"
+                      value={url}
+                    />
+                  </div>
+                  {isMoreOptionChecked && (
+                    <>
+                      {options.map((option) => (
+                        <div key={option.id} className=" border-gray-800 ml-10">
+                          <div className="border-b border-gray-800 flex justify-between items-center">
+                            <input
+                              type="text"
+                              className="border-0 p-0  text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm py-3 w-full"
+                              placeholder="Add an option"
+                              value={option.text}
+                              onChange={(e) =>
+                                handleChangeCertificateOption(e, id, option.id)
+                              }
+                            />
+                            <button
+                              type="button"
+                              className="px-4 border-l border-gray-800"
+                              onClick={() => deleteCertOption(id, option.id)}
+                            >
+                              <TrashIcon />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        type="button"
+                        className="py-3 text-purple-100 font-bold ml-10"
+                        onClick={() => addCertificateOption(id)}
+                      >
+                        Add another option
+                      </button>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+
+            <button
+              type="button"
+              className="mb-6 text-purple-100 font-bold"
+              onClick={addMoreCertifications}
+            >
+              Add new certification
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
+            >
+              Save changes
+            </button>
+          </form>
           <form>
             {inputList.map((certificate, index) => {
               return (

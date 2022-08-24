@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import Cookies from "js-cookie";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
+import useSignupUser from "hooks/data/onboarding/useSignupUser";
 import AuthModalComponent from "../authModal";
 import AuthSideBarComponent from "../authSidebar";
 import authHandler from "../../authHandler";
@@ -22,6 +23,8 @@ import failedSignin from "../../assets/images/failed-signin.svg";
 
 function SignupComponent() {
   // const authenticated = authHandler.get();
+  const { data, isLoading, error, mutate: signUp } = useSignupUser();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -59,38 +62,12 @@ function SignupComponent() {
       agree: false,
     },
     onSubmit: (values) => {
-      onboarding
-        .SignUp(
-          values.userEmail,
-          values.password,
-          values.firstName,
-          values.lastName
-        )
-        .then((response) => {
-          if (response.status === 200) {
-            setEmailSuccess(true);
-            // const res = response;
-            // // eslint-disable-next-line no-console
-            // console.log("handle signup", res);
-            // // eslint-disable-next-line no-underscore-dangle
-            // authHandler.setUserInfo(res.data);
-
-            // const accessToken = res.access_token;
-            // authHandler.handle(accessToken);
-            dispatch(
-              signupUser({
-                isSignedIn: true,
-              })
-            );
-          }
-        })
-        .catch((error) => {
-          if (error.response.data.message) {
-            setEmailSuccess(false);
-            setEmailFailure(true);
-            setBtnIsLoading(false);
-          }
-        });
+      signUp({
+        userEmail: values.userEmail,
+        password: values.password,
+        firstName: values.firstName,
+        lastName: values.lastName,
+      });
     },
 
     validate: (values) => {
@@ -365,9 +342,10 @@ function SignupComponent() {
             <button
               type="submit"
               disabled={btnDisabled}
+              // loading={formik.isSubmitting || isLoading}
               className="mt-6 bg-orange-200 disabled:opacity-50 rounded shadow text-white font-bold w-full py-3"
             >
-              {btnIsLoading ? (
+              {isLoading ? (
                 <div className="flex justify-center">loading...</div>
               ) : (
                 "Continue"
@@ -409,11 +387,11 @@ function SignupComponent() {
               and
               <Link to="/terms-and-privacy" className="text-orange-200">
                 Privacy Policy
-              </Link>{" "}
+              </Link>
               .
             </p>
           </form>
-          {emailSuccess && (
+          {/* {emailSuccess && (
             <AuthModalComponent handleClose={hideModal}>
               <>
                 <h2 className="text-2xl lg:text-4xl font-bold mb-5">
@@ -432,9 +410,9 @@ function SignupComponent() {
                 </button>
               </>
             </AuthModalComponent>
-          )}
+          )} */}
 
-          {emailFailure && (
+          {/* {emailFailure && (
             <AuthModalComponent handleClose={hideModal}>
               <h2>Ooops! Something went wrong</h2>
               <img src={failedSignin} alt="failed sign in" />
@@ -449,7 +427,7 @@ function SignupComponent() {
                 Try Subscribing Again
               </button>
             </AuthModalComponent>
-          )}
+          )} */}
         </div>
       </div>
     </div>

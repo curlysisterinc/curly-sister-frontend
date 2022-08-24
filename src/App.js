@@ -47,7 +47,7 @@ function App() {
     >
       <QueryClientProvider client={queryClient}>
         {/* The rest of your application */}
-        <Routers />;
+        <Routers />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ToastProvider>

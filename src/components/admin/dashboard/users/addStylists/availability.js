@@ -46,7 +46,7 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
     //   // dispatch({ type: "ADD_STYLISTID", payload: locationState._id });
     //   setButtonAction("Edit");
     // }
-
+    const ac = new AbortController();
     if (locationState) {
       admin
         .GetStylistById(stylist)
@@ -82,6 +82,9 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
         })
         .catch((err) => console.log(err));
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   const makeavailable = (day) => {

@@ -100,7 +100,6 @@ function NewArticle() {
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
-          console.log(res);
         }
       })
       .catch((error) => {
@@ -173,7 +172,7 @@ function NewArticle() {
   }, [inputValues]);
 
   return (
-    <div className="ml-80 bg-white px-10 py-8 w-full">
+    <div className="bg-white px-10 py-8 w-full">
       <div className="flex items-start ">
         <div
           className="flex items-center cursor-pointer"

@@ -77,10 +77,14 @@ function EditVideo() {
   }, []);
 
   useEffect(() => {
+    const ac = new AbortController();
     admin.GetVideoCategory().then((result) => {
       console.log(result.data.data, "data");
       setOptions(result.data.data);
     });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   useEffect(() => {
@@ -148,7 +152,7 @@ function EditVideo() {
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" isLoggedIn />
-      <div className="ml-80 bg-white px-10 py-8 w-full">
+      <div className="bg-white px-10 py-8 w-full">
         <div className="flex items-start ">
           <div
             className="flex items-center cursor-pointer"

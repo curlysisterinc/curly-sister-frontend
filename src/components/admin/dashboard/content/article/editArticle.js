@@ -74,7 +74,6 @@ function EditArticle() {
     learn
       .GetOneArticle(token)
       .then((response) => {
-        console.log(response.data, "data");
         setGetArticles(response.data.data);
         setInputValues({
           ...inputValues,
@@ -105,7 +104,6 @@ function EditArticle() {
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
-          console.log(res);
           navigate(-1);
         }
       })
@@ -177,7 +175,7 @@ function EditArticle() {
   }, [inputValues]);
 
   return (
-    <div className="ml-80 bg-white px-10 py-8 w-full">
+    <div className="bg-white px-10 py-8 w-full">
       <div className="flex items-start ">
         <div
           className="flex items-center cursor-pointer"

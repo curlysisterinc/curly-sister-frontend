@@ -1,24 +1,17 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-shadow */
-/* eslint-disable import/order */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-return-assign */
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from "react";
-import AdminRow from "./adminRow";
 import clsx from "clsx";
-import InviteAdminModal from "./inviteAdminModal";
 import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
+import useGetAllAdmins from "hooks/data/admin/useGetAllAdmins";
+import { Loadersmall } from "components/loader-component/loader";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
+import AdminRow from "./adminRow";
+import InviteAdminModal from "./inviteAdminModal";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import admin from "../../../../../api/admin";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
 import DeleteContentModal from "./deleteContentModal";
 import { AdminTable } from "./adminTableHeader";
-import useGetAllAdmins from "hooks/data/admin/useGetAllAdmins";
 
 function AdminTab({ active }) {
   const navigate = useNavigate();
@@ -29,13 +22,13 @@ function AdminTab({ active }) {
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const { data, loading, error } = useGetAllAdmins();
+  const { data, isLoading, error, refetch } = useGetAllAdmins();
   const admins = data?.data?.data;
 
   const onMasterCheck = (e) => {
     if (e.target.checked) {
       setCallToAction(true);
-      setSelectedId(getAdmin.map((admin) => admin._id));
+      setSelectedId(getAdmin.map((item) => item._id));
     } else {
       setCallToAction(false);
       setSelectedId([]);
@@ -43,7 +36,8 @@ function AdminTab({ active }) {
   };
   useEffect(() => {
     if (admins) {
-      setGetAdmin(admins.filter((admin) => !admin.is_deleted));
+      setGetAdmin(admins);
+      // setGetAdmin(admins.filter((admin) => !admin.is_deleted));
     }
   }, [admins]);
 
@@ -61,7 +55,8 @@ function AdminTab({ active }) {
           <span className="text-gray-300 ml-2 text-sm">{getAdmin.length}</span>
         </div>
         {callToAction ? (
-          <div
+          <button
+            type="button"
             onClick={() => setToggleActions(!toggleActions)}
             className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
           >
@@ -73,16 +68,17 @@ function AdminTab({ active }) {
             />
             {toggleActions && (
               <div className="absolute bg-white rounded-xl top-10 shadow w-full right-0">
-                <div
+                <button
+                  type="button"
                   onClick={openDeleteModal}
                   className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
                 >
                   <img className="mr-2" src={trashIcon} alt="" />
                   Delete
-                </div>
+                </button>
               </div>
             )}
-          </div>
+          </button>
         ) : (
           <div className="">
             {/* filters */}
@@ -96,15 +92,19 @@ function AdminTab({ active }) {
           </div>
         )}
       </div>
-      <AdminTable>
-        <AdminRow
-          setCallToAction={setCallToAction}
-          selectedId={selectedId}
-          setSelectedId={setSelectedId}
-          getAdmin={getAdmin}
-          setGetAdmin={setGetAdmin}
-        />
-      </AdminTable>
+      {data && (
+        <AdminTable>
+          <AdminRow
+            setCallToAction={setCallToAction}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+            getAdmin={getAdmin}
+            setGetAdmin={setGetAdmin}
+          />
+        </AdminTable>
+      )}
+      {isLoading && <Loadersmall />}
+      {error && <ErrorDisplayComponent refetch={refetch} />}
       {openInviteAdminModal && (
         <InviteAdminModal handleClose={() => setOpenInviteAdminModal(false)} />
       )}

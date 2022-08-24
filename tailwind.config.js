@@ -1,8 +1,13 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable global-require */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
-  purge: [],
+  content: ["./src/**/*.{js,jsx,ts,tsx}",
+    "./public/index.html"],
+    purge: [
+      './src/**/*.html',
+      './src/**/*.js',
+      './src/**/*.jsx',
+    ],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -41,6 +46,7 @@ module.exports = {
         black: {
           50: "rgba(0, 0, 0, 0.2)",
           100: "rgba(0, 0, 0, 0.6)",
+          "modal": "rgba(68, 60, 77, 0.65)"
         },
         alert: {
           success:"#47B881",
@@ -50,11 +56,15 @@ module.exports = {
         }
       },
       height: {
+        69: "69px",
         36: "36px",
         46: "46px",
         86: "86px",
         120: "120px",
+        316: "316px",
         500: "500px",
+        150: "150px",
+        520: "520px",
       },
       width: {
         36: "36px",
@@ -67,10 +77,19 @@ module.exports = {
         300: "300px",
         358: "358px",
         489: "489px",
+        480: "480px",
         543: "543px",
+      },
+      spacing: {
+        69: "69px",
       },
       minWidth: {
         30: "30%",
+      },
+      maxWidth: {
+        480: "480px",
+        280: "280px",
+        375: "375px"
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",

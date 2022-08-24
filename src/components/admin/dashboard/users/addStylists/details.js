@@ -30,10 +30,14 @@ function DetailsTab({
   const navigate = useNavigate();
 
   useEffect(() => {
+    const ac = new AbortController();
     if (stylistData) {
       setDetailsValues({ ...detailsValues, ...stylistData });
       setCoverPhoto(stylistData.photo);
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [stylistData]);
 
   useEffect(() => {
@@ -165,7 +169,7 @@ function DetailsTab({
       photo,
       _id,
     };
-    handleEditStylist(newValue)
+    handleEditStylist(newValue);
   };
 
   // const clickHandler = () => {

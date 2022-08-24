@@ -44,7 +44,6 @@ export default {
     return curlySistersApi.post("/v1/admin/update-article", data);
   },
   async CreateStylist(data) {
-    console.log(data, "data");
     return curlySistersApi.post("/v1/admin/add-stylist", data);
   },
   async UpdateStylist(data) {
