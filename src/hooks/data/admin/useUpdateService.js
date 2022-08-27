@@ -21,7 +21,7 @@ export default () => {
       addToast(data.message, {
         appearance: "success",
       });
-      queryClient.invalidateQueries(["stylists", id]);
+      queryClient.invalidateQueries(["services", id]);
     },
     onError: async (error) => {
       const mainError = error.response.data;

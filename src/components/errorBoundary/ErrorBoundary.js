@@ -1,3 +1,4 @@
+import ErrorDisplayComponent from "components/errorDisplayComponent";
 import React from "react";
 
 export class ErrorBoundary extends React.Component {
@@ -18,15 +19,17 @@ export class ErrorBoundary extends React.Component {
 
   render() {
     const { hasError } = this.state;
-    const { children } = this.props;
+    const { children, history, location } = this.props;
     if (hasError) {
       // You can render any custom fallback UI
       return (
         <div>
-          <h1>Something went wrong.</h1>
-          <button type="button" onClick={() => window.location.reload(true)}>
-            Reload
-          </button>
+          <ErrorDisplayComponent
+            refetch={() => {
+              window.history.go(-1);
+              // window.location.reload();
+            }}
+          />
         </div>
       );
     }

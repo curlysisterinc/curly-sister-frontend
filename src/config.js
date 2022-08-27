@@ -68,9 +68,11 @@ curlySistersFormDataApi.interceptors.request.use(
 // Response Interceptor
 curlySistersApi.interceptors.response.use(
   (response) => {
+    console.log({ response });
     return response;
   },
   (error) => {
+    console.log({ error });
     const request = error.config; // this is actual request that was sent, and error is received in response to that request
     if (
       navigator.onLine === false ||

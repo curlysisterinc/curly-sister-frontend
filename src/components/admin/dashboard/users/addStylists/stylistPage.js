@@ -111,7 +111,7 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
           </div>
         </header>
 
-        <div className="mx-auto w-4/6 pt-2">
+        <div className="mx-auto w-full max-w-640 pt-2">
           <AccordionItem
             handleClickItem={handleSetActiveTab}
             title="Details"

@@ -1,18 +1,10 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable consistent-return */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable prefer-regex-literals */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
+import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon, {
   ReactComponent as TrashIcon,
@@ -28,7 +20,7 @@ const initialCertification = {
   options: [{ text: "", id: new Date().getTime() + 1 }],
 };
 
-function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
+function ManageCertificationModal({ handleClose, visible }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [certifications, setCertifications] = useState([initialCertification]);
@@ -45,110 +37,110 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
 
     return function cleanup() {
       ac.abort();
-      setIsCertificationUpdate(false);
+      // setIsCertificationUpdate(false);
     };
   }, []);
   // handle input change
-  const handleOptionInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const option = [...optionList];
-    option[index][name] = value;
-    setOptionList(option);
-  };
+  // const handleOptionInputChange = (e, index) => {
+  //   const { name, value } = e.target;
+  //   const option = [...optionList];
+  //   option[index][name] = value;
+  //   setOptionList(option);
+  // };
 
   // handle click event of the Remove button
-  const handleOptionRemoveClick = (index) => {
-    const option = [...optionList];
-    option.splice(index, 1);
-    setOptionList(option);
-  };
+  // const handleOptionRemoveClick = (index) => {
+  //   const option = [...optionList];
+  //   option.splice(index, 1);
+  //   setOptionList(option);
+  // };
 
   // handle click event of the Add button
-  const handleOptionAddClick = () => {
-    setOptionList([...optionList, { option: "" }]);
-  };
+  // const handleOptionAddClick = () => {
+  //   setOptionList([...optionList, { option: "" }]);
+  // };
 
   // handle input change
-  const handleInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...inputList];
-    list[index][name] = value;
-    setInputList(list);
-  };
+  // const handleInputChange = (e, index) => {
+  //   const { name, value } = e.target;
+  //   const list = [...inputList];
+  //   list[index][name] = value;
+  //   setInputList(list);
+  // };
 
   // handle click event of the Remove button
-  const handleRemoveClick = (index) => {
-    const list = [...inputList];
-    list.splice(index, 1);
-    setInputList(list);
-  };
+  // const handleRemoveClick = (index) => {
+  //   const list = [...inputList];
+  //   list.splice(index, 1);
+  //   setInputList(list);
+  // };
 
   // handle click event of the Add button
-  const handleAddClick = () => {
-    setInputList([...inputList, { name: "", checked: false }]);
-  };
+  // const handleAddClick = () => {
+  //   setInputList([...inputList, { name: "", checked: false }]);
+  // };
 
   // handle check
-  const handleCheckboxChange = (e, dataIndex) => {
-    const { checked } = e.target;
-    setInputList(
-      inputList.map((certificate, index) => {
-        if (index === dataIndex) {
-          certificate.checked = checked;
-        }
-        return certificate;
-      })
-    );
-  };
+  // const handleCheckboxChange = (e, dataIndex) => {
+  //   const { checked } = e.target;
+  //   setInputList(
+  //     inputList.map((certificate, index) => {
+  //       if (index === dataIndex) {
+  //         certificate.checked = checked;
+  //       }
+  //       return certificate;
+  //     })
+  //   );
+  // };
 
-  const handleToggle = (index) => {
-    const mylist = [...inputList];
-    if (mylist[index].checked === true) {
-      return (
-        <div className="w-full  ">
-          <hr className="first:border-t ml-8 border-gray-800 w-full " />
+  // const handleToggle = (index) => {
+  //   const mylist = [...inputList];
+  //   if (mylist[index].checked === true) {
+  //     return (
+  //       <div className="w-full  ">
+  //         <hr className="first:border-t ml-8 border-gray-800 w-full " />
 
-          {optionList.map((option, index) => {
-            return (
-              <div key={index}>
-                <div className=" grid grid-cols-12">
-                  <input
-                    type="text"
-                    name="option"
-                    className={clsx(
-                      optionList.length > 1 ? "col-span-11 " : "col-span-12 ",
-                      "col  py-2  border-0 pl-8 w-full text-gray-700 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
-                    )}
-                    placeholder="Enter link here"
-                    value={option.option}
-                    onChange={(e) => handleOptionInputChange(e, index)}
-                  />
-                  {optionList.length > 1 && (
-                    <div
-                      onClick={handleOptionRemoveClick}
-                      className=" col col-span-1 py-2  cursor-pointer flex items-center justify-center border-l border-gray-800"
-                    >
-                      <img className="" src={trashIcon} alt="trash icon" />
-                    </div>
-                  )}
-                </div>
-                <hr className="border-[0.5] border-gray-800 w-full ml-8 last:border-0" />
+  //         {optionList.map((option, index) => {
+  //           return (
+  //             <div key={index}>
+  //               <div className=" grid grid-cols-12">
+  //                 <input
+  //                   type="text"
+  //                   name="option"
+  //                   className={clsx(
+  //                     optionList.length > 1 ? "col-span-11 " : "col-span-12 ",
+  //                     "col  py-2  border-0 pl-8 w-full text-gray-700 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+  //                   )}
+  //                   placeholder="Enter link here"
+  //                   value={option.option}
+  //                   onChange={(e) => handleOptionInputChange(e, index)}
+  //                 />
+  //                 {optionList.length > 1 && (
+  //                   <div
+  //                     onClick={handleOptionRemoveClick}
+  //                     className=" col col-span-1 py-2  cursor-pointer flex items-center justify-center border-l border-gray-800"
+  //                   >
+  //                     <img className="" src={trashIcon} alt="trash icon" />
+  //                   </div>
+  //                 )}
+  //               </div>
+  //               <hr className="border-[0.5] border-gray-800 w-full ml-8 last:border-0" />
 
-                {optionList.length - 1 === index && optionList.length < 4 && (
-                  <div
-                    onClick={handleOptionAddClick}
-                    className="text-purple-100 pl-8 text-sm font-BeatriceRegular py-3 cursor-pointer"
-                  >
-                    Add new options
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      );
-    }
-  };
+  //               {optionList.length - 1 === index && optionList.length < 4 && (
+  //                 <div
+  //                   onClick={handleOptionAddClick}
+  //                   className="text-purple-100 pl-8 text-sm font-BeatriceRegular py-3 cursor-pointer"
+  //                 >
+  //                   Add new options
+  //                 </div>
+  //               )}
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //     );
+  //   }
+  // };
 
   const handleSubmit = (e) => {
     console.log("new cert");
@@ -158,6 +150,7 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
     console.log(list);
     const listed = list.map((item) => {
       newName = item.name;
+      return newName;
     });
 
     console.log(newName);
@@ -168,7 +161,7 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
         const newstate = inputList.map((item) => {
           return { ...item, name: "" };
         });
-        setIsCertificationUpdate(true);
+        // setIsCertificationUpdate(true);
         setInputList(newstate);
         handleClose();
         console.log(res, "res");
@@ -193,24 +186,26 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
   };
 
   const handleChangeCertInputs = (e, certId) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     const newCertification = certifications.map((cert) => {
+      const newCert = cert;
       if (cert.id === certId) {
-        cert[name] = value;
+        newCert[e.target.name] = value;
       }
-      return cert;
+      return newCert;
     });
     setCertifications(newCertification);
   };
   const handleChangeCertificateOption = (e, certId, certOptionId) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     const newCertification = certifications.map((cert) => {
       if (cert.id === certId) {
         cert.options.map((option) => {
+          const newOption = option;
           if (option.id === certOptionId) {
-            option.text = value;
+            newOption.text = value;
           }
-          return option;
+          return newOption;
         });
       }
       return cert;
@@ -233,12 +228,13 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
 
   const deleteCertOption = (certId, certOptionId) => {
     const newCertification = certifications.map((cert) => {
+      const newCert = cert;
       if (cert.id === certId) {
-        cert.options = cert.options.filter(
+        newCert.options = cert.options.filter(
           (option) => option.id !== certOptionId
         );
       }
-      return cert;
+      return newCert;
     });
     setCertifications(newCertification);
   };
@@ -250,258 +246,214 @@ function ManageCertificationModal({ handleClose, setIsCertificationUpdate }) {
 
   const handleToggleCertificateOption = (e, id) => {
     const newCertification = certifications.map((item) => {
+      const newItem = item;
       if (item.id === id) {
-        item.isMoreOptionChecked = !item.isMoreOptionChecked;
-        return item;
+        newItem.isMoreOptionChecked = !item.isMoreOptionChecked;
+        return newItem;
       }
-      return item;
+      return newItem;
     });
     console.log(newCertification);
     setCertifications(newCertification);
   };
 
   return (
-    <div
-      onClick={handleClose}
-      className="fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
-    >
+    visible && (
       <div
-        className="flex items-start justify-end h-full"
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleClose}
+        className="fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
       >
-        <img
-          className="mt-20 mr-10 bg-white rounded-full p-2"
-          onClick={handleClose}
-          src={closeModalBtn}
-          alt="close button"
-        />
-        <div className="bg-white min-h-screen  p-10 w-full max-w-480 ">
-          <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
-            Certifications
-          </h4>
-          <p className="text-gray-200 text-base mb-10">
-            Add and remove certifications
-          </p>
+        <div
+          className="flex items-start justify-end h-full"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div
+            className="mt-20 mr-10 bg-white rounded-full p-2"
+            onClick={handleClose}
+            role="button"
+            tabIndex="0"
+            onKeyPress={(e) =>
+              runFunctionWhenSpaceOrEnterIsClicked(e, handleClose)
+            }
+          >
+            <img src={closeModalBtn} alt="close button" />
+          </div>
+          <div className="bg-white min-h-screen  p-10 w-full max-w-480 ">
+            <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
+              Certifications
+            </h4>
+            <p className="text-gray-200 text-base mb-10">
+              Add and remove certifications
+            </p>
 
-          <form>
-            {certifications.map((cert) => {
-              const {
-                id,
-                isMoreOptionChecked,
-                name,
-                description,
-                url,
-                options,
-              } = cert;
+            <form>
+              {certifications.map((cert) => {
+                const {
+                  id,
+                  isMoreOptionChecked,
+                  name: certName,
+                  description,
+                  url,
+                  options,
+                } = cert;
 
-              return (
-                <div
-                  className="rounded-lg border border-gray-800 mb-6"
-                  key={id}
-                >
-                  <div className="flex justify-between items-center px-3">
-                    <input
-                      type="text"
-                      className="border-0 w-3/4 p-0 pl-2 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
-                      placeholder="name"
-                      name="name"
-                      value={name}
-                      onChange={(e) => handleChangeCertInputs(e, id)}
-                    />
-                    <div className="flex  justify-between items-center flex-shrink-0">
-                      <div className="flex justify-between items-center m-4">
-                        <p className="text-gray-400 font-medium mr-3">
-                          Add options
-                        </p>
-
-                        <div className="relative">
-                          <input
-                            type="checkbox"
-                            // id={index + 1}
-                            checked={isMoreOptionChecked}
-                            className="sr-only"
-                          />
-                          <div
-                            className="toggle-bg bg-gray-200 border-2 border-gray-200 h-4 w-5 rounded-full"
-                            onClick={(e) =>
-                              handleToggleCertificateOption(e, id)
-                            }
-                          />
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => deleteCertification(id)}
-                      >
-                        <TrashIcon />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-gray-800 p-4">
-                    <textarea
-                      rows="3"
-                      type="text"
-                      className="border-0 w-full p-0 pl-1 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm resize-y overflow-auto"
-                      placeholder="Add a description"
-                      name="description"
-                      value={description}
-                      onChange={(e) => handleChangeCertInputs(e, id)}
-                    />
-                  </div>
+                return (
                   <div
-                    className={`border-t  border-gray-800 p-4 ${
-                      isMoreOptionChecked && "border-b"
-                    }`}
+                    className="rounded-lg border border-gray-800 mb-6"
+                    key={id}
                   >
-                    <input
-                      type="text"
-                      onChange={(e) => handleChangeCertInputs(e, id)}
-                      className={`border-0 p-0 pl-2 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm `}
-                      placeholder="URL"
-                      name="url"
-                      value={url}
-                    />
-                  </div>
-                  {isMoreOptionChecked && (
-                    <>
-                      {options.map((option) => (
-                        <div key={option.id} className=" border-gray-800 ml-10">
-                          <div className="border-b border-gray-800 flex justify-between items-center">
-                            <input
-                              type="text"
-                              className="border-0 p-0  text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm py-3 w-full"
-                              placeholder="Add an option"
-                              value={option.text}
-                              onChange={(e) =>
-                                handleChangeCertificateOption(e, id, option.id)
-                              }
-                            />
-                            <button
-                              type="button"
-                              className="px-4 border-l border-gray-800"
-                              onClick={() => deleteCertOption(id, option.id)}
-                            >
-                              <TrashIcon />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        className="py-3 text-purple-100 font-bold ml-10"
-                        onClick={() => addCertificateOption(id)}
-                      >
-                        Add another option
-                      </button>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-
-            <button
-              type="button"
-              className="mb-6 text-purple-100 font-bold"
-              onClick={addMoreCertifications}
-            >
-              Add new certification
-            </button>
-
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
-            >
-              Save changes
-            </button>
-          </form>
-          <form>
-            {inputList.map((certificate, index) => {
-              return (
-                <div key={index}>
-                  <div className="mt-5 border border-gray-800 rounded-lg overflow-hidden">
-                    <div className=" grid grid-cols-12 ">
-                      <label
-                        htmlFor={certificate.name}
-                        className={clsx(
-                          inputList.length > 1
-                            ? "col-span-7"
-                            : "xl:col-span-8 2xl:col-span-9",
-                          " "
-                        )}
-                      >
-                        <input
-                          type="text"
-                          name="name"
-                          id={certificate.name}
-                          className="col  pl-3 py-2 appearance-none border-0 w-full text-gray-400 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
-                          placeholder="Enter link here"
-                          value={certificate.name}
-                          onChange={(e) => handleInputChange(e, index)}
-                        />
-                      </label>
-                      <div
-                        className={clsx(
-                          inputList.length > 1
-                            ? "col-span-4"
-                            : "xl:col-span-4 2xl:col-span-3",
-                          "mr-2 py-2 "
-                        )}
-                      >
-                        <label
-                          htmlFor={index + 1}
-                          className="flex items-center cursor-pointer"
-                        >
-                          <span className="mr-3 text-gray-400 text-sm ">
+                    <div className="flex justify-between items-center px-3">
+                      <input
+                        type="text"
+                        className="border-0 w-3/4 p-0 pl-2 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                        placeholder="name"
+                        name="name"
+                        value={certName}
+                        onChange={(e) => handleChangeCertInputs(e, id)}
+                      />
+                      <div className="flex  justify-between items-center flex-shrink-0">
+                        <div className="flex justify-between items-center m-4">
+                          <p className="text-gray-400 font-medium mr-3">
                             Add options
-                          </span>
+                          </p>
+
                           <div className="relative">
                             <input
                               type="checkbox"
-                              onChange={(e) => handleCheckboxChange(e, index)}
-                              id={index + 1}
-                              checked={certificate.checked}
+                              // id={index + 1}
+                              checked={isMoreOptionChecked}
                               className="sr-only"
+                              tabIndex="-1"
                             />
-                            <div className="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full" />
+                            <div
+                              role="button"
+                              tabIndex="0"
+                              aria-label="Toggle certification options"
+                              onKeyPress={(e) =>
+                                runFunctionWhenSpaceOrEnterIsClicked(e, () =>
+                                  handleToggleCertificateOption(e, id)
+                                )
+                              }
+                              className="toggle-bg bg-gray-200 border-2 border-gray-200 h-4 w-5 rounded-full"
+                              onClick={(e) =>
+                                handleToggleCertificateOption(e, id)
+                              }
+                            />
                           </div>
-                        </label>
-                      </div>
-                      {inputList.length > 1 && (
-                        <div
-                          onClick={handleRemoveClick}
-                          className=" col col-span-1 py-2  cursor-pointer flex items-center justify-center border-l border-gray-800"
-                        >
-                          <img className="" src={trashIcon} alt="trash icon" />
                         </div>
-                      )}
+                        <button
+                          type="button"
+                          onClick={() => deleteCertification(id)}
+                        >
+                          <TrashIcon />
+                        </button>
+                      </div>
                     </div>
-                    {handleToggle(index)}
-                  </div>
-                  {inputList.length - 1 === index && inputList.length < 4 && (
+
+                    <div className="border-t border-gray-800 p-4">
+                      <textarea
+                        rows="3"
+                        type="text"
+                        className="border-0 w-full p-0 pl-1 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm resize-y overflow-auto"
+                        placeholder="Add a description"
+                        name="description"
+                        value={description}
+                        onChange={(e) => handleChangeCertInputs(e, id)}
+                      />
+                    </div>
                     <div
-                      onClick={handleAddClick}
-                      className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer"
+                      className={`border-t  border-gray-800 p-4 ${
+                        isMoreOptionChecked && "border-b"
+                      }`}
                     >
-                      Add new certification
+                      <input
+                        type="text"
+                        onChange={(e) => handleChangeCertInputs(e, id)}
+                        className={`border-0 p-0 pl-2 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm `}
+                        placeholder="URL"
+                        name="url"
+                        value={url}
+                      />
                     </div>
-                  )}
-                </div>
-              );
-            })}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
-            >
-              Save changes
-            </button>
-          </form>
+                    {isMoreOptionChecked && (
+                      <>
+                        {options.map((option) => (
+                          <div
+                            key={option.id}
+                            className=" border-gray-800 ml-10"
+                          >
+                            <div className="border-b border-gray-800 flex justify-between items-center">
+                              <input
+                                type="text"
+                                className="border-0 p-0  text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm py-3 w-full"
+                                placeholder="Add an option"
+                                value={option.text}
+                                onChange={(e) =>
+                                  handleChangeCertificateOption(
+                                    e,
+                                    id,
+                                    option.id
+                                  )
+                                }
+                              />
+                              <button
+                                type="button"
+                                className="px-4 border-l border-gray-800"
+                                onClick={() => deleteCertOption(id, option.id)}
+                              >
+                                <TrashIcon />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                        <button
+                          type="button"
+                          className="py-3 text-purple-100 font-bold ml-10"
+                          onClick={() => addCertificateOption(id)}
+                        >
+                          Add another option
+                        </button>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
+
+              <button
+                type="button"
+                className="mb-6 text-purple-100 font-bold"
+                onClick={addMoreCertifications}
+              >
+                Add new certification
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
+              >
+                Save changes
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    )
   );
 }
+
+export const useManageCertificationModal = () => {
+  const [visible, setVisible] = useState(false);
+  const handleClose = () => setVisible(false);
+  const renderModal = () => {
+    return (
+      <ManageCertificationModal visible={visible} handleClose={handleClose} />
+    );
+  };
+
+  const show = () => setVisible(true);
+
+  return { show, renderModal };
+};
 
 export default ManageCertificationModal;

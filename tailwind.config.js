@@ -89,7 +89,8 @@ module.exports = {
       maxWidth: {
         480: "480px",
         280: "280px",
-        375: "375px"
+        375: "375px",
+        640: "640px"
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",
@@ -109,7 +110,8 @@ module.exports = {
       },
       boxShadow: {
         s01:"0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
-        s07:"0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)"
+        s07: "0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)",
+        sinput:"0 0 0 2px #590BA9"
       }
     },
   },

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import useGetStylistById from "hooks/data/admin/useGetStylistById";
 import uploadFile from "../../../../../assets/images/upload-file.png";
 // import { Loadersmall } from "../../../../loader";
 import trashWhite from "../../../../../assets/images/trash-white.svg";
@@ -9,49 +10,54 @@ import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
 import { galleryInitials } from "./helper";
 
 function GalleryTab({ ariaHidden, idx }) {
+  const { id: stylistId } = useParams();
+  const stylist = stylistId;
+
   const [stylistGallery, setStylistGallery] = useState(galleryInitials);
   const [buttonAction, setButtonAction] = useState("Save");
   const [isloading, setIsloading] = useState(false);
-  const stylistId = localStorage.getItem("createdStylist");
   const [uploadnewData, setUploadnewData] = useState(false);
   const { state } = useLocation();
 
-  useChangeBtnTitle("gallery", setButtonAction, setStylistGallery);
+  // useChangeBtnTitle("gallery", setButtonAction, setStylistGallery);
+
+  const {
+    isLoading: isStylistLoading,
+    data: stylistData,
+    isError: stylistError,
+    refetch: stylistRefetch,
+  } = useGetStylistById(stylistId);
 
   useEffect(() => {
     const ac = new AbortController();
-    if (state !== "" || state !== undefined || state !== null) {
-      setIsloading(true);
-      admin
-        .GetStylistById(stylistId)
-        .then((res) => {
-          const { gallery } = res.data.stylist;
-
-          gallery.forEach((picture) => {
-            setStylistGallery((prev) => ({
-              ...prev,
-              preview: [
-                ...prev.preview,
-                { img: picture, name: picture.substring(picture.length - 10) },
-              ],
-              update: {
-                ...prev.update,
-                gallery: [...prev.update.gallery, picture],
-              },
-            }));
-          });
-
-          setIsloading(false);
-        })
-        .catch((err) => {
-          console.log(err, "error fetching existing stylist information");
-          setIsloading(false);
+    if (stylistData) {
+      const { gallery } = stylistData.data.stylist;
+      if (gallery.length === 0) {
+        setStylistGallery((prev) => ({
+          ...prev,
+          update: { ...prev.update, id: stylistId },
+        }));
+      } else {
+        gallery.forEach((picture) => {
+          setStylistGallery((prev) => ({
+            ...prev,
+            preview: [
+              ...prev.preview,
+              { img: picture, name: picture.substring(picture.length - 10) },
+            ],
+            update: {
+              ...prev.update,
+              gallery: [...prev.update.gallery, picture],
+              id: stylistId,
+            },
+          }));
         });
+      }
     }
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [stylistData]);
 
   const handleFileChange = (e) => {
     const [displayImage] = Array.from(e.target.files).map((file) =>

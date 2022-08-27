@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import admin from "../../../../../api/admin";
 import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
-import ManageCertificationModal from "../manageCertificationModal";
+import { useManageCertificationModal } from "../manageCertificationModal";
 import ManageTagModal from "../manageTagModal";
 import MultiselectComponent from "../multiSelectComponent";
 import OrangeBtn from "../../../../customButton/orangeBtn";
@@ -23,13 +23,13 @@ function CertificateAndTags({
 }) {
   const [stylistCert, setStylistCert] = useState(certificateInitials);
   const [getCertificates, setGetCertificates] = useState([]);
-  const [isCertificationUpdate, setIsCertificationUpdate] = useState(false);
   const [isTagUpdate, setIsTagUpdate] = useState(false);
   const [getTags, setGetTags] = useState([]);
-  const [openCertificationModal, setOpenCertificationModal] = useState(false);
   const [openTagModal, setOpenTagModal] = useState(false);
   const [buttonAction, setButtonAction] = useState("Save");
   const { state } = useLocation();
+
+  const certificationModal = useManageCertificationModal();
 
   useEffect(() => {
     const ac = new AbortController();
@@ -76,20 +76,11 @@ function CertificateAndTags({
     }));
   };
 
-  // handle certification modal close
-  const handleCloseCertificationModal = () => {
-    setOpenCertificationModal(false);
-    // Unsets Background Scrolling to use when SideDrawer/Modal is closed
-    document.body.style.overflow = "unset";
-  };
   // handle certification modal open
   const handleOpenCertificationModal = () => {
-    setOpenCertificationModal(true);
-    // Disables Background Scrolling whilst the SideDrawer/Modal is open
-    if (typeof window !== "undefined" && window.document) {
-      document.body.style.overflow = "hidden";
-    }
+    certificationModal.show();
   };
+
   // handle certification modal close
   const handleCloseTagModal = () => {
     setOpenTagModal(false);
@@ -169,12 +160,7 @@ function CertificateAndTags({
           />
         </div>
       </div>
-      {openCertificationModal && (
-        <ManageCertificationModal
-          handleClose={handleCloseCertificationModal}
-          setIsCertificationUpdate={setIsCertificationUpdate}
-        />
-      )}
+      {certificationModal.renderModal()}
       {openTagModal && (
         <ManageTagModal
           handleClose={handleCloseTagModal}

@@ -1,14 +1,7 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/order */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable import/no-cycle */
-/* eslint-disable eqeqeq */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-// eslint-disable-next-line import/no-cycle
-
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
+import { AuthRoutes } from "constants";
+import { useNavigate } from "react-router-dom";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
 import purpleSettings from "../../../../assets/images/purple-settings.svg";
 import ManageServicesModal from "./manageServiceModal";
@@ -21,9 +14,8 @@ import add from "../../../../assets/images/add.svg";
 import EditServiceModal from "./editServiceModal";
 import { certificationsList } from "../users/data";
 import SideBarComponent from "../../../sidebar";
-import { AuthRoutes } from "constants";
-import { useNavigate } from "react-router-dom";
 import admin from "../../../../api/admin";
+import { useManageCertificationModal } from "../users/manageCertificationModal";
 
 function DataTab({ active }) {
   const navigate = useNavigate();
@@ -38,6 +30,9 @@ function DataTab({ active }) {
   const [getCertificates, setGetCertificates] = useState([]);
   const [getTags, setGetTags] = useState([]);
   const [getServices, setGetServices] = useState([]);
+
+  const certificationModal = useManageCertificationModal();
+
   // handle edit service modal close
   const handleCloseEditServiceModal = () => {
     setOpenEditServiceModal(false);
@@ -48,7 +43,7 @@ function DataTab({ active }) {
   const handleOpenEditServiceModal = () => {
     setOpenEditServiceModal(true);
     // Disables Background Scrolling whilst the SideDrawer/Modal is open
-    if (typeof window != "undefined" && window.document) {
+    if (typeof window !== "undefined" && window.document) {
       document.body.style.overflow = "hidden";
     }
   };
@@ -60,27 +55,19 @@ function DataTab({ active }) {
     document.body.style.overflow = "unset";
   };
   // handle Service modal open
-  const handleOpenServiceModal = () => {
+  const handleOpenServiceModal = (e) => {
+    e.stopPropagation();
     setOpenServiceModal(true);
     // Disables Background Scrolling whilst the SideDrawer/Modal is open
-    if (typeof window != "undefined" && window.document) {
+    if (typeof window !== "undefined" && window.document) {
       document.body.style.overflow = "hidden";
     }
   };
 
-  // handle certification modal close
-  const handleCloseCertificationModal = () => {
-    setOpenCertificationModal(false);
-    // Unsets Background Scrolling to use when SideDrawer/Modal is closed
-    document.body.style.overflow = "unset";
-  };
   // handle Certification modal open
-  const handleOpenCertificationModal = () => {
-    setOpenCertificationModal(true);
-    // Disables Background Scrolling whilst the SideDrawer/Modal is open
-    if (typeof window != "undefined" && window.document) {
-      document.body.style.overflow = "hidden";
-    }
+  const handleOpenCertificationModal = (e) => {
+    e.stopPropagation();
+    certificationModal.show();
   };
 
   // handle tag modal close
@@ -90,10 +77,11 @@ function DataTab({ active }) {
     document.body.style.overflow = "unset";
   };
   // handle Tag modal open
-  const handleOpenTagModal = () => {
+  const handleOpenTagModal = (e) => {
+    e.stopPropagation();
     setOpenTagModal(true);
     // Disables Background Scrolling whilst the SideDrawer/Modal is open
-    if (typeof window != "undefined" && window.document) {
+    if (typeof window !== "undefined" && window.document) {
       document.body.style.overflow = "hidden";
     }
   };
@@ -152,20 +140,22 @@ function DataTab({ active }) {
 
       <div>
         {/* services and pricing */}
-        <div className="mx-auto w-full mt-8 text-sm">
-          <div
+        <button type="button" className="mx-auto w-full mt-8 text-sm">
+          <button
+            type="button"
             onClick={() => setOpenService(!openService)}
             className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
           >
             Services
             <div className="flex items-center">
-              <div
+              <button
+                type="button"
                 onClick={handleOpenServiceModal}
                 className="  text-purple-100 cursor-pointer flex items-center"
               >
                 <img className="mr-2" src={add} alt="" />
                 <p className="">Add new service</p>
-              </div>
+              </button>
 
               <img
                 className={clsx(openService && "transform rotate-180", "ml-3 ")}
@@ -173,7 +163,7 @@ function DataTab({ active }) {
                 alt=""
               />
             </div>
-          </div>
+          </button>
           {openService && (
             <div className="mt-5 ">
               <div className="">
@@ -181,7 +171,8 @@ function DataTab({ active }) {
                   {getServices &&
                     getServices.map((service, index) => {
                       return (
-                        <div
+                        <button
+                          type="button"
                           onClick={handleOpenEditServiceModal}
                           //   className="bg-white cursor-pointer shadow-lg rounded-md"
                           // >
@@ -218,30 +209,32 @@ function DataTab({ active }) {
                               </div>
                             </div>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                 </div>
               </div>
             </div>
           )}
-        </div>
+        </button>
         {/* Certifications */}
         <div className="mx-auto w-full mt-8 text-sm">
-          <div
+          <button
+            type="button"
             onClick={() => setOpenCertification(!openCertification)}
             className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
           >
             Certifications
             <div className="flex">
-              <div
+              <button
+                type="button"
                 onClick={handleOpenCertificationModal}
                 className="  text-purple-100 cursor-pointer flex items-center"
               >
                 <img className="mr-2" src={purpleSettings} alt="" />
 
                 <p className="">Manage Certifications</p>
-              </div>
+              </button>
               <img
                 className={clsx(
                   openCertification && "transform rotate-180",
@@ -251,7 +244,7 @@ function DataTab({ active }) {
                 alt=""
               />
             </div>
-          </div>
+          </button>
           {openCertification && (
             <div className="mt-5">
               <div className="py-6">
@@ -271,27 +264,29 @@ function DataTab({ active }) {
         </div>
         {/* Tags */}
         <div className="mx-auto w-full mt-8 text-sm">
-          <div
+          <button
+            type="button"
             onClick={() => setOpenTag(!openTag)}
             className="bg-gray-600 p-3 rounded-lg flex justify-between items-center w-full cursor-pointer"
           >
             Tags
             <div className="flex">
-              <div
+              <button
+                type="button"
                 onClick={handleOpenTagModal}
                 className="  text-purple-100 cursor-pointer flex items-center"
               >
                 <img className="mr-2" src={purpleSettings} alt="" />
 
                 <p className="">Manage Tags</p>
-              </div>
+              </button>
               <img
                 className={clsx(openTag && "transform rotate-180", "ml-3 ")}
                 src={dropdownIcon}
                 alt=""
               />
             </div>
-          </div>
+          </button>
           {openTag && (
             <div className="mt-5">
               <div className="">
@@ -315,11 +310,7 @@ function DataTab({ active }) {
         {openServiceModal && (
           <ManageServicesModal handleClose={handleCloseServiceModal} />
         )}
-        {openCertificationModal && (
-          <ManageCertificationModal
-            handleClose={handleCloseCertificationModal}
-          />
-        )}{" "}
+        {certificationModal.renderModal()}
         {openTagModal && <ManageTagModal handleClose={handleCloseTagModal} />}
       </div>
     </>

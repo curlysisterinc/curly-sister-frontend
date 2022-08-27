@@ -42,7 +42,6 @@ export const BookServiceCard = ({
   const [chooseServiceVisible, setChooseServiceVisible] = React.useState(false);
   const [data, setData] = React.useState({ stylistId });
   const navigate = useNavigate();
-  console.log({ serviceOffered, availability, stylistId });
   const [bookingFee, setBookingFee] = React.useState(0);
   const [bookingTotal, setBookingTotal] = React.useState(0);
 

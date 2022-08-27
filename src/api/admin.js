@@ -53,7 +53,7 @@ export default {
     return curlySistersApi.post("/v1/admin/add-availability", data);
   },
   async GetAvailabilityById(id) {
-    return curlySistersOnboarding.get(`/v1/admin/get-availability/${id}`);
+    return curlySistersApi.get(`/v1/admin/get-availability/${id}`);
   },
   async CreateServices(data) {
     return curlySistersApi.post("/v1/admin/create-service", data);

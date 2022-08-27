@@ -14,6 +14,7 @@ import { AiTwotoneStar } from "react-icons/ai";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthRoutes } from "constants";
 import Slider from "react-slick";
+import useGetStylistById from "hooks/data/admin/useGetStylistById";
 import SideBarComponent from "../../../sidebar";
 import avatar from "../../../../assets/images/gradient-avatar.svg";
 import galleryBanner from "../../../../assets/images/stylist-profile-banner.png";
@@ -67,24 +68,25 @@ function StylistProfile() {
   const navigate = useNavigate();
   const { token } = useParams();
 
+  const {
+    isLoading: isStylistLoading,
+    data: stylistData,
+    isError: stylistError,
+  } = useGetStylistById(token);
+
   React.useEffect(() => {
-    const ac = new AbortController();
-    admin.GetOneStylist(token).then((response) => {
-      console.log(response.data);
-      setGetStylist(response.data.stylist);
-      // setGetGallery(response.data.stylist.gallery);
-    });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
+    if (stylistData) {
+      setGetStylist(stylistData.data.stylist);
+      console.log({ stylist: stylistData.data.stylist });
+    }
+  }, [stylistData]);
 
   const availabilityLength = React.useMemo(
     () => getStylist?.availability?.length,
     [getStylist?.availability?.length]
   );
 
-  // console.log(availabilityLength);
+  console.log({ availabilityLength });
 
   // useMemo(() => first, [second])
 
@@ -226,6 +228,7 @@ function StylistProfile() {
                 stylistId={token}
                 availability={avail}
                 serviceOffered={getStylist?.services}
+                // {...getStylist}
               />
             ) : (
               <NotBookServiceCard />

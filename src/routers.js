@@ -5,9 +5,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useLayoutEffect } from "react";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import AdminLayout from "./components/layout/admin";
 import { NonAuthRoutes, AuthRoutes } from "./constants";
 
@@ -101,6 +101,11 @@ const PageNotFound = lazy(() => import("pages/404"));
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
 function Routers() {
+  const location = useLocation();
+  // Scroll to top if path changes
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
   return (
     <Suspense fallback={<LoaderComponent />}>
       <Elements stripe={stripePromise}>

@@ -15,7 +15,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-date-range/dist/styles.css"; // main style file
 import "react-date-range/dist/theme/default.css"; // theme css file
-
+import authHandler from "./authHandler";
 // Create a client
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,11 +28,12 @@ export const queryClient = new QueryClient({
 
   queryCache: new QueryCache({
     onError: (error, query) => {
-      if (query.state.data !== undefined) {
-        const mainError = error.response.data;
-
-        toast.error(mainError.message);
-      }
+      console.log({ error: error.response.status });
+      toast.error(error.response.data.message);
+      // if (error.response.status === 401) {
+      //   authHandler.deleteUser();
+      //   window.location.href = "/";
+      // }
     },
   }),
 });
