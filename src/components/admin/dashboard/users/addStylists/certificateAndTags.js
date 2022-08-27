@@ -160,7 +160,7 @@ function CertificateAndTags({
           />
         </div>
       </div>
-      {certificationModal.renderModal()}
+      {certificationModal.renderModal({ certifications: getCertificates })}
       {openTagModal && (
         <ManageTagModal
           handleClose={handleCloseTagModal}

@@ -1,29 +1,50 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
+import useCreateCertifications from "hooks/data/admin/useCreateCertifications";
+import useUpdateCertification from "hooks/data/admin/useUpdateCertification";
+import { Loadersmall } from "components/loader-component/loader";
+import OrangeBtn from "components/customButton/orangeBtn";
+import useUpdateStylist from "hooks/data/admin/useUpdateStylist";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon, {
   ReactComponent as TrashIcon,
 } from "../../../../assets/images/trash.svg";
-import admin from "../../../../api/admin";
 
-const initialCertification = {
-  id: new Date().getTime(),
-  name: "",
-  isMoreOptionChecked: false,
-  description: "",
-  url: "",
-  options: [{ text: "", id: new Date().getTime() + 1 }],
-};
+function ManageCertificationModal({
+  handleClose,
+  visible,
+  certifications: stylistCertifications,
+}) {
+  const {
+    isLoading: isCreateCertificationsLoading,
+    data: createCertificationsData,
+    isError: createCertificationsError,
+    refetch: createCertificationsRefetch,
+    mutateAsync: createCertification,
+  } = useCreateCertifications();
 
-function ManageCertificationModal({ handleClose, visible }) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [certifications, setCertifications] = useState([initialCertification]);
+  const {
+    isLoading: isUpdateCertificationsLoading,
+    data: updateCertificationsData,
+    isError: updateCertificationsError,
+    refetch: updateCertificationsRefetch,
+    mutateAsync: updateCertification,
+  } = useUpdateCertification();
+
+  const { id: stylistId } = useParams();
+  const {
+    isLoading: isStylistUpdateLoading,
+    data: stylistUpdateData,
+    isError: stylistUpdateError,
+    mutate: updateStylist,
+  } = useUpdateStylist(stylistId);
+
+  const [certifications, setCertifications] = useState([]);
   const [inputList, setInputList] = useState([{ name: "", checked: false }]);
   const [optionList, setOptionList] = useState([
     { option: "", openOption: false },
@@ -40,6 +61,12 @@ function ManageCertificationModal({ handleClose, visible }) {
       // setIsCertificationUpdate(false);
     };
   }, []);
+
+  useEffect(() => {
+    if (stylistUpdateData) {
+      handleClose();
+    }
+  }, [stylistUpdateData]);
   // handle input change
   // const handleOptionInputChange = (e, index) => {
   //   const { name, value } = e.target;
@@ -142,60 +169,117 @@ function ManageCertificationModal({ handleClose, visible }) {
   //   }
   // };
 
-  const handleSubmit = (e) => {
-    console.log("new cert");
+  const handleSubmit = async (e) => {
+    // // console.log("new cert");
     e.preventDefault();
-    const list = [...inputList];
-    let newName;
-    console.log(list);
-    const listed = list.map((item) => {
-      newName = item.name;
-      return newName;
+    // console.log(certifications);
+    const newCerts = certifications.map((item) => {
+      const { description, options, url, _id } = item;
+      return {
+        ...item,
+        // _id,
+        name: item.name,
+        // description,
+        // url,
+        options: [
+          ...options.map((v) => {
+            if (v.text !== "") {
+              return v.text;
+            }
+            return null;
+          }),
+        ].filter(Boolean),
+      };
     });
+    console.log(newCerts);
 
-    console.log(newName);
-    admin.CreateCertification(newName).then((response) => {
-      if (response.status === 200) {
-        const res = response.data;
-
-        const newstate = inputList.map((item) => {
-          return { ...item, name: "" };
-        });
-        // setIsCertificationUpdate(true);
-        setInputList(newstate);
-        handleClose();
-        console.log(res, "res");
-      }
-    });
+    createOrUpdateCertifications(newCerts);
   };
 
+  const createOrUpdateCertifications = async (certs) => {
+    try {
+      const result = await Promise.allSettled(
+        certs.map((cert) => {
+          // because user created id's are numbers while server creted are strings
+          if (typeof cert._id === "number") {
+            const { _id, ...rest } = cert;
+            return createCertification(rest);
+          }
+          const { _id, ...rest } = cert;
+          return updateCertification({ ...rest, certificateId: _id });
+        })
+      );
+
+      const successResult =
+        result.length &&
+        result
+          .filter((item) => item.status === "fulfilled")
+          .map((success) => success.value.data.data.certification._id);
+
+      updateStylist({ certifications: successResult, id: stylistId });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (stylistCertifications.length) {
+      const newCerts = stylistCertifications.map((item) => {
+        return {
+          ...item,
+          isMoreOptionChecked: !!item.options.length,
+          options: item.options.map((v, index) => {
+            return {
+              text: v,
+              id: new Date().getTime() + index,
+            };
+          }),
+        };
+      });
+
+      setCertifications(newCerts);
+    }
+  }, [stylistCertifications]);
+
   const addMoreCertifications = () => {
-    const newCertification = [
-      ...certifications,
-      {
-        id: new Date().getTime(),
-        name: "",
-        isMoreOptionChecked: false,
-        description: "",
-        url: "",
-        option: [{ id: "", item: new Date().getTime() + 1 }],
-      },
-    ];
-    console.log("newCertification", newCertification);
+    const newCert = {
+      _id: new Date().getTime(),
+      name: "",
+      isMoreOptionChecked: false,
+      description: "",
+      url: "",
+      options: [{ text: "", id: new Date().getTime() + 1 }],
+    };
+    const newCertification = [...certifications, newCert];
     setCertifications(newCertification);
+    // createCertification(newCert);
+  };
+
+  const disableCertificationbutton = () => {
+    const isDisabled = certifications.some(
+      (item) => item.name === "" || item.description === ""
+    );
+
+    return (
+      isDisabled ||
+      isCreateCertificationsLoading ||
+      isStylistUpdateLoading ||
+      isUpdateCertificationsLoading
+    );
   };
 
   const handleChangeCertInputs = (e, certId) => {
     const { value } = e.target;
     const newCertification = certifications.map((cert) => {
       const newCert = cert;
-      if (cert.id === certId) {
+      if (cert._id === certId) {
         newCert[e.target.name] = value;
       }
       return newCert;
     });
     setCertifications(newCertification);
   };
+
   const handleChangeCertificateOption = (e, certId, certOptionId) => {
     const { value } = e.target;
     const newCertification = certifications.map((cert) => {
@@ -215,7 +299,7 @@ function ManageCertificationModal({ handleClose, visible }) {
 
   const addCertificateOption = (certId) => {
     const newCertification = certifications.map((cert) => {
-      if (cert.id === certId) {
+      if (cert._id === certId) {
         cert.options.push({
           id: new Date().getTime(),
           text: "",
@@ -229,7 +313,7 @@ function ManageCertificationModal({ handleClose, visible }) {
   const deleteCertOption = (certId, certOptionId) => {
     const newCertification = certifications.map((cert) => {
       const newCert = cert;
-      if (cert.id === certId) {
+      if (cert._id === certId) {
         newCert.options = cert.options.filter(
           (option) => option.id !== certOptionId
         );
@@ -240,14 +324,14 @@ function ManageCertificationModal({ handleClose, visible }) {
   };
 
   const deleteCertification = (id) => {
-    const newCertification = certifications.filter((item) => item.id !== id);
+    const newCertification = certifications.filter((item) => item._id !== id);
     setCertifications(newCertification);
   };
 
-  const handleToggleCertificateOption = (e, id) => {
+  const handleToggleCertificateOption = (e, _id) => {
     const newCertification = certifications.map((item) => {
       const newItem = item;
-      if (item.id === id) {
+      if (item._id === _id) {
         newItem.isMoreOptionChecked = !item.isMoreOptionChecked;
         return newItem;
       }
@@ -290,6 +374,7 @@ function ManageCertificationModal({ handleClose, visible }) {
               {certifications.map((cert) => {
                 const {
                   id,
+                  _id,
                   isMoreOptionChecked,
                   name: certName,
                   description,
@@ -300,7 +385,7 @@ function ManageCertificationModal({ handleClose, visible }) {
                 return (
                   <div
                     className="rounded-lg border border-gray-800 mb-6"
-                    key={id}
+                    key={id || _id}
                   >
                     <div className="flex justify-between items-center px-3">
                       <input
@@ -309,7 +394,7 @@ function ManageCertificationModal({ handleClose, visible }) {
                         placeholder="name"
                         name="name"
                         value={certName}
-                        onChange={(e) => handleChangeCertInputs(e, id)}
+                        onChange={(e) => handleChangeCertInputs(e, _id)}
                       />
                       <div className="flex  justify-between items-center flex-shrink-0">
                         <div className="flex justify-between items-center m-4">
@@ -321,6 +406,9 @@ function ManageCertificationModal({ handleClose, visible }) {
                             <input
                               type="checkbox"
                               // id={index + 1}
+                              onChange={(e) =>
+                                handleToggleCertificateOption(e, _id)
+                              }
                               checked={isMoreOptionChecked}
                               className="sr-only"
                               tabIndex="-1"
@@ -331,19 +419,19 @@ function ManageCertificationModal({ handleClose, visible }) {
                               aria-label="Toggle certification options"
                               onKeyPress={(e) =>
                                 runFunctionWhenSpaceOrEnterIsClicked(e, () =>
-                                  handleToggleCertificateOption(e, id)
+                                  handleToggleCertificateOption(e, _id)
                                 )
                               }
                               className="toggle-bg bg-gray-200 border-2 border-gray-200 h-4 w-5 rounded-full"
                               onClick={(e) =>
-                                handleToggleCertificateOption(e, id)
+                                handleToggleCertificateOption(e, _id)
                               }
                             />
                           </div>
                         </div>
                         <button
                           type="button"
-                          onClick={() => deleteCertification(id)}
+                          onClick={() => deleteCertification(_id)}
                         >
                           <TrashIcon />
                         </button>
@@ -358,7 +446,7 @@ function ManageCertificationModal({ handleClose, visible }) {
                         placeholder="Add a description"
                         name="description"
                         value={description}
-                        onChange={(e) => handleChangeCertInputs(e, id)}
+                        onChange={(e) => handleChangeCertInputs(e, _id)}
                       />
                     </div>
                     <div
@@ -368,7 +456,7 @@ function ManageCertificationModal({ handleClose, visible }) {
                     >
                       <input
                         type="text"
-                        onChange={(e) => handleChangeCertInputs(e, id)}
+                        onChange={(e) => handleChangeCertInputs(e, _id)}
                         className={`border-0 p-0 pl-2 text-gray-400 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm `}
                         placeholder="URL"
                         name="url"
@@ -377,7 +465,7 @@ function ManageCertificationModal({ handleClose, visible }) {
                     </div>
                     {isMoreOptionChecked && (
                       <>
-                        {options.map((option) => (
+                        {options?.map((option) => (
                           <div
                             key={option.id}
                             className=" border-gray-800 ml-10"
@@ -399,7 +487,7 @@ function ManageCertificationModal({ handleClose, visible }) {
                               <button
                                 type="button"
                                 className="px-4 border-l border-gray-800"
-                                onClick={() => deleteCertOption(id, option.id)}
+                                onClick={() => deleteCertOption(_id, option.id)}
                               >
                                 <TrashIcon />
                               </button>
@@ -409,7 +497,7 @@ function ManageCertificationModal({ handleClose, visible }) {
                         <button
                           type="button"
                           className="py-3 text-purple-100 font-bold ml-10"
-                          onClick={() => addCertificateOption(id)}
+                          onClick={() => addCertificateOption(_id)}
                         >
                           Add another option
                         </button>
@@ -427,13 +515,22 @@ function ManageCertificationModal({ handleClose, visible }) {
                 Add new certification
               </button>
 
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
-              >
-                Save changes
-              </button>
+              {certifications.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={disableCertificationbutton()}
+                  className="w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold disabled:opacity-60 disabled:cursor-not-allowed "
+                >
+                  {isCreateCertificationsLoading ||
+                  isStylistUpdateLoading ||
+                  isUpdateCertificationsLoading ? (
+                    <Loadersmall />
+                  ) : (
+                    "Save changes"
+                  )}
+                </button>
+              )}
             </form>
           </div>
         </div>
@@ -445,9 +542,13 @@ function ManageCertificationModal({ handleClose, visible }) {
 export const useManageCertificationModal = () => {
   const [visible, setVisible] = useState(false);
   const handleClose = () => setVisible(false);
-  const renderModal = () => {
+  const renderModal = ({ certifications }) => {
     return (
-      <ManageCertificationModal visible={visible} handleClose={handleClose} />
+      <ManageCertificationModal
+        visible={visible}
+        handleClose={handleClose}
+        certifications={certifications}
+      />
     );
   };
 

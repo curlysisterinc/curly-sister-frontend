@@ -28,7 +28,6 @@ function GalleryTab({ ariaHidden, idx }) {
     error: updateStylistError,
     mutate: updateStylist,
   } = useUpdateStylist();
-  const { id } = useParams();
 
   const {
     isLoading: isGalleryUploadLoading,

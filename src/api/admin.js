@@ -52,6 +52,9 @@ export default {
   async CreateAvailability(data) {
     return curlySistersApi.post("/v1/admin/add-availability", data);
   },
+  async UpdateAvailability(data) {
+    return curlySistersApi.post("/v1/admin/update-availability", data);
+  },
   async GetAvailabilityById(id) {
     return curlySistersApi.get(`/v1/admin/get-availability/${id}`);
   },
@@ -83,19 +86,17 @@ export default {
     );
   },
 
-  async CreateCertification(name) {
-    const data = {
-      name,
-    };
-    const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post(
-      "/v1/admin/create-certifications",
-      stringifiedData
-    );
+  async CreateCertification(data) {
+    return curlySistersApi.post("/v1/admin/create-certifications", data);
   },
   async GetCertification() {
-    return curlySistersOnboarding.get("/v1/admin/find-all-certifications");
+    return curlySistersApi.get("/v1/admin/find-all-certifications");
   },
+
+  async UpdateCertification(data) {
+    return curlySistersApi.post("/v1/admin/update-certifications", data);
+  },
+
   async CreateTags(name) {
     const data = {
       name,

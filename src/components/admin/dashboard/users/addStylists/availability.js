@@ -12,10 +12,12 @@ import { DateRangePicker } from "react-date-range";
 import { addDays as addDaysfn } from "date-fns";
 import { useLocation, useParams } from "react-router-dom";
 import useGetStylistById from "hooks/data/admin/useGetStylistById";
-import useGetAvailablilityById from "hooks/data/admin/useGetAvailablilityById";
+import useGetAvailabilityById from "hooks/data/admin/useGetAvailabilityById";
 import { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import useCreateAvailability from "hooks/data/admin/useCreateAvailability";
+import useUpdateAvailability from "hooks/data/admin/useUpdateAvailability";
+import useUpdateStylist from "hooks/data/admin/useUpdateStylist";
 import cancel from "../../../../../assets/images/cancel.svg";
 // import { Loadersmall } from "../../../../loader";
 import TimeRange from "./availablity/timeRange";
@@ -41,7 +43,7 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
   ]);
   const [buttonAction, setButtonAction] = useState("Save");
   const [isloading, setIsloading] = useState(false);
-  const [availablilityId, setAvailablilityId] = useState(false);
+  const [availabilityId, setAvailabilityId] = useState(null);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { state: locationState } = useLocation();
@@ -56,18 +58,32 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
   } = useGetStylistById(stylistId);
 
   const {
-    isLoading: isAvailablilityLoading,
-    data: availablilityData,
-    isError: availablilityError,
-    refetch: availablilityRefetch,
-  } = useGetAvailablilityById(availablilityId);
+    isLoading: isAvailabilityLoading,
+    data: availabilityData,
+    isError: availabilityError,
+    refetch: availabilityRefetch,
+  } = useGetAvailabilityById(availabilityId);
 
   const {
     data: createAvailabilityData,
     isLoading: createAvailabilityLoading,
-    error: availabilityError,
+    error: createAvailabilityError,
     mutate: createAvailability,
   } = useCreateAvailability();
+
+  const {
+    data: updateAvailabilityData,
+    isLoading: updateAvailabilityLoading,
+    error: updateAvailabilityError,
+    mutate: updateAvailability,
+  } = useUpdateAvailability();
+
+  const {
+    isLoading: isUpdateStylistLoading,
+    data: updateStylistData,
+    error: updateStylistError,
+    mutate: updateStylist,
+  } = useUpdateStylist();
 
   // useChangeBtnTitle("availablity", setButtonAction, dispatch);
 
@@ -84,7 +100,7 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
       }
 
       if (typeof newAvailabilityId === "string") {
-        setAvailablilityId(newAvailabilityId);
+        setAvailabilityId(newAvailabilityId);
       }
       // if (availability.length > 0) {
       //   dispatch({ type: "CLEAR_INITIAL_BLOCK" });
@@ -119,14 +135,16 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
 
   useEffect(() => {
     const ac = new AbortController();
-    if (availablilityData) {
-      const availability = availablilityData.data.data;
+    if (availabilityData) {
+      const availability = availabilityData.data.data;
 
-      const { blocked_dates, range } = availability;
+      const { blocked_dates, range, time_zone } = availability;
 
       dispatch({ type: "CLEAR_INITIAL_BLOCK" });
       dispatch({ type: "CLEAR_INITIAL_RANGE" });
       // availability.forEach(({ blocked_dates, range }) => {
+
+      dispatch({ type: "CHANGE_TIMEZONE", payload: time_zone });
 
       blocked_dates.forEach(({ from, to }) => {
         dispatch({
@@ -155,7 +173,7 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
     return function cleanup() {
       ac.abort();
     };
-  }, [availablilityData]);
+  }, [availabilityData]);
 
   const makeavailable = (day) => {
     const daysavail = availabledays.map((weekday) => {
@@ -194,21 +212,21 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
 
     const data = {
       stylistId,
-      timezone,
+      time_zone: timezone,
       range,
       blocked_dates,
+      days: availabledays,
     };
 
-    createAvailability(data);
+    if (availabilityId) {
+      updateAvailability({ ...data, availabilityId });
+    } else {
+      createAvailability(data);
+    }
   };
 
   const clickHandler = () => {
-    if (buttonAction === "Save" || buttonAction === "Update") {
-      handleCreateStylist();
-    }
-    if (buttonAction === "Edit") {
-      setButtonAction("Update");
-    }
+    handleCreateStylist();
   };
 
   const memLength = useMemo(
@@ -334,12 +352,12 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
   return (
     <>
       {stylistData?.data?.stylist?.availability.length > 0 &&
-        isAvailablilityLoading && <Loadersmall />}
+        isAvailabilityLoading && <Loadersmall />}
 
-      {availablilityError && (
-        <ErrorDisplayComponent refetch={availablilityRefetch} />
+      {availabilityError && (
+        <ErrorDisplayComponent refetch={availabilityRefetch} />
       )}
-      {(availablilityData ||
+      {(availabilityData ||
         stylistData?.data?.stylist?.availability.length === 0) && (
         <div aria-hidden={ariaHidden} id={idx} className="mt-5 relative">
           <label htmlFor="timeZone">
@@ -458,10 +476,10 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
           </div>
           <div className="flex justify-end mb-20">
             <OrangeBtn
-              buttonAction={buttonAction}
+              buttonAction="Save"
               disabled={disableBtn()}
               onClick={clickHandler}
-              isloading={createAvailabilityLoading}
+              isloading={createAvailabilityLoading || updateAvailabilityLoading}
             />
             {/* <button
           type="button"
