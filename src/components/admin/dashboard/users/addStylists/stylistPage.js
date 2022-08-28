@@ -158,7 +158,7 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
               idx="content-certification"
               stylistData={stylistData}
               handleEditStylist={handleEditStylist}
-              isLoading={isLoading}
+              isEditLoading={isLoading}
             />
           </AccordionItem>
 
