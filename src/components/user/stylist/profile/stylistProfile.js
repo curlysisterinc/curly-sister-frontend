@@ -1,3 +1,6 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/jsx-props-no-spreading */
 import React from "react";
 import {
   MdArrowForwardIos,
@@ -56,6 +59,33 @@ function NotBookServiceCard() {
         </span>
       </div>
     </div>
+  );
+}
+
+function SampleNextArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{ ...style, display: "block", background: "red", zIndex: "30000" }}
+      onClick={onClick}
+    />
+  );
+}
+
+function SamplePrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: "block",
+        background: "green",
+        zIndex: "30000",
+      }}
+      onClick={onClick}
+    />
   );
 }
 function StylistProfile() {
@@ -122,11 +152,18 @@ function StylistProfile() {
   //   });
   // };
   const settings = {
-    dots: true,
-    infinite: true,
+    // dots: true,
+    // infinite: true,
     speed: 500,
-    slidesToShow: 2.2,
-    slidesToScroll: 2.5,
+    slidesToShow: 2.7,
+    // slidesToScroll: 2.5,
+    focusOnSelect: true,
+    initialSlide: 1,
+    slidesToScroll: 1,
+    lazyLoad: true,
+    centerPadding: "60px",
+    // nextArrow: <SampleNextArrow />,
+    // prevArrow: <SamplePrevArrow />,
   };
   return (
     <div className="max-w-screen-2xl w-full flex m-auto">
@@ -153,7 +190,7 @@ function StylistProfile() {
                 <p className="text-sm text-gray-400">View gallery</p>
               </button>
             )}
-            <div className="flex flex-nowrap overflow-x-auto h-80 ">
+            {/* <div className="flex flex-nowrap overflow-x-auto overflow-y-hidden-auto w-full h-48 md:h-80">
               {getStylist?.gallery?.length === 0 && (
                 <div className=" overflow-hidden w-full h-80 bg-gray-20">
                   <img
@@ -177,7 +214,10 @@ function StylistProfile() {
               {getStylist?.gallery?.length > 1 &&
                 [...getStylist.gallery].splice(0, 3)?.map((gallery) => {
                   return (
-                    <div key={gallery} className="overflow-hidden w-1/2 h-80 ">
+                    <div
+                      key={gallery}
+                      className="w-4/5 md:h-48 lg:h-80  bg-gray-20 flex-shrink-0 "
+                    >
                       <img
                         src={gallery}
                         alt=""
@@ -186,6 +226,24 @@ function StylistProfile() {
                     </div>
                   );
                 })}
+            </div> */}
+
+            <div className=" relative  w-full outline-none h-10 md:h-80">
+              <div className=" w-full">
+                <Slider {...settings}>
+                  {getStylist?.gallery?.map((item) => {
+                    return (
+                      <div className="w-full h-44 md:h-80  object-cover rounded-lg">
+                        <img
+                          src={item}
+                          alt=""
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                    );
+                  })}
+                </Slider>
+              </div>
             </div>
           </div>
         </div>

@@ -28,7 +28,7 @@ function GalleryModal({ visible, setVisible, gallery }) {
           <img
             src={gallery[i]}
             alt=""
-            className=" object-cover rounded-lg m-0 w-full h-20"
+            className=" object-cover rounded-lg m-0 w-full  h-10 md:h-20"
           />
         </div>
       );
@@ -40,6 +40,7 @@ function GalleryModal({ visible, setVisible, gallery }) {
     slidesToShow: 1,
     initialSlide: 2,
     slidesToScroll: 1,
+    lazyLoad: true,
     // autoplaySpeed: 1000,
     // autoplay: true,
   };
@@ -47,7 +48,7 @@ function GalleryModal({ visible, setVisible, gallery }) {
     <>
       {visible ? (
         <div className="flex backdrop-blur-lg bg-gray-400 h-screen bg-opacity-75 items-start justify-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-          <div className="relative md:my-6 mx-auto w-full md:max-w-1000 h-full md:h-auto pt-6">
+          <div className="relative md:my-6 mx-auto w-5/6 md:max-w-1000 h-full md:h-auto pt-6">
             <div className="flex justify-center items-center">
               <button
                 type="button"
@@ -58,16 +59,16 @@ function GalleryModal({ visible, setVisible, gallery }) {
               </button>
             </div>
 
-            <div className=" relative  w-full outline-none h-600">
-              <div className=" w-full">
+            <div className=" relative  w-full outline-none h-10 md:h-600">
+              <div className="w-full ml-20">
                 <Slider {...settings}>
                   {gallery.map((item) => {
                     return (
-                      <div className="">
+                      <div className="w-full h-44 md:h-80 lg:h-500 object-cover rounded-lg">
                         <img
                           src={item}
                           alt=""
-                          className="w-full h-auto max-h-500 object-cover rounded-lg"
+                          className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
                     );

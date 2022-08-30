@@ -83,7 +83,8 @@ module.exports = {
       spacing: {
         69: "69px",
         500: "500px",
-        600:"600px"
+        600: "600px",
+        "tablet":"768px"
       },
       minWidth: {
         30: "30%",
