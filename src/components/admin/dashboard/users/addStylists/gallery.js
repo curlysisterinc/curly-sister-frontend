@@ -131,7 +131,7 @@ function GalleryTab({ ariaHidden, idx }) {
   return (
     <div className="relative" aria-hidden={ariaHidden} id={idx}>
       <div className="mt-5 flex flex-wrap justify-start">
-        <div className="mb-5 mx-2">
+        <div className="mb-5 mx-2 cursor-pointer">
           <input
             disabled={isGalleryUploadLoading || isUpdateStylistLoading}
             type="file"
@@ -139,10 +139,10 @@ function GalleryTab({ ariaHidden, idx }) {
             accept="image/*"
             name="gallery"
             onChange={handleFileChange}
-            className="opacity-0 absolute h-16 w-120  border"
+            className="opacity-0 absolute h-16 w-120  border cursor-pointer"
           />
 
-          <img src={uploadFile} className="h-16 w-120" alt="" />
+          <img src={uploadFile} className="h-16 w-120 cursor-pointer" alt="" />
         </div>
         {renderPhotos(galleryImages)}
       </div>

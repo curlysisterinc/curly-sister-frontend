@@ -23,7 +23,7 @@ function Modal({
       style={{
         overlay: {
           ...ReactModal.defaultStyles.overlay,
-          backgroundColor: overlayColor || "rgba(0, 0, 0, 0.25)",
+          backgroundColor: "red" || "rgba(0, 0, 0, 0.25)",
           zIndex: 999,
           overflow: "auto",
         },

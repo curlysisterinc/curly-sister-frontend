@@ -16,3 +16,18 @@ export const runFunctionWhenSpaceOrEnterIsClicked = (e, fn) => {
     fn();
   }
 };
+
+// toggle Disables Background Scrolling whilst the SideDrawer/Modal is open
+export const toggleFixedAppLayout = () => {
+  if (typeof window !== "undefined" && window.document) {
+    const appLayout = document.querySelector("#appLayout");
+    if (appLayout.style.position === "fixed") {
+      appLayout.style.position = "unset";
+    } else if (
+      appLayout.style.position === "unset" ||
+      !appLayout.style.position
+    ) {
+      appLayout.style.position = "fixed";
+    }
+  }
+};

@@ -1,14 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import clsx from "clsx";
-import useCreateStylists from "hooks/data/admin/useCreateStylists";
-import useGetStylistById from "hooks/data/admin/useGetStylistById";
-import dropdownIcon from "../../../../../assets/images/dropdown.svg";
+import { useLocation, useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import AvailabilityTab from "./availability";
 import GalleryTab from "./gallery";
@@ -28,13 +20,12 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
   const detailsTab = useDetailsTab();
 
   const [hiddenTabs, setHiddenTabs] = useState(false);
-  const [prevOpenedTab, setPrevOpenedTab] = useState("");
   const [openTab, setOpenTab] = useState(openTabInitials);
   const [activeTab, setActiveTab] = useState(null);
   const [detailActionBtn, setDetailActionBtn] = useState("Save");
-  const [, setIsDetailsLoading] = useState(false);
   const [stylistValues, setStylistValues] = useState(detailsInitial);
-  // const [userApiResponse, setUserApiResponse] = useState({});
+  const [certTagId, setCertTagId] = useState(null);
+
   const navigate = useNavigate();
   const { state } = useLocation();
   useEffect(() => {
@@ -44,31 +35,18 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
   }, [mode]);
 
   useEffect(() => {
+    handleMountCertTag();
     return (
       window.location.search.includes("location") &&
       setActiveTab("Location and contact")
     );
   }, []);
 
-  useEffect(() => {
-    if (state) {
-      if (state !== "walk-in only") {
-        setHiddenTabs(true);
-      }
-      const keys = Object.keys(openTab);
-      keys.forEach((itm) => {
-        setOpenTab((prev) => ({ ...prev, [itm]: true }));
-        setActiveTab((prev) => ({ ...prev, [itm]: true }));
-      });
-    }
-
-    return () => {
-      // localStorage.removeItem("createdStylist");
-    };
-  }, []);
+  const handleMountCertTag = () => setCertTagId(uuidv4);
 
   const backBtnHandler = () => {
-    navigate(-1);
+    // if(mode ==="EDIT")
+    navigate("/dashboard/users/stylists");
   };
 
   const handleSetActiveTab = (tab) => {
@@ -81,21 +59,21 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
 
   return (
     <div className="bg-white w-full ">
-      <div className=" bg-white px-10 pb-8 w-full relative min-h-screen">
-        <header className="sticky z-10 top-0 right-0 bg-white left-0 pt-7">
+      <div className=" bg-white px-3 md:px-10 pb-8 w-full relative min-h-screen">
+        <header className="sticky z-10 top-0 right-0 bg-white left-0 pt-20 md:pt-7">
           <button
             onClick={backBtnHandler}
             type="button"
-            className=" absolute  left-10 flex items-center cursor-pointer mr-[103px]"
+            className=" absolute  left-0 md:left-10 flex items-center cursor-pointer mr-[103px] top-20 md:top-auto"
           >
             <img className="mr-2" src={backArrow} alt="back arrow" />
             Go Back
           </button>
-          <div className="w-4/6 border-b border-solid border-gray-600 pb-7  mx-auto flex justify-between items-center">
-            <div className="text-22 text-gray-400 font-BeatriceSemiBold">
+          <div className="w-full max-w-640 border-b border-solid border-gray-600 pb-7 mt-7 md:mx-auto flex justify-center md:justify-between items-center flex-col lg:flex-row">
+            <div className="text-22 text-gray-400 font-BeatriceSemiBold mb-3 md:mb-0">
               {mode === "EDIT" ? "Edit stylist" : "Add stylist"}
             </div>
-            <div className="flex">
+            <div className="flex flex-wrap justify-center items-center gap-2">
               <StylistCategory
                 setTypeValue={setStylistValues}
                 typeValue={stylistValues.category_type}
@@ -153,12 +131,15 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
           >
             <CertificateAndTags
               hiddenTabs={hiddenTabs}
+              handleSetActiveTab={handleSetActiveTab}
               activeTab={activeTab}
               ariaHidden={activeTab !== "Certification and tags"}
               idx="content-certification"
               stylistData={stylistData}
               handleEditStylist={handleEditStylist}
               isEditLoading={isLoading}
+              key={certTagId}
+              remountCertAndTags={handleMountCertTag}
             />
           </AccordionItem>
 

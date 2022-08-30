@@ -43,7 +43,7 @@ export default function CommonCard({ stylist }) {
       <div className="bg-white px-5 py-3 relative">
         <div className="flex justify-between items-start">
           <img
-            className="-mt-14 w-20 h-20 rounded-full object-cover"
+            className="-mt-14  w-20 h-20 rounded-full object-cover"
             src={stylist.photo ? stylist.photo : avatar2}
             alt=""
           />

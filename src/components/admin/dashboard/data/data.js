@@ -91,7 +91,7 @@ function DataTab({ active }) {
     admin
       .GetCertification()
       .then((response) => {
-        console.log(response.data, "certification");
+        console.log(response.data, "certificationhhhhh");
         setGetCertificates(response.data.data);
       })
       .catch((error) => {
@@ -108,7 +108,7 @@ function DataTab({ active }) {
     admin
       .GetTags()
       .then((response) => {
-        console.log(response.data, "tags");
+        console.log(response.data, "tagsfffff");
         setGetTags(response.data.data);
       })
       .catch((error) => {
@@ -310,8 +310,10 @@ function DataTab({ active }) {
         {openServiceModal && (
           <ManageServicesModal handleClose={handleCloseServiceModal} />
         )}
-        {certificationModal.renderModal()}
-        {openTagModal && <ManageTagModal handleClose={handleCloseTagModal} />}
+        {certificationModal.renderModal({ certifications: getCertificates })}
+        {openTagModal && (
+          <ManageTagModal handleClose={handleCloseTagModal} tags={getTags} />
+        )}
       </div>
     </>
   );

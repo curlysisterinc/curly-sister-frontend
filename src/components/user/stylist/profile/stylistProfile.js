@@ -143,14 +143,16 @@ function StylistProfile() {
         </button>
         <div className="  mt-5 ">
           <div className=" book-stylist">
-            <button
-              type="button"
-              onClick={() => setGalleryVisible(true)}
-              className="absolute z-40 right-10 top-10 bg-white p-1 rounded-lg flex items-center space-x-1 cursor-pointer"
-            >
-              <HiOutlinePhotograph color="black" size={20} />
-              <p className="text-sm text-gray-400">View gallery</p>
-            </button>
+            {getStylist?.gallery?.length > 2 && (
+              <button
+                type="button"
+                onClick={() => setGalleryVisible(true)}
+                className="absolute z-40 right-10 top-10 bg-white p-1 rounded-lg flex items-center space-x-1 cursor-pointer"
+              >
+                <HiOutlinePhotograph color="black" size={20} />
+                <p className="text-sm text-gray-400">View gallery</p>
+              </button>
+            )}
             <div className="flex flex-nowrap overflow-x-auto h-80 ">
               {getStylist?.gallery?.length === 0 && (
                 <div className=" overflow-hidden w-full h-80 bg-gray-20">
@@ -173,7 +175,7 @@ function StylistProfile() {
               )}
 
               {getStylist?.gallery?.length > 1 &&
-                getStylist?.gallery?.map((gallery) => {
+                [...getStylist.gallery].splice(0, 3)?.map((gallery) => {
                   return (
                     <div key={gallery} className="overflow-hidden w-1/2 h-80 ">
                       <img
@@ -192,7 +194,7 @@ function StylistProfile() {
           <div className="col-span-8">
             <div className="flex justify-between items-end">
               <img
-                className="w-20 h-20 rounded-full"
+                className=" w-20 h-20 rounded-full object-cover"
                 src={getStylist.photo ? getStylist.photo : avatar}
                 alt=""
               />
@@ -236,7 +238,11 @@ function StylistProfile() {
           </div>
         </div>
       </div>
-      <GalleryModal visible={galleryVisible} setVisible={setGalleryVisible} />
+      <GalleryModal
+        visible={galleryVisible}
+        setVisible={setGalleryVisible}
+        gallery={getStylist.gallery}
+      />
     </div>
   );
 }

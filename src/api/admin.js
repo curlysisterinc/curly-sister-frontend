@@ -102,10 +102,13 @@ export default {
       name,
     };
     const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post("/v1/admin/create-tag", stringifiedData);
+    return curlySistersApi.post("/v1/admin/create-tag", stringifiedData);
   },
   async GetTags() {
     return curlySistersOnboarding.get("/v1/admin/find-all-tags");
+  },
+  async UpdateTag(data) {
+    return curlySistersApi.post("/v1/admin/update-tag", data);
   },
 
   async StripeCheckout(data) {

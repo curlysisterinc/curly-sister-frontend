@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { useQueries } from "@tanstack/react-query";
 import LoaderComponent from "components/loader-component";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import { Loadersmall } from "components/loader-component/loader";
+import useGetStylistById from "hooks/data/admin/useGetStylistById";
+import { toggleFixedAppLayout } from "utils";
 import admin from "../../../../../api/admin";
 import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
 import { useManageCertificationModal } from "../manageCertificationModal";
@@ -15,18 +17,15 @@ import { certificateInitials } from "./helper";
 function CertificateAndTags({
   ariaHidden,
   idx,
-  hiddenTabs,
-  activeTab,
-  isOpen,
   isEditLoading,
-  detailsValues,
-  setDetailsValues,
   stylistData,
   mode,
   handleEditStylist,
 }) {
   const [stylistCert, setStylistCert] = useState(certificateInitials);
   const [getCertificates, setGetCertificates] = useState([]);
+  const [allCertificates, setAllCertificates] = useState([]);
+  const [allTags, setAllTags] = useState([]);
   const [isTagUpdate, setIsTagUpdate] = useState(false);
   const [getTags, setGetTags] = useState([]);
   const [openTagModal, setOpenTagModal] = useState(false);
@@ -34,14 +33,20 @@ function CertificateAndTags({
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { state } = useLocation();
 
   const certificationModal = useManageCertificationModal();
-
   const results = useQueries({
     queries: [
-      { queryKey: ["certifications"], queryFn: admin.GetCertification },
-      { queryKey: ["tags"], queryFn: admin.GetTags },
+      {
+        queryKey: ["certifications"],
+        queryFn: admin.GetCertification,
+        enabled: false,
+      },
+      {
+        queryKey: ["tags"],
+        queryFn: admin.GetTags,
+        enabled: false,
+      },
     ],
   });
 
@@ -57,8 +62,8 @@ function CertificateAndTags({
     const isDataSuccess = results.every((result) => result.isSuccess);
     const isDataError = results.some((result) => result.error);
     if (isDataSuccess) {
-      setGetCertificates(results[0].data.data.data);
-      setGetTags(results[1].data.data.data);
+      setAllCertificates(results[0].data.data.data);
+      setAllTags(results[1].data.data.data);
       setIsSuccess(isDataSuccess);
     }
     if (isDataError) {
@@ -72,6 +77,7 @@ function CertificateAndTags({
   useEffect(() => {
     const ac = new AbortController();
     if (stylistData) {
+      refetchAll();
       const { certifications, tags } = stylistData;
       setStylistCert((prev) => ({
         ...prev,
@@ -117,21 +123,18 @@ function CertificateAndTags({
   // handle certification modal open
   const handleOpenCertificationModal = () => {
     certificationModal.show();
+    toggleFixedAppLayout();
   };
 
   // handle certification modal close
   const handleCloseTagModal = () => {
     setOpenTagModal(false);
-    // Unsets Background Scrolling to use when SideDrawer/Modal is closed
-    document.body.style.overflow = "unset";
+    toggleFixedAppLayout();
   };
   // handle certification modal open
   const handleOpenTagModal = () => {
     setOpenTagModal(true);
-    // Disables Background Scrolling whilst the SideDrawer/Modal is open
-    if (typeof window !== "undefined" && window.document) {
-      document.body.style.overflow = "hidden";
-    }
+    toggleFixedAppLayout();
   };
 
   const handleUpdateCertificateAndTags = () => {
@@ -142,6 +145,14 @@ function CertificateAndTags({
       tags: tags.map((tg) => tg._id),
     });
   };
+
+  const filteredCert = useMemo(() => {
+    const filtcert = allCertificates?.filter((itm) =>
+      stylistCert.certifications?.find((cert) => cert?._id === itm?._id)
+    );
+    console.log("filtcert", filtcert);
+    return filtcert;
+  }, [allCertificates, stylistCert]);
 
   return (
     <>
@@ -166,16 +177,13 @@ function CertificateAndTags({
             </button>
           </div>
           <div className="mt-5">
+            {/* {console.log({ filteredCert })} */}
             <MultiselectComponent
               buttonAction={disableInput()}
               onRemove={(e) => handleItm(e, "certifications")}
               onSelect={(e) => handleItm(e, "certifications")}
-              values={getCertificates?.filter((itm) =>
-                stylistCert.certifications?.find(
-                  (cert) => cert?._id === itm?._id
-                )
-              )}
-              data={getCertificates}
+              values={filteredCert}
+              data={allCertificates}
               placeholder="Type to search and select certifications"
             />
           </div>
@@ -198,12 +206,12 @@ function CertificateAndTags({
             <div className="mt-5">
               <MultiselectComponent
                 buttonAction={disableInput()}
-                values={getTags?.filter((itm) =>
+                values={allTags?.filter((itm) =>
                   stylistCert?.tags?.find((tag) => tag?._id === itm?._id)
                 )}
                 onRemove={(e) => handleItm(e, "tags")}
                 onSelect={(e) => handleItm(e, "tags")}
-                data={getTags}
+                data={allTags}
                 placeholder="Type to search and select tags"
               />
             </div>
@@ -213,6 +221,7 @@ function CertificateAndTags({
             <ManageTagModal
               handleClose={handleCloseTagModal}
               setIsTagUpdate={setIsTagUpdate}
+              tags={getTags}
             />
           )}
           <div className="flex justify-end">

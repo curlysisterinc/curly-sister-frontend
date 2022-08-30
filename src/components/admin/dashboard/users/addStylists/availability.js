@@ -441,6 +441,7 @@ function AvailabilityTab({ ariaHidden, idx, setActiveTab }) {
                           // setCalenderDate={(e) => handleOnChange(e)}
                           isCalenderOpen
                           setCalenderDate={(e) => handleOnChange(blockid, e)}
+                          minDate={new Date()}
                           // calenderDate={cohortDuration}
                         />
                       </div>

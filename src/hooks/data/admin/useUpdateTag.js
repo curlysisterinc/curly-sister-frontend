@@ -9,10 +9,10 @@ import admin from "../../../api/admin";
 export default () => {
   const { dispatch } = useAuthContext();
   const { addToast } = useToasts();
-  const { UpdateCertification } = admin;
+  const { UpdateTag } = admin;
   const { id } = useParams();
 
-  return useMutation((updateValue) => UpdateCertification(updateValue), {
+  return useMutation((updateValue) => UpdateTag(updateValue), {
     onSuccess: (context) => {
       // const { data } = context;
       // addToast(data.message, {

@@ -82,6 +82,8 @@ module.exports = {
       },
       spacing: {
         69: "69px",
+        500: "500px",
+        600:"600px"
       },
       minWidth: {
         30: "30%",
@@ -90,7 +92,8 @@ module.exports = {
         480: "480px",
         280: "280px",
         375: "375px",
-        640: "640px"
+        640: "640px",
+        1000: "1000px"
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",
@@ -103,6 +106,9 @@ module.exports = {
       },
       fontSize: {
         22: "1.375rem",
+      },
+      screens: {
+"xs": '480px'
       },
       backgroundImage: {
         "service-image": "url('/src/assets/images/service-image.png')",

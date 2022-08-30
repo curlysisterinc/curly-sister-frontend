@@ -37,7 +37,7 @@ function MultiselectComponent({
       borderColor: "rgba(89, 11, 169, 1)",
     },
   };
-
+  console.log({ values });
   return (
     <Multiselect
       disable={disable}

@@ -39,7 +39,7 @@ function StylistRow({
   return (
     // eslint-disable-next-line
     <>
-      {stylistsList.splice(0, 200).map((stylist, index) => {
+      {stylistsList.map((stylist, index) => {
         return (
           <tr
             key={stylist._id}

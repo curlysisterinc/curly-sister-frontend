@@ -46,7 +46,11 @@ function ActiveStylist({ bool, setBool, detailActionBtn }) {
         type="button"
         className="cursor-pointer mr-2 bg-white w-32 relative font-normal text-gray-400 h-10 font-BeatriceSemiBold text-sm capitalize flex justify-between items-center border border-solid border-gray-800  rounded-full p-3"
       >
-        {bool ? "active" : "in Active"}
+        {bool ? (
+          <p className="text-green-600">active</p>
+        ) : (
+          <p className="text-red-600">inactive</p>
+        )}
         {isLoading ? (
           <Loadersmall />
         ) : (

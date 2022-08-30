@@ -3,6 +3,7 @@ import React from "react";
 import "./App.css";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
+  MutationCache,
   QueryCache,
   QueryClient,
   QueryClientProvider,
@@ -28,12 +29,23 @@ export const queryClient = new QueryClient({
 
   queryCache: new QueryCache({
     onError: (error, query) => {
-      console.log({ error: error.response.status });
+      console.log({ error });
       toast.error(error.response.data.message);
-      // if (error.response.status === 401) {
-      //   authHandler.deleteUser();
-      //   window.location.href = "/";
-      // }
+      if (error.response.status === 401) {
+        authHandler.deleteUser();
+        window.location.href = "/";
+      }
+    },
+  }),
+
+  mutationCache: new MutationCache({
+    onError: (error, query) => {
+      console.log({ error });
+      toast.error(error.response.data.message);
+      if (error.response.status === 401) {
+        authHandler.deleteUser();
+        window.location.href = "/login";
+      }
     },
   }),
 });
