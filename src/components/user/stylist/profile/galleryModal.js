@@ -47,7 +47,7 @@ function GalleryModal({ visible, setVisible, gallery }) {
   return (
     <>
       {visible ? (
-        <div className="flex backdrop-blur-lg bg-gray-400 h-screen bg-opacity-75 items-start justify-center overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+        <div className="flex backdrop-blur-lg bg-gray-400 h-screen bg-opacity-75 items-start justify-center overflow-x-hidden overflow-y-auto fixed inset-0 z-500 outline-none focus:outline-none">
           <div className="relative md:my-6 mx-auto w-5/6 md:max-w-1000 h-full md:h-auto pt-6">
             <div className="flex justify-center items-center">
               <button

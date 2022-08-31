@@ -114,7 +114,7 @@ function Routers() {
             "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
           }}
         >
-          <div className="dark:bg-slate-800">
+          <div className="dark:bg-white">
             <Routes>
               <Route path={NonAuthRoutes.login} element={<LoginComponent />} />
               <Route

@@ -87,11 +87,11 @@ function SideNav() {
 
   return (
     <div
-      className={`md:w-60 lg:w-80  md:bg-gray-50 md:h-screen  lg:px-12  md:fixed border-r border-gray-100 shadow flex flex-col justify-between fixed z-40 bg-black-modal p-0 w-full ${
+      className={`md:w-60 lg:w-80  md:bg-gray-50 md:h-screen  lg:px-12  md:fixed flex flex-col justify-between fixed z-200  p-0 w-full ${
         isOpen ? "h-screen" : "h-69"
       }`}
     >
-      <div className="md:pt-8  py-0 px-4 bg-gray-50 md:h-full relative">
+      <div className="md:pt-8  py-0 px-4 bg-white md:bg-gray-50 md:h-full relative">
         <div className="flex items-center justify-between h-69 md:h-auto  py-2 md:mb-10">
           <Link to="/">
             <img

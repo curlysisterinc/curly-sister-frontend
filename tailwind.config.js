@@ -1,14 +1,7 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable global-require */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}",
-    "./public/index.html"],
-    purge: [
-      './src/**/*.html',
-      './src/**/*.js',
-      './src/**/*.jsx',
-    ],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   theme: {
     extend: {
       colors: {
@@ -30,8 +23,8 @@ module.exports = {
           550: "rgba(89, 11, 169, 0.05)",
           600: "#EEEDEF",
           650: "rgba(89, 11, 169, 0.25)",
-          // 650: "#F7F7F8",
           700: "#A49DAA",
+          750: "#F7F7F8",
           800: "#D5D2D7",
         },
         orange: {
@@ -46,19 +39,20 @@ module.exports = {
         black: {
           50: "rgba(0, 0, 0, 0.2)",
           100: "rgba(0, 0, 0, 0.6)",
-          "modal": "rgba(68, 60, 77, 0.65)"
+          modal: "rgba(68, 60, 77, 0.65)",
         },
         alert: {
-          success:"#47B881",
+          success: "#47B881",
           error: "#EE6D52",
           warning: "#FF8500",
-          info:"#590BA9"
-        }
+          info: "#590BA9",
+        },
       },
       height: {
         69: "69px",
         36: "36px",
         46: "46px",
+        50: "50px",
         86: "86px",
         120: "120px",
         316: "316px",
@@ -73,7 +67,7 @@ module.exports = {
         120: "120px",
         140: "140px",
         196: "196px",
-        220:"220px",
+        220: "220px",
         300: "300px",
         358: "358px",
         489: "489px",
@@ -81,20 +75,25 @@ module.exports = {
         543: "543px",
       },
       spacing: {
+        50: "50px",
         69: "69px",
+        350: "350px",
+        250: "250px",
         500: "500px",
         600: "600px",
-        "tablet":"768px"
+        tablet: "768px",
       },
       minWidth: {
         30: "30%",
       },
       maxWidth: {
         480: "480px",
+        250: "250px",
         280: "280px",
+        358: "358px",
         375: "375px",
         640: "640px",
-        1000: "1000px"
+        1000: "1000px",
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",
@@ -109,17 +108,28 @@ module.exports = {
         22: "1.375rem",
       },
       screens: {
-"xs": '480px'
+        xs: "480px",
+      },
+      zIndex: {
+        60: "60",
+        70: "70",
+        80: "80",
+        100: "100",
+        200: "200",
+        300: "300",
+        400: "400",
+        500: "500",
       },
       backgroundImage: {
         "service-image": "url('/src/assets/images/service-image.png')",
         "purple-pattern": "url('/src/assets/images/bg-one.png')",
       },
       boxShadow: {
-        s01:"0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
+        s01: "0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
         s07: "0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)",
-        sinput:"0 0 0 2px #590BA9"
-      }
+        sinput: "0 0 0 2px #590BA9",
+        s05: "0px 6px 14px -6px rgba(68, 60, 77, 0.12), 0px 10px 32px -4px rgba(68, 60, 77, 0.1)"
+      },
     },
   },
   variants: {
