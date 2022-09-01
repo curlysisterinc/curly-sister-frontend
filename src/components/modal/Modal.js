@@ -30,7 +30,7 @@ function Modal({
         content: {
           backgroundColor: "transparent",
           border: "none",
-          // padding: "20px",
+          padding: "0px",
         },
       }}
     >
@@ -44,7 +44,7 @@ function Modal({
         type="button"
         tabIndex={0}
         onClick={onRequestClose}
-        className={`fixed h-10 w-10 top-5 right-5 cursor-pointer translate-y-0 hover:opacity-90 bg-white rounded-full flex items-center justify-center ${closeButtonStyle}`}
+        className={`fixed h-10 w-10 top-2 right-5 cursor-pointer translate-y-0 hover:opacity-90 bg-white rounded-full flex items-center justify-center ${closeButtonStyle}`}
       >
         <AiOutlineCloseCircle size={34} />
       </button>
