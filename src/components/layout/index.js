@@ -15,10 +15,15 @@ import SideNav from "../sidebar";
 
 function AppLayout() {
   return (
-    <div className="max-w-screen-2xl w-full flex flex-col md:flex-row m-auto border-r border-gray-50">
+    <div
+      className=" w-full flex flex-col md:flex-row m-auto border-r border-gray-50"
+      id="appLayout"
+    >
       <SideNav />
-      <div className="md:ml-60 lg:ml-80 w-full">
-        <Outlet />
+      <div className="md:ml-60 lg:ml-80 w-full content">
+        <div className="max-w-screen-2xl m-auto">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

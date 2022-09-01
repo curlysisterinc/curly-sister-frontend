@@ -10,156 +10,149 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
+import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
+import useUpdateStylist from "hooks/data/admin/useUpdateStylist";
+import useCreateTags from "hooks/data/admin/useCreateTags";
+import useUpdateTag from "hooks/data/admin/useUpdateTag";
+import { Loadersmall } from "components/loader-component/loader";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
 
-function ManageTagModal({ handleClose, setIsTagUpdate }) {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [inputList, setInputList] = useState([{ tag: "", checked: false }]);
-  const [optionList, setOptionList] = useState([
-    { option: "", openOption: false },
-  ]);
+function ManageTagModal({ handleClose, setIsTagUpdate, tags }) {
+  const {
+    isLoading: isCreateTagsLoading,
+    data: createTagsData,
+    isError: createTagsError,
+    refetch: createTagsRefetch,
+    mutateAsync: createTag,
+  } = useCreateTags();
+
+  const {
+    isLoading: isUpdateTagsLoading,
+    data: updateTagsData,
+    isError: updateTagsError,
+    refetch: updateTagsRefetch,
+    mutateAsync: updateTag,
+  } = useUpdateTag();
+
+  const { id: stylistId } = useParams();
+  const {
+    isLoading: isStylistUpdateLoading,
+    data: stylistUpdateData,
+    isError: stylistUpdateError,
+    mutate: updateStylist,
+  } = useUpdateStylist(stylistId);
+
+  const [inputList, setInputList] = useState([]);
+
+  useEffect(() => {
+    if (tags?.length) {
+      const newTags = tags.map((item) => {
+        return { ...item, checked: false };
+      });
+      setInputList(newTags);
+    }
+  }, [tags]);
 
   useEffect(() => {
     const ac = new AbortController();
     document.title = "Curly sisters • Create tags";
 
-    // if (authenticated === null) {
-    //   navigate(NonAuthRoutes.login);
-    // } else {
-    //   navigate(AuthRoutes.home);
-    // }
-
     return function cleanup() {
       ac.abort();
-      setIsTagUpdate(false);
     };
   }, []);
+
+  useEffect(() => {
+    if (stylistUpdateData) {
+      handleClose();
+    }
+  }, [stylistUpdateData]);
+
   // handle input change
-  const handleOptionInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const option = [...optionList];
-    option[index][name] = value;
-    setOptionList(option);
+  const handleInputChange = (e, _id) => {
+    const { value } = e.target;
+    const newTag = inputList.map((tag) => {
+      const newTag = tag;
+      if (tag._id === _id) {
+        newTag[e.target.name] = value;
+      }
+      return newTag;
+    });
+    setInputList(newTag);
   };
 
   // handle click event of the Remove button
-  const handleOptionRemoveClick = (index) => {
-    const option = [...optionList];
-    option.splice(index, 1);
-    setOptionList(option);
-  };
-
-  // handle click event of the Add button
-  const handleOptionAddClick = () => {
-    setOptionList([...optionList, { option: "" }]);
-  };
-
-  // handle input change
-  const handleInputChange = (e, index) => {
-    const { name, value } = e.target;
-    const list = [...inputList];
-    list[index][name] = value;
-    setInputList(list);
-  };
-
-  // handle click event of the Remove button
-  const handleRemoveClick = (index) => {
-    const list = [...inputList];
-    list.splice(index, 1);
+  const handleRemoveClick = (id) => {
+    const list = inputList.filter((item) => item._id !== id);
     setInputList(list);
   };
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setInputList([...inputList, { tag: "", checked: false }]);
+    setInputList([
+      ...inputList,
+      { _id: new Date().getTime(), name: "", checked: false },
+    ]);
   };
 
-  // handle check
-  const handleCheckboxChange = (e, dataIndex) => {
-    const { checked } = e.target;
-    setInputList(
-      inputList.map((tag, index) => {
-        if (index === dataIndex) {
-          tag.checked = checked;
-        }
-        return tag;
-      })
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newTags = inputList.map((item) => {
+      const { name, _id } = item;
+      return {
+        name,
+        _id,
+      };
+    });
+    createOrUpdateTags(newTags);
+  };
+
+  const disableTagbutton = () => {
+    const isDisabled = inputList.some((item) => item.name === "");
+    return (
+      isDisabled ||
+      isCreateTagsLoading ||
+      isStylistUpdateLoading ||
+      isUpdateTagsLoading
     );
   };
 
-  const handleToggle = (index) => {
-    const mylist = [...inputList];
-    if (mylist[index].checked === true) {
-      return (
-        <div className="w-full  ">
-          <hr className="first:border-t ml-8 border-gray-800 w-full " />
-
-          {optionList.map((option, index) => {
-            return (
-              <div key={index}>
-                <div className=" grid grid-cols-12">
-                  <input
-                    type="text"
-                    name="option"
-                    className={clsx(
-                      optionList.length > 1 ? "col-span-11 " : "col-span-12 ",
-                      "col  py-2  border-0 pl-8 w-full text-gray-700 outline-none placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
-                    )}
-                    placeholder="Enter link here"
-                    value={option.option}
-                    onChange={(e) => handleOptionInputChange(e, index)}
-                  />
-                  {optionList.length > 1 && (
-                    <div
-                      onClick={handleOptionRemoveClick}
-                      className=" col col-span-1 py-2  cursor-pointer flex items-center justify-center border-l border-gray-800"
-                    >
-                      <img className="" src={trashIcon} alt="trash icon" />
-                    </div>
-                  )}
-                </div>
-                <hr className="border-[0.5] border-gray-800 w-full ml-8 last:border-0" />
-
-                {optionList.length - 1 === index && optionList.length < 4 && (
-                  <div
-                    onClick={handleOptionAddClick}
-                    className="text-purple-100 pl-8 text-sm font-BeatriceRegular py-3 cursor-pointer"
-                  >
-                    Add new options
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+  const createOrUpdateTags = async (tags) => {
+    try {
+      const result = await Promise.allSettled(
+        tags.map((tag) => {
+          console.log(tag);
+          // because user created id's are numbers while server creted are strings
+          if (typeof tag._id === "number") {
+            const { name } = tag;
+            return createTag(tag.name);
+          }
+          const { _id, ...rest } = tag;
+          return updateTag({ ...rest, tagId: _id });
+        })
       );
-    }
-  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const list = [...inputList];
-    let newName;
-    const listed = list.map((item) => {
-      newName = item.name;
-    });
-    admin.CreateTags(newName).then((response) => {
-      if (response.status === 200) {
-        const res = response.data;
-        const newstate = inputList.map((item) => {
-          return { ...item, name: "" };
-        });
-        setInputList(newstate);
-        setIsTagUpdate(true);
-        console.log(res);
-      }
-    });
+      console.log(result);
+      const successResult =
+        result.length &&
+        result
+          .filter((item) => item.status === "fulfilled")
+          .map(
+            (success) =>
+              success?.value?.data?.data?.tag?._id ??
+              success?.value?.data?.data?.tags?._id
+          );
+
+      if (successResult.length)
+        updateStylist({ tags: successResult, id: stylistId });
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -168,101 +161,78 @@ function ManageTagModal({ handleClose, setIsTagUpdate }) {
       className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
     >
       <div
-        className="flex items-start justify-end h-full w-full"
+        className="flex items-start justify-end h-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          className="mt-20 mr-10 bg-white rounded-full p-2"
+        <div
+          className=" bg-white rounded-full p-2 fixed top-2  right-2 xs:left-auto xs:right-500"
           onClick={handleClose}
-          src={closeModalBtn}
-          alt="close button"
-        />
-        <div className="bg-white min-h-screen p-10 w-2/5">
+          role="button"
+          tabIndex="0"
+          onKeyPress={(e) =>
+            runFunctionWhenSpaceOrEnterIsClicked(e, handleClose)
+          }
+        >
+          <img src={closeModalBtn} alt="close button" />
+        </div>
+        <div className="bg-white min-h-screen p-5 pt-10 sm:p-10 w-full max-w-480 ">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Tags
           </h4>
-          <p className="text-gray-200 text-base">Add and remove tags</p>
+          <p className="text-gray-200 text-base mb-10">Add and remove tags</p>
           <form onSubmit={handleSubmit}>
             {inputList.map((tag, index) => {
+              const { _id, name } = tag;
               return (
-                <div key={index}>
-                  <div className="mt-5 border border-gray-800 rounded-lg overflow-hidden">
-                    <div className=" grid grid-cols-12 ">
-                      <label
-                        htmlFor={tag.name}
-                        className={clsx(
-                          inputList.length > 1
-                            ? "col-span-7"
-                            : "xl:col-span-8 2xl:col-span-9",
-                          " "
-                        )}
-                      >
+                <div key={_id}>
+                  <div className="mt-5 flex">
+                    <div className="flex flex-1 border border-gray-800 rounded-lg overflow-hidden">
+                      <label htmlFor={name}>
                         <input
                           type="text"
                           name="name"
-                          id={tag.name}
-                          className="col  pl-3 py-2 appearance-none border-0 w-full text-gray-400 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                          id={name}
+                          className="appearance-none border-0  text-gray-400 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm w-full h-12"
                           placeholder="Enter link here"
-                          value={tag.name}
-                          onChange={(e) => handleInputChange(e, index)}
+                          value={name}
+                          onChange={(e) => handleInputChange(e, _id)}
                         />
                       </label>
-
-                      <div
-                        className={clsx(
-                          inputList.length > 1
-                            ? "col-span-4"
-                            : "xl:col-span-4 2xl:col-span-3",
-                          "mr-2 py-2 "
-                        )}
-                      >
-                        <label
-                          htmlFor={index + 1}
-                          className="flex items-center cursor-pointer"
-                        >
-                          <span className="mr-3 text-gray-400 text-sm ">
-                            Add options
-                          </span>
-                          <div className="relative">
-                            <input
-                              type="checkbox"
-                              onChange={(e) => handleCheckboxChange(e, index)}
-                              id={index + 1}
-                              checked={tag.checked}
-                              className="sr-only"
-                            />
-                            <div className="toggle-bg bg-gray-200 border-2 border-gray-200 h-6 w-11 rounded-full" />
-                          </div>
-                        </label>
-                      </div>
-                      {inputList.length > 1 && (
-                        <div
-                          onClick={handleRemoveClick}
-                          className=" col col-span-1 py-2  cursor-pointer flex items-center justify-center border-l border-gray-800"
-                        >
-                          <img className="" src={trashIcon} alt="trash icon" />
-                        </div>
-                      )}
                     </div>
-                    {handleToggle(index)}
-                  </div>
-                  {inputList.length - 1 === index && inputList.length < 4 && (
                     <div
-                      onClick={handleAddClick}
-                      className="text-purple-100 text-sm font-BeatriceRegular mt-5 cursor-pointer"
+                      onClick={() => handleRemoveClick(_id)}
+                      className=" col col-span-1 py-2  cursor-pointer flex items-center justify-center border-0 border-gray-800 w-10"
                     >
-                      Add new tag
+                      <img className="" src={trashIcon} alt="trash icon" />
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })}
-            <button
-              type="submit"
-              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
-            >
-              Save changes
-            </button>
+
+            {(!inputList.length || inputList.length < 10) && (
+              <div
+                onClick={handleAddClick}
+                className="text-purple-100 text-sm font-BeatriceRegular my-5 cursor-pointer"
+              >
+                Add new tag
+              </div>
+            )}
+            {!!inputList.length && (
+              <button
+                type="submit"
+                disabled={disableTagbutton()}
+                className="w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold disabled:opacity-60 disabled:cursor-not-allowed "
+              >
+                {isCreateTagsLoading ||
+                isStylistUpdateLoading ||
+                isUpdateTagsLoading ? (
+                  <Loadersmall />
+                ) : (
+                  "Save changes"
+                )}
+              </button>
+            )}
           </form>
         </div>
       </div>

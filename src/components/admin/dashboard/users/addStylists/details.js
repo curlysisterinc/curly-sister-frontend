@@ -1,18 +1,11 @@
 /* eslint-disable camelcase */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable prefer-const */
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-unused-vars */
-import { AuthRoutes } from "constants";
 import useCreateStylists from "hooks/data/admin/useCreateStylists";
+import useUploadPhoto from "hooks/data/admin/useUploadPhoto";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import admin from "../../../../../api/admin";
-import gradientAvatar from "../../../../../assets/images/gradient-avatar.svg";
 import Avatar from "../../../../../assets/images/product-recommendation.png";
-// import { Loadersmall } from "../../../../loader";
 import OrangeBtn from "../../../../customButton/orangeBtn";
-// import { PersistUserContext } from "./addStylist";
 
 function DetailsTab({
   isOpen,
@@ -53,102 +46,51 @@ function DetailsTab({
     mutate: createStylist,
   } = useCreateStylists();
 
-  const handleCreateStylist = () => {
-    createStylist(detailsValues);
-  };
+  const {
+    isLoading: isPhotoUploadLoading,
+    data: photoUploadData,
+    isError: photoUploadError,
+    refetch: photoUploadRefetch,
+    mutate: uploadPhoto,
+  } = useUploadPhoto();
 
   useEffect(() => {
     if (detailsData) {
-      // // setDetailActionBtn("Edit");
-      // console.log("detailsData", detailsData);
-      // localStorage.setItem("createdStylist", detailsData.data.stylist._id);
-      // // setActiveTab((prev) => ({ ...prev, locationTab: true }));
       navigate(
         `/dashboard/users/edit-stylist/${detailsData.data.stylist._id}?tab=location`
       );
     }
   }, [detailsData]);
 
-  // useEffect(() => {
-  // if (stylist_name) {
-  //   const vals = {
-  //     stylist_name,
-  //     license_number,
-  //     license_board,
-  //     description,
-  //     photo,
-  //   };
-  //   const values = Object.values(vals);
-
-  //   Object.keys(vals).forEach((ele, index) => {
-  //     if (ele !== "photo") {
-  //       setDetailsValues((prev) => ({ ...prev, [ele]: values[index] }));
-  //     }
-  //     if (
-  //       ele === "photo" &&
-  //       values[index] !== "" &&
-  //       values[index] !== undefined &&
-  //       values[index] !== null
-  //     ) {
-  //       setDetailsValues((prev) => ({ ...prev, [ele]: values[index] }));
-  //     }
-  //   });
-
-  //   if (values.includes("") === false) {
-  //     setActiveTab((prev) => ({ ...prev, locationTab: true }));
-  //     setOpenTab((prev) => ({ ...prev, locationTab: true }));
-  //   }
-  //   if (values.includes("") === true) {
-  //     setActiveTab((prev) => ({ ...prev, detailsTab: true }));
-  //     setOpenTab((prev) => ({ ...prev, detailsTab: true }));
-  //   }
-  // }
-  // }, [stylist_name]);
-
-  const disableBtn = () => {
-    const isValid =
-      detailsValues.stylist_name?.trim()?.length &&
-      detailsValues.description?.trim()?.length &&
-      detailsValues.license_board?.trim()?.length &&
-      detailsValues.license_number?.trim()?.length;
-    if (isValid) {
-      return false;
+  useEffect(() => {
+    if (photoUploadData) {
+      setDetailsValues({ ...detailsValues, photo: photoUploadData.data.file });
+      setCoverPhoto(photoUploadData.data.file);
+      // setImgUpload(false);
     }
-    return true;
-  };
-
-  // const disableInput = () => {
-  //   if (buttonAction === "Edit") {
-  //     return true;
-  //   }
-  //   return false;
-  // };
+  }, [photoUploadData]);
 
   // handle file change
   const handleFileChange = (e) => {
     const [addimage] = e.target.files;
-
+    e.target.value = null;
     if (addimage) {
-      setImgUpload(true);
-      // console.log(addimage, "targeted file");
       const formData = new FormData();
       formData.append("file", addimage);
-      admin
-        .UploadPhoto(formData)
-        .then((response) => {
-          setDetailsValues({ ...detailsValues, photo: response.data.file });
-          setCoverPhoto(URL.createObjectURL(addimage));
-          setImgUpload(false);
-        })
-        .catch((error) => {
-          // console.log(error.message);
-          setImgUpload(false);
-        });
+      uploadPhoto(formData);
     }
   };
 
   const handleChange = (e) => {
     setDetailsValues({ ...detailsValues, [e.target.name]: e.target.value });
+  };
+
+  const handleCreateStylist = () => {
+    createStylist({
+      ...detailsValues,
+      category_type: "walk-in only",
+      active: true,
+    });
   };
 
   const handleEditDetails = () => {
@@ -161,7 +103,7 @@ function DetailsTab({
       _id,
     } = detailsValues;
 
-    let newValue = {
+    const newValue = {
       stylist_name,
       description,
       license_number,
@@ -172,28 +114,22 @@ function DetailsTab({
     handleEditStylist(newValue);
   };
 
-  // const clickHandler = () => {
-  //   if (buttonAction === "Edit") {
-  //     setButtonAction("Update");
-  //   }
-  //   if (buttonAction === "Save") {
-  //     handleCreateStylist();
-  //   }
-  //   if (buttonAction === "Update") {
-  //     handleUpdateStyistDetail();
-  //   }
-  // };
+  const handleDisabledButton = () => {
+    const hasEmptyValue =
+      detailsValues.stylist_name === "" || detailsValues.description === "";
+    return hasEmptyValue || isLoading || isDetailsLoading;
+  };
 
   return (
     <div aria-hidden={isOpen} className="mt-5 relative">
       <div className="flex justify-between items-center w-full ">
-        <div className="relative w-20 h-20 rounded-full">
+        <div className="relative  w-20 h-20 rounded-full object-cover">
           <img
             className=" absolute inset-0 w-20 h-20 object-cover rounded-full "
             src={coverPhoto?.length > 0 ? coverPhoto : Avatar}
             alt="user profile"
           />
-          {imgUpload && (
+          {isPhotoUploadLoading && (
             <div
               style={{ transform: "translate(-50%,-50%)" }}
               className="absolute top-1/2 left-1/2"
@@ -292,7 +228,7 @@ function DetailsTab({
       <div className="flex justify-end">
         <OrangeBtn
           buttonAction={mode === "EDIT" ? "Save" : "Create"}
-          disabled={isLoading || isDetailsLoading}
+          disabled={handleDisabledButton()}
           onClick={mode === "EDIT" ? handleEditDetails : handleCreateStylist}
           isloading={isDetailsLoading || (isLoading && activeTab === "Details")}
         />

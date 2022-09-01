@@ -17,7 +17,7 @@ import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
 
-function ManageCertificationModal({ handleClose }) {
+function ManageCertificationModal({ handleClose, visible }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [inputList, setInputList] = useState([{ name: "", checked: false }]);

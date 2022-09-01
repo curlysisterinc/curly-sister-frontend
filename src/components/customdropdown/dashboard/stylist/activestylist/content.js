@@ -22,7 +22,7 @@ function content({ handleSelectItem }) {
           onClick={handleSelectItem}
           className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer "
         >
-          In Active
+          Inactive
         </button>
       </DropDownItem>
     </DropDownMenuContent>

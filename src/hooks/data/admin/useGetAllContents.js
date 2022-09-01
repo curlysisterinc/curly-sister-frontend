@@ -5,3 +5,6 @@ export default () => {
   const { GetAllContents } = admin;
   return useQuery(["contents"], () => GetAllContents(), {});
 };
+
+// GetCertification
+// GetTags

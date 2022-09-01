@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import SelectOptions from "components/selectOptions";
 import { Select, SelectItem } from "../../../../../customSelect";
 import dash from "../../../../../../assets/images/dash.svg";
 import { timeArr } from "../../data";
@@ -19,54 +20,41 @@ function TimeRange({
   const { from, to } = selected;
 
   const onSelectchangeone = (e) => {
-    const index = timeArr.findIndex((itm) => itm.value === e);
+    const index = timeArr.findIndex((itm) => itm.value === e.target.value);
     setFirstIndex(index);
     const defaultTime2 = timeArr[index + 1].value;
-
-    bookingStarttime(selectedid, e, defaultTime2);
+    bookingStarttime(selectedid, e.target.value, defaultTime2);
   };
 
   const onSelectchangetwo = (e) => {
-    bookingEndtime(selectedid, e);
+    bookingEndtime(selectedid, e.target.value);
   };
 
   return (
     <div className="flex items-center">
-      <Select
-        id="t1"
-        name="t1"
-        className={selectclassname}
+      <SelectOptions
+        placeholder="Start time"
+        collection={timeArr.slice(0, -1)}
         onChange={onSelectchangeone}
+        name="from"
+        // selectedValue="value"
+        optionvalue="value"
+        optionlabelvalue="label"
         value={from}
-        disabled={buttonAction === "Edit"}
-        default={defaultval}
-      >
-        {timeArr.slice(0, -1).map((itm) => {
-          return (
-            <SelectItem key={itm.value} value={itm.value}>
-              {itm.label}
-            </SelectItem>
-          );
-        })}
-      </Select>
+      />
+
       <img className="mx-2" src={dash} alt="" />
-      <Select
+
+      <SelectOptions
+        placeholder="End time"
+        collection={timeArr.slice(firstIndex + 1)}
         onChange={onSelectchangetwo}
-        id="t2"
-        name="t2"
-        className={selectclassname}
-        disabled={buttonAction === "Edit"}
+        name="from"
+        // selectedValue="value"
+        optionvalue="value"
+        optionlabelvalue="label"
         value={to}
-        default={defaultval}
-      >
-        {timeArr.slice(firstIndex + 1).map((itm) => {
-          return (
-            <SelectItem key={itm.value} value={itm.value}>
-              {itm.label}
-            </SelectItem>
-          );
-        })}
-      </Select>
+      />
     </div>
   );
 }
