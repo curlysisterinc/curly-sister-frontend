@@ -5,7 +5,11 @@ import curlyGirls from "../../assets/images/curly-girl-group.png";
 
 function AuthSideBarComponent({ signin }) {
   return (
-    <div className="w-full lg:w-96 bg-orange-150 p-5 lg:p-8 lg:h-screen lg:fixed shadow">
+    <div
+      className=" bg-orange-150 lg:p-8 lg:h-screen lg:fixed
+    md:w-60 lg:w-80 md:h-screen p-5 lg:px-12  md:fixed flex flex-col justify-between fixed z-200   w-full
+    "
+    >
       <div className="text-gray-400 text-xl font-semibold">
         <Link to="/">
           <img className="h-20" src={brandLogo} alt="brand logo" />

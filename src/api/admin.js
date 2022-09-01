@@ -52,8 +52,11 @@ export default {
   async CreateAvailability(data) {
     return curlySistersApi.post("/v1/admin/add-availability", data);
   },
+  async UpdateAvailability(data) {
+    return curlySistersApi.post("/v1/admin/update-availability", data);
+  },
   async GetAvailabilityById(id) {
-    return curlySistersOnboarding.get(`/v1/admin/get-availability/${id}`);
+    return curlySistersApi.get(`/v1/admin/get-availability/${id}`);
   },
   async CreateServices(data) {
     return curlySistersApi.post("/v1/admin/create-service", data);
@@ -83,28 +86,29 @@ export default {
     );
   },
 
-  async CreateCertification(name) {
-    const data = {
-      name,
-    };
-    const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post(
-      "/v1/admin/create-certifications",
-      stringifiedData
-    );
+  async CreateCertification(data) {
+    return curlySistersApi.post("/v1/admin/create-certifications", data);
   },
   async GetCertification() {
-    return curlySistersOnboarding.get("/v1/admin/find-all-certifications");
+    return curlySistersApi.get("/v1/admin/find-all-certifications");
   },
+
+  async UpdateCertification(data) {
+    return curlySistersApi.post("/v1/admin/update-certifications", data);
+  },
+
   async CreateTags(name) {
     const data = {
       name,
     };
     const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post("/v1/admin/create-tag", stringifiedData);
+    return curlySistersApi.post("/v1/admin/create-tag", stringifiedData);
   },
   async GetTags() {
     return curlySistersOnboarding.get("/v1/admin/find-all-tags");
+  },
+  async UpdateTag(data) {
+    return curlySistersApi.post("/v1/admin/update-tag", data);
   },
 
   async StripeCheckout(data) {

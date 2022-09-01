@@ -108,7 +108,7 @@ function ResetPasswordComponent() {
   });
 
   return (
-    <div className="max-w-screen-2xl w-full flex flex-col lg:flex-row  m-auto border border-gray-50">
+    <div className="max-w-screen-2xl w-full flex flex-col lg:flex-row  m-auto border h-full border-gray-50">
       <AuthSideBarComponent signin="back" />
       <div className="lg:ml-96 p-5  sm:p-10 lg:p-28 bg-white w-full">
         <div className="w-full lg:w-3/4  ">

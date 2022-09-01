@@ -18,7 +18,7 @@ const CommonCard = ({ stylist }) => {
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg">
       <img
-        className="rounded-full h-20 w-20"
+        className="rounded-full h-20 w-20 object-cover"
         src={stylist.photo ? stylist.photo : stylistAvatar}
         alt="stylist"
       />

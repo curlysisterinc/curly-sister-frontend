@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
+import useGetStylistById from "hooks/data/admin/useGetStylistById";
+import useUploadToGallery from "hooks/data/admin/useUploadToGallery";
+import useUpdateStylist from "hooks/data/admin/useUpdateStylist";
 import uploadFile from "../../../../../assets/images/upload-file.png";
 // import { Loadersmall } from "../../../../loader";
 import trashWhite from "../../../../../assets/images/trash-white.svg";
@@ -9,143 +12,113 @@ import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
 import { galleryInitials } from "./helper";
 
 function GalleryTab({ ariaHidden, idx }) {
-  const [stylistGallery, setStylistGallery] = useState(galleryInitials);
-  const [buttonAction, setButtonAction] = useState("Save");
-  const [isloading, setIsloading] = useState(false);
-  const stylistId = localStorage.getItem("createdStylist");
-  const [uploadnewData, setUploadnewData] = useState(false);
-  const { state } = useLocation();
+  const { id: stylistId } = useParams();
+  const [galleryImages, setGalleryImages] = useState([]);
 
-  useChangeBtnTitle("gallery", setButtonAction, setStylistGallery);
+  const {
+    isLoading: isStylistLoading,
+    data: stylistData,
+    isError: stylistError,
+    refetch: stylistRefetch,
+  } = useGetStylistById(stylistId);
+
+  const {
+    isLoading: isUpdateStylistLoading,
+    data: updateStylistData,
+    error: updateStylistError,
+    mutate: updateStylist,
+  } = useUpdateStylist();
+
+  const {
+    isLoading: isGalleryUploadLoading,
+    data: galleryUploadData,
+    isError: galleryUploadError,
+    refetch: galleryUploadRefetch,
+    mutate: uploadGallery,
+  } = useUploadToGallery();
 
   useEffect(() => {
     const ac = new AbortController();
-    if (state !== "" || state !== undefined || state !== null) {
-      setIsloading(true);
-      admin
-        .GetStylistById(stylistId)
-        .then((res) => {
-          const { gallery } = res.data.stylist;
-
-          gallery.forEach((picture) => {
-            setStylistGallery((prev) => ({
-              ...prev,
-              preview: [
-                ...prev.preview,
-                { img: picture, name: picture.substring(picture.length - 10) },
-              ],
-              update: {
-                ...prev.update,
-                gallery: [...prev.update.gallery, picture],
-              },
-            }));
-          });
-
-          setIsloading(false);
-        })
-        .catch((err) => {
-          console.log(err, "error fetching existing stylist information");
-          setIsloading(false);
-        });
+    if (stylistData) {
+      setGalleryImages(stylistData.data.stylist.gallery);
     }
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [stylistData]);
+
+  useEffect(() => {
+    const ac = new AbortController();
+    if (galleryUploadData) {
+      const result = galleryUploadData.data.uploaded_imges;
+      // get the previous images
+      const newImages = galleryImages.filter(
+        (item) => typeof item === "string"
+      );
+
+      const ImagesToUpdate = [...newImages, ...result];
+      updateStylist({ id: stylistId, gallery: ImagesToUpdate });
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [galleryUploadData]);
 
   const handleFileChange = (e) => {
-    const [displayImage] = Array.from(e.target.files).map((file) =>
-      URL.createObjectURL(file)
-    );
-    const [imgObj] = e.target.files;
-    const { name } = imgObj;
-    setStylistGallery((prev) => ({
-      ...prev,
-      preview: [...prev.preview, { img: displayImage, name }],
-      toUpload: [...prev.toUpload, imgObj],
-    }));
-  };
-
-  useEffect(() => {
-    const ac = new AbortController();
-    if (uploadnewData === true) {
-      admin
-        .UpdateStylist(stylistGallery.update)
-        .then((response) => {
-          console.log(response.data, "updating stylist with gallery");
-          setButtonAction("Edit");
-          setIsloading(false);
-          setUploadnewData(false);
-        })
-        .catch((error) =>
-          console.log(error, "error updating stylist with gallery")
-        );
-    }
-    return function cleanup() {
-      ac.abort();
-    };
-  }, [uploadnewData]);
-
-  const onSavehandler = () => {
-    setIsloading(true);
-    const formdata = new FormData();
-
-    stylistGallery.toUpload.forEach((photo) => {
-      formdata.append(`file`, photo);
+    const displayImage = Array.from(e.target.files).map((file, index) => {
+      return {
+        link: URL.createObjectURL(file),
+        file,
+        key: new Date().getTime() + index,
+      };
     });
-    admin
-      .UploadtoGallery(formdata)
-      .then((res) => {
-        setStylistGallery((prev) => ({
-          ...prev,
-          update: { ...prev.update, gallery: [...res.data?.uploaded_imges] } //eslint-disable-line
-        }));
-        setUploadnewData(true);
-      })
-      .catch((err) => console.log(err, "error uploading Image"));
+
+    setGalleryImages([...galleryImages, ...displayImage]);
   };
 
-  const btnClickHandler = () => {
-    if (buttonAction === "Save" || buttonAction === "Update") {
-      onSavehandler();
-    }
-    if (buttonAction === "Edit") {
-      setButtonAction("Update");
+  const saveAndUploadPictures = () => {
+    const formdata = new FormData();
+    const imagesToUpload = galleryImages.filter(
+      (item) => typeof item === "object"
+    );
+
+    if (imagesToUpload.length) {
+      imagesToUpload.forEach((photo) => {
+        formdata.append(`file`, photo.file);
+      });
+      uploadGallery(formdata);
+    } else {
+      updateStylist({ id: stylistId, gallery: galleryImages });
     }
   };
 
   // handle click event of the Remove button
   const removeImage = (path) => {
-    const { img, name } = path;
-    const otherPreviewData = stylistGallery.preview.filter(
-      (itm) => itm.img !== img
-    );
-    const otherUploadData = stylistGallery.toUpload.filter(
-      (itm) => itm.name !== name
-    );
+    const newImages = galleryImages.filter((item) => {
+      if (typeof item === "object") {
+        return item?.key !== path;
+      }
+      return item !== path;
+    });
 
-    setStylistGallery((prev) => ({
-      ...prev,
-      preview: [...otherPreviewData],
-      toUpload: [...otherUploadData],
-    }));
+    setGalleryImages(newImages);
   };
+
   const renderPhotos = (src) => {
     return (
       src.length > 0 &&
       src.map((path) => {
         return (
-          <div key={path?.img} className="relative mb-5 mx-2">
+          <div key={path?.key ?? path} className="relative mb-5 mx-2">
             <button
               type="button"
-              disabled={buttonAction === "Edit"}
               className="absolute bg-gray-450 rounded-full p-1 left-0"
-              onClick={() => removeImage(path)}
+              onClick={() => removeImage(path?.key ?? path)}
             >
               <img src={trashWhite} alt="remove item" />
             </button>
             <img
-              src={path?.img}
+              src={typeof path === "object" ? path.link : path}
               className="h-16 w-120 object-contain"
               alt="cover"
             />
@@ -158,36 +131,28 @@ function GalleryTab({ ariaHidden, idx }) {
   return (
     <div className="relative" aria-hidden={ariaHidden} id={idx}>
       <div className="mt-5 flex flex-wrap justify-start">
-        <div className="mb-5 mx-2">
+        <div className="mb-5 mx-2 cursor-pointer">
           <input
-            disabled={buttonAction === "Edit"}
+            disabled={isGalleryUploadLoading || isUpdateStylistLoading}
             type="file"
             multiple={true} //eslint-disable-line
-            accept="images/*"
+            accept="image/*"
             name="gallery"
             onChange={handleFileChange}
-            className="opacity-0 absolute h-16 w-120  border"
+            className="opacity-0 absolute h-16 w-120  border cursor-pointer"
           />
 
-          <img src={uploadFile} className="h-16 w-120" alt="" />
+          <img src={uploadFile} className="h-16 w-120 cursor-pointer" alt="" />
         </div>
-        {renderPhotos(stylistGallery.preview)}
+        {renderPhotos(galleryImages)}
       </div>
       <div className="flex justify-end">
         <OrangeBtn
-          buttonAction={buttonAction}
-          // disabled={disableBtn()}
-          onClick={btnClickHandler}
-          isloading={isloading}
+          buttonAction="Save"
+          disabled={isGalleryUploadLoading || isUpdateStylistLoading}
+          onClick={saveAndUploadPictures}
+          isloading={isGalleryUploadLoading || isUpdateStylistLoading}
         />
-        {/* <button
-          onClick={btnClickHandler}
-          type="button"
-          className="text-sm disabled:opacity-50 font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white mt-5 flex items-center gap-x-2"
-        >
-          {buttonAction}
-          {isloading && <Loadersmall />}
-        </button> */}
       </div>
     </div>
   );

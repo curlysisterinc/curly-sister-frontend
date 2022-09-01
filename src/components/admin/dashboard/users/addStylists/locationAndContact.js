@@ -230,7 +230,7 @@ function LocationAndContact({
           Phone Number
           <div className="phoneinput mt-3 relative flex flex-1 ">
             <PhoneInput
-              inputClass="relative shadow-sm col-span-8 appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              inputClass="relative shadow-sm col-span-8 appearance-none mt-3 border border-gray-800 rounded-lg w-full h-46 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline "
               inputStyle={{ width: "100%", height: "unset" }}
               dropdownClass="bg-black-50"
               buttonClass=""

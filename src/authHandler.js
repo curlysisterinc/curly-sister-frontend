@@ -45,8 +45,8 @@ export default {
     return JSON.parse(localStorage.getItem("user"));
   },
   deleteUser() {
-    JSON.parse(localStorage.removeItem("user"));
-    JSON.parse(localStorage.removeItem("token"));
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   },
   userRole() {
     return JSON.parse(localStorage.getItem("token"));

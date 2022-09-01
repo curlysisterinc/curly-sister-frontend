@@ -471,7 +471,7 @@ export const getService = [
 ];
 
 export const weekList = [
-  { id: 1, day: "Mon", selected: true },
+  { id: 1, day: "Mon", selected: false },
   { id: 2, day: "Tue", selected: false },
   { id: 3, day: "Wed", selected: false },
   { id: 4, day: "Thu", selected: false },
