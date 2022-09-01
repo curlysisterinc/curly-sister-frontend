@@ -7,7 +7,7 @@ import { AiTwotoneStar } from "react-icons/ai";
 import reviewAvatar1 from "../../../assets/images/about-pix1.png";
 import reviewAvatar2 from "../../../assets/images/funmi.png";
 import { FaEllipsisH } from "react-icons/fa";
-import { ReactComponent as GoogleIcon } from "../../../assets/images/google.svg";
+import { ReactComponent as GoogleIcon } from "../../../assets/images/google-icon.svg";
 
 const GeneralReviewCard = () => {
   return (

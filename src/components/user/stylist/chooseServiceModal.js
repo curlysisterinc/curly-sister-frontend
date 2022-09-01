@@ -120,20 +120,24 @@ function ChooseServiceModal({
   console.log(getServices1, "stylist", getServices2, "every");
 
   return (
-    <Modal isOpen={visible} onRequestClose={closeModal}>
+    <Modal
+      isOpen={visible}
+      onRequestClose={closeModal}
+      overlayColor=" rgba(68, 60, 77, 0.8)"
+    >
       <form
         onSubmit={continueButton}
-        className="bg-white rounded-2xl shadow-md overflow-hidden h-full relative  w-full grid grid-cols-12 "
+        className="bg-white rounded-2xl shadow-md overflow-hidden h-full relative  w-full flex flex-col md:flex-row"
       >
-        <div className=" col-span-5 border-r border-gray-250">
+        <div className="  border-r border-gray-250">
           <div>
-            <div className="p-8">
+            <div className="p-4 md:p-8">
               <p className="text-sm text-gray-400">Choose a service</p>
               <div className="flex items-center space-x-5 w-full mt-3">
                 <button
                   type="button"
                   onClick={() => setIsActive("everyone")}
-                  className={`text-sm pb-3 border-b-4 cursor-pointer ${
+                  className={`text-sm pb-1 border-b-4 cursor-pointer ${
                     isActive === "everyone"
                       ? "text-purple-100  border-purple-100 "
                       : "text-gray-300 border-white"
@@ -144,7 +148,7 @@ function ChooseServiceModal({
                 <button
                   type="button"
                   onClick={() => setIsActive("stylists")}
-                  className={`text-sm pb-3 cursor-pointer border-b-4 ${
+                  className={`text-sm pb-1 cursor-pointer border-b-4 ${
                     isActive === "stylists"
                       ? "text-purple-100  border-purple-100 "
                       : "text-gray-300 border-white"
@@ -260,7 +264,7 @@ function ChooseServiceModal({
             </div>
           </div>
         </div>
-        <div className=" col-span-7 px-10 py-8 ">
+        <div className="  px-10 py-8 ">
           <section>
             <header>
               <h4 className="text-sm">Choose a date and time</h4>
