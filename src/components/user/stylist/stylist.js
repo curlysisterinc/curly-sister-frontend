@@ -6,6 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
+import useSearchStylist from "hooks/data/utility/useSearchStylist";
 import useGetCurrentLocation from "hooks/useGetCurrentLocation";
 
 import admin from "api/admin";
@@ -18,31 +19,24 @@ import StylistMap from "./StylistMap";
 
 function Stylist() {
   const positionData = useGetCurrentLocation();
+  const { data: stylistData, isLoading, isError } = useGetAllStylists();
+  const {
+    data: stylistSearchData,
+    isLoading: isSearchLoading,
+    error: isSearchError,
+    mutate: searchStylist,
+  } = useSearchStylist();
+
+  const stylists = stylistData?.data?.stylists;
 
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);
   const [categories, setCategories] = useState("all-stylist");
   const [coord, setCoord] = useState({ lat: "", lng: "" });
-  const [status, setStatus] = useState(null);
-  const [certifications, setCertifications] = useState([
-    {
-      id: 1,
-      checked: false,
-      label: "Deva",
-    },
-    {
-      id: 2,
-      checked: false,
-      label: "Quidad",
-    },
-    {
-      id: 3,
-      checked: false,
-      label: "Ketch",
-    },
-  ]);
+  const [searchAddress, setSearchAddress] = useState(null);
+  const [certifications, setCertifications] = useState([]);
   const [getServices, setGetServices] = useState([]);
   const [filteredArr, setFilteredArr] = useState([]);
-  const [getStylist, setGetStylist] = React.useState([]);
+  const [stylistList, setStylistList] = React.useState([]);
 
   const handleSelectToggle = () => {
     // console.log("handleSelectToggle", selectBookableStylist);
@@ -66,7 +60,7 @@ function Stylist() {
     // console.log(updatedList, "all");
     if (selectBookableStylist === true) {
       updatedList = updatedList.filter((item) => item.services.length > 0);
-      // setGetStylist(updatedList);
+      // setStylistList(updatedList);
       // console.log(updatedList, "services available");
     }
 
@@ -77,15 +71,13 @@ function Stylist() {
       // console.log(updatedList, "all stylist");
     }
 
-    setGetStylist(updatedList);
+    setStylistList(updatedList);
   };
-  const { data: stylistData, isLoading, isError } = useGetAllStylists();
-  const stylists = stylistData?.data?.stylists;
 
   React.useEffect(() => {
     if (stylistData) {
-      setFilteredArr(stylists);
-      setGetStylist(stylists);
+      setFilteredArr(stylistData.data.stylists);
+      setStylistList(stylistData.data.stylists);
     }
   }, [stylistData]);
 
@@ -102,9 +94,9 @@ function Stylist() {
     };
   }, []);
 
-  React.useEffect(() => {
-    applyFilter();
-  }, [selectBookableStylist, categories]);
+  // React.useEffect(() => {
+  //   applyFilter();
+  // }, [selectBookableStylist, categories]);
 
   // Store autocomplete object in a ref.
   // This is done because refs do not trigger a re-render when changed.
@@ -131,7 +123,37 @@ function Stylist() {
       return;
     }
 
-    const geo = places[0].geometry.location;
+    const place = places[0];
+    const geo = place.geometry.location;
+    const address = place.address_components;
+
+    const componentMap = {};
+
+    address.map((item) => {
+      const { types } = item;
+      if (types.includes("country")) {
+        componentMap.country = item.long_name;
+      }
+      if (types.includes("administrative_area_level_1")) {
+        componentMap.state = item.long_name;
+      }
+      if (types.includes("administrative_area_level_2")) {
+        componentMap.city = item.long_name;
+      }
+      return null;
+    });
+
+    // console.log({
+    //   ...componentMap,
+    //   address: place.name,
+    // });
+    // console.log("places", places[0]);
+    searchStylist({
+      // ...componentMap,
+      // address: place.name,
+      address: document.getElementById("searchInput").value,
+    });
+
     setCoord({
       ...coord,
       lat: geo.lat(),
@@ -139,7 +161,7 @@ function Stylist() {
     });
   };
 
-  const handleScriptLoad = () => {
+  const handleScriptLoad = (map, maps) => {
     // Initialize Google Autocomplete
     /* global google */ // To disable any eslint 'google not defined' errors
     autocompleteRef.current = new google.maps.places.SearchBox(
@@ -155,7 +177,7 @@ function Stylist() {
   };
 
   return (
-    <div className="bg-white px-10 pt-8 w-full min-h-screen">
+    <div className="bg-white px-10 pt-8 w-full min-h-screen mt-50 md:mt-0">
       {isLoading && <Loader />}
       {stylistData && (
         <>
@@ -167,14 +189,14 @@ function Stylist() {
             categories={categories}
             handleSelectCategory={handleSelectCategory}
             getServices={getServices}
-            handleScriptLoad={handleScriptLoad}
             handleClick={handleClick}
           />
           <hr className="w-full border border-gray-600 mt-8" />
           <StylistList
-            list={stylists}
+            list={stylistList}
             selectedPlace={{ lat: coord.lat, lng: coord.lng }}
             positionData={positionData}
+            handleScriptLoad={handleScriptLoad}
           />
         </>
       )}

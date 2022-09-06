@@ -118,7 +118,7 @@ function ManageCertificationModal({
       const newCerts = stylistCertifications.map((item) => {
         return {
           ...item,
-          isMoreOptionChecked: !!item.options.length,
+          isMoreOptionChecked: !!item?.options?.length,
           options: item.options.map((v, index) => {
             return {
               text: v,

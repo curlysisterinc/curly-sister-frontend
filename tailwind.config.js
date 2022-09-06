@@ -59,6 +59,7 @@ module.exports = {
         500: "500px",
         150: "150px",
         520: "520px",
+        "90vh":"90vh"
       },
       width: {
         36: "36px",
@@ -73,15 +74,20 @@ module.exports = {
         489: "489px",
         480: "480px",
         543: "543px",
+        "95vw":"95vw"
       },
       spacing: {
         50: "50px",
         69: "69px",
         350: "350px",
         250: "250px",
+        428:"428px",
         500: "500px",
         600: "600px",
         tablet: "768px",
+      },
+      maxHeight: {
+        700: "700px",
       },
       minWidth: {
         30: "30%",
@@ -94,6 +100,7 @@ module.exports = {
         375: "375px",
         640: "640px",
         1000: "1000px",
+        1170: "1170px",
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",

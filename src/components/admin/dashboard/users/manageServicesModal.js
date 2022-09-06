@@ -9,6 +9,7 @@
 import React, { useEffect, useState } from "react";
 import useCreateServices from "hooks/data/admin/useCreateServices";
 import { Loadersmall } from "components/loader-component/loader";
+import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
 import admin from "../../../../api/admin";
@@ -43,7 +44,15 @@ function ManageServicesModal({ handleClose }) {
   }, []);
   const handleSubmitService = (e) => {
     e.preventDefault();
-    createServices(serviceList);
+    const serviceDuration =
+      serviceList.durationTime === "hour"
+        ? serviceList.duration * 60
+        : serviceList.duration * 1;
+    createServices({ ...serviceList, duration: serviceDuration });
+  };
+
+  const handleSubmitDisabled = () => {
+    return Object.values(serviceList).some((item) => item.trim() === "");
   };
 
   useEffect(() => {
@@ -67,19 +76,24 @@ function ManageServicesModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full min-h-screen"
+      className=" fixed top-0 left-0 h-full overflow-y-auto  bg-black-100 w-full z-500"
     >
       <div
         className="flex  justify-end items-start h-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          className="mt-20 mr-10 bg-white rounded-full p-2"
+        <div
+          className=" bg-white rounded-full p-2 fixed top-2  right-2 xs:left-auto xs:right-500"
           onClick={handleClose}
-          src={closeModalBtn}
-          alt="close button"
-        />
-        <div className="bg-white p-10 w-2/5 h-screen">
+          role="button"
+          tabIndex="0"
+          onKeyPress={(e) =>
+            runFunctionWhenSpaceOrEnterIsClicked(e, handleClose)
+          }
+        >
+          <img src={closeModalBtn} alt="close button" />
+        </div>
+        <div className="bg-white min-h-screen p-5 pt-10 sm:p-10 w-full max-w-480 ">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Add a service
           </h4>
@@ -123,7 +137,7 @@ function ManageServicesModal({ handleClose }) {
                 />
               </label>
             </div>
-            <div className="mb-6 grid grid-cols-2 gap-6">
+            <div className="mb-6 grid  md:grid-cols-2 gap-6">
               {/* default price */}
               <div className="col relative">
                 <label
@@ -146,6 +160,7 @@ function ManageServicesModal({ handleClose }) {
                         id="currency"
                         name="currency"
                         className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
+                        disabled
                       >
                         <option>$USD</option>
                         <option>$CAD</option>
@@ -175,8 +190,9 @@ function ManageServicesModal({ handleClose }) {
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
                       <select
                         id="duration"
-                        name="duration"
-                        // onChange={handleChange}
+                        name="durationTime"
+                        onChange={handleChange}
+                        value={serviceList.durationTime}
                         className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
                       >
                         <option value="mins">mins</option>
@@ -229,7 +245,8 @@ function ManageServicesModal({ handleClose }) {
             <button
               type="button"
               onClick={handleSubmitService}
-              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm flex justify-center font-BeatriceSemiBold items-center"
+              disabled={handleSubmitDisabled()}
+              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm flex justify-center font-BeatriceSemiBold items-center disabled:opacity-40"
             >
               {isLoading ? <Loadersmall /> : "Create service"}
             </button>

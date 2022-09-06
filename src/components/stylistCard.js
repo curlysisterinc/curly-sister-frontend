@@ -59,7 +59,7 @@ export default function CommonCard({ stylist }) {
         </div>
         <div className="flex flex-col space-y-3 mt-4">
           <p className="text-base font-BeatriceSemiBold text-gray-400">
-            {stylist.stylist_name}
+            {stylist.business_name}
           </p>
           <p className="text-sm text-gray-400 line-clamp-2">
             {stylist.description}

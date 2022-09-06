@@ -137,7 +137,6 @@ function ManageTagModal({ handleClose, setIsTagUpdate, tags }) {
         })
       );
 
-      console.log(result);
       const successResult =
         result.length &&
         result
@@ -158,7 +157,7 @@ function ManageTagModal({ handleClose, setIsTagUpdate, tags }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
+      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full z-500"
     >
       <div
         className="flex items-start justify-end h-full"

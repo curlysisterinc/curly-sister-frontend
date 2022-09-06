@@ -87,7 +87,7 @@ const ForgotPasswordComponent = lazy(() =>
 );
 const TermsAndPrivacy = lazy(() => import("./components/termsAndPrivacy"));
 const ResetPasswordComponent = lazy(() => import("./components/resetPassword"));
-// const UserHome = lazy(() => import("./components/userHome"));
+const UserHome = lazy(() => import("./components/userHome"));
 const AdminDashbaord = lazy(() => import("./components/admin"));
 const AddStylist = lazy(() =>
   import("components/admin/dashboard/users/addStylists/addStylist")

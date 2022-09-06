@@ -116,6 +116,9 @@ function LocationAndContact({
       latitude,
       longitude,
       email,
+      country,
+      state: userState,
+      city,
       _id,
     } = stylistLocation;
 
@@ -128,6 +131,9 @@ function LocationAndContact({
       zipcode,
       latitude,
       longitude,
+      country,
+      state: userState,
+      city,
       email,
       _id,
     };
@@ -162,21 +168,38 @@ function LocationAndContact({
   };
 
   const handlePlaceSelect = () => {
-    console.log("whats happening");
     const places = autocompleteRef.current.getPlaces();
-    console.log({ places });
     if (places.length === 0) {
       return;
     }
 
-    const geo = places[0].geometry.location;
+    const place = places[0];
+    const geo = place.geometry.location;
+    const address = place.address_components;
+    const componentMap = {};
 
-    setStylistLocation({
-      ...stylistLocation,
+    address.map((item) => {
+      const { types } = item;
+
+      if (types.includes("country")) {
+        componentMap.country = item.long_name;
+      }
+      if (types.includes("administrative_area_level_1")) {
+        componentMap.state = item.long_name;
+      }
+      if (types.includes("administrative_area_level_2")) {
+        componentMap.city = item.long_name;
+      }
+      return null;
+    });
+
+    setStylistLocation((prev) => ({
+      ...prev,
+      ...componentMap,
       address: searchInput?.current?.value,
       latitude: geo.lat(),
       longitude: geo.lng(),
-    });
+    }));
   };
 
   return (

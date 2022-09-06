@@ -1,11 +1,3 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-unused-vars */
-/* eslint-disable prefer-regex-literals */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable camelcase */
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SideBarComponent from "../sidebar";

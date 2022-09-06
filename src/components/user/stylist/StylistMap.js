@@ -16,7 +16,7 @@ function LocationMaker({ text, $hover, stylist, ...rest }) {
   );
 }
 
-function MapMaker({ text, $hover, stylist, ...rest }) {
+function MapMaker({ text, $hover, stylist, handleScriptLoad, ...rest }) {
   const { data, isMapLoaded } = text;
   const style = $hover ? "flex" : "hidden";
   const display = isMapLoaded ? "visible" : "invisible";
@@ -56,7 +56,12 @@ function MapMaker({ text, $hover, stylist, ...rest }) {
   );
 }
 
-export default function StylistMap({ stylelist, selectedPlace, positionData }) {
+export default function StylistMap({
+  stylelist,
+  selectedPlace,
+  positionData,
+  handleScriptLoad,
+}) {
   const { position, status: currentLocationStatus } = positionData;
   const { lat, lng } = position;
 
@@ -137,19 +142,16 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
             : "opacity-0 h-0 transition-opacity relative"
         }`}
       >
-        {/* <button
-          type="button"
-          className="absolute left-0 top-0 text-gray-200 text-sm cursor-pointer z-50"
-        >
-          toggle map
-        </button> */}
         {defaultProps?.center?.lat && (
           <GoogleMapReact
-            bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API }}
+            bootstrapURLKeys={{
+              key: process.env.REACT_APP_MAP_API,
+              libraries: ["places"],
+            }}
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
             options={createMapOptions}
-            onGoogleApiLoaded={({ map, maps }) => setIsMapLoaded(true)}
+            onGoogleApiLoaded={({ map, maps }) => handleScriptLoad(map, maps)}
             yesIWantToUseGoogleMapApiInternals
             center={[mapGeo.latitude, mapGeo.longitude]}
           >

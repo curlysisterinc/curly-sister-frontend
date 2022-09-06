@@ -22,7 +22,6 @@ function StylistRow({
   setSelectedId,
   setCallToAction,
 }) {
-  console.log({ stylistsList });
   const navigate = useNavigate();
   const onCheck = (e, id) => {
     if (e.target.checked) {
@@ -33,8 +32,6 @@ function StylistRow({
       setSelectedId((prev) => prev.filter((item) => item !== id));
     }
   };
-
-  console.log(stylistsList);
 
   return (
     // eslint-disable-next-line
@@ -61,20 +58,24 @@ function StylistRow({
               <img
                 src={stylist.photo ? stylist.photo : Avatar}
                 alt=""
-                className="h-10 w-10 rounded-full"
+                className="h-10 w-10 rounded-full object-cover"
               />
               <div className="ml-2">
                 <p className="text-sm text-gray-400 mb-1">
-                  {stylist.stylist_name}
+                  {stylist.business_name}
                 </p>
                 <p className="text-xs text-gray-200 ">{stylist.email}</p>
               </div>
             </td>
+
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {stylist.category_type}
+              {stylist?.category_type ||
+                (stylist?.services.length
+                  ? "Curly sister stylist"
+                  : "Walk-in only stylist")}
             </td>
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {/* {stylist.location} */} Nigeria
+              {stylist?.location || stylist?.country}
             </td>
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
               {stylist.active === true ? (

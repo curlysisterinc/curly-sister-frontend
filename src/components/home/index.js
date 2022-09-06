@@ -1,32 +1,21 @@
-/* eslint-disable react/function-component-definition */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable import/no-cycle */
-/* eslint-disable import/order */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { useState, useEffect } from "react";
-import SideBarComponent from "../sidebar";
 import { Link, useNavigate } from "react-router-dom";
+import UserHome from "components/userHome";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
+import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
+import { useQueries } from "@tanstack/react-query";
+import SideBarComponent from "../sidebar";
 import authHandler from "../../authHandler";
 import learn from "../../api/learn";
 import admin from "../../api/admin";
 import LandingPage from "./landingPage";
-import UserHome from "components/userHome";
-import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
-import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
 import { useAuthContext } from "../../redux/auth";
-import { useQueries } from "@tanstack/react-query";
 // import UserHome from "./home";
 
 function HomeComponent() {
   const {
     state: { isSignedIn },
   } = useAuthContext();
-  // console.log({ isSignedIn });
 
   const { GetAllVideos, GetAllArticles, GetAllStylists, GetUpcomingBookings } =
     admin;
