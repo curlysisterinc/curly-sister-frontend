@@ -11,6 +11,8 @@ import useGetCurrentLocation from "hooks/useGetCurrentLocation";
 
 import admin from "api/admin";
 import Loader from "components/loader-component/loader";
+import { useInView } from "react-intersection-observer";
+import { queryClient } from "App";
 import SideBarComponent from "../../sidebar";
 // import admin from "../../../api/admin";
 import FilterPanel from "./filterPanel";
@@ -19,7 +21,20 @@ import StylistMap from "./StylistMap";
 
 function Stylist() {
   const positionData = useGetCurrentLocation();
-  const { data: stylistData, isLoading, isError } = useGetAllStylists();
+  const {
+    status,
+    data: stylistData,
+    error,
+    isFetching,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    refetch,
+  } = useGetAllStylists();
+
   const {
     data: stylistSearchData,
     isLoading: isSearchLoading,
@@ -27,7 +42,7 @@ function Stylist() {
     mutate: searchStylist,
   } = useSearchStylist();
 
-  const stylists = stylistData?.data?.stylists;
+  const [ref2, inView2] = useInView();
 
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);
   const [categories, setCategories] = useState("all-stylist");
@@ -37,6 +52,7 @@ function Stylist() {
   const [getServices, setGetServices] = useState([]);
   const [filteredArr, setFilteredArr] = useState([]);
   const [stylistList, setStylistList] = React.useState([]);
+  const [isMapFixed, setIsMapFixed] = React.useState(false);
 
   const handleSelectToggle = () => {
     // console.log("handleSelectToggle", selectBookableStylist);
@@ -55,29 +71,22 @@ function Stylist() {
     setCertifications(getCheckedItems);
   };
 
-  const applyFilter = () => {
-    let updatedList = filteredArr;
-    // console.log(updatedList, "all");
-    if (selectBookableStylist === true) {
-      updatedList = updatedList.filter((item) => item.services.length > 0);
-      // setStylistList(updatedList);
-      // console.log(updatedList, "services available");
+  React.useEffect(() => {
+    if (inView2) {
+      setIsMapFixed(false);
+    } else {
+      setIsMapFixed(true);
     }
-
-    if (categories !== "all-stylist") {
-      updatedList = updatedList.filter(
-        (item) => item.category_type === categories
-      );
-      // console.log(updatedList, "all stylist");
-    }
-
-    setStylistList(updatedList);
-  };
+  }, [inView2]);
 
   React.useEffect(() => {
     if (stylistData) {
-      setFilteredArr(stylistData.data.stylists);
-      setStylistList(stylistData.data.stylists);
+      const data = queryClient.getQueryData(["stylists"]);
+      const currentData = data.pages
+        .map((item) => item.data.stylist)
+        .flatMap((a) => a);
+      setFilteredArr(currentData);
+      setStylistList(currentData);
     }
   }, [stylistData]);
 
@@ -178,29 +187,34 @@ function Stylist() {
 
   return (
     <div className="bg-white px-10 pt-8 w-full min-h-screen mt-50 md:mt-0">
-      {isLoading && <Loader />}
+      {isFetching && <Loader />}
       {stylistData && (
         <>
-          <FilterPanel
-            selectToggle={handleSelectToggle}
-            selectBookableStylist={selectBookableStylist}
-            certifications={certifications}
-            handleOnCheckboxChange={handleOnCheckboxChange}
-            categories={categories}
-            handleSelectCategory={handleSelectCategory}
-            getServices={getServices}
-            handleClick={handleClick}
-          />
-          <hr className="w-full border border-gray-600 mt-8" />
+          <div ref={ref2}>
+            <FilterPanel
+              selectToggle={handleSelectToggle}
+              selectBookableStylist={selectBookableStylist}
+              certifications={certifications}
+              handleOnCheckboxChange={handleOnCheckboxChange}
+              categories={categories}
+              handleSelectCategory={handleSelectCategory}
+              getServices={getServices}
+              handleClick={handleClick}
+            />
+            <hr className="w-full border border-gray-600 mt-8" />
+          </div>
           <StylistList
             list={stylistList}
+            fetchNextPage={fetchNextPage}
+            hasNextPage={hasNextPage}
             selectedPlace={{ lat: coord.lat, lng: coord.lng }}
             positionData={positionData}
             handleScriptLoad={handleScriptLoad}
+            isMapFixed={isMapFixed}
           />
         </>
       )}
-      {isError && <p>Error </p>}
+      {error && <p>Error </p>}
     </div>
   );
 }

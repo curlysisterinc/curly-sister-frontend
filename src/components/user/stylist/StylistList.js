@@ -1,9 +1,27 @@
+import Loader from "components/loader-component/loader";
 import React from "react";
+import { useInView } from "react-intersection-observer";
 import CommonCard from "../../stylistCard";
 import StylistMap from "./StylistMap";
 
-function StylistList({ list, selectedPlace, positionData, handleScriptLoad }) {
+function StylistList({
+  list,
+  fetchNextPage,
+  hasNextPage,
+  selectedPlace,
+  positionData,
+  handleScriptLoad,
+  isMapFixed,
+}) {
+  const [ref, inView] = useInView();
+
   const [isMapOpen, setIsMapOpen] = React.useState(true);
+
+  React.useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
 
   return (
     <div>
@@ -23,21 +41,31 @@ function StylistList({ list, selectedPlace, positionData, handleScriptLoad }) {
               {isMapOpen ? "Hide map" : "Show map"}
             </button>
           </div>
-          {list.length > 0 ? (
-            <div
-              className={`grid  gap-6 my-5 w-full ${
-                isMapOpen
-                  ? "grid-cols-1  md:grid-cols-2"
-                  : "md:grid-cols-2 lg:grid-cols-4"
-              }`}
-            >
-              {list.map((item) => {
-                return <CommonCard key={item._id} stylist={item} />;
-              })}
-            </div>
-          ) : (
-            <div className="text-lg text-center mt-8">No stylist available</div>
-          )}
+          <div>
+            {" "}
+            {list.length > 0 ? (
+              <div
+                className={`grid  gap-6 my-5 w-full ${
+                  isMapOpen
+                    ? "grid-cols-1  md:grid-cols-2"
+                    : "md:grid-cols-2 lg:grid-cols-4"
+                }`}
+              >
+                {list.map((item) => {
+                  return <CommonCard key={item._id} stylist={item} />;
+                })}
+                {hasNextPage && (
+                  <div className="loading" ref={ref}>
+                    <Loader />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-lg text-center mt-8">
+                No stylist available
+              </div>
+            )}
+          </div>
         </div>
         <div
           className={`${
@@ -50,6 +78,7 @@ function StylistList({ list, selectedPlace, positionData, handleScriptLoad }) {
             selectedPlace={selectedPlace}
             positionData={positionData}
             handleScriptLoad={handleScriptLoad}
+            isMapFixed={isMapFixed}
           />
         </div>
       </div>

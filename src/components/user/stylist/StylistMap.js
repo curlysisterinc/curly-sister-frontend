@@ -61,6 +61,7 @@ export default function StylistMap({
   selectedPlace,
   positionData,
   handleScriptLoad,
+  isMapFixed,
 }) {
   const { position, status: currentLocationStatus } = positionData;
   const { lat, lng } = position;
@@ -119,8 +120,8 @@ export default function StylistMap({
     <div
       style={{
         height: "calc(100vh - 220px)",
-        width: "100%",
-        position: "sticky",
+        width: isMapFixed ? "450px" : "100%",
+        position: isMapFixed ? "fixed" : "sticky",
         top: 0,
         // background: "rgb(229, 227, 223)",
       }}
@@ -138,7 +139,7 @@ export default function StylistMap({
       <div
         className={`${
           currentLocationStatus === "data"
-            ? "opacity-100 h-full flex justify-center item transition-opacity  delay-300 duration-1000"
+            ? "opacity-100 h-full flex justify-center item transition-opacity  delay-300 duration-1000 "
             : "opacity-0 h-0 transition-opacity relative"
         }`}
       >

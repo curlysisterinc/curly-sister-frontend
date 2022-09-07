@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import admin from "api/admin";
 import { useQuery } from "@tanstack/react-query";
 import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
-import { Loadersmall } from "components/loader-component/loader";
+import Loader, { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
+import { useInView } from "react-intersection-observer";
+import { queryClient } from "App";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import StylistRow from "./stylistRow";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
@@ -16,13 +18,39 @@ function StylistTab() {
   const [typeValue, setTypeValue] = useState("All types");
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState([]);
-  // const [getStylist, setGetStylist] = useState([]);
+  const [stylists, setStylists] = useState([]);
   const [callToAction, setCallToAction] = useState(false);
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const { data, isLoading, error, refetch } = useGetAllStylists();
-  const stylists = data?.data?.stylists;
+  const {
+    data: stylistData,
+    isLoading,
+    error,
+    refetch,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetAllStylists();
+
+  const [ref, inView] = useInView();
+
+  React.useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
+
+  React.useEffect(() => {
+    if (stylistData) {
+      const data = queryClient.getQueryData(["stylists"]);
+      const currentData = data.pages
+        .map((item) => item.data.stylist)
+        .flatMap((a) => a);
+
+      setStylists(currentData);
+    }
+  }, [stylistData]);
 
   const openDeleteModal = () => {
     setDeleteModal(true);
@@ -116,7 +144,7 @@ function StylistTab() {
         </div>
       </div>
       {/* table */}
-      {data && (
+      {stylistData && (
         <div className="flex flex-col mt-4">
           <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
@@ -176,6 +204,11 @@ function StylistTab() {
                   </tbody>
                 </table>
                 <div className="my-10" />
+                {hasNextPage && (
+                  <div className="loading" ref={ref}>
+                    <Loader />
+                  </div>
+                )}
               </div>
             </div>
           </div>

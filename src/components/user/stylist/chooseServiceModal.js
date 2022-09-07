@@ -175,6 +175,7 @@ function ChooseServiceModal({
     const timerString = timerRef.current?.from?.toString().split(" ");
     timerString[4] = newTime;
     const finalTime = new Date(timerString.join(" "));
+    console.log(finalTime);
     setBookingTime(finalTime);
   };
 
@@ -434,11 +435,7 @@ function ChooseServiceModal({
                   </div>
                   <div className="mb-3 flex-1 lg:ml-4">
                     <SelectOptions
-                      // placeholder="Select Timezone"
-                      // value={timeZone}
-                      // onChange={changeTimeZone}
                       name="timeZone"
-                      // selectedValue="label"
                       optionvalue="label"
                       optionlabelvalue="label"
                       collection={["Virtual", "Walk-in"]}

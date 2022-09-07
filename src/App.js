@@ -29,9 +29,8 @@ export const queryClient = new QueryClient({
 
   queryCache: new QueryCache({
     onError: (error, query) => {
-      console.log({ error });
-      toast.error(error.response.data.message);
-      if (error.response.status === 401) {
+      toast.error(error?.response?.data?.message);
+      if (error?.response?.status === 401) {
         authHandler.deleteUser();
         window.location.href = "/";
       }
@@ -40,9 +39,8 @@ export const queryClient = new QueryClient({
 
   mutationCache: new MutationCache({
     onError: (error, query) => {
-      console.log({ error });
-      toast.error(error.response.data.message);
-      if (error.response.status === 401) {
+      toast.error(error?.response?.data?.message);
+      if (error?.response?.status === 401) {
         authHandler.deleteUser();
         window.location.href = "/login";
       }
