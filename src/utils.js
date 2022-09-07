@@ -31,3 +31,16 @@ export const toggleFixedAppLayout = () => {
     }
   }
 };
+
+export const getNextPageParam = (currentPage) => {
+  const totalPage = currentPage.data.totalStylistCount / currentPage.data.size;
+  const lastPage =
+    currentPage.data.totalStylistCount % currentPage.data.size === 0
+      ? totalPage
+      : Math.floor(totalPage + 1);
+  const nextPage =
+    currentPage?.data?.page !== lastPage
+      ? currentPage.data.page + 1
+      : undefined;
+  return nextPage;
+};

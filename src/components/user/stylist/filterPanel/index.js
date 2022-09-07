@@ -56,14 +56,20 @@ function FilterPanel({
   handleSelectCategory,
   categories,
   getServices,
-  handleScriptLoad,
+  handleSearchAddress,
   handleClick,
+  setIsSearchMode,
+  isSearchLoading,
 }) {
   return (
     <div>
       <div className="flex justify-between flex-wrap">
         <div className="relative w-3/4 flex-1 mr-4">
-          <SearchBar handleScriptLoad={handleScriptLoad} />
+          <SearchBar
+            handleSearchAddress={handleSearchAddress}
+            setIsSearchMode={setIsSearchMode}
+            isSearchLoading={isSearchLoading}
+          />
           <button
             type="button"
             onClick={handleClick}

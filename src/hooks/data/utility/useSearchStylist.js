@@ -5,6 +5,7 @@ import utility from "../../../api/utility";
 export default () => {
   const { addToast } = useToasts();
   const { Search } = utility;
+
   return useMutation((data) => Search(data), {
     onError: async (error) => {
       const mainError = error.response.data;

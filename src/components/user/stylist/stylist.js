@@ -13,11 +13,9 @@ import admin from "api/admin";
 import Loader from "components/loader-component/loader";
 import { useInView } from "react-intersection-observer";
 import { queryClient } from "App";
-import SideBarComponent from "../../sidebar";
-// import admin from "../../../api/admin";
+import debounce from "lodash.debounce";
 import FilterPanel from "./filterPanel";
 import StylistList from "./StylistList";
-import StylistMap from "./StylistMap";
 
 function Stylist() {
   const positionData = useGetCurrentLocation();
@@ -40,6 +38,7 @@ function Stylist() {
     isLoading: isSearchLoading,
     error: isSearchError,
     mutate: searchStylist,
+    reset: resetSearchResult,
   } = useSearchStylist();
 
   const [ref2, inView2] = useInView();
@@ -53,6 +52,7 @@ function Stylist() {
   const [filteredArr, setFilteredArr] = useState([]);
   const [stylistList, setStylistList] = React.useState([]);
   const [isMapFixed, setIsMapFixed] = React.useState(false);
+  const [isSearchMode, setIsSearchMode] = useState(false);
 
   const handleSelectToggle = () => {
     // console.log("handleSelectToggle", selectBookableStylist);
@@ -80,15 +80,33 @@ function Stylist() {
   }, [inView2]);
 
   React.useEffect(() => {
-    if (stylistData) {
+    if (stylistData && !isSearchMode) {
       const data = queryClient.getQueryData(["stylists"]);
+      if (stylistSearchData) resetSearchResult();
       const currentData = data.pages
         .map((item) => item.data.stylist)
         .flatMap((a) => a);
       setFilteredArr(currentData);
       setStylistList(currentData);
     }
-  }, [stylistData]);
+  }, [stylistData, !isSearchMode]);
+
+  useEffect(() => {
+    if (stylistSearchData && isSearchMode) {
+      setFilteredArr(stylistSearchData.data.stylist);
+      setStylistList(stylistSearchData.data.stylist);
+      const stylistWithCords = stylistSearchData.data.stylist.find(
+        (item) => item.longitude
+      );
+      if (stylistWithCords) {
+        setCoord({
+          ...coord,
+          lat: Number(stylistWithCords.latitude),
+          lng: Number(stylistWithCords.longitude),
+        });
+      }
+    }
+  }, [stylistSearchData, isSearchMode]);
 
   React.useEffect(() => {
     const ac = new AbortController();
@@ -152,14 +170,7 @@ function Stylist() {
       return null;
     });
 
-    // console.log({
-    //   ...componentMap,
-    //   address: place.name,
-    // });
-    // console.log("places", places[0]);
     searchStylist({
-      // ...componentMap,
-      // address: place.name,
       address: document.getElementById("searchInput").value,
     });
 
@@ -170,20 +181,33 @@ function Stylist() {
     });
   };
 
-  const handleScriptLoad = (map, maps) => {
-    // Initialize Google Autocomplete
-    /* global google */ // To disable any eslint 'google not defined' errors
-    autocompleteRef.current = new google.maps.places.SearchBox(
-      document.getElementById("searchInput")
-    );
+  // const handleScriptLoad = (map, maps) => {
+  //   // Initialize Google Autocomplete
+  //   /* global google */ // To disable any eslint 'google not defined' errors
+  //   autocompleteRef.current = new google.maps.places.SearchBox(
+  //     document.getElementById("searchInput")
+  //   );
 
-    autocompleteRef.current.addListener("places_changed", handlePlaceSelect);
-  };
+  //   autocompleteRef.current.addListener("places_changed", handlePlaceSelect);
+  // };
 
   const handleClick = () => {
     getLocation();
     document.getElementById("searchInput").value = "";
   };
+
+  const handleSearchAddress = (address) => {
+    searchStylist({
+      address,
+    });
+  };
+
+  const SearchAddress = useCallback(
+    (address) => {
+      return handleSearchAddress(address);
+    },
+    [handleSearchAddress]
+  );
 
   return (
     <div className="bg-white px-10 pt-8 w-full min-h-screen mt-50 md:mt-0">
@@ -200,6 +224,9 @@ function Stylist() {
               handleSelectCategory={handleSelectCategory}
               getServices={getServices}
               handleClick={handleClick}
+              handleSearchAddress={SearchAddress}
+              setIsSearchMode={setIsSearchMode}
+              isSearchLoading={isSearchLoading}
             />
             <hr className="w-full border border-gray-600 mt-8" />
           </div>
@@ -209,7 +236,8 @@ function Stylist() {
             hasNextPage={hasNextPage}
             selectedPlace={{ lat: coord.lat, lng: coord.lng }}
             positionData={positionData}
-            handleScriptLoad={handleScriptLoad}
+            isSearchMode={isSearchMode}
+            // handleScriptLoad={handleScriptLoad}
             isMapFixed={isMapFixed}
           />
         </>

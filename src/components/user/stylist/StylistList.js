@@ -10,7 +10,8 @@ function StylistList({
   hasNextPage,
   selectedPlace,
   positionData,
-  handleScriptLoad,
+  isSearchMode,
+  // handleScriptLoad,
   isMapFixed,
 }) {
   const [ref, inView] = useInView();
@@ -18,7 +19,7 @@ function StylistList({
   const [isMapOpen, setIsMapOpen] = React.useState(true);
 
   React.useEffect(() => {
-    if (inView) {
+    if (inView && !isSearchMode) {
       fetchNextPage();
     }
   }, [inView]);
@@ -54,7 +55,7 @@ function StylistList({
                 {list.map((item) => {
                   return <CommonCard key={item._id} stylist={item} />;
                 })}
-                {hasNextPage && (
+                {hasNextPage && !isSearchMode && (
                   <div className="loading" ref={ref}>
                     <Loader />
                   </div>
@@ -77,7 +78,7 @@ function StylistList({
             stylelist={list}
             selectedPlace={selectedPlace}
             positionData={positionData}
-            handleScriptLoad={handleScriptLoad}
+            // handleScriptLoad={handleScriptLoad}
             isMapFixed={isMapFixed}
           />
         </div>

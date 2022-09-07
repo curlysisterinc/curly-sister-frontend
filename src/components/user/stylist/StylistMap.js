@@ -16,7 +16,13 @@ function LocationMaker({ text, $hover, stylist, ...rest }) {
   );
 }
 
-function MapMaker({ text, $hover, stylist, handleScriptLoad, ...rest }) {
+function MapMaker({
+  text,
+  $hover,
+  stylist,
+  // handleScriptLoad,
+  ...rest
+}) {
   const { data, isMapLoaded } = text;
   const style = $hover ? "flex" : "hidden";
   const display = isMapLoaded ? "visible" : "invisible";
@@ -68,7 +74,7 @@ export default function StylistMap({
 
   const [mapGeo, setMapGeo] = useState({
     longitude: null,
-    latitute: null,
+    latitude: null,
   });
   const [isMapLoaded, setIsMapLoaded] = useState("false");
 
@@ -152,9 +158,9 @@ export default function StylistMap({
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
             options={createMapOptions}
-            onGoogleApiLoaded={({ map, maps }) => handleScriptLoad(map, maps)}
-            yesIWantToUseGoogleMapApiInternals
-            center={[mapGeo.latitude, mapGeo.longitude]}
+            // onGoogleApiLoaded={({ map, maps }) => alert("loaded")}
+            // yesIWantToUseGoogleMapApiInternals
+            center={{ lat: mapGeo.latitude, lng: mapGeo.longitude }}
           >
             {mapGeo?.latitude && (
               <LocationMaker
