@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 import React, {
   useState,
   useRef,
@@ -14,6 +15,7 @@ import Loader from "components/loader-component/loader";
 import { useInView } from "react-intersection-observer";
 import { queryClient } from "App";
 import debounce from "lodash.debounce";
+import { useLocation, useParams } from "react-router-dom";
 import FilterPanel from "./filterPanel";
 import StylistList from "./StylistList";
 
@@ -42,6 +44,7 @@ function Stylist() {
   } = useSearchStylist();
 
   const [ref2, inView2] = useInView();
+  const location = useLocation();
 
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);
   const [categories, setCategories] = useState("all-stylist");
@@ -53,9 +56,9 @@ function Stylist() {
   const [stylistList, setStylistList] = React.useState([]);
   const [isMapFixed, setIsMapFixed] = React.useState(false);
   const [isSearchMode, setIsSearchMode] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const handleSelectToggle = () => {
-    // console.log("handleSelectToggle", selectBookableStylist);
     setSelectBookableStylist(!selectBookableStylist);
   };
 
@@ -78,6 +81,12 @@ function Stylist() {
       setIsMapFixed(true);
     }
   }, [inView2]);
+
+  React.useEffect(() => {
+    if (location?.state?.city) {
+      addLocationToSearchBarAndSearchStylistInThatLocation(location.state.city);
+    }
+  }, [location, document.getElementById("searchInput")]);
 
   React.useEffect(() => {
     if (stylistData && !isSearchMode) {
@@ -181,19 +190,47 @@ function Stylist() {
     });
   };
 
-  // const handleScriptLoad = (map, maps) => {
-  //   // Initialize Google Autocomplete
-  //   /* global google */ // To disable any eslint 'google not defined' errors
-  //   autocompleteRef.current = new google.maps.places.SearchBox(
-  //     document.getElementById("searchInput")
-  //   );
+  const handleScriptLoad = (map, maps) => {
+    // Initialize Google Autocomplete
+    /* global google */ // To disable any eslint 'google not defined' errors
+    autocompleteRef.current = new google.maps.places.SearchBox(
+      document.getElementById("searchInput")
+    );
 
-  //   autocompleteRef.current.addListener("places_changed", handlePlaceSelect);
-  // };
+    autocompleteRef.current.addListener("places_changed", handlePlaceSelect);
+  };
+
+  const addLocationToSearchBarAndSearchStylistInThatLocation = (
+    chosenLocation
+  ) => {
+    if (document.getElementById("searchInput")) {
+      setIsSearchMode(true);
+      document.getElementById("searchInput").value = chosenLocation;
+      SearchAddress(chosenLocation);
+      setSearchValue(chosenLocation);
+    }
+  };
 
   const handleClick = () => {
     getLocation();
-    document.getElementById("searchInput").value = "";
+    const geocoder = new google.maps.Geocoder();
+    geocoder
+      .geocode({
+        location: {
+          lat: positionData?.position.lat,
+          lng: positionData?.position.lng,
+        },
+      })
+      .then((response) => {
+        const place = response.results.find((item) =>
+          item.types.includes("administrative_area_level_1")
+        );
+        const specificPlace = place.address_components.find((item) =>
+          item.types.includes("administrative_area_level_1")
+        ).long_name;
+        addLocationToSearchBarAndSearchStylistInThatLocation(specificPlace);
+      })
+      .catch((e) => window.alert(`Geocoder failed due to: ${e}`));
   };
 
   const handleSearchAddress = (address) => {
@@ -227,6 +264,8 @@ function Stylist() {
               handleSearchAddress={SearchAddress}
               setIsSearchMode={setIsSearchMode}
               isSearchLoading={isSearchLoading}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
             />
             <hr className="w-full border border-gray-600 mt-8" />
           </div>

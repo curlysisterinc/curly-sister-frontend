@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import SideBarComponent from "../sidebar";
 import authHandler from "../../authHandler";
 import profileDp from "../../assets/images/profile-dp.png";
-import searchIcon from "../../assets/images/search-normal.svg";
+import searchIcon, {
+  ReactComponent as RiSearchLine,
+} from "../../assets/images/search-normal.svg";
 import productRecommendation from "../../assets/images/product-recommendation.png";
 import stylistPlace1 from "../../assets/images/stylist-place-1.png";
 import stylistPlace2 from "../../assets/images/stylist-place-2.png";
@@ -17,6 +19,9 @@ import arrowIcon from "../../assets/images/arrow.svg";
 
 function UserHome({ upcomingBookings }) {
   const details = localStorage.getItem("user");
+  const inputRef = useRef(null);
+  const navigate = useNavigate();
+
   const [isLoggedIn, setIsLoggedIn] = useState(details);
 
   const [firstName, setFirstName] = useState("");
@@ -33,6 +38,13 @@ function UserHome({ upcomingBookings }) {
     };
   }, []);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/stylists`, {
+      state: { city: inputRef.current.value },
+    });
+  };
+
   return (
     <div className="bg-white px-10 py-8 w-full">
       <div className="flex flex-col w-full lg:flex-row justify-between items-center">
@@ -47,16 +59,26 @@ function UserHome({ upcomingBookings }) {
             </p>
           </div>
         </div>
-        <div className="rounded-full px-3 py-3 relative w-full lg:w-2/5 h-12 mt-6 lg:mt-0 border border-gray-250 flex justify-between items-center">
+
+        <form
+          onSubmit={handleSearch}
+          className="relative h-12  mb-4 w-full lg:w-2/5 "
+        >
           <input
-            type="text"
-            className="border-0 outline-none   h-full w-full"
-            placeholder="San Francisco, CA, USA"
+            placeholder="What city do you live in?"
+            className="border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 w-full h-full px-3 lg:px-6"
+            id="searchInput"
+            ref={inputRef}
+            // value={searchValue}
+            // onChange={debouncedResults}
           />
-          <div className="ml-2 rounded-full bg-orange-200 h-10 w-10 flex justify-center items-center cursor-pointer">
-            <img src={searchIcon} alt="Search icon" />
-          </div>
-        </div>
+          <button
+            type="submit"
+            className="absolute flex justify-center items-center right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-orange-200 rounded-full"
+          >
+            <RiSearchLine color="white" size={20} />
+          </button>
+        </form>
       </div>
 
       {/* flexed-content */}

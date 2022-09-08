@@ -36,7 +36,7 @@ function SideNav() {
   const profile_pic = isLoggedIn?.active.profile_pic;
 
   const onLogout = () => {
-    navigate(NonAuthRoutes.login);
+    navigate(NonAuthRoutes.home);
     dispatch(logoutUser());
     authHandler.deleteUser();
   };

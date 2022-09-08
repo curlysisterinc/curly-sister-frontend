@@ -4,8 +4,13 @@ import React, { useState, useEffect, useMemo } from "react";
 import { RiSearchLine } from "react-icons/ri";
 import Script from "react-load-script";
 
-function SearchBar({ handleSearchAddress, setIsSearchMode, isSearchLoading }) {
-  const [searchValue, setSearchValue] = useState("");
+function SearchBar({
+  handleSearchAddress,
+  setIsSearchMode,
+  isSearchLoading,
+  searchValue,
+  setSearchValue,
+}) {
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
     if (e.target.value.length > 2) {

@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import { ReactComponent as LocationIcon } from "../../../assets/images/location-dark.svg";
 import { ReactComponent as VerifyIcon } from "../../../assets/images/verify.svg";
-import hairChallenge from "../../../assets/images/hair-challenge-avatar.png";
-import girl from "../../../assets/images/girl-2.png";
+import avatar2 from "../../../assets/images/gradient-avatar.svg";
+import galleryBanner from "../../../assets/images/stylist-profile-banner.png";
 
 const K_SIZE = 40;
 
@@ -24,34 +24,38 @@ function MapMaker({
   ...rest
 }) {
   const { data, isMapLoaded } = text;
+  // console.log(data);
   const style = $hover ? "flex" : "hidden";
+  // const style = "flex";
   const display = isMapLoaded ? "visible" : "invisible";
 
   return (
-    <div className={`relative ${display} z-10`}>
+    <div className={`relative ${display}`}>
       <LocationIcon />
       <div
-        className={`bg-white border border-gray-600 shadow-s07 absolute rounded-2xl -top-10 left-10  w-489 flex overflow-hidden ${style} z-10`}
+        className={`bg-white border border-gray-600 shadow-s07 absolute  rounded-2xl bottom-9   w-350 flex overflow-hidden ${style} z-100 -translate-x-2/4`}
       >
         <div className="w-2/5 flex justify-center items-center">
-          <img src={girl} alt="" className="object-cover w-4/5" />
+          <img
+            src={data.gallery[0] ?? galleryBanner}
+            alt=""
+            className="object-cover w-full h-full"
+          />
 
           <img
-            src={hairChallenge}
+            src={data.photo ?? avatar2}
             alt=""
-            className="w-16 h-16  rounded relative right-7 object-cover"
+            className="w-16 h-16   relative right-7  rounded-full object-cover border-white border"
           />
         </div>
         <div className="m-3 w-3/5">
           <div className="flex  items-center mb-1">
             <p className="text-gray-350 font-semibold text-base mr-1">
-              {data.business_name}
+              {data.business_name ?? data.stylist_name}
             </p>
             <VerifyIcon />
           </div>
-          <p className="font-normal text-sm mb-2">
-            Here’s a short version of a bio where one has been provided.
-          </p>
+          <p className="font-normal text-sm mb-2">{data.description}</p>
           <p className="font-normal text-sm">
             {data?.phone_no} · {data?.address} ·{" "}
             {data?.certifications.length > 0 && "Certified"}

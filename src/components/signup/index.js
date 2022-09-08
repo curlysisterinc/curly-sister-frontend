@@ -395,43 +395,6 @@ function SignupComponent() {
                 .
               </p>
             </form>
-            {/* {emailSuccess && (
-            <AuthModalComponent handleClose={hideModal}>
-              <>
-                <h2 className="text-2xl lg:text-4xl font-bold mb-5">
-                  Welcome to the Community
-                </h2>
-                <img src={signedInImg} alt="successful sign in" />
-                <p className="text-gray-150 mt-8">
-                  You have successfully subscribed to Curly Sister.
-                </p>
-                <button
-                  className="bg-orange-200 rounded shadow text-white font-bold w-full py-3"
-                  type="button"
-                  onClick={() => navigate(NonAuthRoutes.login)}
-                >
-                  Continue with your experience
-                </button>
-              </>
-            </AuthModalComponent>
-          )} */}
-
-            {/* {emailFailure && (
-            <AuthModalComponent handleClose={hideModal}>
-              <h2>Ooops! Something went wrong</h2>
-              <img src={failedSignin} alt="failed sign in" />
-              <p className="text-gray-150">
-                Looks like there is a problem, please try signing in again.
-              </p>
-              <button
-                className="bg-orange-200 rounded shadow text-white font-bold w-full py-3"
-                onClick={hideModal}
-                type="button"
-              >
-                Try Subscribing Again
-              </button>
-            </AuthModalComponent>
-          )} */}
           </div>
         </div>
       </div>

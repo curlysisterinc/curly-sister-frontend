@@ -64,6 +64,7 @@ const TokenValidate = async () => {
       // refreshToken expired
       Cookies.remove("accessToken");
       authHandler.delete("token");
+      alert("pushed");
       history.push(NonAuthRoutes.login);
       // eslint-disable-next-line no-console
       // eslint-disable-next-line no-alert

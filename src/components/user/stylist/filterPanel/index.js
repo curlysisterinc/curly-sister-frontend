@@ -60,6 +60,8 @@ function FilterPanel({
   handleClick,
   setIsSearchMode,
   isSearchLoading,
+  searchValue,
+  setSearchValue,
 }) {
   return (
     <div>
@@ -69,6 +71,8 @@ function FilterPanel({
             handleSearchAddress={handleSearchAddress}
             setIsSearchMode={setIsSearchMode}
             isSearchLoading={isSearchLoading}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
           />
           <button
             type="button"
