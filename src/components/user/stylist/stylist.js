@@ -21,27 +21,6 @@ import StylistList from "./StylistList";
 
 function Stylist() {
   const positionData = useGetCurrentLocation();
-  const {
-    status,
-    data: stylistData,
-    error,
-    isFetching,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    fetchNextPage,
-    fetchPreviousPage,
-    hasNextPage,
-    hasPreviousPage,
-    refetch,
-  } = useGetAllStylists();
-
-  const {
-    data: stylistSearchData,
-    isLoading: isSearchLoading,
-    error: isSearchError,
-    mutate: searchStylist,
-    reset: resetSearchResult,
-  } = useSearchStylist();
 
   const [ref2, inView2] = useInView();
   const location = useLocation();
@@ -49,7 +28,7 @@ function Stylist() {
   const [selectBookableStylist, setSelectBookableStylist] = useState(false);
   const [categories, setCategories] = useState("all-stylist");
   const [coord, setCoord] = useState({ lat: "", lng: "" });
-  const [searchAddress, setSearchAddress] = useState(null);
+  const [searchParam, setSearchParam] = useState({});
   const [certifications, setCertifications] = useState([]);
   const [getServices, setGetServices] = useState([]);
   const [filteredArr, setFilteredArr] = useState([]);
@@ -57,6 +36,23 @@ function Stylist() {
   const [isMapFixed, setIsMapFixed] = React.useState(false);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [totalStylistCount, setTotalStylistCount] = useState(null);
+
+  const {
+    data: stylistData,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    error,
+  } = useGetAllStylists();
+
+  const {
+    data: stylistSearchData,
+    isFetching: isSearchFetching,
+    fetchNextPage: fetchNextSearchPage,
+    hasNextPage: hasSearchNextPage,
+    error: searchError,
+  } = useSearchStylist({ query: searchParam });
 
   const handleSelectToggle = () => {
     setSelectBookableStylist(!selectBookableStylist);
@@ -91,22 +87,32 @@ function Stylist() {
   React.useEffect(() => {
     if (stylistData && !isSearchMode) {
       const data = queryClient.getQueryData(["stylists"]);
-      if (stylistSearchData) resetSearchResult();
+      // queryClient.removeQueries("stylistsSearch");
+      // if (stylistSearchData) resetSearchResult();
       const currentData = data.pages
         .map((item) => item.data.stylist)
         .flatMap((a) => a);
       setFilteredArr(currentData);
       setStylistList(currentData);
+      setTotalStylistCount(data.pages[0].data.totalStylistCount);
+      // queryClient.removeQueries("stylistsSearch");
     }
   }, [stylistData, !isSearchMode]);
 
   useEffect(() => {
     if (stylistSearchData && isSearchMode) {
-      setFilteredArr(stylistSearchData.data.stylist);
-      setStylistList(stylistSearchData.data.stylist);
-      const stylistWithCords = stylistSearchData.data.stylist.find(
-        (item) => item.longitude
-      );
+      const data = queryClient.getQueryData([
+        "stylistsSearch",
+        searchParam.address,
+      ]);
+      const currentData = data.pages
+        .map((item) => item.data.stylist)
+        .flatMap((a) => a);
+
+      setFilteredArr(currentData);
+      setStylistList(currentData);
+      setTotalStylistCount(data.pages[0].data.totalSearchCount);
+      const stylistWithCords = currentData.find((item) => item.longitude);
       if (stylistWithCords) {
         setCoord({
           ...coord,
@@ -179,7 +185,7 @@ function Stylist() {
       return null;
     });
 
-    searchStylist({
+    setSearchParam({
       address: document.getElementById("searchInput").value,
     });
 
@@ -234,7 +240,7 @@ function Stylist() {
   };
 
   const handleSearchAddress = (address) => {
-    searchStylist({
+    setSearchParam({
       address,
     });
   };
@@ -248,7 +254,7 @@ function Stylist() {
 
   return (
     <div className="bg-white px-10 pt-8 w-full min-h-screen mt-50 md:mt-0">
-      {isFetching && <Loader />}
+      {(isFetching || isSearchFetching) && <Loader />}
       {stylistData && (
         <>
           <div ref={ref2}>
@@ -263,7 +269,7 @@ function Stylist() {
               handleClick={handleClick}
               handleSearchAddress={SearchAddress}
               setIsSearchMode={setIsSearchMode}
-              isSearchLoading={isSearchLoading}
+              isSearchLoading={isSearchFetching}
               searchValue={searchValue}
               setSearchValue={setSearchValue}
             />
@@ -271,17 +277,19 @@ function Stylist() {
           </div>
           <StylistList
             list={stylistList}
-            fetchNextPage={fetchNextPage}
+            fetchNextPage={!isSearchMode ? fetchNextPage : fetchNextSearchPage}
             hasNextPage={hasNextPage}
+            hasSearchNextPage={hasSearchNextPage}
             selectedPlace={{ lat: coord.lat, lng: coord.lng }}
             positionData={positionData}
             isSearchMode={isSearchMode}
             // handleScriptLoad={handleScriptLoad}
+            totalStylistCount={totalStylistCount}
             isMapFixed={isMapFixed}
           />
         </>
       )}
-      {error && <p>Error </p>}
+      {(error || searchError) && <p>Error </p>}
     </div>
   );
 }

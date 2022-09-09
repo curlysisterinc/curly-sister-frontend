@@ -1,21 +1,29 @@
-import { useMutation } from "@tanstack/react-query";
-import { useToasts } from "react-toast-notifications";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getNextPageParam } from "utils";
 import utility from "../../../api/utility";
 
-export default () => {
-  const { addToast } = useToasts();
+export default ({ query }) => {
   const { Search } = utility;
+  return useInfiniteQuery(
+    ["stylistsSearch", query.address],
+    ({ pageParam = 0 }) => Search({ page: pageParam, ...query }),
+    {
+      enabled: !!query.address,
+      getNextPageParam: (currentPage) => {
+        // console.log({ currentPage });
+        const totalPage =
+          currentPage.data.totalSearchCount / currentPage.data.size;
+        const lastPage =
+          currentPage.data.totalSearchCount % currentPage.data.size === 0
+            ? totalPage
+            : Math.floor(totalPage + 1);
+        const nextPage =
+          currentPage?.data?.page === lastPage - 1
+            ? undefined
+            : currentPage.data.page + 1;
 
-  return useMutation((data) => Search(data), {
-    onError: async (error) => {
-      const mainError = error.response.data;
-
-      addToast(mainError.message, {
-        appearance: "error",
-      });
-    },
-  });
+        return nextPage;
+      },
+    }
+  );
 };
-
-// GetCertification
-// GetTags

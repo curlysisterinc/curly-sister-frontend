@@ -13,13 +13,15 @@ function StylistList({
   isSearchMode,
   // handleScriptLoad,
   isMapFixed,
+  totalStylistCount,
+  hasSearchNextPage,
 }) {
   const [ref, inView] = useInView();
 
   const [isMapOpen, setIsMapOpen] = React.useState(true);
 
   React.useEffect(() => {
-    if (inView && !isSearchMode) {
+    if (inView) {
       fetchNextPage();
     }
   }, [inView]);
@@ -33,7 +35,10 @@ function StylistList({
           } `}
         >
           <div className="flex justify-between items-center mt-8">
-            <p className="text-gray-200 text-sm">{list.length} stylists</p>
+            <p className="text-gray-200 text-sm">
+              {totalStylistCount &&
+                `${list.length} stylists out of ${totalStylistCount}`}
+            </p>
             <button
               type="button"
               className="hidden lg:block text-gray-200 text-sm cursor-pointer"
@@ -43,7 +48,6 @@ function StylistList({
             </button>
           </div>
           <div>
-            {" "}
             {list.length > 0 ? (
               <div
                 className={`grid  gap-6 my-5 w-full ${
@@ -55,9 +59,16 @@ function StylistList({
                 {list.map((item) => {
                   return <CommonCard key={item._id} stylist={item} />;
                 })}
-                {hasNextPage && !isSearchMode && (
+                {!isSearchMode && hasNextPage && (
                   <div className="loading" ref={ref}>
                     <Loader />
+                    <p>hasNextPage</p>
+                  </div>
+                )}
+                {isSearchMode && hasSearchNextPage && (
+                  <div className="loading" ref={ref}>
+                    <Loader />
+                    <p>hasSearchNextPage</p>
                   </div>
                 )}
               </div>

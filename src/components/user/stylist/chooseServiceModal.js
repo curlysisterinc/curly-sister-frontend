@@ -50,7 +50,23 @@ function ChooseServiceModal({
   changeTimeZone,
 }) {
   const [isActive, setIsActive] = React.useState("everyone");
-
+  console.log({
+    availability,
+    serviceOffered,
+    visible,
+    setData,
+    data,
+    setVisible,
+    setBookingFee,
+    setHasService,
+    setBookingTotal,
+    bookingTime,
+    setBookingTime,
+    booking,
+    setBooking,
+    timeZone,
+    changeTimeZone,
+  });
   const [blockedDays, setBlockedDays] = useState([]);
   const [daysAvailable, setDaysAvaiable] = useState([]);
   const [timeRange, setTimeRange] = useState({
@@ -118,15 +134,15 @@ function ChooseServiceModal({
   );
 
   useEffect(() => {
-    if (availability) {
-      const blocked = availability.blocked_dates
-        .map((item) => getDatesInRange(item))
-        .flatMap((v) => v);
+    if (Object.keys(availability).length) {
+      const blocked =
+        availability?.blocked_dates
+          ?.map((item) => getDatesInRange(item))
+          ?.flatMap((v) => v) ?? [];
 
-      const daysRange = availability.range
-        .map((item) => item.days)
-        .flatMap((i) => i);
-      const numberedDays = daysRange.map((a) => days[a]);
+      const daysRange =
+        availability?.range?.map((item) => item.days)?.flatMap((i) => i) ?? [];
+      const numberedDays = daysRange?.map((a) => days[a]) ?? [];
       setDaysAvaiable(numberedDays);
       setBlockedDays(blocked);
     }

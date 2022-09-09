@@ -96,7 +96,7 @@ export default function StylistMap({
 
   const defaultProps = {
     center: { ...position },
-    zoom: 7,
+    zoom: 5,
   };
 
   const createMapOptions = (maps) => {
@@ -106,7 +106,7 @@ export default function StylistMap({
       fullscreenControl: false,
       scaleControl: true,
       gestureHandling: "greedy",
-      minZoom: 2,
+      minZoom: 1,
       // disableDefaultUI: true,
       // fullscreenControl: false,
       styles: [

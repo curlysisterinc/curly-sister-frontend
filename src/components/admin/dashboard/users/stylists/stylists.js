@@ -22,6 +22,7 @@ function StylistTab() {
   const [callToAction, setCallToAction] = useState(false);
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [totalStylistCount, setTotalStylistCount] = useState(null);
 
   const {
     data: stylistData,
@@ -49,6 +50,7 @@ function StylistTab() {
         .flatMap((a) => a);
 
       setStylists(currentData);
+      setTotalStylistCount(data.pages[0].data.totalStylistCount);
     }
   }, [stylistData]);
 
@@ -75,7 +77,10 @@ function StylistTab() {
       <div className="flex items-end justify-between">
         <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
           Stylists
-          <span className="text-gray-300 ml-2 text-sm">{stylists?.length}</span>
+          <span className="text-gray-300 ml-2 text-sm">
+            {totalStylistCount &&
+              `${stylists.length} stylists out of ${totalStylistCount}`}
+          </span>
         </div>
         <div className="">
           {/* filters */}
