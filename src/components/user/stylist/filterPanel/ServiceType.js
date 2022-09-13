@@ -60,7 +60,7 @@ function ServiceType({ getServices }) {
   const [isActive, setIsActive] = useState("everyone");
   return (
     <div
-      className={`mx-3 relative flex items-center justify-between w-48 border outline-none focus:outline-none   rounded-full placeholder:text-sm placeholder:text-gray-300 h-12 px-4 cursor-pointer ${
+      className={`md:mx-3 relative flex items-center justify-between w-48 border outline-none focus:outline-none mr-2 mb-1  rounded-full placeholder:text-sm text-sm  placeholder:text-gray-300 text-gray-400 h-10 px-4 cursor-pointer ${
         toggleType
           ? "border-purple-100 bg-gray-550"
           : "border-gray-250 bg-white"

@@ -31,7 +31,7 @@ function SearchBar({
   }, [searchValue]);
 
   return (
-    <div className="relative h-12 mb-4">
+    <div className="relative h-12 mb-2 md:mb-4">
       <input
         placeholder="What city do you live in?"
         className="border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 w-full h-full px-3"

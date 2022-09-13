@@ -17,29 +17,28 @@ export default function CommonCard({ stylist }) {
       onClick={() => {
         navigate(`/stylists/profile/${stylist._id}`);
       }}
-      className="col-1 rounded-2xl shadow-md relative overflow-hidden cursor-pointer w-full"
+      className="col-1 rounded-2xl shadow-s01 relative overflow-hidden cursor-pointer w-full border border-gray-600"
     >
       <div className="absolute top-0 right-0 mr-4 mt-4 ">
         <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">
           <MdOutlineBookmarkBorder color="white" />
         </span>
       </div>
-      {stylist.gallery.length > 0 ? (
-        <>
-          {[...stylist.gallery].splice(0, 1).map((gallery) => {
-            return (
-              <img
-                src={gallery}
-                className="w-full h-40 object-cover "
-                alt=""
-                key={gallery}
-              />
-            );
-          })}
-        </>
-      ) : (
-        <img src={galleryBanner} className="w-full h-40 object-cover" alt="" />
-      )}
+      <div className="w-full h-40">
+        {stylist.gallery.length > 0 ? (
+          <img
+            src={stylist.gallery[0]}
+            className="w-full h-40 object-cover "
+            alt=""
+          />
+        ) : (
+          <img
+            src={galleryBanner}
+            className="w-full h-40 absolute object-none"
+            alt=""
+          />
+        )}
+      </div>
       <div className="bg-white px-5 py-3 relative">
         <div className="flex justify-between items-start">
           <img

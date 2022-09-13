@@ -6,7 +6,7 @@ function SessionDropdown({ options, selectOption, value }) {
     <select
       onChange={selectOption}
       value={value}
-      className="w-32 border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 h-12 px-4 "
+      className="w-32 border outline-none focus:outline-none border-gray-250 bg-white rounded-full text-sm  placeholder:text-sm placeholder:text-gray-300 h-full px-4 text-gray-400"
     >
       {options.map(({ value, id, label }) => {
         return (

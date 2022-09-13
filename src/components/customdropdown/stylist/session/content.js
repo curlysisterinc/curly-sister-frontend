@@ -4,7 +4,7 @@ import DropDownMenuContent from "../../primitive/DropDownMenuContent";
 
 function content({ setTypeValue }) {
   return (
-    <DropDownMenuContent className="absolute bg-white rounded-xl  shadow w-44 ">
+    <DropDownMenuContent className="absolute bg-white rounded-xl text-gray-400 shadow w-44 ">
       <DropDownItem>
         <button
           type="button"

@@ -84,13 +84,16 @@ export default function StylistMap({
 
   useEffect(() => {
     if (currentLocationStatus === "data") {
-      setMapGeo({ longitude: lng, latitude: lat });
+      setMapGeo({ longitude: Number(lng), latitude: Number(lat) });
     }
   }, [currentLocationStatus]);
 
   useEffect(() => {
     if (selectedPlace) {
-      setMapGeo({ longitude: selectedPlace.lng, latitude: selectedPlace.lat });
+      setMapGeo({
+        longitude: Number(selectedPlace.lng),
+        latitude: Number(selectedPlace.lat),
+      });
     }
   }, [selectedPlace]);
 
@@ -164,7 +167,10 @@ export default function StylistMap({
             options={createMapOptions}
             // onGoogleApiLoaded={({ map, maps }) => alert("loaded")}
             // yesIWantToUseGoogleMapApiInternals
-            center={{ lat: mapGeo.latitude, lng: mapGeo.longitude }}
+            center={{
+              lat: Number(mapGeo.latitude),
+              lng: Number(mapGeo.longitude),
+            }}
           >
             {mapGeo?.latitude && (
               <LocationMaker

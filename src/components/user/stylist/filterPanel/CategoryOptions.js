@@ -7,7 +7,7 @@ function CategoryDropdown({ options, selectOption, value }) {
     <select
       onChange={selectOption}
       value={value}
-      className=" w-52 border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 h-12 px-4 "
+      className=" w-52 border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 text-gray-400 text-sm h-12 px-4 "
     >
       {options.map(({ value, id, label }) => {
         return (

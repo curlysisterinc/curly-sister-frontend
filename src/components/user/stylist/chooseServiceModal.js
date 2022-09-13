@@ -299,7 +299,7 @@ function ChooseServiceModal({
                         />
                         <label
                           htmlFor={service.name}
-                          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 w-full"
                         >
                           <p className="text-base font-BeatriceSemiBold text-gray-400 mb-2">
                             {service.name}
@@ -359,7 +359,7 @@ function ChooseServiceModal({
                         />
                         <label
                           htmlFor="default-checkbox"
-                          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                          className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300 w-full"
                         >
                           <p className="text-base font-BeatriceSemiBold text-gray-400 mb-2">
                             {service.name}

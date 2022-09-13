@@ -7,10 +7,10 @@ function MoreFilters({ certifications, tags, handleOnCheckboxChange }) {
   const [toggleMoreFilters, setToggleMoreFilters] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <div
         onClick={() => setToggleMoreFilters(!toggleMoreFilters)}
-        className="cursor-pointer ml-auto h-12 flex items-center justify-center  border border-gray-250 bg-white rounded-full px-4"
+        className="cursor-pointer ml-auto h-10 flex items-center justify-center  border border-gray-250 bg-white rounded-full px-4 text-sm text-gray-400"
       >
         More filters
       </div>

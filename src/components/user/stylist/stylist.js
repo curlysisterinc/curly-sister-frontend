@@ -253,8 +253,8 @@ function Stylist() {
   );
 
   return (
-    <div className="bg-white px-10 pt-8 w-full min-h-screen mt-50 md:mt-0">
-      {(isFetching || isSearchFetching) && <Loader />}
+    <div className="bg-white px-5 lg:px-10 pt-8 w-full min-h-screen mt-50 md:mt-0">
+      {isFetching && <Loader />}
       {stylistData && (
         <>
           <div ref={ref2}>
@@ -273,7 +273,7 @@ function Stylist() {
               searchValue={searchValue}
               setSearchValue={setSearchValue}
             />
-            <hr className="w-full border border-gray-600 mt-8" />
+            <hr className="w-full border border-gray-600 mt-8 md:mt-16 lg:mt-8" />
           </div>
           <StylistList
             list={stylistList}

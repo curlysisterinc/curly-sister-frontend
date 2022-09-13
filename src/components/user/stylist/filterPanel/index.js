@@ -65,8 +65,8 @@ function FilterPanel({
 }) {
   return (
     <div>
-      <div className="flex justify-between flex-wrap">
-        <div className="relative w-3/4 flex-1 mr-4">
+      <div className="flex flex-col md:flex-row justify-between flex-wrap">
+        <div className="relative w-4/5 md:w-3/4 flex-1 md:mr-4 mb-2 md:mb-0">
           <SearchBar
             handleSearchAddress={handleSearchAddress}
             setIsSearchMode={setIsSearchMode}
@@ -77,12 +77,12 @@ function FilterPanel({
           <button
             type="button"
             onClick={handleClick}
-            className="col-span-3 cursor-pointer flex items-center space-x-2 border rounded-full placeholder:text-sm placeholder:text-gray-300 px-4 bg-white border-gray-600"
+            className="col-span-3 cursor-pointer flex items-center space-x-2 border rounded-full placeholder:text-sm placeholder:text-gray-300 px-4 bg-white border-gray-600 text-gray-400 text-sm"
           >
             Use current location
           </button>
         </div>
-        <div className="col-span-3 w-220 flex-shrink-0">
+        <div className="col-span-3 w-220 flex-shrink-0 text-gray-400">
           <CategoryDropdown
             options={categoryList}
             selectOption={handleSelectCategory}
@@ -90,21 +90,23 @@ function FilterPanel({
           />
         </div>
       </div>
-      <div className="flex justify-between items-center mt-4">
-        <div className="flex space-x-4 ">
+      <div className="flex justify-between items-start md:items-center mt-4 h-fit md:h-10 flex-col md:flex-row flex-wrap">
+        <div className="flex md:space-x-4 h-full flex-col md:flex-row items-start mb-2">
           <ToggleBookedService
             selectToggle={selectToggle}
             selectBookableStylist={selectBookableStylist}
           />
 
-          <SessionDropdown
-            options={sessionList}
-            selectOption={handleSelectCategory}
-            value={categories}
-          />
-          <ServiceType getServices={getServices} />
+          <div className="flex flex-wrap mb-5">
+            <ServiceType getServices={getServices} />
+            <SessionDropdown
+              options={sessionList}
+              selectOption={handleSelectCategory}
+              value={categories}
+            />
+          </div>
         </div>
-        <div className="">
+        <div className="h-10">
           <MoreFilters
             certifications={certifications}
             tags={tags}

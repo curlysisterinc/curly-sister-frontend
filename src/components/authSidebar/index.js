@@ -7,7 +7,7 @@ function AuthSideBarComponent({ signin }) {
   return (
     <div
       className=" bg-orange-150 lg:p-8 lg:h-screen lg:fixed
-    md:w-60 lg:w-80 md:h-screen p-5 lg:px-12  md:fixed flex flex-col justify-between fixed z-200   w-full
+    lg:w-60 xl:w-80 x md:h-screen p-5 lg:px-12  md:fixed flex flex-col justify-between fixed z-200   w-full
     "
     >
       <div className="text-gray-400 text-xl font-semibold">

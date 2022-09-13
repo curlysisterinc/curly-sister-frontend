@@ -7,7 +7,7 @@ function ToggleBookedService({ selectBookableStylist, selectToggle }) {
     <button
       onClick={selectToggle}
       type="button"
-      className={`cursor-pointer h-12 flex items-center space-x-2 border rounded-full placeholder:text-sm placeholder:text-gray-300 px-4 ${
+      className={`cursor-pointer h-10 flex items-center space-x-2 border rounded-full placeholder:text-sm mb-2 placeholder:text-gray-300 px-4 ${
         selectBookableStylist
           ? "bg-gray-550 border-purple-100"
           : "bg-white border-gray-600"
