@@ -31,7 +31,7 @@ function ManageServicesModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center z-"
     >
       <div
         className="flex items-start h-full"

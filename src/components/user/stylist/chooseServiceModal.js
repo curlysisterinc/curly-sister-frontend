@@ -111,7 +111,7 @@ function ChooseServiceModal({
 
   const servicesForOthers = useMemo(() => {
     return serviceOffered?.filter(
-      (service) => service?.who_is_this_for === "Others"
+      (service) => service?.who_is_this_for !== "Stylists"
     );
   }, [serviceOffered]);
 
