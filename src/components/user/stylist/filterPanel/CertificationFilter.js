@@ -3,7 +3,7 @@ import useGetAllCertifications from "hooks/data/admin/useGetAllCertifications";
 import { Loadersmall } from "components/loader-component/loader";
 import FilterItem from "./FilterItem";
 
-function CertificationFilter() {
+function CertificationFilter({ handleSelectedCertificate, mode }) {
   const { data, isLoading, error, refetch } = useGetAllCertifications();
 
   const [filteredCertifications, setFilteredCertifications] = useState([]);
@@ -11,10 +11,23 @@ function CertificationFilter() {
   const [inputSearch, setInputSearch] = useState("");
 
   useEffect(() => {
+    if (mode === "RESET") {
+      const newCertifications = certifications.map((item) => {
+        return { ...item, isSelected: false };
+      });
+      setCertifications(newCertifications);
+      setFilteredCertifications(newCertifications);
+    }
+  }, [mode]);
+
+  useEffect(() => {
     const ac = new AbortController();
     if (data) {
-      setFilteredCertifications(data.data.data);
-      setCertifications(data.data.data);
+      const newData = data.data.data.map((item) => {
+        return { ...item, isSelected: false };
+      });
+      setFilteredCertifications(newData);
+      setCertifications(newData);
     }
     return function cleanup() {
       ac.abort();
@@ -36,6 +49,33 @@ function CertificationFilter() {
     }
   };
 
+  const extractSelectedCert = (certData) => {
+    const selectedCert = certData
+      .filter((cert) => cert.isSelected)
+      .map((item) => item._id);
+    return selectedCert;
+  };
+
+  const handleOnCheckboxChange = (id) => {
+    const newCerts = certifications.map((item) => {
+      if (item._id === id) {
+        return { ...item, isSelected: !item.isSelected };
+      }
+      return item;
+    });
+    const newFilteredCerts = filteredCertifications.map((item) => {
+      if (item._id === id) {
+        return { ...item, isSelected: !item.isSelected };
+      }
+      return item;
+    });
+
+    const selectedCert = extractSelectedCert(newCerts);
+    handleSelectedCertificate(selectedCert);
+    setCertifications(newCerts);
+    setFilteredCertifications(newFilteredCerts);
+  };
+
   return (
     <div className="flex-grow-0 w-1/2 h-full">
       <div className="pb-2.5">
@@ -49,15 +89,17 @@ function CertificationFilter() {
           placeholder="search certification"
         />
       </div>
-      <div className="overflow-scroll h-full-20px">
+
+      <div className="overflow-scroll h-full-62px">
         {isLoading && <Loadersmall />}
         {data &&
           filteredCertifications?.map((cert) => {
             return (
               <FilterItem
-                key={cert.id}
+                key={cert._id}
                 data={cert}
-                // handleOnChange={handleOnCheckboxChange}
+                checked={cert.isSelected}
+                handleOnChange={handleOnCheckboxChange}
               />
             );
           })}

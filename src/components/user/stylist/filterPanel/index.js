@@ -73,7 +73,10 @@ function FilterPanel({
           </div>
         </div>
         <div className="lg:w-120 relative w-full ">
-          <MoreFilters />
+          <MoreFilters
+            handleSearchAddress={handleSearchAddress}
+            setIsSearchMode={setIsSearchMode}
+          />
         </div>
       </div>
     </div>

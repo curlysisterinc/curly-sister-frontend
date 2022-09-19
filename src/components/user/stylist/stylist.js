@@ -122,7 +122,7 @@ function Stylist() {
 
   const filterOutEmptyObject = (obj) => {
     Object.keys(obj).map((item) => {
-      if (!obj[item]) {
+      if (!obj[item] || (Array.isArray(obj[item]) && !obj[item].length)) {
         delete obj[item];
       }
       return null;
