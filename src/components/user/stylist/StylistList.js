@@ -46,7 +46,6 @@ function StylistList({
   });
 
   const toggleScrollToButton = () => {
-    console.log("window", window);
     if (window.scrollY > 400) {
       setShowTopBtn(true);
     } else {
@@ -61,6 +60,9 @@ function StylistList({
     });
   };
 
+  const isPaginationLoading =
+    (!isSearchMode && hasNextPage) || (isSearchMode && hasSearchNextPage);
+
   return (
     <div>
       {showTopBtn && <ScrollToTop onClick={goToTop} />}
@@ -70,7 +72,7 @@ function StylistList({
             isMapOpen ? "col-span-12 lg:col-span-8" : "col-span-12"
           } `}
         >
-          <div className="flex justify-between items-center mt-8">
+          <div className="flex justify-between items-center pt-32px">
             <p className="text-gray-200 text-sm">
               {totalStylistCount
                 ? `${list.length} stylists out of ${totalStylistCount}`
@@ -87,7 +89,9 @@ function StylistList({
           <div>
             {list.length > 0 ? (
               <div
-                className={`grid  gap-6 my-5 w-full ${
+                className={`grid  gap-6 my-5 w-full relative ${
+                  isPaginationLoading ? "pb-24" : "pb-0"
+                } ${
                   isMapOpen
                     ? "grid-cols-1  md:grid-cols-2"
                     : "md:grid-cols-2 lg:grid-cols-4"
@@ -96,16 +100,10 @@ function StylistList({
                 {list.map((item) => {
                   return <CommonCard key={item._id} stylist={item} />;
                 })}
-                {!isSearchMode && hasNextPage && (
-                  <div className="loading" ref={ref}>
+
+                {isPaginationLoading && (
+                  <div className="absolute bottom-0 w-full" ref={ref}>
                     <Loader />
-                    <p>hasNextPage</p>
-                  </div>
-                )}
-                {isSearchMode && hasSearchNextPage && (
-                  <div className="loading" ref={ref}>
-                    <Loader />
-                    <p>hasSearchNextPage</p>
                   </div>
                 )}
               </div>

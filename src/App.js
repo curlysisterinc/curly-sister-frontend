@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { ToastProvider } from "react-toast-notifications";
 import { toast } from "react-toastify";
+import { process } from "postcss-flexbugs-fixes";
 import Routers from "./routers";
 import CustomToast from "./components/toast";
 import "slick-carousel/slick/slick.css";
@@ -21,9 +22,9 @@ import authHandler from "./authHandler";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: !!process.env.NODE_ENV === "production",
       retry: 0,
-      staleTime: 30000,
+      staleTime: process.env.NODE_ENV === "production" && 30000,
     },
   },
 

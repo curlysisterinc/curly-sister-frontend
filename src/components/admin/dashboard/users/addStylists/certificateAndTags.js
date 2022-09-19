@@ -93,8 +93,6 @@ function CertificateAndTags({
     };
   }, [stylistData]);
 
-  // const stylistId = localStorage.getItem("createdStylist");
-
   useChangeBtnTitle("certificate", setButtonAction, setStylistCert);
 
   const disableInput = () => {

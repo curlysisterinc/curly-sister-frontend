@@ -138,7 +138,7 @@ function DataTab({ active }) {
   }, []);
 
   return (
-    <>
+    <div className="m-auto max-w-1031">
       {/* tabs */}
       {isError && <ErrorDisplayComponent refetch={refetchAll} />}
       {isLoading && <Loadersmall />}
@@ -255,17 +255,15 @@ function DataTab({ active }) {
             </button>
             {openCertification && (
               <div className="mt-5">
-                <div className="py-6">
-                  <div className="flex flex-wrap ">
-                    {getCertificates &&
-                      getCertificates.map((certification) => {
-                        return (
-                          <div className="rounded-full bg-purple-100 px-4 py-1 h-8 flex justify-center items-center mb-6 text-white text-sm mx-3">
-                            {certification.name}
-                          </div>
-                        );
-                      })}
-                  </div>
+                <div className="flex flex-wrap ">
+                  {getCertificates &&
+                    getCertificates.map((certification) => {
+                      return (
+                        <div className="rounded-full bg-purple-100 px-4 py-1 h-8 flex justify-center items-center mb-3 text-white text-sm mx-3">
+                          {certification.name}
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             )}
@@ -297,17 +295,15 @@ function DataTab({ active }) {
             </button>
             {openTag && (
               <div className="mt-5">
-                <div className="">
-                  <div className="flex">
-                    {getTags &&
-                      getTags.map((tag) => {
-                        return (
-                          <div className="rounded-full bg-purple-100 px-3 py-1 h-8 flex justify-center items-center text-white text-sm mx-3">
-                            {tag.name}
-                          </div>
-                        );
-                      })}
-                  </div>
+                <div className="flex flex-wrap ">
+                  {getTags &&
+                    getTags.map((tag) => {
+                      return (
+                        <div className="rounded-full bg-purple-100 px-4 py-1 h-8 flex justify-center items-center mb-3 text-white text-sm mx-3">
+                          {tag.name}
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             )}
@@ -327,7 +323,7 @@ function DataTab({ active }) {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 

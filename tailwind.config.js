@@ -48,6 +48,9 @@ module.exports = {
           info: "#590BA9",
         },
       },
+      borderWidth: {
+        1.5: "1.5px",
+      },
       height: {
         69: "69px",
         36: "36px",
@@ -59,7 +62,11 @@ module.exports = {
         500: "500px",
         150: "150px",
         520: "520px",
-        "90vh":"90vh"
+        "90vh": "90vh",
+        "screen-420px": "calc(100vh - 420px)",
+        "full-90px": "calc(100% - 90px)",
+        "full-62px": "calc(100% - 62px)",
+        "full-20px": "calc(100% - 20px)",
       },
       width: {
         36: "36px",
@@ -74,14 +81,18 @@ module.exports = {
         489: "489px",
         480: "480px",
         543: "543px",
-        "95vw":"95vw"
+        "95vw": "95vw",
       },
       spacing: {
+        8: "8px",
+        18: "18px",
+        "32px": "32px",
         50: "50px",
         69: "69px",
         350: "350px",
         250: "250px",
-        428:"428px",
+        428: "428px",
+        400: "400px",
         500: "500px",
         600: "600px",
         tablet: "768px",
@@ -100,7 +111,9 @@ module.exports = {
         375: "375px",
         640: "640px",
         1000: "1000px",
+        500: "500px",
         1170: "1170px",
+        1031: "1031px",
       },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",
@@ -135,7 +148,7 @@ module.exports = {
         s01: "0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
         s07: "0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)",
         sinput: "0 0 0 2px #590BA9",
-        s05: "0px 6px 14px -6px rgba(68, 60, 77, 0.12), 0px 10px 32px -4px rgba(68, 60, 77, 0.1)"
+        s05: "0px 6px 14px -6px rgba(68, 60, 77, 0.12), 0px 10px 32px -4px rgba(68, 60, 77, 0.1)",
       },
     },
   },
