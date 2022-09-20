@@ -61,6 +61,10 @@ export default {
   async CreateServices(data) {
     return curlySistersApi.post("/v1/admin/create-service", data);
   },
+
+  async UpdateService(data) {
+    return curlySistersApi.post("/v1/admin/update-service", data);
+  },
   async GetServices() {
     return curlySistersOnboarding.get("/v1/admin/find-all-service");
   },

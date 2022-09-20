@@ -96,6 +96,7 @@ function DetailsTab({
   const handleEditDetails = () => {
     const {
       stylist_name,
+      business_name,
       description,
       license_number,
       license_board,
@@ -109,6 +110,7 @@ function DetailsTab({
       license_number,
       license_board,
       photo,
+      business_name,
       _id,
     };
     handleEditStylist(newValue);
@@ -116,7 +118,7 @@ function DetailsTab({
 
   const handleDisabledButton = () => {
     const hasEmptyValue =
-      detailsValues.stylist_name === "" || detailsValues.description === "";
+      detailsValues.business_name === "" || detailsValues.description === "";
     return hasEmptyValue || isLoading || isDetailsLoading;
   };
 
@@ -167,7 +169,23 @@ function DetailsTab({
         className="block text-black text-sm font-bold mt-5"
         htmlFor="stylist_name"
       >
-        Name
+        Business Name
+        <input
+          className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="text"
+          disabled={isLoading}
+          placeholder="Enter Business name"
+          name="business_name"
+          id="business_name"
+          value={detailsValues.business_name}
+          onChange={handleChange}
+        />
+      </label>
+      <label
+        className="block text-black text-sm font-bold mt-5"
+        htmlFor="stylist_name"
+      >
+        Stylist Name
         <input
           className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="text"

@@ -1,7 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
+import jwtDecode from "jwt-decode";
 
-const initialState = {
+let initialState = {
   token: undefined,
   isSignedIn: false,
   userEmail: undefined,
@@ -9,6 +10,38 @@ const initialState = {
   userTitle: undefined,
   user: null,
 };
+
+const resetAuth = () => {
+  localStorage.removeItem("token");
+  initialState = {
+    token: undefined,
+    isSignedIn: false,
+    userEmail: undefined,
+    userPw: undefined,
+    userTitle: undefined,
+    user: null,
+  };
+};
+
+if (localStorage.getItem("token") !== null) {
+  const token = localStorage.getItem("token") || "";
+  const user = localStorage.getItem("user") || "";
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp * 1000 < Date.now()) {
+    resetAuth();
+  }
+  initialState = {
+    ...initialState,
+    user,
+    decodedToken,
+    token,
+    isSignedIn: true,
+  };
+} else {
+  resetAuth();
+}
+
+const getInitialState = () => initialState;
 
 const authSlice = createSlice({
   name: "auth",

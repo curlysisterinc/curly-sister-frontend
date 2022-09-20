@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import SelectOptions from "components/selectOptions";
+import DatePicker from "react-datepicker";
 import { Select, SelectItem } from "../../../../../customSelect";
 import dash from "../../../../../../assets/images/dash.svg";
 import { timeArr } from "../../data";
+import "react-datepicker/dist/react-datepicker.css";
 
 const selectclassname =
   "flex items-center justify-between shadow-sm appearance-none border border-gray-800 rounded w-32 py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline";
@@ -55,6 +57,17 @@ function TimeRange({
         optionlabelvalue="label"
         value={to}
       />
+      {/* <DatePicker
+        placeholder="End time"
+        // selected={startDate}
+        onChange={(date) => console.log(date)}
+        showTimeSelect
+        showTimeSelectOnly
+        // inline
+        // timeIntervals={data?.bookedservice?.duration}
+        timeCaption="End time"
+        dateFormat="h:mm aa"
+      /> */}
     </div>
   );
 }

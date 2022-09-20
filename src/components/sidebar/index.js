@@ -36,7 +36,7 @@ function SideNav() {
   const profile_pic = isLoggedIn?.active.profile_pic;
 
   const onLogout = () => {
-    navigate(NonAuthRoutes.login);
+    navigate(NonAuthRoutes.home);
     dispatch(logoutUser());
     authHandler.deleteUser();
   };
@@ -87,7 +87,7 @@ function SideNav() {
 
   return (
     <div
-      className={`md:w-60 lg:w-80  md:bg-gray-50 md:h-screen  lg:px-12  md:fixed flex flex-col justify-between fixed z-200  p-0 w-full ${
+      className={`md:w-60 xl:w-80  md:bg-gray-50 md:h-screen  lg:px-12  md:fixed flex flex-col justify-between fixed z-200  p-0 w-full ${
         isOpen ? "h-screen" : "h-69"
       }`}
     >

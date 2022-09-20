@@ -34,7 +34,7 @@ code {
   }
 }
 
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1280px) {
   .content {
     width: calc(100vw - 20rem);
   }
@@ -198,15 +198,18 @@ Font Weight	Numerical Weight
 }
 
 .react-datepicker {
-  font-family: "Inter", sans-serif !important;
+  font-family: "BeatriceRegular", sans-serif !important;
   background-color: #ffffff !important;
   /* s02 */
   box-shadow: 0px 8px 16px -6px rgba(10, 31, 68, 0.08);
   border-radius: 12px !important;
   border: none !important;
   width: 100%;
-  max-width: 244px;
+  /* max-width: 244px; */
   padding: 12px 14px;
+}
+.no-shadow .react-datepicker {
+  box-shadow: none;
 }
 
 .react-datepicker__month-container {
@@ -281,7 +284,25 @@ Font Weight	Numerical Weight
 .react-datepicker__day--outside-month {
   color: #b0b7c3 !important;
 }
-
+.react-datepicker__time-container
+  .react-datepicker__time
+  .react-datepicker__time-box
+  ul.react-datepicker__time-list
+  li.react-datepicker__time-list-item--disabled {
+  border-color: #b0b7c3 !important;
+  color: #b0b7c3 !important;
+  cursor: not-allowed;
+  background-color: transparent;
+  opacity: 0.5;
+  display: none;
+}
+.react-datepicker__time-container
+  .react-datepicker__time
+  .react-datepicker__time-box
+  ul.react-datepicker__time-list
+  li.react-datepicker__time-list-item {
+  height: unset;
+}
 .react-datepicker__day-name {
   font-size: 12px;
   line-height: 150%;
@@ -333,7 +354,6 @@ Font Weight	Numerical Weight
   .react-datepicker__time-box
   ul.react-datepicker__time-list
   li.react-datepicker__time-list-item {
-  height: 30px !important;
   padding: 5px 10px !important;
   white-space: nowrap !important;
   display: flex !important;
@@ -342,10 +362,32 @@ Font Weight	Numerical Weight
   font-size: 14px !important;
   font-weight: normal !important;
 }
+ul.react-datepicker__time-list {
+  height: 280px !important;
+}
 
-.react-datepicker--time-only {
+.react-datepicker__time {
+  margin-top: 24px;
+}
+.react-datepicker__time-list-item {
+  max-width: 220px;
+  margin: auto;
+  background: rgba(89, 11, 169, 0.05);
+  border: 1px solid #590ba9;
+  border-radius: 200px;
+  text-align: center;
+  color: #590ba9;
+  margin-bottom: 8px;
+  line-height: 150%;
+  font-family: "BeatriceRegular";
+}
+.react-datepicker-time__header {
+  display: none;
+}
+.react-datepicker.react-datepicker--time-only {
+  box-shadow: none !important ;
+  padding: 0;
   width: 100% !important;
-  max-width: 120px !important;
 }
 
 .react-datepicker__triangle {

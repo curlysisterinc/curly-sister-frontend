@@ -84,7 +84,7 @@ function LoginComponent() {
       id="appLayout"
     >
       <AuthSideBarComponent signin="back" />
-      <div className="md:ml-60 lg:ml-80 w-full content p-5 pt-10">
+      <div className="md:ml-60 xl:ml-80 w-full content p-5 pt-10">
         <div className="max-w-640 m-auto">
           <div className="w-full pt-10">
             <h3 className="text-lg lg:text-2xl font-bold text-black">

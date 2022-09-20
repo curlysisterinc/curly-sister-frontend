@@ -51,7 +51,7 @@ function NotBookServiceCard({ ...props }) {
         <div className="flex space-x-5">
           {props.facebook && (
             <a
-              href={`https://${props.facebook.replace("https://")}`}
+              href={`https://${props.facebook.replace("https://", "")}`}
               target="_blank"
               aria-describedby="users facebook account"
               rel="noreferrer"
@@ -62,7 +62,7 @@ function NotBookServiceCard({ ...props }) {
 
           {props.instagram && (
             <a
-              href={`https://${props.instagram.replace("https://")}`}
+              href={`https://${props.instagram.replace("https://", "")}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-describedby="users instagram account"
@@ -73,7 +73,7 @@ function NotBookServiceCard({ ...props }) {
 
           {props.website && (
             <a
-              href={`https://${props.website.replace("https://")}`}
+              href={`https://${props.website.replace("https://", "")}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-describedby="users website account"
@@ -90,32 +90,6 @@ function NotBookServiceCard({ ...props }) {
   );
 }
 
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      // className="block z-50 left-3"
-      style={{ ...style, display: "block", background: "red", zIndex: "30000" }}
-      onClick={onClick}
-    />
-  );
-}
-
-function SamplePrevArrow(props) {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      // className="block z-50 left-5"
-      style={{
-        ...style,
-        display: "block",
-        background: "green",
-        zIndex: "30000",
-      }}
-      onClick={onClick}
-    />
-  );
-}
 function StylistProfile() {
   const [hasReview, setHasReview] = React.useState(true);
   const [bookedService, setBookedService] = React.useState(false);
@@ -268,7 +242,7 @@ function StylistProfile() {
                 </div>
                 <div className="flex flex-col mt-4">
                   <p className="text-2xl font-BeatriceSemiBold text-gray-400 flex items-center">
-                    {getStylist.stylist_name}{" "}
+                    {getStylist.business_name}{" "}
                     <span className="ml-2">
                       <VerifyIcon />
                     </span>
@@ -282,10 +256,10 @@ function StylistProfile() {
               <div className="col-span-12 md:col-span-4 content-end  h-auto  right-5 md:absolute md:mr-5 w-full z-30 max-w-358 md:max-w-250 lg:max-w-358 mt-5">
                 {getStylist?.services?.length > 0 ? (
                   <BookServiceCard
-                    stylistId={getStylist._id}
-                    availability={avail}
-                    serviceOffered={getStylist?.services}
                     {...getStylist}
+                    stylistId={getStylist._id}
+                    serviceOffered={getStylist?.services}
+                    availability={avail}
                   />
                 ) : (
                   <NotBookServiceCard {...getStylist} />

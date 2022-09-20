@@ -9,7 +9,6 @@ function useChangeBtnTitle(tabtitle, setButtonAction, setData) {
     const ac = new AbortController();
     if (state) {
       setButtonAction("Edit");
-      console.log(state, "changed to edit");
     }
 
     if (stylistId) {

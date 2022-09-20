@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import { ReactComponent as LocationIcon } from "../../../assets/images/location-dark.svg";
 import { ReactComponent as VerifyIcon } from "../../../assets/images/verify.svg";
-import hairChallenge from "../../../assets/images/hair-challenge-avatar.png";
-import girl from "../../../assets/images/girl-2.png";
+import avatar2 from "../../../assets/images/gradient-avatar.svg";
+import galleryBanner from "../../../assets/images/stylist-profile-banner.png";
 
 const K_SIZE = 40;
 
@@ -16,36 +16,46 @@ function LocationMaker({ text, $hover, stylist, ...rest }) {
   );
 }
 
-function MapMaker({ text, $hover, stylist, ...rest }) {
+function MapMaker({
+  text,
+  $hover,
+  stylist,
+  // handleScriptLoad,
+  ...rest
+}) {
   const { data, isMapLoaded } = text;
+  // console.log(data);
   const style = $hover ? "flex" : "hidden";
+  // const style = "flex";
   const display = isMapLoaded ? "visible" : "invisible";
 
   return (
-    <div className={`relative ${display} z-10`}>
+    <div className={`relative ${display}`}>
       <LocationIcon />
       <div
-        className={`bg-white border border-gray-600 shadow-s07 absolute rounded-2xl -top-10 left-10  w-489 flex overflow-hidden ${style} z-10`}
+        className={`bg-white border border-gray-600 shadow-s07 absolute  rounded-2xl bottom-9   w-350 flex overflow-hidden ${style} z-100 -translate-x-2/4`}
       >
         <div className="w-2/5 flex justify-center items-center">
-          <img src={girl} alt="" className="object-cover w-4/5" />
+          <img
+            src={data.gallery[0] ?? galleryBanner}
+            alt=""
+            className="object-cover w-full h-full"
+          />
 
           <img
-            src={hairChallenge}
+            src={data.photo ?? avatar2}
             alt=""
-            className="w-16 h-16  rounded relative right-7 object-cover"
+            className="w-16 h-16   relative right-7  rounded-full object-cover border-white border"
           />
         </div>
         <div className="m-3 w-3/5">
           <div className="flex  items-center mb-1">
             <p className="text-gray-350 font-semibold text-base mr-1">
-              {data.business_name}
+              {data.business_name ?? data.stylist_name}
             </p>
             <VerifyIcon />
           </div>
-          <p className="font-normal text-sm mb-2">
-            Here’s a short version of a bio where one has been provided.
-          </p>
+          <p className="font-normal text-sm mb-2">{data.description}</p>
           <p className="font-normal text-sm">
             {data?.phone_no} · {data?.address} ·{" "}
             {data?.certifications.length > 0 && "Certified"}
@@ -56,31 +66,40 @@ function MapMaker({ text, $hover, stylist, ...rest }) {
   );
 }
 
-export default function StylistMap({ stylelist, selectedPlace, positionData }) {
+export default function StylistMap({
+  stylelist,
+  selectedPlace,
+  positionData,
+  handleScriptLoad,
+  isMapFixed,
+}) {
   const { position, status: currentLocationStatus } = positionData;
   const { lat, lng } = position;
 
   const [mapGeo, setMapGeo] = useState({
     longitude: null,
-    latitute: null,
+    latitude: null,
   });
   const [isMapLoaded, setIsMapLoaded] = useState("false");
 
   useEffect(() => {
     if (currentLocationStatus === "data") {
-      setMapGeo({ longitude: lng, latitude: lat });
+      setMapGeo({ longitude: Number(lng), latitude: Number(lat) });
     }
   }, [currentLocationStatus]);
 
   useEffect(() => {
     if (selectedPlace) {
-      setMapGeo({ longitude: selectedPlace.lng, latitude: selectedPlace.lat });
+      setMapGeo({
+        longitude: Number(selectedPlace.lng),
+        latitude: Number(selectedPlace.lat),
+      });
     }
   }, [selectedPlace]);
 
   const defaultProps = {
     center: { ...position },
-    zoom: 7,
+    zoom: 5,
   };
 
   const createMapOptions = (maps) => {
@@ -90,7 +109,7 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
       fullscreenControl: false,
       scaleControl: true,
       gestureHandling: "greedy",
-      minZoom: 2,
+      minZoom: 1,
       // disableDefaultUI: true,
       // fullscreenControl: false,
       styles: [
@@ -114,8 +133,8 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
     <div
       style={{
         height: "calc(100vh - 220px)",
-        width: "100%",
-        position: "sticky",
+        width: isMapFixed ? "450px" : "100%",
+        position: isMapFixed ? "fixed" : "sticky",
         top: 0,
         // background: "rgb(229, 227, 223)",
       }}
@@ -133,25 +152,25 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
       <div
         className={`${
           currentLocationStatus === "data"
-            ? "opacity-100 h-full flex justify-center item transition-opacity  delay-300 duration-1000"
+            ? "opacity-100 h-full flex justify-center item transition-opacity  delay-300 duration-1000 "
             : "opacity-0 h-0 transition-opacity relative"
         }`}
       >
-        {/* <button
-          type="button"
-          className="absolute left-0 top-0 text-gray-200 text-sm cursor-pointer z-50"
-        >
-          toggle map
-        </button> */}
         {defaultProps?.center?.lat && (
           <GoogleMapReact
-            bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API }}
+            bootstrapURLKeys={{
+              key: process.env.REACT_APP_MAP_API,
+              libraries: ["places"],
+            }}
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
             options={createMapOptions}
-            onGoogleApiLoaded={({ map, maps }) => setIsMapLoaded(true)}
-            yesIWantToUseGoogleMapApiInternals
-            center={[mapGeo.latitude, mapGeo.longitude]}
+            // onGoogleApiLoaded={({ map, maps }) => alert("loaded")}
+            // yesIWantToUseGoogleMapApiInternals
+            center={{
+              lat: Number(mapGeo.latitude),
+              lng: Number(mapGeo.longitude),
+            }}
           >
             {mapGeo?.latitude && (
               <LocationMaker

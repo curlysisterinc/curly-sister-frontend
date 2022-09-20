@@ -31,16 +31,23 @@ export function SelectOptions(props) {
     optionlabelvalue,
     placeholder,
     disabled,
+    containerStyle,
+    className,
   } = props;
 
+  // const classList =
+  //   "w-full h-full rounded-xl py-0 pr-6 pl-2 bg-white appearance-none outline-none block focus:shadow-sinput focus:border-0 border-gray-800 text-gray-400 text-sm ";
+  // const newClassName = etraStyle ? classList + etraStyle : classList;
+
   return (
-    <div className="w-full h-46 relative">
+    <div className={`w-full h-46 relative ${containerStyle}`}>
       <select
-        className="w-full h-full rounded-xl py-0 pr-6 pl-2 bg-white appearance-none outline-none block focus:shadow-sinput focus:border-0 border-gray-800 text-gray-400 text-sm"
+        // className={newClassName}
+        {...props}
+        className={`w-full h-full rounded-xl py-0 pr-6 pl-2 bg-white appearance-none outline-none block focus:shadow-sinput focus:border-0 border-gray-800 text-gray-400 text-sm ${className}`}
         id={name}
         value={value}
         disabled={disabled}
-        {...props}
       >
         {placeholder && <option value="">{placeholder}</option>}
         {collection &&

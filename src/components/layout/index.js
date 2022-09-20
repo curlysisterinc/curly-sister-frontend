@@ -20,7 +20,7 @@ function AppLayout() {
       id="appLayout"
     >
       <SideNav />
-      <div className="md:ml-60 lg:ml-80 w-full content">
+      <div className="md:ml-60 xl:ml-80 w-full content" id="content">
         <div className="max-w-screen-2xl m-auto">
           <Outlet />
         </div>

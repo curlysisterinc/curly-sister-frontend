@@ -1,18 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
-import authHandler from "authHandler";
-import { NonAuthRoutes } from "constants";
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { useAuthContext } from "redux/auth";
-import { loginUser } from "redux/auth/authSlice";
 import admin from "../../../api/admin";
 
 export default () => {
-  const { dispatch } = useAuthContext();
   const { addToast } = useToasts();
   const { CreateStylist } = admin;
-  const navigate = useNavigate();
 
   return useMutation((stylistValues) => CreateStylist(stylistValues), {
     onSuccess: (context) => {

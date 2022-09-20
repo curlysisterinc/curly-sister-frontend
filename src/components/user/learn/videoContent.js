@@ -57,12 +57,9 @@ function VideoContent() {
     learn
       .GetOneVideo(token)
       .then((response) => {
-        console.log(response.data, "data");
         setGetVideos(response.data.data);
       })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
+      .catch((error) => {});
     return function cleanup() {
       ac.abort();
     };
@@ -74,12 +71,9 @@ function VideoContent() {
     learn
       .GetCommentForVideo(token)
       .then((response) => {
-        console.log(response.data, "comment");
         setGetComments(response.data.data);
       })
-      .catch((error) => {
-        console.log(error.message, "comment");
-      });
+      .catch((error) => {});
     return function cleanup() {
       ac.abort();
     };
@@ -89,13 +83,10 @@ function VideoContent() {
     learn
       .DeleteVideoById(token)
       .then((response) => {
-        console.log(response.data, "delete");
         setGetVideos(response.data.data);
         navigate(-1);
       })
-      .catch((error) => {
-        console.log(error.message, "delete error");
-      });
+      .catch((error) => {});
   };
   const handleSubmitComment = (e) => {
     e.preventDefault();
@@ -103,13 +94,10 @@ function VideoContent() {
     learn
       .CommentOnVideo(token, commentValue)
       .then((response) => {
-        // console.log(response.data.data, "submiteed");
         setGetComments([response.data.data.comment, ...getComments]);
         setCommentValue("");
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleSubmitReply = (e) => {
     e.preventDefault();
@@ -117,12 +105,9 @@ function VideoContent() {
     learn
       .ReplyCommentOnVideo(token, replyValue)
       .then((response) => {
-        console.log(response);
         setReplyValue("");
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const handleVideoReactionLike = () => {
@@ -133,12 +118,8 @@ function VideoContent() {
 
     learn
       .ReactToVideo(token, "like")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
 
   const handleVideoReactionDisLike = () => {
@@ -149,36 +130,26 @@ function VideoContent() {
 
     learn
       .ReactToVideo(token, "unlike")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
 
   const handleSaveVideo = () => {
     learn
       .SaveVideo({ videoId: token })
       .then((response) => {
-        console.log(response);
         toast("Video saved!");
       })
-      .catch((error) => {
-        console.log(error, "error");
-      });
+      .catch((error) => {});
   };
 
   const handleDeleteSavedVideo = () => {
     learn
       .DeleteSavedVideo({ id: token })
       .then((response) => {
-        console.log(response);
         toast("Video unsaved!");
       })
-      .catch((error) => {
-        console.log(error, "error");
-      });
+      .catch((error) => {});
   };
   return (
     <div className="bg-white px-10 pt-8 w-full">

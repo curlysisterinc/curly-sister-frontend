@@ -6,14 +6,24 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
 
-function EditServiceModal({ handleClose }) {
-  const [serviceList, setServiceList] = useState([
-    { serviceName: "", description: "", price: "", duration: "", people: "" },
-  ]);
+function EditServiceModal({ handleClose, modalContent }) {
+  const [serviceList, setServiceList] = useState({
+    default_price: "",
+    description: "",
+    duration: "",
+    name: "",
+    who_is_this_for: "",
+    _id: "",
+  });
+
+  useEffect(() => {
+    setServiceList({ ...modalContent });
+  }, [modalContent]);
+
   const [coverPhoto, setCoverPhoto] = useState(null);
   // handle file change
   const handleFileChange = (e) => {
@@ -61,7 +71,7 @@ function EditServiceModal({ handleClose }) {
                   className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="serviceName"
                   type="text"
-                  value="Stylist training"
+                  value={serviceList.name}
                   placeholder="Type a name here"
                   name="serviceName"
                   onChange={handleChange}
@@ -82,7 +92,7 @@ function EditServiceModal({ handleClose }) {
                   label="description"
                   id="description"
                   rows="3"
-                  value=" This training is for professional stylists to have a deep dive in the art of curly hair."
+                  value={serviceList.description}
                 />
               </label>
             </div>
@@ -100,6 +110,7 @@ function EditServiceModal({ handleClose }) {
                       type="text"
                       placeholder="Enter price"
                       name="price"
+                      value={serviceList.default_price}
                       id="price"
                     />
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
@@ -131,6 +142,11 @@ function EditServiceModal({ handleClose }) {
                       placeholder="Enter time"
                       name="time"
                       id="time"
+                      value={
+                        serviceList.duration > 59
+                          ? serviceList.duration / 60
+                          : serviceList.duration
+                      }
                     />
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
                       <select
@@ -158,7 +174,7 @@ function EditServiceModal({ handleClose }) {
                   name="people"
                   className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
-                  <option>Everyone</option>
+                  <option value="Others">Others</option>
                   <option>Not everyone</option>
                 </select>
               </label>

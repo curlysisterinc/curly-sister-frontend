@@ -1,33 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
+import useGetServices from "hooks/data/admin/useGetServices";
 import CategoryDropdown from "./CategoryOptions";
 import SearchBar from "./Search";
 import ToggleBookedService from "./ToggleBookedService";
 import SessionDropdown from "./Session";
 import MoreFilters from "./MoreFilters";
-import ServiceType from "./ServiceType";
-
-export const categoryList = [
-  {
-    id: 1,
-    value: "all-stylist",
-    label: "All stylist",
-  },
-  {
-    id: 2,
-    value: "walk-in only",
-    label: "Walk-in only stylist",
-  },
-  {
-    id: 3,
-    value: "curly sister stylist",
-    label: "Curly sister stylist",
-  },
-  {
-    id: 4,
-    value: "master",
-    label: "Master stylist",
-  },
-];
+import ServiceList from "./ServiceList";
 
 export const sessionList = [
   {
@@ -48,57 +26,58 @@ export const sessionList = [
 ];
 
 function FilterPanel({
-  selectToggle,
-  selectBookableStylist,
-  certifications,
-  tags,
-  handleOnCheckboxChange,
-  handleSelectCategory,
-  categories,
-  getServices,
-  handleScriptLoad,
-  handleClick,
+  handleSearchAddress,
+  getLocation,
+  setIsSearchMode,
+  isSearchLoading,
 }) {
+  const [isServiceAvailable, setIsServiceAvailable] = useState(false);
+  const [selectedCertificates, setSelectedCertificates] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+
+  const toggleServiceAvailability = () => {
+    setIsServiceAvailable((available) => !available);
+  };
+
   return (
-    <div>
-      <div className="flex justify-between flex-wrap">
-        <div className="relative w-3/4 flex-1 mr-4">
-          <SearchBar handleScriptLoad={handleScriptLoad} />
-          <button
-            type="button"
-            onClick={handleClick}
-            className="col-span-3 cursor-pointer flex items-center space-x-2 border rounded-full placeholder:text-sm placeholder:text-gray-300 px-4 bg-white border-gray-600"
-          >
-            Use current location
-          </button>
-        </div>
-        <div className="col-span-3 w-220 flex-shrink-0">
+    <div className="pb-32px">
+      <div className="flex flex-col md:flex-row justify-between flex-wrap">
+        <SearchBar
+          handleSearchAddress={handleSearchAddress}
+          setIsSearchMode={setIsSearchMode}
+          isSearchLoading={isSearchLoading}
+          getLocation={getLocation}
+        />
+
+        <div className="col-span-3 w-220 flex-shrink-0 text-gray-400">
           <CategoryDropdown
-            options={categoryList}
-            selectOption={handleSelectCategory}
-            value={categories}
+            handleSearchAddress={handleSearchAddress}
+            setIsSearchMode={setIsSearchMode}
           />
         </div>
       </div>
-      <div className="flex justify-between items-center mt-4">
-        <div className="flex space-x-4 ">
+      <div className="flex justify-between items-start md:items-center mt-4 h-fit md:h-10 flex-col md:flex-row flex-wrap">
+        <div className="flex md:space-x-4 h-full flex-col md:flex-row items-start mb-2">
           <ToggleBookedService
-            selectToggle={selectToggle}
-            selectBookableStylist={selectBookableStylist}
+            toggleServiceAvailability={toggleServiceAvailability}
+            isServiceAvailable={isServiceAvailable}
+            handleSearchAddress={handleSearchAddress}
           />
 
-          <SessionDropdown
-            options={sessionList}
-            selectOption={handleSelectCategory}
-            value={categories}
-          />
-          <ServiceType getServices={getServices} />
+          <div className="flex flex-wrap mb-5">
+            {isServiceAvailable && (
+              <ServiceList
+                handleSearchAddress={handleSearchAddress}
+                setIsSearchMode={setIsSearchMode}
+              />
+            )}
+            <SessionDropdown options={sessionList} />
+          </div>
         </div>
-        <div className="">
+        <div className="lg:w-120 relative w-full ">
           <MoreFilters
-            certifications={certifications}
-            tags={tags}
-            handleOnCheckboxChange={handleOnCheckboxChange}
+            handleSearchAddress={handleSearchAddress}
+            setIsSearchMode={setIsSearchMode}
           />
         </div>
       </div>

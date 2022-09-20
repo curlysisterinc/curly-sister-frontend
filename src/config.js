@@ -36,7 +36,7 @@ curlySistersApi.interceptors.request.use(
     if (config.url.includes("/login")) return config;
     if (config.url.includes("/refresh-token")) return config;
 
-    TokenValidate();
+    // TokenValidate();
     config.headers.Authorization = `${Cookies.get("accessToken")}`;
     config.headers["Content-Type"] = "application/json";
     return config;
@@ -55,7 +55,7 @@ curlySistersFormDataApi.interceptors.request.use(
     if (config.url.includes("/login")) return config;
     if (config.url.includes("/refresh-token")) return config;
 
-    TokenValidate();
+    // TokenValidate();
     config.headers.Authorization = `${Cookies.get("accessToken")}`;
     config.headers["Content-Type"] = "multipart/form-data";
     return config;

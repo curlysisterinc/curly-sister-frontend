@@ -10,7 +10,7 @@ import stylistAvatar from "../../assets/images/stylist-1.png";
 
 const CommonCard = ({ stylist }) => {
   const splitName = (fullname) => {
-    let name = fullname?.stylist_name;
+    let name = fullname?.business_name;
     const firstName = name?.split(" ");
     return firstName && firstName[0];
   };
@@ -24,7 +24,7 @@ const CommonCard = ({ stylist }) => {
       />
       <div className="flex my-3">
         <h5 className="text-lg capitalize text-gray-400 mr-3 font-BeatriceSemiBold">
-          {stylist.stylist_name}
+          {stylist.business_name}
         </h5>
         <img src={ratingIcon} alt="rating" />
       </div>

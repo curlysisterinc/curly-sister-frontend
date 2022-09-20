@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { ToastProvider } from "react-toast-notifications";
 import { toast } from "react-toastify";
+import { process } from "postcss-flexbugs-fixes";
 import Routers from "./routers";
 import CustomToast from "./components/toast";
 import "slick-carousel/slick/slick.css";
@@ -21,17 +22,16 @@ import authHandler from "./authHandler";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: !!process.env.NODE_ENV === "production",
       retry: 0,
-      staleTime: 30000,
+      staleTime: process.env.NODE_ENV === "production" && 30000,
     },
   },
 
   queryCache: new QueryCache({
     onError: (error, query) => {
-      console.log({ error });
-      toast.error(error.response.data.message);
-      if (error.response.status === 401) {
+      toast.error(error?.response?.data?.message);
+      if (error?.response?.status === 401) {
         authHandler.deleteUser();
         window.location.href = "/";
       }
@@ -40,9 +40,8 @@ export const queryClient = new QueryClient({
 
   mutationCache: new MutationCache({
     onError: (error, query) => {
-      console.log({ error });
-      toast.error(error.response.data.message);
-      if (error.response.status === 401) {
+      toast.error(error?.response?.data?.message);
+      if (error?.response?.status === 401) {
         authHandler.deleteUser();
         window.location.href = "/login";
       }

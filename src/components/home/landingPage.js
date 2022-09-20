@@ -1,6 +1,7 @@
 /* eslint-disable import/no-cycle */
 import { useToasts } from "react-toast-notifications";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import girl0 from "../../assets/images/girl-0.png";
 import girl1 from "../../assets/images/girl-1.png";
 import girl2 from "../../assets/images/girl-2.png";
@@ -11,29 +12,44 @@ import LearnSection from "./learn";
 import BookStylist from "./bookStylist";
 import CommunitySection from "./community";
 import FooterComponent from "../footer/footer";
-import searchIcon from "../../assets/images/search-normal.svg";
+import searchIcon, {
+  ReactComponent as RiSearchLine,
+} from "../../assets/images/search-normal.svg";
 
 function LandingPage({ getStylist }) {
+  const inputRef = useRef(null);
+  const navigate = useNavigate();
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/stylists`, {
+      state: { city: inputRef.current.value },
+    });
+  };
   return (
     <div className="p-0">
       <div className="relative mt-69 md:mt-0">
         <img className="absolute w-full" src={bgOne} alt="" />
-        <div className="absolute z-10 bottom-24 md:bottom-64 bg-white rounded-full w-11/12 md:w-3/4   left-1/2 transform -translate-x-1/2 p-2 md:p-3 shadow">
-          <div className="flex justify-between items-center">
+        <form
+          onSubmit={handleSearch}
+          className="absolute z-10 bottom-24 md:bottom-64 w-11/12 md:w-3/4   left-1/2 transform -translate-x-1/2 p-2 md:p-3 shadow"
+        >
+          <div className="relative h-12 lg:h-16 mb-4">
             <input
-              type="text"
               placeholder="What city do you live in?"
-              className="border-0 outline-none w-11/12 p-0 pl-3"
+              className="border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 w-full h-full px-3 lg:px-6"
+              id="searchInput"
+              ref={inputRef}
+              // value={searchValue}
+              // onChange={debouncedResults}
             />
-            <div className="rounded-full bg-orange-200 h-6 w-6 md:h-11 md:w-11 flex justify-center items-center cursor-pointer">
-              <img
-                src={searchIcon}
-                alt="Search icon"
-                className="h-3 w3 md:h-6 md:w-6"
-              />
-            </div>
+            <button
+              type="submit"
+              className="absolute flex justify-center items-center right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-orange-200 rounded-full"
+            >
+              <RiSearchLine color="white" size={20} />
+            </button>
           </div>
-        </div>
+        </form>
         <div className="bg-purple-200 p-4 md:px-10 md:pt-14">
           <div className="relative text-center w-full border border-orange-100 flex flex-col justify-center items-center py-16 md:py-24">
             <h1 className="text-white font-bold text-2xl md:text-5xl font-GTSuperTextBlack">

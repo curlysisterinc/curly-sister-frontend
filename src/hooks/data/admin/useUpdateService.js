@@ -9,16 +9,15 @@ import admin from "../../../api/admin";
 export default () => {
   const { dispatch } = useAuthContext();
   const { addToast } = useToasts();
-  const { UpdateStylist } = admin;
-  const { id } = useParams();
+  const { UpdateService } = admin;
 
-  return useMutation((updateValue) => UpdateStylist(updateValue), {
+  return useMutation((updateValue) => UpdateService(updateValue), {
     onSuccess: (context) => {
       const { data } = context;
       addToast(data.message, {
         appearance: "success",
       });
-      queryClient.invalidateQueries(["services", id]);
+      queryClient.invalidateQueries(["services"]);
     },
     onError: async (error) => {
       const mainError = error.response.data;

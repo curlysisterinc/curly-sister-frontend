@@ -84,9 +84,7 @@ function EditArticle() {
           status: "published",
         });
       })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
+      .catch((error) => {});
     return function cleanup() {
       ac.abort();
     };
