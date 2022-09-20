@@ -51,16 +51,12 @@ function ArticleContent() {
   useEffect(() => {
     const ac = new AbortController();
 
-    console.log(token);
     learn
       .GetOneArticle(token)
       .then((response) => {
-        console.log(response.data, "article");
         setGetArticles(response.data.data);
       })
-      .catch((error) => {
-        console.log(error.message, "article error");
-      });
+      .catch((error) => {});
     return function cleanup() {
       ac.abort();
     };
@@ -71,12 +67,9 @@ function ArticleContent() {
     learn
       .GetCommentForArticle(token)
       .then((response) => {
-        console.log(response.data, "comment");
         setGetComments(response.data.data);
       })
-      .catch((error) => {
-        console.log(error.message, "comment");
-      });
+      .catch((error) => {});
     return function cleanup() {
       ac.abort();
     };
@@ -88,14 +81,11 @@ function ArticleContent() {
     learn
       .CommentOnArticle(token, commentValue)
       .then((response) => {
-        console.log(response);
         setGetComments([response.data.data.comment, ...getComments]);
 
         setCommentValue("");
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleSubmitReply = (e) => {
     e.preventDefault();
@@ -103,12 +93,9 @@ function ArticleContent() {
     learn
       .ReplyCommentOnArticle(token, replyValue)
       .then((response) => {
-        console.log(response);
         setReplyValue("");
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleArticleReactionLike = () => {
     setIsLiked(true);
@@ -118,12 +105,8 @@ function ArticleContent() {
 
     learn
       .ReactToArticle(token, "like")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
 
   const handleArticleReactionDisLike = () => {
@@ -134,37 +117,27 @@ function ArticleContent() {
 
     learn
       .ReactToArticle(token, "unlike")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
 
   const handleSaveArticle = () => {
     learn
       .SaveArticle({ articleId: token })
       .then((response) => {
-        console.log(response);
         toast("Article saved!");
         // setGetArticles([...getArticles, number_of_saves: response.data.data.])
       })
-      .catch((error) => {
-        console.log(error, "error");
-      });
+      .catch((error) => {});
   };
 
   const handleDeleteSavedArticle = () => {
     learn
       .DeleteSavedArticle({ id: token })
       .then((response) => {
-        console.log(response);
         toast("Article unsaved!");
       })
-      .catch((error) => {
-        console.log(error, "error");
-      });
+      .catch((error) => {});
   };
   return (
     <>

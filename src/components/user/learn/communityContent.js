@@ -56,11 +56,8 @@ function CommunityContent() {
       .GetOneQuestion(token)
       .then((response) => {
         setGetQuestion(response.data.data);
-        console.log(response.data.data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
 
     return function cleanup() {
       ac.abort();
@@ -73,12 +70,9 @@ function CommunityContent() {
     learn
       .GetCommentForQuestion(token)
       .then((response) => {
-        console.log(response.data, "comment");
         setGetComments(response.data.data);
       })
-      .catch((error) => {
-        console.log(error.message, "comment");
-      });
+      .catch((error) => {});
 
     return function cleanup() {
       ac.abort();
@@ -91,12 +85,9 @@ function CommunityContent() {
     learn
       .CommentOnQuestion(token, commentValue)
       .then((response) => {
-        console.log(response);
         setCommentValue("");
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleSubmitReply = (e) => {
     e.preventDefault();
@@ -104,34 +95,25 @@ function CommunityContent() {
     learn
       .ReplyCommentOnArticle(token, replyValue)
       .then((response) => {
-        console.log(response);
         setReplyValue("");
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handlePinQuestion = () => {
     learn
       .PinQuestion(token)
       .then((response) => {
-        console.log(response);
         setPinQuestion(!pinQuestion);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
   const handleUnPinQuestion = () => {
     learn
       .UnPinQuestion(token)
       .then((response) => {
-        console.log(response);
         setPinQuestion(!pinQuestion);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   };
 
   const handleArticleReactionLike = () => {
@@ -142,12 +124,8 @@ function CommunityContent() {
 
     learn
       .ReactToQuestion(token, "like")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
 
   const handleArticleReactionDisLike = () => {
@@ -158,12 +136,8 @@ function CommunityContent() {
 
     learn
       .ReactToQuestion(token, "unlike")
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .then((response) => {})
+      .catch((error) => {});
   };
   return (
     <div className="bg-white px-10 pt-8 w-full">

@@ -7,17 +7,13 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import Calendar from "react-calendar";
 import "./calender.css";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import DatePicker from "react-datepicker";
-import { getDay, format, minutesToHours } from "date-fns";
+import { getDay, format } from "date-fns";
 import OrangeBtn from "components/customButton/orangeBtn";
 import SelectOptions from "components/selectOptions";
 import wallet from "../../../assets/images/wallet.svg";
 import { ReactComponent as TimerImg } from "../../../assets/images/timer.svg";
-import { timeArr } from "../../admin/dashboard/users/data";
-import TimeInvtervals from "./timeRange";
 import Modal from "../../modal";
 import "react-datepicker/dist/react-datepicker.css";
 import timeZoneList from "../../../assets/timezone.json";
@@ -50,29 +46,8 @@ function ChooseServiceModal({
   changeTimeZone,
 }) {
   const [isActive, setIsActive] = React.useState("everyone");
-  console.log({
-    availability,
-    serviceOffered,
-    visible,
-    setData,
-    data,
-    setVisible,
-    setBookingFee,
-    setHasService,
-    setBookingTotal,
-    bookingTime,
-    setBookingTime,
-    booking,
-    setBooking,
-    timeZone,
-    changeTimeZone,
-  });
   const [blockedDays, setBlockedDays] = useState([]);
   const [daysAvailable, setDaysAvaiable] = useState([]);
-  const [timeRange, setTimeRange] = useState({
-    from: null,
-    to: null,
-  });
 
   const timerRef = useRef(null);
 
@@ -191,7 +166,6 @@ function ChooseServiceModal({
     const timerString = timerRef.current?.from?.toString().split(" ");
     timerString[4] = newTime;
     const finalTime = new Date(timerString.join(" "));
-    console.log(finalTime);
     setBookingTime(finalTime);
   };
 

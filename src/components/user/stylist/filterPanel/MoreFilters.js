@@ -3,15 +3,66 @@
 import { useQueries } from "@tanstack/react-query";
 import admin from "api/admin";
 import React, { useCallback, useEffect, useState } from "react";
+import useGetAllCertifications from "hooks/data/admin/useGetAllCertifications";
+import useGetAllTags from "hooks/data/admin/useGetAllTags";
 import FilterItem from "./FilterItem";
 import CertificationFilter from "./CertificationFilter";
 import TagsFilter from "./TagsFilter";
 
 function MoreFilters({ handleSearchAddress, setIsSearchMode }) {
-  const [toggleMoreFilters, setToggleMoreFilters] = useState(false);
+  const [isMoreFiltersOpen, setIsMoreFiltersOpen] = useState(false);
   const [selectedCertificates, setSelectedCertificates] = useState([]);
+  const [filteredCertifications, setFilteredCertifications] = useState([]);
+  const [certifications, setCertifications] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [filteredTags, setFilteredTags] = useState([]);
+  const [tags, setTags] = useState([]);
   const [mode, setMode] = useState(null);
+
+  const {
+    data: tagData,
+    isLoading: isTagsLoading,
+    error: tagError,
+    refetch: tagRefetch,
+  } = useGetAllTags();
+
+  const {
+    data: certificationsData,
+    isLoading: isCertificationsLoading,
+    error: certificationsRrror,
+    refetch: certificationsRefetch,
+  } = useGetAllCertifications();
+
+  useEffect(() => {
+    if (mode === "RESET") {
+      const newCertifications = certifications.map((item) => {
+        return { ...item, isSelected: false };
+      });
+      const newTags = tags.map((item) => {
+        return { ...item, isSelected: false };
+      });
+      setTags(newTags);
+      setFilteredTags(newTags);
+      setCertifications(newCertifications);
+      setFilteredCertifications(newCertifications);
+      setIsSearchMode(false);
+      setIsMoreFiltersOpen(false);
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    const ac = new AbortController();
+    if (certificationsData) {
+      const newData = certificationsData.data.data.map((item) => {
+        return { ...item, isSelected: false };
+      });
+      setFilteredCertifications(newData);
+      setCertifications(newData);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [certificationsData]);
 
   const handleSelectedCertificate = (item) => {
     setMode("DATA");
@@ -22,9 +73,20 @@ function MoreFilters({ handleSearchAddress, setIsSearchMode }) {
     setSelectedTags(item);
   };
 
+  useEffect(() => {
+    const ac = new AbortController();
+    if (tagData) {
+      setFilteredTags(tagData.data.data);
+      setTags(tagData.data.data);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [tagData]);
+
   const handleSubmitTagAndCert = () => {
     setIsSearchMode(true);
-    setToggleMoreFilters(false);
+    setIsMoreFiltersOpen(false);
     handleSearchAddress({
       tags: selectedTags.join(),
       certifications: selectedCertificates.join(),
@@ -40,19 +102,32 @@ function MoreFilters({ handleSearchAddress, setIsSearchMode }) {
   return (
     <div className="max-w-fit h-full">
       <div
-        onClick={() => setToggleMoreFilters(!toggleMoreFilters)}
+        onClick={() => setIsMoreFiltersOpen(!isMoreFiltersOpen)}
         className="cursor-pointer ml-auto h-10 flex items-center justify-center  border border-gray-250 bg-white rounded-full  px-4 text-sm text-gray-400"
       >
         More filters
       </div>
-      {toggleMoreFilters ? (
+      {isMoreFiltersOpen ? (
         <div className="bg-white   rounded-2xl p-5 shadow-s07 absolute top-12 right-0 z-20  w-full   py-5 px-2.5 lg:px-4 max-w-500 lg:w-500 left-0 lg:left-auto h-screen-420px ">
           <div className="flex items-start flex-nowrap space-x-4 justify-between h-full-62px">
             <CertificationFilter
               handleSelectedCertificate={handleSelectedCertificate}
-              mode={mode}
+              setFilteredCertifications={setFilteredCertifications}
+              certifications={certifications}
+              filteredCertifications={filteredCertifications}
+              setCertifications={setCertifications}
+              isCertificationsLoading={isCertificationsLoading}
+              certificationsData={certificationsData}
             />
-            <TagsFilter handleSelectedTags={handleSelectedTags} mode={mode} />
+            <TagsFilter
+              handleSelectedTags={handleSelectedTags}
+              setFilteredTags={setFilteredTags}
+              tags={tags}
+              filteredTags={filteredTags}
+              setTags={setTags}
+              isTagsLoading={isTagsLoading}
+              tagData={tagData}
+            />
           </div>
           <div className="flex justify-end mt-5">
             <button

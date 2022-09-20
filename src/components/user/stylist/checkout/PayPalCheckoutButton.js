@@ -27,10 +27,8 @@ function PayPalCheckoutButton({
       success: true,
       bookingId: booking._id,
     });
-    console.log(confirmBooking, "confirm booking");
 
     navigate(AuthRoutes.successfullBooking);
-    // refresh user's account
   };
   if (paidFor) {
     alert("Thank you for booking!");
@@ -91,7 +89,6 @@ function PayPalCheckoutButton({
       }}
       onApprove={async (data, actions) => {
         const order = await actions.order.capture();
-        console.log(order, "paypal order");
         handleApprove(data.orderID);
       }}
       onCancel={() => {

@@ -3,37 +3,16 @@ import useGetAllTags from "hooks/data/admin/useGetAllTags";
 import { Loadersmall } from "components/loader-component/loader";
 import FilterItem from "./FilterItem";
 
-function TagsFilter({ handleSelectedTags, mode }) {
-  const { data, isLoading, error, refetch } = useGetAllTags();
-
-  const [filteredTags, setFilteredTags] = useState([]);
-  const [tags, setTags] = useState([]);
+function TagsFilter({
+  handleSelectedTags,
+  setFilteredTags,
+  tags,
+  filteredTags,
+  setTags,
+  isTagsLoading,
+  tagData,
+}) {
   const [inputSearch, setInputSearch] = useState("");
-
-  useEffect(() => {
-    if (mode === "RESET") {
-      const newTags = tags.map((item) => {
-        return { ...item, isSelected: false };
-      });
-      const newFilteredTags = filteredTags.map((item) => {
-        return { ...item, isSelected: false };
-      });
-
-      setTags(newTags);
-      setFilteredTags(newFilteredTags);
-    }
-  }, [mode]);
-
-  useEffect(() => {
-    const ac = new AbortController();
-    if (data) {
-      setFilteredTags(data.data.data);
-      setTags(data.data.data);
-    }
-    return function cleanup() {
-      ac.abort();
-    };
-  }, [data]);
 
   const handleSearchForTag = (e) => {
     setInputSearch(e.target.value);
@@ -50,8 +29,8 @@ function TagsFilter({ handleSelectedTags, mode }) {
     }
   };
 
-  const extractSelectedTag = (tagData) => {
-    const selectedTag = tagData
+  const extractSelectedTag = (selectedTagData) => {
+    const selectedTag = selectedTagData
       .filter((tag) => tag.isSelected)
       .map((item) => item._id);
     return selectedTag;
@@ -91,19 +70,20 @@ function TagsFilter({ handleSelectedTags, mode }) {
           placeholder="search tag"
         />
       </div>
-      <div className="overflow-scroll h-full-62px">
-        {isLoading && <Loadersmall />}
+      <div className="overflow-auto h-full-62px">
+        {isTagsLoading && <Loadersmall />}
 
-        {filteredTags?.map((tag) => {
-          return (
-            <FilterItem
-              key={tag.id}
-              data={tag}
-              checked={tag.isSelected}
-              handleOnChange={handleOnCheckboxChange}
-            />
-          );
-        })}
+        {tagData &&
+          filteredTags?.map((tag) => {
+            return (
+              <FilterItem
+                key={tag.id}
+                data={tag}
+                checked={tag.isSelected}
+                handleOnChange={handleOnCheckboxChange}
+              />
+            );
+          })}
       </div>
     </div>
   );

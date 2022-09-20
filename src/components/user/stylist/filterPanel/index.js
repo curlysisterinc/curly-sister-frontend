@@ -32,6 +32,8 @@ function FilterPanel({
   isSearchLoading,
 }) {
   const [isServiceAvailable, setIsServiceAvailable] = useState(false);
+  const [selectedCertificates, setSelectedCertificates] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const toggleServiceAvailability = () => {
     setIsServiceAvailable((available) => !available);

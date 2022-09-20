@@ -3,36 +3,16 @@ import useGetAllCertifications from "hooks/data/admin/useGetAllCertifications";
 import { Loadersmall } from "components/loader-component/loader";
 import FilterItem from "./FilterItem";
 
-function CertificationFilter({ handleSelectedCertificate, mode }) {
-  const { data, isLoading, error, refetch } = useGetAllCertifications();
-
-  const [filteredCertifications, setFilteredCertifications] = useState([]);
-  const [certifications, setCertifications] = useState([]);
+function CertificationFilter({
+  handleSelectedCertificate,
+  setFilteredCertifications,
+  certifications,
+  filteredCertifications,
+  setCertifications,
+  isCertificationsLoading,
+  certificationsData,
+}) {
   const [inputSearch, setInputSearch] = useState("");
-
-  useEffect(() => {
-    if (mode === "RESET") {
-      const newCertifications = certifications.map((item) => {
-        return { ...item, isSelected: false };
-      });
-      setCertifications(newCertifications);
-      setFilteredCertifications(newCertifications);
-    }
-  }, [mode]);
-
-  useEffect(() => {
-    const ac = new AbortController();
-    if (data) {
-      const newData = data.data.data.map((item) => {
-        return { ...item, isSelected: false };
-      });
-      setFilteredCertifications(newData);
-      setCertifications(newData);
-    }
-    return function cleanup() {
-      ac.abort();
-    };
-  }, [data]);
 
   const handleSearchForCertificate = (e) => {
     setInputSearch(e.target.value);
@@ -90,9 +70,9 @@ function CertificationFilter({ handleSelectedCertificate, mode }) {
         />
       </div>
 
-      <div className="overflow-scroll h-full-62px">
-        {isLoading && <Loadersmall />}
-        {data &&
+      <div className="overflow-auto h-full-62px">
+        {isCertificationsLoading && <Loadersmall />}
+        {certificationsData &&
           filteredCertifications?.map((cert) => {
             return (
               <FilterItem
