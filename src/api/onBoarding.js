@@ -35,6 +35,7 @@ export default {
   async ForgotPassword(userEmail) {
     const data = {
       email: userEmail,
+      callbackUrl: `${window.location.origin}/reset-password/`,
     };
     const stringifiedData = JSON.stringify(data);
     return curlySistersOnboarding.post(
@@ -44,13 +45,10 @@ export default {
   },
 
   /** Send a POST request to Reset Password */
-  async ResetPassword(token, newPassword) {
-    const data = {
-      password: newPassword,
-    };
+  async ResetPassword(data) {
     const stringifiedData = JSON.stringify(data);
     return curlySistersOnboarding.post(
-      `/api/users/reset-password/${token}`,
+      `/api/users/reset-password/${data.token}`,
       stringifiedData
     );
   },

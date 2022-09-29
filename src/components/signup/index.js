@@ -1,36 +1,20 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-unused-vars */
 /* eslint-disable prefer-regex-literals */
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
 import useSignupUser from "hooks/data/onboarding/useSignupUser";
-import AuthModalComponent from "../authModal";
+import { Loadersmall } from "components/loader-component/loader";
 import AuthSideBarComponent from "../authSidebar";
-import authHandler from "../../authHandler";
-import { NonAuthRoutes } from "../../constants";
-import { signupUser } from "../../redux/auth/authSlice";
-import onboarding from "../../api/onBoarding";
 import googleIcon from "../../assets/images/google-icon.svg";
 import facebookIcon from "../../assets/images/facebook-icon.svg";
-import signedInImg from "../../assets/images/signed-in-img.svg";
-import failedSignin from "../../assets/images/failed-signin.svg";
 
 function SignupComponent() {
   // const authenticated = authHandler.get();
   const { data, isLoading, error, mutate: signUp } = useSignupUser();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [emailSuccess, setEmailSuccess] = useState(false);
-  const [emailFailure, setEmailFailure] = useState(false);
-  const [btnIsLoading, setBtnIsLoading] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(true);
 
   useEffect(() => {
@@ -44,12 +28,6 @@ function SignupComponent() {
   /** handles show Password text */
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
-  };
-
-  // handle modal close
-  const hideModal = () => {
-    setEmailSuccess(false);
-    setEmailFailure(false);
   };
 
   const formik = useFormik({
@@ -124,46 +102,7 @@ function SignupComponent() {
       return errors;
     },
   });
-  // const handleSignup = (e) => {
-  //   e.preventDefault();
-  //   setBtnIsLoading(true);
-  //   if (password === confirmPassword) {
-  //     onboarding
-  //       .SignUp(userEmail, password, name)
-  //       .then((response) => {
-  //         if (response.status === 200) {
-  //           setEmailSuccess(true);
-  //           const res = response.data;
-  //           // eslint-disable-next-line no-console
-  //           console.log("handle signup", res);
-  //           // JWT DECODE SETUP
-  //           const accessToken = res.access_token;
-  //           const refreshToken = res.refresh_token;
-  //           Cookies.set("accessToken", accessToken);
-  //           authHandler.handle(refreshToken);
-  //           // const accessToken = res.access_token;
-  //           // authHandler.handle(accessToken);
-  //           dispatch(
-  //             signupUser({
-  //               token: accessToken,
-  //               isSignedIn: true,
-  //             })
-  //           );
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         if (error.response.data.message) {
-  //           setEmailSuccess(false);
-  //           setEmailFailure(true);
-  //           setErrorMessage(error.response.data.message, setWarning(true));
-  //           setBtnIsLoading(false);
-  //         }
-  //         setTimeout(() => {
-  //           setWarning(false);
-  //         }, 5000);
-  //       });
-  //   }
-  // };
+
   return (
     <div
       className=" w-full flex flex-col md:flex-row m-auto border-r border-gray-50"
@@ -346,14 +285,9 @@ function SignupComponent() {
               <button
                 type="submit"
                 disabled={btnDisabled}
-                // loading={formik.isSubmitting || isLoading}
                 className="mt-6 bg-orange-200 disabled:opacity-50 rounded shadow text-white font-bold w-full py-3"
               >
-                {isLoading ? (
-                  <div className="flex justify-center">loading...</div>
-                ) : (
-                  "Continue"
-                )}
+                {isLoading ? <Loadersmall /> : "Continue"}
               </button>
               <div className="flex justify-center mt-5 text-sm text-gray-150">
                 Already have an account?{" "}

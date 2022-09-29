@@ -23,7 +23,10 @@ const resetAuth = () => {
   };
 };
 
-if (localStorage.getItem("token") !== null) {
+if (
+  localStorage.getItem("token") &&
+  localStorage.getItem("token") !== "undefined"
+) {
   const token = localStorage.getItem("token") || "";
   const user = localStorage.getItem("user") || "";
   const decodedToken = jwtDecode(token);
