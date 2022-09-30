@@ -8,7 +8,6 @@ export default function () {
   const {
     state: { isSignedIn, email_verified, email },
   } = useAuthContext();
-  console.log(" useAuthContext();", useAuthContext());
   const {
     data,
     isLoading,

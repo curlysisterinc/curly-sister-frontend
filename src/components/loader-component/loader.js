@@ -1,11 +1,13 @@
 import React from "react";
 
-export function Loadersmall() {
+export function Loadersmall({ color }) {
   return (
     <div>
       <div
         style={{ borderTopColor: "transparent" }}
-        className="w-5 h-5 border-2 border-purple-100 border-solid rounded-full animate-spin"
+        className={`w-5 h-5 border-2  border-solid rounded-full animate-spin border-${
+          color ?? "purple"
+        }-500`}
       />
     </div>
   );
