@@ -41,9 +41,9 @@ function MapMaker({
             alt=""
             className="object-cover w-full h-full"
           />
-
+          {console.log({ data })}
           <img
-            src={data.photo ?? avatar2}
+            src={data.photo ? data.photo : avatar2}
             alt=""
             className="w-16 h-16   relative right-7  rounded-full object-cover border-white border"
           />
@@ -172,13 +172,13 @@ export default function StylistMap({
               lng: Number(mapGeo.longitude),
             }}
           >
-            {mapGeo?.latitude && (
+            {/* {mapGeo?.latitude && (
               <LocationMaker
                 lat={mapGeo?.latitude}
                 lng={mapGeo?.longitude}
                 text={isMapLoaded}
               />
-            )}
+            )} */}
             {[...stylistsWithGeoInfo].map((item) => (
               <MapMaker
                 lat={item?.latitude}

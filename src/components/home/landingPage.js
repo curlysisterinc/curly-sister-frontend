@@ -1,7 +1,10 @@
+/* eslint-disable camelcase */
 /* eslint-disable import/no-cycle */
 import { useToasts } from "react-toast-notifications";
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "redux/auth";
+import useVerifyUsersAccount from "hooks/useVerifyUsersAccount";
 import girl0 from "../../assets/images/girl-0.png";
 import girl1 from "../../assets/images/girl-1.png";
 import girl2 from "../../assets/images/girl-2.png";
@@ -18,6 +21,13 @@ import searchIcon, {
 
 function LandingPage({ getStylist }) {
   const inputRef = useRef(null);
+  const { addToast } = useToasts();
+  const {
+    state: { isSignedIn, email_verified },
+  } = useAuthContext();
+
+  const verifyUsersAccount = useVerifyUsersAccount();
+
   const navigate = useNavigate();
   const handleSearch = (e) => {
     e.preventDefault();
@@ -29,6 +39,7 @@ function LandingPage({ getStylist }) {
     <div className="p-0">
       <div className="relative mt-69 md:mt-0">
         <img className="absolute w-full" src={bgOne} alt="" />
+
         <form
           onSubmit={handleSearch}
           className="absolute z-10 bottom-24 md:bottom-64 w-11/12 md:w-3/4   left-1/2 transform -translate-x-1/2 p-2 md:p-3 shadow"

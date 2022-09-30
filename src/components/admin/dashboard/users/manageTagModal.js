@@ -126,7 +126,6 @@ function ManageTagModal({ handleClose, setIsTagUpdate, tags }) {
     try {
       const result = await Promise.allSettled(
         tags.map((tag) => {
-          console.log(tag);
           // because user created id's are numbers while server creted are strings
           if (typeof tag._id === "number") {
             const { name } = tag;

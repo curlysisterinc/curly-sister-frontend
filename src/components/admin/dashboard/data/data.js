@@ -259,7 +259,7 @@ function DataTab({ active }) {
                   {getCertificates &&
                     getCertificates.map((certification) => {
                       return (
-                        <div className="rounded-full bg-purple-100 px-4 py-1 h-8 flex justify-center items-center mb-3 text-white text-sm mx-3">
+                        <div className="rounded-full bg-purple-100 px-4 py-3 h-8 flex justify-center items-center mb-3 text-white text-sm mx-3">
                           {certification.name}
                         </div>
                       );
@@ -299,7 +299,7 @@ function DataTab({ active }) {
                   {getTags &&
                     getTags.map((tag) => {
                       return (
-                        <div className="rounded-full bg-purple-100 px-4 py-1 h-8 flex justify-center items-center mb-3 text-white text-sm mx-3">
+                        <div className="rounded-full bg-purple-100 px-4 py-3 h-8 flex justify-center items-center mb-3 text-white text-sm mx-3">
                           {tag.name}
                         </div>
                       );

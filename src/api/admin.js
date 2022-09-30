@@ -19,7 +19,10 @@ export default {
     return curlySistersApi.get(`/v1/admin/get-stylist/${id}`);
   },
   async AddAdmin(email) {
-    const data = { email };
+    const data = {
+      email,
+      callbackUrl: `${window.location.origin}/login`,
+    };
     return curlySistersApi.post("/v1/admin/add-admin", data);
   },
   async GetAllAdmin() {

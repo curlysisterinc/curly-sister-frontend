@@ -41,14 +41,12 @@ function LoginComponent() {
 
     validate: (values) => {
       const errors = {};
-      const passwordRegex = new RegExp(
-        "^(?=.*[A-Z])(?=.*[.!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$"
-      );
-      const validPassword = passwordRegex.test(values.password);
+      // const passwordRegex = new RegExp(
+      //   "^(?=.*[A-Z])(?=.*[.!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$"
+      // );
+      // const validPassword = passwordRegex.test(values.password);
       const isValid =
-        !!values.userEmail.trim().length &&
-        !!values.password.trim().length &&
-        validPassword;
+        !!values.userEmail.trim().length && !!values.password.trim().length;
 
       if (isValid) {
         setBtnDisabled(false);
@@ -69,10 +67,10 @@ function LoginComponent() {
       if (!values.password) {
         errors.password = "Required";
       }
-      if (!validPassword) {
-        errors.password =
-          "*Your pssword must be at least \n 8 characters long with an uppercase, lowercase, numeric or special character. ";
-      }
+      // if (!validPassword) {
+      //   errors.password =
+      //     "*Your pssword must be at least \n 8 characters long with an uppercase, lowercase, numeric or special character. ";
+      // }
 
       return errors;
     },
@@ -136,14 +134,14 @@ function LoginComponent() {
                     />
                     {showPassword ? (
                       <AiOutlineEye
-                        size={16}
-                        className="absolute top-8 right-3"
+                        size={25}
+                        className="absolute top-6 cursor-pointer right-3"
                         onClick={handleShowPassword}
                       />
                     ) : (
                       <AiOutlineEyeInvisible
-                        size={16}
-                        className="absolute top-8 right-3"
+                        size={25}
+                        className="absolute top-6 cursor-pointer right-3"
                         onClick={handleShowPassword}
                       />
                     )}
@@ -162,7 +160,8 @@ function LoginComponent() {
               </div>
               <button
                 type="submit"
-                disabled={btnIsLoading || disableBtn}
+                disabled={btnIsLoading}
+                // disabled={btnIsLoading || disableBtn}
                 className="mt-6 bg-orange-200 rounded shadow text-white font-bold disabled:opacity-50 w-full py-3"
               >
                 {btnIsLoading ? (

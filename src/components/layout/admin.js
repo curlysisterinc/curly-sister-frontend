@@ -1,16 +1,19 @@
 import { NonAuthRoutes } from "constants";
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { useAuthContext } from "redux/auth";
 import authHandler from "../../authHandler";
 
 function AdminLayout() {
-  const isLoggedIn = authHandler.getUser();
+  const {
+    state: { isSignedIn, role },
+  } = useAuthContext();
 
-  if (!isLoggedIn) {
+  if (!isSignedIn) {
     return <Navigate replace to={NonAuthRoutes.login} />;
   }
   if (
-    !isLoggedIn.active.role.toLowerCase().includes("admin") &&
+    !role.toLowerCase().includes("admin") &&
     window.location.href.includes("dashboard")
   ) {
     return <Navigate replace to={NonAuthRoutes.home} />;

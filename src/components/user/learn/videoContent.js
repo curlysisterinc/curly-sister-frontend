@@ -152,7 +152,7 @@ function VideoContent() {
       .catch((error) => {});
   };
   return (
-    <div className="bg-white px-10 pt-8 w-full">
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
       <div
         onClick={() => navigate(-1)}
         className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"

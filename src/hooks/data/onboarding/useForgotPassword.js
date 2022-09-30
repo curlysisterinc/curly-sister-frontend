@@ -11,31 +11,15 @@ import { loginUser } from "redux/auth/authSlice";
 export default () => {
   const { dispatch } = useAuthContext();
   const { addToast } = useToasts();
-  const { LogIn } = onBoarding;
+  const { ForgotPassword } = onBoarding;
   const navigate = useNavigate();
 
-  return useMutation(({ password, userEmail }) => LogIn(userEmail, password), {
+  return useMutation((userEmail) => ForgotPassword(userEmail), {
     onSuccess: (context) => {
       const { data } = context;
       addToast(data.message, {
         appearance: "success",
       });
-      authHandler.setUserInfo(data.user);
-      // JWT DECODE SETUP
-      const accessToken = data.access_token;
-      const refreshToken = data.refresh_token;
-      Cookies.set("accessToken", accessToken);
-      authHandler.handle(refreshToken);
-      // const accessToken = res.access_token;
-      // authHandler.handle(accessToken);
-      dispatch(
-        loginUser({
-          ...data.user,
-          token: accessToken,
-          isSignedIn: true,
-        })
-      );
-      navigate(NonAuthRoutes.home);
     },
     onError: async (error) => {
       const mainError = error.response.data;

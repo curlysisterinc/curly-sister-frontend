@@ -148,7 +148,6 @@ function CertificateAndTags({
     const filtcert = allCertificates?.filter((itm) =>
       stylistCert.certifications?.find((cert) => cert?._id === itm?._id)
     );
-    console.log("filtcert", filtcert);
     return filtcert;
   }, [allCertificates, stylistCert]);
 
@@ -175,7 +174,6 @@ function CertificateAndTags({
             </button>
           </div>
           <div className="mt-5">
-            {/* {console.log({ filteredCert })} */}
             <MultiselectComponent
               buttonAction={disableInput()}
               onRemove={(e) => handleItm(e, "certifications")}

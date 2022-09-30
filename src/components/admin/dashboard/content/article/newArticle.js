@@ -172,7 +172,7 @@ function NewArticle() {
   }, [inputValues]);
 
   return (
-    <div className="bg-white px-10 py-8 w-full">
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
       <div className="flex items-start ">
         <div
           className="flex items-center cursor-pointer"

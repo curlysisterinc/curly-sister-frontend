@@ -244,7 +244,7 @@ function ChooseServiceModal({
                 )}
               </div>
             </div>
-            <div className="h-400 overflow-y-scroll">
+            <div className="h-400 overflow-y-auto">
               {isActive === "everyone" && (
                 <div className="divide-y divide-gray-250">
                   {servicesForOthers?.map((service) => {

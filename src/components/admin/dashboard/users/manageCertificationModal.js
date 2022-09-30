@@ -119,7 +119,7 @@ function ManageCertificationModal({
         return {
           ...item,
           isMoreOptionChecked: !!item?.options?.length,
-          options: item.options.map((v, index) => {
+          options: item?.options?.map((v, index) => {
             return {
               text: v,
               id: new Date().getTime() + index,
@@ -228,7 +228,6 @@ function ManageCertificationModal({
       }
       return newItem;
     });
-    console.log(newCertification);
     setCertifications(newCertification);
   };
 

@@ -14,11 +14,13 @@ import useGetCurrentLocation from "hooks/useGetCurrentLocation";
 import Loader from "components/loader-component/loader";
 import { useInView } from "react-intersection-observer";
 import { queryClient } from "App";
+import useVerifyUsersAccount from "hooks/useVerifyUsersAccount";
 import FilterPanel from "./filterPanel";
 import StylistList from "./StylistList";
 
 function Stylist() {
   const positionData = useGetCurrentLocation();
+  const verifyUsersAccount = useVerifyUsersAccount();
   const searchRef = useRef({});
   const [ref2, inView2] = useInView();
 

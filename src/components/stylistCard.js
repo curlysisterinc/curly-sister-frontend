@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -7,17 +8,23 @@ import React from "react";
 import { AiTwotoneStar } from "react-icons/ai";
 import { MdOutlineBookmarkBorder } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "redux/auth";
 import avatar2 from "../assets/images/gradient-avatar.svg";
 import galleryBanner from "../assets/images/stylist-profile-banner.png";
 
 export default function CommonCard({ stylist }) {
   const navigate = useNavigate();
+  const {
+    state: { email_verified },
+  } = useAuthContext();
   return (
     <div
       onClick={() => {
-        navigate(`/stylists/profile/${stylist._id}`);
+        email_verified && navigate(`/stylists/profile/${stylist._id}`);
       }}
-      className="col-1 rounded-2xl shadow-s01 relative overflow-hidden cursor-pointer w-full border border-gray-600"
+      className={`col-1 rounded-2xl shadow-s01 relative overflow-hidden  w-full border border-gray-600 ${
+        email_verified && "cursor-pointer"
+      }`}
     >
       <div className="absolute top-0 right-0 mr-4 mt-4 ">
         <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">

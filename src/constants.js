@@ -40,6 +40,7 @@ const NonAuthRoutes = {
   about: "/about",
   stylists: "/stylists",
   termsAndPrivacy: "/terms-and-privacy",
+  verifyUser: "/verify-user/:email",
 };
 
 export { AuthRoutes, NonAuthRoutes };
