@@ -136,14 +136,14 @@ function LoginComponent() {
                     />
                     {showPassword ? (
                       <AiOutlineEye
-                        size={16}
-                        className="absolute top-8 right-3"
+                        size={25}
+                        className="absolute top-6 cursor-pointer right-3"
                         onClick={handleShowPassword}
                       />
                     ) : (
                       <AiOutlineEyeInvisible
-                        size={16}
-                        className="absolute top-8 right-3"
+                        size={25}
+                        className="absolute top-6 cursor-pointer right-3"
                         onClick={handleShowPassword}
                       />
                     )}

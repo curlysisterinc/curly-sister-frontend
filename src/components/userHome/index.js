@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "redux/auth";
 import SideBarComponent from "../sidebar";
 import authHandler from "../../authHandler";
 import profileDp from "../../assets/images/profile-dp.png";
@@ -18,18 +19,18 @@ import continueLearning from "../../assets/images/continue-learning.png";
 import arrowIcon from "../../assets/images/arrow.svg";
 
 function UserHome({ upcomingBookings }) {
-  const details = localStorage.getItem("user");
+  const {
+    state: { isSignedIn },
+  } = useAuthContext();
   const inputRef = useRef(null);
   const navigate = useNavigate();
-
-  const [isLoggedIn, setIsLoggedIn] = useState(details);
 
   const [firstName, setFirstName] = useState("");
   useEffect(() => {
     const ac = new AbortController();
-    if (isLoggedIn) {
+    if (isSignedIn) {
       const userDetails = authHandler.getUser("users");
-      const userFirstName = userDetails.active.firstName;
+      const userFirstName = userDetails.firstName;
       setFirstName(userFirstName);
     }
 
@@ -46,7 +47,7 @@ function UserHome({ upcomingBookings }) {
   };
 
   return (
-    <div className="bg-white px-10 py-8 w-full">
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
       <div className="flex flex-col w-full lg:flex-row justify-between items-center">
         <div className="flex justify-start items-center ">
           <img className="mr-3" src={profileDp} alt="profile pix" />

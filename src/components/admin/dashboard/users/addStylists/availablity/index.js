@@ -133,7 +133,6 @@ export default function reducer(state, { type, payload }) {
             if (dateblock[0] !== id) {
               return dateblock;
             }
-            console.log({ value });
             return [id, { ...value }];
           }),
         ],
@@ -144,7 +143,6 @@ export default function reducer(state, { type, payload }) {
         blocked_dates: [],
       };
     case "ADD_BLOCK":
-      console.log({ payload });
       return {
         ...state,
         blocked_dates: [...state.blocked_dates, payload],

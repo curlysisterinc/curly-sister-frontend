@@ -10,9 +10,6 @@ import Cookies from "js-cookie";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import useResetPassword from "hooks/data/onboarding/useResetPassword";
 import { Loadersmall } from "components/loader-component/loader";
-import AuthModalComponent from "../authModal";
-import onboarding from "../../api/onBoarding";
-import { AuthRoutes } from "../../constants";
 import AuthSideBarComponent from "../authSidebar";
 
 function ResetPasswordComponent() {
@@ -21,7 +18,6 @@ function ResetPasswordComponent() {
 
   const { data, isLoading, error, mutate: resetPassword } = useResetPassword();
 
-  const [btnIsLoading, setBtnIsLoading] = useState(false);
   const [disableBtn, setBtnDisabled] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 

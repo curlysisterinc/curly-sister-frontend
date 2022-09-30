@@ -147,7 +147,6 @@ function ManageCertificationModal({ handleClose, visible }) {
     e.preventDefault();
     const list = [...inputList];
 
-    console.log(name, "data");
     admin.CreateCertification(list[name]).then((response) => {
       if (response.status === 200) {
         const res = response.data;

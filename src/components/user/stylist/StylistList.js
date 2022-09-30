@@ -32,7 +32,8 @@ function StylistList({
 
   const [isMapOpen, setIsMapOpen] = React.useState(true);
   const [showTopBtn, setShowTopBtn] = useState(false);
-
+  const isMapLoadingFailed =
+    positionData.status === "Unable to retrieve your location";
   React.useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -69,7 +70,9 @@ function StylistList({
       <div className="grid grid-cols-12 gap-4">
         <div
           className={`${
-            isMapOpen ? "col-span-12 lg:col-span-8" : "col-span-12"
+            isMapOpen && !isMapLoadingFailed
+              ? "col-span-12 lg:col-span-8"
+              : "col-span-12"
           } `}
         >
           <div className="flex justify-between items-center pt-32px">
@@ -78,13 +81,15 @@ function StylistList({
                 ? `${list.length} stylists out of ${totalStylistCount}`
                 : ""}
             </p>
-            <button
-              type="button"
-              className="hidden lg:block text-gray-200 text-sm cursor-pointer"
-              onClick={() => setIsMapOpen(!isMapOpen)}
-            >
-              {isMapOpen ? "Hide map" : "Show map"}
-            </button>
+            {!isMapLoadingFailed && (
+              <button
+                type="button"
+                className="hidden lg:block text-gray-200 text-sm cursor-pointer"
+                onClick={() => setIsMapOpen(!isMapOpen)}
+              >
+                {isMapOpen ? "Hide map" : "Show map"}
+              </button>
+            )}
           </div>
           <div>
             {list.length > 0 ? (
@@ -92,7 +97,7 @@ function StylistList({
                 className={`grid  gap-6 my-5 w-full relative ${
                   isPaginationLoading ? "pb-24" : "pb-0"
                 } ${
-                  isMapOpen
+                  isMapOpen && !isMapLoadingFailed
                     ? "grid-cols-1  md:grid-cols-2"
                     : "md:grid-cols-2 lg:grid-cols-4"
                 }`}
@@ -116,7 +121,9 @@ function StylistList({
         </div>
         <div
           className={`${
-            isMapOpen ? "hidden lg:block lg:col-span-4 " : "hidden"
+            isMapOpen && !isMapLoadingFailed
+              ? "hidden lg:block lg:col-span-4 "
+              : "hidden"
           } h-1/2 sticky top-0
           `}
         >

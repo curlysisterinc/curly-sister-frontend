@@ -65,7 +65,6 @@ function NewVideoCategory({ handleClose }) {
         if (response.status === 200) {
           handleClose();
           const res = response.data;
-          console.log(res);
         }
       })
       .catch((error) => {

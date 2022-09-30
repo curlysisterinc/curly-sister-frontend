@@ -228,7 +228,6 @@ function ManageCertificationModal({
       }
       return newItem;
     });
-    console.log(newCertification);
     setCertifications(newCertification);
   };
 

@@ -61,26 +61,6 @@ function ServicesTab({
     );
     setStylistServices((prev) => ({ ...prev, services: [...tempServices] }));
   };
-  // const handleCreateStylist = () => {
-  //   setIsloading(true);
-  //   admin
-  //     .UpdateStylist(stylistServices)
-  //     .then((res) => {
-  //       setActiveTab((prev) => ({ ...prev, availabilityTab: true }));
-  //       setButtonAction("Edit");
-  //       setIsloading(false);
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
-
-  // const clickHandler = () => {
-  //   if (buttonAction === "Save" || buttonAction === "Update") {
-  //     handleCreateStylist();
-  //   }
-  //   if (buttonAction === "Edit") {
-  //     setButtonAction("Update");
-  //   }
-  // };
 
   const handleUpdateServices = () => {
     handleEditStylist(stylistServices);

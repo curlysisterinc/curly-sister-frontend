@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useState, useEffect } from "react";
 import UserHome from "components/userHome";
 import { useQueries } from "@tanstack/react-query";
@@ -10,9 +11,8 @@ import { useAuthContext } from "../../redux/auth";
 
 function HomeComponent() {
   const {
-    state: { isSignedIn },
+    state: { isSignedIn, email_verified },
   } = useAuthContext();
-
   const { GetAllVideos, GetAllArticles, GetUpcomingBookings } = admin;
   const { GetAllStylists } = stylist;
 
@@ -58,7 +58,7 @@ function HomeComponent() {
     const ac = new AbortController();
     if (isSignedIn) {
       const userDetails = authHandler.getUser("users");
-      const userFirstName = userDetails?.active?.firstName;
+      const userFirstName = userDetails?.firstName;
       setFirstName(userFirstName);
     }
 
@@ -71,7 +71,7 @@ function HomeComponent() {
     !isLoading &&
     getStylist && (
       <div>
-        {!isSignedIn ? (
+        {!isSignedIn || !email_verified ? (
           <LandingPage getStylist={getStylist} />
         ) : (
           <UserHome

@@ -10,6 +10,7 @@ import React from "react";
 import { Link, useNavigate, NavLink, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { IoIosArrowBack } from "react-icons/io";
+import { useAuthContext } from "redux/auth";
 import { logoutUser } from "../../redux/auth/authSlice";
 import authHandler from "../../authHandler";
 import { NonAuthRoutes, AuthRoutes } from "../../constants";
@@ -24,16 +25,19 @@ import DropDownItem from "../customdropdown/primitive/DropDownItem";
 function SideNav() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const dispatch = useDispatch();
+  const {
+    dispatch,
+    state: { isSignedIn, email_verified },
+  } = useAuthContext();
 
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const isLoggedIn = authHandler.getUser();
+  const user = authHandler.getUser();
 
-  const firstName = isLoggedIn?.active.firstName;
-  const lastName = isLoggedIn?.active.lastName;
-  const role = isLoggedIn?.active.role;
-  const profile_pic = isLoggedIn?.active.profile_pic;
+  const firstName = user?.firstName;
+  const lastName = user?.lastName;
+  const role = user?.role;
+  const profile_pic = user?.profile_pic;
 
   const onLogout = () => {
     navigate(NonAuthRoutes.home);
@@ -122,17 +126,18 @@ function SideNav() {
                       isActive
                         ? "mb-4 text-base md:text-lg text-purple-100"
                         : `mb-4 text-base md:text-lg ${
-                            !isLoggedIn && link.permission === "loggedin"
+                            (!isSignedIn || !email_verified) &&
+                            link.permission === "loggedin"
                               ? "hidden"
                               : ""
                           }
                       ${
-                        isLoggedIn && link.permission === "loggedout"
+                        isSignedIn && link.permission === "loggedout"
                           ? "hidden"
                           : ""
                       }`
                     // ${
-                    //   isLoggedIn &&
+                    //   isSignedIn &&
                     //   link.role === "admin" &&
                     //   link.permission === "loggedout"
                     //     ? "hidden"
@@ -143,7 +148,7 @@ function SideNav() {
                   {link.title}
                 </NavLink>
               ))}
-              {role?.toLowerCase()?.includes("admin") && (
+              {role?.toLowerCase()?.includes("admin") && email_verified && (
                 <NavLink
                   key={dashboardLink.title}
                   to={dashboardLink.path}
@@ -154,7 +159,7 @@ function SideNav() {
                   {dashboardLink.title}
                 </NavLink>
               )}
-              {!isLoggedIn && (
+              {!isSignedIn && (
                 <>
                   <button
                     type="button"
@@ -176,7 +181,7 @@ function SideNav() {
           )}
 
           <div className="absolute bottom-4 left-2 right-2">
-            {isLoggedIn &&
+            {isSignedIn &&
               (pathname === "/stylists/confirm-booking" ? (
                 <button
                   type="button"

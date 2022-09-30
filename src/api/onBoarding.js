@@ -52,4 +52,23 @@ export default {
       stringifiedData
     );
   },
+
+  /** Send a POST request to Resend Verification Mail */
+  async ResendVerificationMail(userEmail) {
+    const data = {
+      email: userEmail,
+      callbackUrl: `${window.location.origin}/verify-user`,
+    };
+
+    const stringifiedData = JSON.stringify(data);
+    return curlySistersOnboarding.post(
+      `/api/users/resend-verification`,
+      stringifiedData
+    );
+  },
+
+  /** Send a POST request to Resend Verification Mail */
+  async VerifyUserEmail(userEmail) {
+    return curlySistersOnboarding.get(`/api/users/verifyEmail/${userEmail}`);
+  },
 };

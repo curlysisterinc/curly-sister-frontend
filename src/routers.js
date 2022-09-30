@@ -81,6 +81,7 @@ const HomeComponent = lazy(() => import("components/home"));
 
 const AboutComponent = lazy(() => import("./components/about"));
 const LoginComponent = lazy(() => import("./components/login"));
+const VerifyUser = lazy(() => import("./components/verify-user"));
 const SignupComponent = lazy(() => import("./components/signup"));
 const ForgotPasswordComponent = lazy(() =>
   import("./components/forgotPassword")
@@ -117,6 +118,7 @@ function Routers() {
           <div className="dark:bg-white">
             <Routes>
               <Route path={NonAuthRoutes.login} element={<LoginComponent />} />
+              <Route path={NonAuthRoutes.verifyUser} element={<VerifyUser />} />
               <Route
                 path={NonAuthRoutes.signup}
                 element={<SignupComponent />}

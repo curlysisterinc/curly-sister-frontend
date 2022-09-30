@@ -30,6 +30,7 @@ export default () => {
       // authHandler.handle(accessToken);
       dispatch(
         loginUser({
+          ...data.user,
           token: accessToken,
           isSignedIn: true,
         })

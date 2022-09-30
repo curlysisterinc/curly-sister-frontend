@@ -52,7 +52,6 @@ function NewVideo() {
   useEffect(() => {
     const ac = new AbortController();
     admin.GetVideoCategory().then((result) => {
-      console.log(result.data.data[0].name, "data");
       setOptions(result.data.data);
       setVideoInputs({ ...videoInputs, category: result.data.data[0].name });
     });
@@ -92,7 +91,6 @@ function NewVideo() {
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
-          console.log(res);
         }
       })
       .catch((error) => {
@@ -125,7 +123,7 @@ function NewVideo() {
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" isLoggedIn />
-      <div className="bg-white px-10 py-8 w-full">
+      <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
         <div className="flex items-start ">
           <div
             className="flex items-center cursor-pointer"

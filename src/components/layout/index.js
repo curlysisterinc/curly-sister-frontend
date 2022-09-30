@@ -9,11 +9,14 @@
 /* eslint-disable import/order */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
+import useVerifyUsersAccount from "hooks/useVerifyUsersAccount";
 import React from "react";
 import { Outlet } from "react-router-dom";
 import SideNav from "../sidebar";
 
 function AppLayout() {
+  const verifyUsersAccount = useVerifyUsersAccount();
+
   return (
     <div
       className=" w-full flex flex-col md:flex-row m-auto border-r border-gray-50"
@@ -21,6 +24,7 @@ function AppLayout() {
     >
       <SideNav />
       <div className="md:ml-60 xl:ml-80 w-full content" id="content">
+        {verifyUsersAccount.display()}
         <div className="max-w-screen-2xl m-auto">
           <Outlet />
         </div>
