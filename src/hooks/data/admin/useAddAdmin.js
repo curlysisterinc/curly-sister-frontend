@@ -3,13 +3,13 @@ import { queryClient } from "App";
 import { useNavigate } from "react-router-dom";
 // import { useToasts } from "react-toast-notifications";
 import { useAuthContext } from "redux/auth";
-import admin from "../../../api/admin";
+import onBoarding from "../../../api/onBoarding";
 
 export default () => {
   // const { addToast } = useToasts();
-  const { AddAdmin } = admin;
+  const { inviteAdmin } = onBoarding;
 
-  return useMutation((emailValue) => AddAdmin(emailValue), {
+  return useMutation((emailValue) => inviteAdmin(emailValue), {
     onSuccess: (context) => {
       const { data } = context;
       // addToast(data.message, {

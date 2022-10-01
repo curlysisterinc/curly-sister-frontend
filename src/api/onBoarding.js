@@ -71,4 +71,13 @@ export default {
   async VerifyUserEmail(userEmail) {
     return curlySistersOnboarding.get(`/api/users/verifyEmail/${userEmail}`);
   },
+
+  async inviteAdmin(email) {
+    const data = {
+      email,
+      callbackUrl: `${window.location.origin}/login`,
+      role: "ADMIN",
+    };
+    return curlySistersOnboarding.post("/api/users/admin-invitation", data);
+  },
 };
