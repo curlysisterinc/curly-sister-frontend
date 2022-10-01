@@ -5,9 +5,9 @@ export function AdminTable({ onMasterCheck, children }) {
     <div className="flex flex-col mt-4">
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
-          <div className="min-h-screen">
-            <table className="min-w-full text-left border border-gray-600 ">
-              <thead className="bg-gray-50">
+          <div className="max-h-screen-250px overflow-auto shadow-s01 border border-gray-600 rounded-2xl">
+            <table className="min-w-full text-left rounded-2xl pb-40">
+              <thead className="bg-gray-50 uppercase text-sm text-gray-300 sticky z-50 -top-px">
                 <tr>
                   <th scope="col ">
                     <input
@@ -50,7 +50,7 @@ export function AdminTable({ onMasterCheck, children }) {
               </thead>
               <tbody className="">{children}</tbody>
             </table>
-            <div className="my-10" />
+            {/* <div className="my-10" /> */}
           </div>
         </div>
       </div>

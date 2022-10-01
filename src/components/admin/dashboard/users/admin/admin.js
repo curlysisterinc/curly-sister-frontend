@@ -48,7 +48,7 @@ function AdminTab({ active }) {
     setDeleteModal(false);
   };
   return (
-    <div>
+    <div className="h-screen-170px">
       <div className="flex items-center justify-between">
         <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
           Admins
@@ -81,7 +81,6 @@ function AdminTab({ active }) {
           </button>
         ) : (
           <div className="">
-            {/* filters */}
             <button
               type="button"
               onClick={() => setOpenInviteAdminModal(true)}

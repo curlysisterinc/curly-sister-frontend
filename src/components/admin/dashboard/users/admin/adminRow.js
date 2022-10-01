@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import clsx from "clsx";
 import Moment from "moment";
+import { useAuthContext } from "redux/auth";
+import useSuspendOrActivateAdmin from "hooks/data/admin/useSuspendOrActivateAdmin";
+import useDeleteAdmin from "hooks/data/admin/useDeleteAdmin";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
 import allynAvatar from "../../../../../assets/images/allyn.png";
 import admin from "../../../../../api/admin";
 import AdminDropDown from "../../../../customdropdown/dashboard/admin/adminitm";
+
+const Role = Object.freeze({
+  SUPER_ADMIN: "Super Admin",
+  ADMIN: "Admin",
+  USER: "User",
+});
 
 function AdminRow({
   getAdmin,
@@ -16,20 +25,39 @@ function AdminRow({
   selectedId,
   setSelectedId,
 }) {
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const {
+    state: { _id },
+  } = useAuthContext();
+
+  const [currentId, setCurrentId] = useState("");
+
+  const {
+    isLoading: suspendOrActivateLoading,
+    data,
+    mutate: suspendOrActivateAdmin,
+  } = useSuspendOrActivateAdmin();
+  const {
+    isLoading: deleteAdminLoading,
+    data: deleteAdminData,
+    mutate: deleteAdmin,
+  } = useDeleteAdmin();
+
+  const isLoading = deleteAdminLoading || suspendOrActivateLoading;
+
   const [adminValue, setAdminValue] = useState({
     status: false,
     adminId: "",
   });
-  const navigate = useNavigate();
+
   useEffect(() => {
     if (getAdmin) {
       const getAdminId = getAdmin.map((ad) => ad._id);
       setAdminValue({ ...adminValue, adminId: getAdminId });
     }
   }, [getAdmin]);
-  // const [openDropdown, setOpenDropdown] = useState(false);
+
   const handleCheck = (e, id) => {
+    setCurrentId(id);
     if (e.target.checked) {
       setSelectedId((prev) => [...prev, id]);
       setCallToAction(true);
@@ -40,36 +68,21 @@ function AdminRow({
   };
 
   const handleDeactivateAdmin = (id) => {
-    admin
-      .SuspendOrActivateAdmin({ adminId: id, status: "false" })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setCurrentId(id);
+    suspendOrActivateAdmin({ adminId: id, status: "false" });
   };
   const handleActivateAdmin = (id) => {
-    admin
-      .SuspendOrActivateAdmin({ adminId: id, status: "true" })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setCurrentId(id);
+    suspendOrActivateAdmin({ adminId: id, status: "true" });
   };
+
   const handleDeleteAdmin = (id) => {
-    // const name = e.target.getAttribute("name");
-    admin
-      .DeleteAdmin({ userId: id })
-      .then((response) => {
-        setGetAdmin(getAdmin.filter((ad) => ad._id !== id));
-      })
-      .catch((error) => {
-        console.log(error, "error delete admin");
-      });
+    setCurrentId(id);
+    deleteAdmin({ userId: id });
   };
+
+  const selectRole = useCallback((role) => Role[role], []);
+
   return (
     <>
       {getAdmin.map((ad) => {
@@ -101,7 +114,7 @@ function AdminRow({
               </div>
             </td>
             <td className="text-left text-sm text-gray-400 capitalize  py-4 whitespace-nowrap">
-              {ad.role}
+              {selectRole(ad.role)}
             </td>
             <td className="text-sm text-gray-400 capitalize  py-4 whitespace-nowrap">
               <div
@@ -112,7 +125,7 @@ function AdminRow({
                   "text-sm text-gray-400     whitespace-nowrap"
                 )}
               >
-                {Moment(ad.createdAt).format("MMM Do YY")}
+                {Moment(ad.createdAt).format("DD MMM  YYYY")}
               </div>
             </td>
             <td className="text-left text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
@@ -123,7 +136,23 @@ function AdminRow({
               )}
             </td>
             <td className="px-2 py-y relative cursor-pointer ">
-              {ad.active === true ? (
+              {ad._id !== _id && (
+                <AdminDropDown
+                  status={ad.active}
+                  activateAction={() =>
+                    ad.active
+                      ? handleDeactivateAdmin(ad._id)
+                      : handleActivateAdmin(ad._id)
+                  }
+                  deteleAction={() => handleDeleteAdmin(ad._id)}
+                  mkStylistAction={() => null}
+                  mkadminAction={() => null}
+                  isLoading={ad._id === currentId && isLoading}
+                  currentId={currentId}
+                />
+              )}
+              {console.log({ ad_id: ad._id, _id })}
+              {/* {ad.active === true && ad._id !== _id ? (
                 <AdminDropDown
                   status={ad.active}
                   activateAction={() => handleDeactivateAdmin(ad._id)}
@@ -139,7 +168,7 @@ function AdminRow({
                   mkStylistAction={() => null}
                   mkadminAction={() => null}
                 />
-              )}
+              )} */}
             </td>
           </tr>
         );
