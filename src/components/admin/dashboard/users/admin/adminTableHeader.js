@@ -1,6 +1,8 @@
 import React from "react";
+import { useAuthContext } from "redux/auth";
 
-export function AdminTable({ onMasterCheck, children }) {
+export function AdminTable({ profile, children }) {
+  const { _id, role: userRole } = profile;
   return (
     <div className="flex flex-col mt-4">
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -14,7 +16,7 @@ export function AdminTable({ onMasterCheck, children }) {
                       type="checkbox"
                       className="ml-3"
                       id="mastercheck"
-                      onChange={onMasterCheck}
+                      // onChange={onMasterCheck}
                     />
                   </th>
                   <th
@@ -41,11 +43,13 @@ export function AdminTable({ onMasterCheck, children }) {
                   >
                     Status
                   </th>
-                  <th
-                    scope="col"
-                    className="text-sm font-medium text-gray-400 px-6 py-4"
-                    aria-label="extra action"
-                  />
+                  {userRole === "SUPER_ADMIN" && (
+                    <th
+                      scope="col"
+                      className="text-sm font-medium text-gray-400 px-6 py-4"
+                      aria-label="extra action"
+                    />
+                  )}
                 </tr>
               </thead>
               <tbody className="">{children}</tbody>

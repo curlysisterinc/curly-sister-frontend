@@ -5,7 +5,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import { curlySistersOnboarding } from "../config";
+import { curlySistersOnboarding, curlySistersApi } from "../config";
 
 // eslint-disable-next-line
 export default {
@@ -79,5 +79,9 @@ export default {
       role: "ADMIN",
     };
     return curlySistersOnboarding.post("/api/users/admin-invitation", data);
+  },
+
+  async GetUserProfile() {
+    return curlySistersApi.get("/v1/user/user-profile");
   },
 };

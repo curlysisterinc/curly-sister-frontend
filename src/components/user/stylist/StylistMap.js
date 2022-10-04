@@ -33,15 +33,14 @@ function MapMaker({
     <div className={`relative ${display}`}>
       <LocationIcon />
       <div
-        className={`bg-white border border-gray-600 shadow-s07 absolute  rounded-2xl bottom-9   w-350 flex overflow-hidden ${style} z-100 -translate-x-2/4`}
+        className={`bg-white border border-gray-600 shadow-s07 absolute  rounded-2xl bottom-9 p-0  w-350 flex overflow-hidden ${style} z-100 `}
       >
-        <div className="w-2/5 flex justify-center items-center">
+        <div className="w-2/5 h-full flex justify-center items-center relative">
           <img
             src={data.gallery[0] ?? galleryBanner}
             alt=""
-            className="object-cover w-full h-full"
+            className="w-full h-40  object-none"
           />
-          {console.log({ data })}
           <img
             src={data.photo ? data.photo : avatar2}
             alt=""
@@ -136,6 +135,7 @@ export default function StylistMap({
         width: isMapFixed ? "450px" : "100%",
         position: isMapFixed ? "fixed" : "sticky",
         top: 0,
+        borderRadius: "16px",
         // background: "rgb(229, 227, 223)",
       }}
     >
@@ -143,7 +143,7 @@ export default function StylistMap({
       <div
         className={`${
           currentLocationStatus !== "data"
-            ? "opacity-100 h-full flex justify-center item transition-opacity"
+            ? "opacity-100 h-full flex justify-center item transition-opacity rounded-2xl"
             : "opacity-0 h-0"
         }`}
       >

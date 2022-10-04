@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import useGetAllAdmins from "hooks/data/admin/useGetAllAdmins";
 import { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
+import useGetUserProfile from "hooks/data/admin/useGetUserProfile";
 import AdminRow from "./adminRow";
 import InviteAdminModal from "./inviteAdminModal";
 import trashIcon from "../../../../../assets/images/trash.svg";
@@ -23,6 +24,9 @@ function AdminTab({ active }) {
   const [deleteModal, setDeleteModal] = useState(false);
 
   const { data, isLoading, error, refetch } = useGetAllAdmins();
+  const { isLoading: isUserprofileLoading, data: userProfileData } =
+    useGetUserProfile();
+
   const admins = data?.data?.data;
 
   const onMasterCheck = (e) => {
@@ -91,18 +95,19 @@ function AdminTab({ active }) {
           </div>
         )}
       </div>
-      {data && (
-        <AdminTable>
+      {data && userProfileData && (
+        <AdminTable profile={userProfileData.data.data}>
           <AdminRow
             setCallToAction={setCallToAction}
             selectedId={selectedId}
             setSelectedId={setSelectedId}
             getAdmin={getAdmin}
             setGetAdmin={setGetAdmin}
+            profile={userProfileData.data.data}
           />
         </AdminTable>
       )}
-      {isLoading && <Loadersmall />}
+      {(isLoading || isUserprofileLoading) && <Loadersmall />}
       {error && <ErrorDisplayComponent refetch={refetch} />}
       {openInviteAdminModal && (
         <InviteAdminModal handleClose={() => setOpenInviteAdminModal(false)} />

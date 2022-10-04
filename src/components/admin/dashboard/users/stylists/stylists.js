@@ -79,7 +79,9 @@ function StylistTab() {
           Stylists
           <span className="text-gray-300 ml-2 text-sm">
             {totalStylistCount &&
-              `${stylists.length} stylists out of ${totalStylistCount}`}
+              `${stylists.length} ${
+                stylists.length > 1 ? "stylists" : "stylist"
+              }  out of ${totalStylistCount}`}
           </span>
         </div>
         <div className="">

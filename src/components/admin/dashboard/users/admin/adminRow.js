@@ -5,6 +5,7 @@ import Moment from "moment";
 import { useAuthContext } from "redux/auth";
 import useSuspendOrActivateAdmin from "hooks/data/admin/useSuspendOrActivateAdmin";
 import useDeleteAdmin from "hooks/data/admin/useDeleteAdmin";
+import useGetUserProfile from "hooks/data/admin/useGetUserProfile";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
@@ -24,13 +25,14 @@ function AdminRow({
   setCallToAction,
   selectedId,
   setSelectedId,
+  profile,
 }) {
-  const {
-    state: { _id },
-  } = useAuthContext();
-
+  // const {
+  //   state: { _id, role: userRole },
+  // } = useAuthContext();
+  const { _id, role: userRole } = profile;
   const [currentId, setCurrentId] = useState("");
-
+  console.log({ profile });
   const {
     isLoading: suspendOrActivateLoading,
     data,
@@ -83,6 +85,12 @@ function AdminRow({
 
   const selectRole = useCallback((role) => Role[role], []);
 
+  const displayUsersName = (user) => {
+    return `${user?.firstName ?? ""} ${user?.lastName ?? ""} ${
+      user?._id === _id ? "(You)" : ""
+    }`;
+  };
+
   return (
     <>
       {getAdmin.map((ad) => {
@@ -106,8 +114,7 @@ function AdminRow({
                 />
                 <div className="ml-2">
                   <p className="text-sm text-gray-400 mb-1">
-                    {ad.firstName}
-                    {ad.lastName}
+                    {displayUsersName(ad)}
                   </p>
                   <p className="text-xs text-gray-200 ">{ad.email}</p>
                 </div>
@@ -135,41 +142,25 @@ function AdminRow({
                 <img src={grayIndicator} alt="" />
               )}
             </td>
-            <td className="px-2 py-y relative cursor-pointer ">
-              {ad._id !== _id && (
-                <AdminDropDown
-                  status={ad.active}
-                  activateAction={() =>
-                    ad.active
-                      ? handleDeactivateAdmin(ad._id)
-                      : handleActivateAdmin(ad._id)
-                  }
-                  deteleAction={() => handleDeleteAdmin(ad._id)}
-                  mkStylistAction={() => null}
-                  mkadminAction={() => null}
-                  isLoading={ad._id === currentId && isLoading}
-                  currentId={currentId}
-                />
-              )}
-              {console.log({ ad_id: ad._id, _id })}
-              {/* {ad.active === true && ad._id !== _id ? (
-                <AdminDropDown
-                  status={ad.active}
-                  activateAction={() => handleDeactivateAdmin(ad._id)}
-                  deteleAction={() => handleDeleteAdmin(ad._id)}
-                  mkStylistAction={() => null}
-                  mkadminAction={() => null}
-                />
-              ) : (
-                <AdminDropDown
-                  status={ad.active}
-                  activateAction={() => handleActivateAdmin(ad._id)}
-                  deteleAction={() => handleDeleteAdmin(ad._id)}
-                  mkStylistAction={() => null}
-                  mkadminAction={() => null}
-                />
-              )} */}
-            </td>
+            {selectRole(userRole) === "Super Admin" && (
+              <td className="px-2 py-y relative cursor-pointer ">
+                {ad._id !== _id && (
+                  <AdminDropDown
+                    status={ad.active}
+                    activateAction={() =>
+                      ad.active
+                        ? handleDeactivateAdmin(ad._id)
+                        : handleActivateAdmin(ad._id)
+                    }
+                    deteleAction={() => handleDeleteAdmin(ad._id)}
+                    mkStylistAction={() => null}
+                    mkadminAction={() => null}
+                    isLoading={ad._id === currentId && isLoading}
+                    currentId={currentId}
+                  />
+                )}
+              </td>
+            )}
           </tr>
         );
       })}
