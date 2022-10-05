@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { NavLink, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { NonAuthRoutes } from "../../../constants";
 
-function LearnComponent() {
+function LearnNavigationTab() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -59,4 +59,4 @@ function LearnComponent() {
   );
 }
 
-export default LearnComponent;
+export default LearnNavigationTab;

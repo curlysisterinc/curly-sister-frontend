@@ -235,7 +235,7 @@ function ManageCertificationModal({
     visible && (
       <div
         onClick={handleClose}
-        className="fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full "
+        className="fixed top-0 left-0 h-full overflow-y-auto z-200 bg-black-100 w-full flex  justify-end items-center"
       >
         <div
           className="flex items-start justify-end h-full"

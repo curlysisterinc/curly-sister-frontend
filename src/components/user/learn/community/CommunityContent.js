@@ -6,24 +6,21 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { AuthRoutes } from "../../../constants";
-import learn from "../../../api/learn";
-import gradientAvatar from "../../../assets/images/gradient-avatar.svg";
-import like from "../../../assets/images/like.svg";
-import dislike from "../../../assets/images/dislike.svg";
-import reply from "../../../assets/images/reply.svg";
-import ellipses from "../../../assets/images/dark-ellipses.svg";
-import bgBookmark from "../../../assets/images/bg-bookmark.svg";
-import serena from "../../../assets/images/serena.png";
-import pix1 from "../../../assets/images/pix1.png";
-import pix7 from "../../../assets/images/pix7.png";
-import pix8 from "../../../assets/images/pix8.png";
-import bookmark from "../../../assets/images/book-mark.png";
-import trash from "../../../assets/images/trash.svg";
-import edit from "../../../assets/images/edit.svg";
-import pin from "../../../assets/images/pin.svg";
-import report from "../../../assets/images/report.svg";
-import backArrow from "../../../assets/images/back-arrow.svg";
+import { AuthRoutes } from "constants";
+import learn from "api/learn";
+import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
+import reply from "../../../../assets/images/reply.svg";
+import ellipses from "../../../../assets/images/dark-ellipses.svg";
+import bgBookmark from "../../../../assets/images/bg-bookmark.svg";
+import serena from "../../../../assets/images/serena.png";
+import pix1 from "../../../../assets/images/pix1.png";
+import pix7 from "../../../../assets/images/pix7.png";
+import pix8 from "../../../../assets/images/pix8.png";
+import bookmark from "../../../../assets/images/book-mark.png";
+import trash from "../../../../assets/images/trash.svg";
+import edit from "../../../../assets/images/edit.svg";
+import report from "../../../../assets/images/report.svg";
+import backArrow from "../../../../assets/images/back-arrow.svg";
 import { BsPinAngle, BsPinAngleFill } from "react-icons/bs";
 import {
   AiTwotoneDislike,
@@ -152,9 +149,7 @@ function CommunityContent() {
         <div className="">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl">
-              {getQuestion?.question
-                ? getQuestion.question
-                : "How to style hair"}
+              {getQuestion?.title ? getQuestion.title : getQuestion?.question}
             </h3>
             <div className="">
               <img src={bgBookmark} alt="" />
@@ -186,7 +181,7 @@ function CommunityContent() {
                         className="flex items-center space-x-3"
                         onClick={handlePinQuestion}
                       >
-                        <BsPinAngle />
+                        <BsPinAngle width={24} size={24} height={24} />
                         <p className="">Pin</p>
                       </div>
                     ) : (

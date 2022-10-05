@@ -1,13 +1,6 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable prefer-regex-literals */
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -28,12 +21,6 @@ function InviteAdminModal({ handleClose }) {
   useEffect(() => {
     const ac = new AbortController();
     document.title = "Curly sisters • Invite Admins";
-
-    // if (authenticated === null) {
-    //   navigate(NonAuthRoutes.login);
-    // } else {
-    //   navigate(AuthRoutes.home);
-    // }
 
     return function cleanup() {
       ac.abort();

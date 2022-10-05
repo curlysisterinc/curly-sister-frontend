@@ -26,17 +26,25 @@ const NewArticle = lazy(() =>
 const NewVideo = lazy(() =>
   import("./components/admin/dashboard/content/video/addVideo")
 );
-const LearnComponent = lazy(() => import("./components/user/learn/learn"));
-const VideoContent = lazy(() => import("./components/user/learn/videoContent"));
+const LearnComponent = lazy(() =>
+  import("./components/user/learn/LearnNavigationTab")
+);
+const VideoContent = lazy(() =>
+  import("./components/user/learn/videos/VideoContent")
+);
 const ArticleContent = lazy(() =>
-  import("./components/user/learn/articleContent")
+  import("./components/user/learn/articles/ArticleContent")
 );
 const CommunityContent = lazy(() =>
-  import("./components/user/learn/communityContent")
+  import("./components/user/learn/community/CommunityContent")
 );
-const VideoTab = lazy(() => import("./components/user/learn/videoTab"));
-const ArticleTab = lazy(() => import("./components/user/learn/articleTab"));
-const CommunityTab = lazy(() => import("./components/user/learn/communityTab"));
+const VideoTab = lazy(() => import("./components/user/learn/videos/VideoTab"));
+const ArticleTab = lazy(() =>
+  import("./components/user/learn/articles/ArticleTab")
+);
+const CommunityTab = lazy(() =>
+  import("./components/user/learn/community/CommunityTab")
+);
 // const LearnMoreTabComponent = lazy(() => import("./components/learn/videoTab"));
 // const LearnMoreCommunityTab = lazy(() =>
 //   import("./components/learn/communityTab")
@@ -76,7 +84,7 @@ const OverviewTab = lazy(() => import("./components/admin/dashboard/overview"));
 const StylistTab = lazy(() =>
   import("./components/admin/dashboard/users/stylists/stylists")
 );
-const AllTab = lazy(() => import("./components/user/learn/allTab"));
+const AllTab = lazy(() => import("./components/user/learn/all/AllTab"));
 const HomeComponent = lazy(() => import("components/home"));
 
 const AboutComponent = lazy(() => import("./components/about"));

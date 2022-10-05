@@ -146,7 +146,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto  bg-black-100 w-full z-500"
+      className="fixed top-0 left-0 h-full overflow-y-auto z-200 bg-black-100 w-full flex  justify-end items-center"
     >
       <div
         className="flex  justify-end items-start h-full"
@@ -180,7 +180,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
               >
                 Name of service
                 <input
-                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="name"
                   type="text"
                   value={serviceList.name}
@@ -197,7 +197,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
               >
                 Description
                 <textarea
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="textarea"
                   placeholder="Enter a description for this service"
                   name="description"
@@ -219,7 +219,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
                   Default price
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded-lg w-full h-full px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter price"
                       name="default_price"
@@ -251,7 +251,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
                   Duration
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-400 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm appearance-none border border-gray-800 rounded-lg w-full h-full px-3 text-gray-400 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter time"
                       name="duration"
@@ -287,7 +287,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
                   name="who_is_this_for"
                   value={serviceList.who_is_this_for}
                   onChange={handleChange}
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="Everyone">Everyone</option>
                   <option value="Stylists">Stylists</option>
