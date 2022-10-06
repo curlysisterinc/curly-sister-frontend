@@ -5,17 +5,17 @@ import { useToasts } from "react-toast-notifications";
 import { useAuthContext } from "redux/auth";
 import learn from "../../../api/learn";
 
-export default (id) => {
+export default (questionId) => {
   const { addToast } = useToasts();
-  const { DeleteQuestion } = learn;
+  const { UnPinQuestion } = learn;
 
-  return useMutation(() => DeleteQuestion(id), {
+  return useMutation(() => UnPinQuestion(questionId), {
     onSuccess: (context) => {
       const { data } = context;
       addToast(data.message, {
         appearance: "success",
       });
-      queryClient.invalidateQueries(["questions"]);
+      queryClient.invalidateQueries(["questions", questionId]);
     },
     onError: async (error) => {
       const mainError = error.response.data;

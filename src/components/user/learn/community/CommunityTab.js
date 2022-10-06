@@ -24,11 +24,13 @@ import { NonAuthRoutes } from "constants";
 import { CommunityQuestionItem } from "./CommunityQuestionItem";
 import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
 import { useAuthContext } from "redux/auth";
+import Loader from "components/loader-component/loader";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
 
 function CommunityTab() {
   const [activeTab, setActiveTab] = useState("all");
   const [getQuestions, setGetQuestions] = useState([]);
-  const [questionModal, setQuestionModal] = useState(false);
+  const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
 
   const navigate = useNavigate();
   const {
@@ -38,7 +40,7 @@ function CommunityTab() {
   // open question dialog
   const openQuestionModal = () => {
     if (isSignedIn) {
-      setQuestionModal(true);
+      setIsQuestionModalOpen(true);
     } else {
       navigate(NonAuthRoutes.login);
     }
@@ -46,7 +48,7 @@ function CommunityTab() {
 
   // close question dialog
   const closeQuestionModal = () => {
-    setQuestionModal(false);
+    setIsQuestionModalOpen(false);
   };
 
   const {
@@ -63,15 +65,12 @@ function CommunityTab() {
   }, [questionsData]);
 
   return (
-    <>
-      {/* <div>
-        <LearnTabComponent active="communities" />
-      </div> */}
-      <div className="m-20">
-        <div className="flex justify-between">
-          <h2 className="text-2xl text-gray-400 font-BeatriceSemiBold">
-            Questions
-          </h2>
+    <div className="mt-10 max-w-777 mx-auto">
+      <div className="flex justify-between">
+        <h2 className="text-2xl text-gray-400 font-BeatriceSemiBold">
+          Questions
+        </h2>
+        {questionsData && (
           <button
             type="button"
             onClick={openQuestionModal}
@@ -79,81 +78,88 @@ function CommunityTab() {
           >
             Ask a question
           </button>
-          {questionModal ? (
-            <AskQuestionModal
-              getQuestions={getQuestions}
-              setGetQuestions={setGetQuestions}
-              handleClose={closeQuestionModal}
-            />
-          ) : null}
-        </div>
-        <div className="mt-6 flex space-x-6">
-          <div
-            onClick={() => setActiveTab("all")}
-            className={clsx(
-              activeTab === "all"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
-            )}
-          >
-            All
-          </div>
-          <div
-            onClick={() => setActiveTab("popular")}
-            className={clsx(
-              activeTab === "popular"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
-            )}
-          >
-            Popular
-          </div>
-          <div
-            onClick={() => setActiveTab("recent")}
-            className={clsx(
-              activeTab === "recent"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
-            )}
-          >
-            Recent
-          </div>
-          <div
-            onClick={() => setActiveTab("pinned")}
-            className={clsx(
-              activeTab === "pinned"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
-            )}
-          >
-            Pinned
-          </div>
-        </div>
-        <div className="mt-10">
-          {activeTab === "all" && (
-            <div>
-              {getQuestions.length > 0 ? (
-                getQuestions.map((question) => {
-                  return <CommunityQuestionItem question={question} />;
-                })
-              ) : (
-                <h3 className="text-center text-black text-xl font-BeatriceSemiBold">
-                  No content added
-                </h3>
-              )}
-            </div>
-          )}
-          {activeTab === "pinned" &&
-            getQuestions.map((question) => {
-              return <CommunityQuestionItem question={question} />;
-            })}
-        </div>
+        )}
+        {isQuestionModalOpen ? (
+          <AskQuestionModal
+            getQuestions={getQuestions}
+            setGetQuestions={setGetQuestions}
+            handleClose={closeQuestionModal}
+          />
+        ) : null}
       </div>
-    </>
+      {questionsRrror && <ErrorDisplayComponent refetch={questionsRefetch} />}
+      {isQuestionsLoading && <Loader />}
+
+      {questionsData && (
+        <>
+          <div className="mt-6 flex space-x-6">
+            <div
+              onClick={() => setActiveTab("all")}
+              className={clsx(
+                activeTab === "all"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              All
+            </div>
+            <div
+              onClick={() => setActiveTab("popular")}
+              className={clsx(
+                activeTab === "popular"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              Popular
+            </div>
+            <div
+              onClick={() => setActiveTab("recent")}
+              className={clsx(
+                activeTab === "recent"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              Recent
+            </div>
+            <div
+              onClick={() => setActiveTab("pinned")}
+              className={clsx(
+                activeTab === "pinned"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              Pinned
+            </div>
+          </div>
+          <div className="mt-10 overflow-auto pr-5 max-h-screen-300px">
+            {activeTab === "all" && (
+              <div>
+                {getQuestions.length > 0 ? (
+                  getQuestions.map((question) => {
+                    return <CommunityQuestionItem question={question} />;
+                  })
+                ) : (
+                  <h3 className="text-center text-black text-xl font-BeatriceSemiBold">
+                    No content added
+                  </h3>
+                )}
+              </div>
+            )}
+            {activeTab === "pinned" &&
+              getQuestions.map((question) => {
+                return <CommunityQuestionItem question={question} />;
+              })}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 

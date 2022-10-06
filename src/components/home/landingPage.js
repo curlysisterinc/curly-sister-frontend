@@ -84,7 +84,7 @@ function LandingPage({ getStylist }) {
         <LearnSection />
         <CommunitySection />
       </div>
-      <FooterComponent getStylist={getStylist} />
+      <FooterComponent />
     </div>
   );
 }

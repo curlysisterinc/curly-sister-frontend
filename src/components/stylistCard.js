@@ -20,7 +20,7 @@ export default function CommonCard({ stylist }) {
   return (
     <div
       onClick={() => {
-        email_verified && navigate(`/stylists/profile/${stylist._id}`);
+        email_verified && navigate(`/stylists/profile/${stylist?._id}`);
       }}
       className={`col-1 rounded-2xl shadow-s01 relative overflow-hidden  w-full border border-gray-600 ${
         email_verified && "cursor-pointer"
@@ -32,9 +32,9 @@ export default function CommonCard({ stylist }) {
         </span>
       </div>
       <div className="w-full h-40">
-        {stylist.gallery.length > 0 ? (
+        {stylist?.gallery?.length > 0 ? (
           <img
-            src={stylist.gallery[0]}
+            src={stylist?.gallery[0]}
             className="w-full h-40 object-cover "
             alt=""
           />
@@ -50,7 +50,7 @@ export default function CommonCard({ stylist }) {
         <div className="flex justify-between items-start">
           <img
             className="-mt-14  w-20 h-20 rounded-full object-cover"
-            src={stylist.photo ? stylist.photo : avatar2}
+            src={stylist?.photo ? stylist.photo : avatar2}
             alt=""
           />
           <div className="flex  space-x-2">
@@ -65,12 +65,12 @@ export default function CommonCard({ stylist }) {
         </div>
         <div className="flex flex-col space-y-3 mt-4">
           <p className="text-base font-BeatriceSemiBold text-gray-400">
-            {stylist.business_name}
+            {stylist?.business_name}
           </p>
           <p className="text-sm text-gray-400 line-clamp-2">
-            {stylist.description}
+            {stylist?.description}
           </p>
-          <p className="text-sm text-gray-200">{stylist.address}</p>
+          <p className="text-sm text-gray-200">{stylist?.address}</p>
         </div>
       </div>
     </div>

@@ -36,7 +36,7 @@ function LearnNavigationTab() {
   ];
 
   return (
-    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full max-w-1111 m-auto">
       <div>
         <div className="flex mx-auto items-center space-x-6 justify-center">
           {leanNavlinks.map((link) => (

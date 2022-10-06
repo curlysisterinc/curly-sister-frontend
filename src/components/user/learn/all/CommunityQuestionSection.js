@@ -29,8 +29,8 @@ export function CommunityQuestionSection() {
   }, [questionsData]);
 
   return (
-    <div>
-      <div className="flex mt-20 mb-10 items-center justify-between">
+    <div className="mb-20">
+      <div className="flex mt-10 mb-6 items-center justify-between">
         <h2 className="text-gray-400 text-2xl font-semibold">
           Latest from community
         </h2>
@@ -49,7 +49,7 @@ export function CommunityQuestionSection() {
         <div>
           {getQuestions.length > 0 ? (
             <div className="flex flex-col">
-              {getQuestions.slice(0, 3).map((question) => {
+              {getQuestions.slice(0, 4).map((question) => {
                 return <CommunityQuestionItem question={question} />;
               })}
             </div>

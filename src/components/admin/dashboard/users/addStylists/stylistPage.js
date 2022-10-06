@@ -59,7 +59,7 @@ function StylistPage({ mode, stylistData, handleEditStylist, isLoading }) {
 
   return (
     <div className="bg-white w-full ">
-      <div className=" bg-white px-3 md:px-10 pb-8 w-full relative min-h-screen">
+      <div className=" bg-white px-3 md:px-10 pb-2 w-full relative min-h-screen">
         <header className="sticky z-10 top-0 right-0 bg-white left-0 pt-20 md:pt-7">
           <button
             onClick={backBtnHandler}

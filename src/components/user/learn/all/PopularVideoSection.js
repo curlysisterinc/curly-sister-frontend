@@ -23,8 +23,8 @@ export function PopularVideoSection() {
   }, [videosData]);
 
   return (
-    <div>
-      <div className="flex mt-20 mb-10 items-center justify-between">
+    <div className="mb-20">
+      <div className="flex mt-10 mb-6 items-center justify-between">
         <h2 className="text-gray-400 text-2xl font-semibold">Popular videos</h2>
         {getVideos.length > 0 && (
           <Link

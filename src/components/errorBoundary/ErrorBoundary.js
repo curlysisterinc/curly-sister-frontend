@@ -24,12 +24,7 @@ export class ErrorBoundary extends React.Component {
       // You can render any custom fallback UI
       return (
         <div>
-          <ErrorDisplayComponent
-            refetch={() => {
-              window.history.go(-1);
-              // window.location.reload();
-            }}
-          />
+          <ErrorDisplayComponent />
         </div>
       );
     }

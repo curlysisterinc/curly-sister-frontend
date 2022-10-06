@@ -138,12 +138,18 @@ export default {
     const data = {
       questionId,
     };
-    return curlySistersOnboarding.post(`/v1/user/pin-question`, data);
+    return curlySistersApi.post(`/v1/user/pin-question`, data);
   },
   async UnPinQuestion(questionId) {
     const data = {
       questionId,
     };
-    return curlySistersOnboarding.post(`/v1/user/unpin-question`, data);
+    return curlySistersApi.post(`/v1/user/unpin-question`, data);
+  },
+  async DeleteQuestion(questionId) {
+    return curlySistersApi.delete(`/v1/user/delete-question/${questionId}`);
+  },
+  async UpdateQuestion({ id, ...data }) {
+    return curlySistersApi.put(`/v1/user/update-question/${id}`, data);
   },
 };

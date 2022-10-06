@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
+import { getRandomInt } from "utils";
 import CommonCard from "../stylistCard";
 import bgOne2 from "../../assets/images/bg-one2.png";
 
-function WaitList({ getStylist }) {
+function WaitList() {
+  const [getStylist, setGetStylist] = useState({});
+
+  const {
+    data: stylistData,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+    error,
+  } = useGetAllStylists();
+
+  useEffect(() => {
+    if (stylistData) {
+      const stylists = stylistData.pages[0].data.stylist;
+      const randomNumber = getRandomInt({
+        max: stylists.length,
+      });
+
+      setGetStylist(stylists[randomNumber]);
+    }
+  }, [stylistData]);
+
   return (
     <div className="bg-orange-50 pt-4 pb-6 px-6 flex-col md:flex-row md:px-20 md:py-10 flex justify-between items-center relative ">
       <img
@@ -13,10 +36,7 @@ function WaitList({ getStylist }) {
 
       <div className="relative z-10 flex flex-col gap-0 md:grid grid-cols-12 md:gap-16">
         <div className="col-span-5">
-          {getStylist &&
-            [...getStylist]?.splice(0, 1)?.map((item) => {
-              return <CommonCard key={item._id} stylist={item} />;
-            })}
+          {stylistData && <CommonCard stylist={getStylist} />}
         </div>
         <div className="col-span-7 md:my-6 mt-6 mb-0">
           <p className="text-gray-300 text-xs mb:text-base mb-2">

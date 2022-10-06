@@ -10,11 +10,6 @@ import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { ArticleItem } from "../articles/ArticleItem";
 
 export function FeaturedArticleSection() {
-  const navigate = useNavigate();
-  const {
-    state: { isSignedIn },
-  } = useAuthContext();
-
   const [getArticles, setGetArticles] = useState([]);
   const {
     data: articlesData,
@@ -29,15 +24,9 @@ export function FeaturedArticleSection() {
     }
   }, [articlesData]);
 
-  const handleNavigate = (article) => {
-    return isSignedIn
-      ? navigate(`/learn/article/${article._id}`)
-      : navigate(NonAuthRoutes.login);
-  };
-
   return (
-    <div>
-      <div className="flex mt-20 mb-10 items-center justify-between">
+    <div className="mb-20">
+      <div className="flex mt-10 mb-6 items-center justify-between">
         <h2 className="text-gray-400 text-2xl font-semibold">
           Featured articles
         </h2>

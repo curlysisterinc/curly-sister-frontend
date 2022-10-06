@@ -24,33 +24,37 @@ export function CommunityQuestionItem({ question }) {
     return navigate(`/learn/communities/${item._id}`);
   };
 
+  const handleClickBookmarkButton = (e) => {
+    e.stopPropagation();
+    // e.preventDefault();
+    alert("clicked");
+    setSaveQst(!saveQst);
+  };
+
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onClick={() => handleNavigate(question)}
+      onKeyPress={(e) =>
+        runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(question))
+      }
       key={question._id}
-      className="cursor-pointer flex mb-5 align-center justify-between border-gray-100 rounded-md shadow p-4"
+      className="cursor-pointer flex mb-5 align-center justify-between border border-gray-600 rounded-2xl shadow-s01 p-6"
     >
       <div className="flex">
         <img src={serena} alt="serena" />
         <div className="flex flex-col ml-4">
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => handleNavigate(question)}
-            onKeyPress={(e) =>
-              runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(question))
-            }
-          >
-            <h4 className="text-base font-semibold mb-2 text-gray-400">
-              {question?.title ?? question?.question}
-            </h4>
-          </div>
+          <h4 className="text-base font-semibold mb-2 text-gray-400">
+            {question?.title ?? question?.question}
+          </h4>
           <div className="flex">
             <h4 className="text-sm text-gray-400 font-normal">
               {question.created_by.firstName} {question.created_by.lastName}
             </h4>
             <p className="ml-2 text-gray-200 font-normal text-sm">
               · {question.comments.length} comments ·{" "}
-              {moment(question.createdAt).format("YYYY-MM-DD")}
+              {moment(question.createdAt).format("DD MMM YYYY")}
             </p>
           </div>
         </div>
@@ -73,13 +77,13 @@ export function CommunityQuestionItem({ question }) {
             className="relative z-30 inline object-cover w-10 h-10"
           />
         </div>
-        <div
+        <button
           tabIndex={0}
-          role="button"
+          type="button"
           className=""
-          onClick={() => setSaveQst(!saveQst)}
+          onClick={handleClickBookmarkButton}
           onKeyPress={(e) =>
-            runFunctionWhenSpaceOrEnterIsClicked(e, setSaveQst(!saveQst))
+            runFunctionWhenSpaceOrEnterIsClicked(e, handleClickBookmarkButton)
           }
         >
           {saveQst ? (
@@ -87,7 +91,7 @@ export function CommunityQuestionItem({ question }) {
           ) : (
             <img src={bookmark} alt="bookmark" className="" />
           )}
-        </div>
+        </button>
       </div>
     </div>
   );

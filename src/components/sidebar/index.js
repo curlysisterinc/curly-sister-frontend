@@ -181,7 +181,7 @@ function SideNav() {
           )}
 
           <div className="absolute bottom-4 left-2 right-2">
-            {/* {isSignedIn &&
+            {isSignedIn &&
               (pathname === "/stylists/confirm-booking" ? (
                 <button
                   type="button"
@@ -193,63 +193,63 @@ function SideNav() {
                     GO Back
                   </p>
                 </button>
-              ) : ( */}
-            <DropDown
-              contentClassName="bg-white rounded-xl  shadow w-48 overflow-hidden text-sm text-gray-200 z-20"
-              trigger={
-                <button
-                  type="button"
-                  className="flex items-center gap-x-4 justify-between relative cursor-pointer w-full px-4 md:px-0"
+              ) : (
+                <DropDown
+                  contentClassName="bg-white rounded-xl  shadow w-48 overflow-hidden text-sm text-gray-200 z-20"
+                  trigger={
+                    <button
+                      type="button"
+                      className="flex items-center gap-x-4 justify-between relative cursor-pointer w-full px-4 md:px-0"
+                    >
+                      <div className="flex items-center gap-x-8">
+                        <img
+                          src={profile_pic ? profile_pic : allynAvatar}
+                          alt="user avatar"
+                        />
+                        <p className=" text-purple-100  ">
+                          {firstName} {lastName}
+                        </p>
+                      </div>
+                      <img src={dropdownIcon} alt="dropdown-icon" />
+                    </button>
+                  }
                 >
-                  <div className="flex items-center gap-x-8">
-                    <img
-                      src={profile_pic ? profile_pic : allynAvatar}
-                      alt="user avatar"
-                    />
-                    <p className=" text-purple-100  ">
-                      {firstName} {lastName}
-                    </p>
-                  </div>
-                  <img src={dropdownIcon} alt="dropdown-icon" />
-                </button>
-              }
-            >
-              <DropDownItem>
-                <button
-                  type="button"
-                  className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
-                >
-                  Facebook
-                </button>
-              </DropDownItem>
-              <DropDownItem>
-                <button
-                  type="button"
-                  className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
-                >
-                  Instagram
-                </button>
-              </DropDownItem>
-              <DropDownItem>
-                <button
-                  type="button"
-                  onClick={() => navigate(NonAuthRoutes.termsAndPrivacy)}
-                  className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
-                >
-                  Terms & Privacy
-                </button>
-              </DropDownItem>
-              <DropDownItem>
-                <button
-                  type="button"
-                  onClick={onLogout}
-                  className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
-                >
-                  Log out
-                </button>
-              </DropDownItem>
-            </DropDown>
-            {/* ))} */}
+                  <DropDownItem>
+                    <button
+                      type="button"
+                      className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
+                    >
+                      Facebook
+                    </button>
+                  </DropDownItem>
+                  <DropDownItem>
+                    <button
+                      type="button"
+                      className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
+                    >
+                      Instagram
+                    </button>
+                  </DropDownItem>
+                  <DropDownItem>
+                    <button
+                      type="button"
+                      onClick={() => navigate(NonAuthRoutes.termsAndPrivacy)}
+                      className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
+                    >
+                      Terms & Privacy
+                    </button>
+                  </DropDownItem>
+                  <DropDownItem>
+                    <button
+                      type="button"
+                      onClick={onLogout}
+                      className="cursor-pointer mb-2 hover:bg-gray-600 px-5 py-2 w-full text-left"
+                    >
+                      Log out
+                    </button>
+                  </DropDownItem>
+                </DropDown>
+              ))}
           </div>
         </div>
       </div>

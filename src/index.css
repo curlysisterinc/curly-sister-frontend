@@ -66,6 +66,12 @@ input:checked + .toggle-bg {
       url(./assets/fonts/GTSuperTextBlack.otf) format("opentype");
   }
   @font-face {
+    font-family: "GTSuperText";
+    font-weight: 400;
+    src: local("GTSuperText"),
+      url(./assets/fonts/GTSuperText.otf) format("opentype");
+  }
+  @font-face {
     font-family: "BeatriceSemiBold";
     font-weight: 600;
     src: local("BeatriceSemiBold"),
