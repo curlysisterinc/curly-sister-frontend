@@ -18,19 +18,23 @@ import orangePin from "../../../../assets/images/orange-pin.svg";
 import bookmarkfilled from "../../../../assets/images/bookmark-filled.png";
 import AskQuestionModal from "./AddQuestionModal";
 import moment from "moment";
-import authHandler from "authHandler";
-import learn from "api/learn";
 import { NonAuthRoutes } from "constants";
 import { CommunityQuestionItem } from "./CommunityQuestionItem";
+import { PinnedQuestion } from "./PinnedQuestion";
 import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
 import { useAuthContext } from "redux/auth";
 import Loader from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
+import { queryClient } from "App";
+import { useInView } from "react-intersection-observer";
 
 function CommunityTab() {
   const [activeTab, setActiveTab] = useState("all");
   const [getQuestions, setGetQuestions] = useState([]);
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
+  const [pinnedQuestions, setPinnedQuestions] = useState([]);
+
+  const [ref, inView] = useInView();
 
   const navigate = useNavigate();
   const {
@@ -53,16 +57,32 @@ function CommunityTab() {
 
   const {
     data: questionsData,
-    isLoading: isQuestionsLoading,
+    isFetching: isQuestionsLoading,
     error: questionsRrror,
     refetch: questionsRefetch,
+    fetchNextPage: fetchNextQuestionsPage,
+    hasNextPage: hasQuestionsNextPage,
   } = useGetAllQuestions();
 
   useEffect(() => {
     if (questionsData) {
-      setGetQuestions(questionsData.data.data);
+      const data = queryClient.getQueryData(["questions"]);
+      const currentData = data.pages
+        .map((item) => item.data.payload.questions)
+        .flatMap((a) => a);
+      const pinnedData = data.pages[0].data.pinnedQuestions;
+      console.log({ pinnedData });
+      console.log({ currentData });
+      setGetQuestions(currentData);
+      setPinnedQuestions(pinnedData);
     }
   }, [questionsData]);
+
+  React.useEffect(() => {
+    if (inView) {
+      fetchNextQuestionsPage();
+    }
+  }, [inView]);
 
   return (
     <div className="mt-10 max-w-777 mx-auto">
@@ -138,12 +158,18 @@ function CommunityTab() {
               Pinned
             </div>
           </div>
-          <div className="mt-10 overflow-auto pr-5 max-h-screen-300px">
+          <div className="mt-10 overflow-auto pr-5 max-h-screen-300px scroll-smooth">
             {activeTab === "all" && (
               <div>
+                <PinnedQuestion pinnedQuestions={pinnedQuestions} />
                 {getQuestions.length > 0 ? (
                   getQuestions.map((question) => {
-                    return <CommunityQuestionItem question={question} />;
+                    return (
+                      <CommunityQuestionItem
+                        question={question}
+                        key={question._id}
+                      />
+                    );
                   })
                 ) : (
                   <h3 className="text-center text-black text-xl font-BeatriceSemiBold">
@@ -152,10 +178,17 @@ function CommunityTab() {
                 )}
               </div>
             )}
-            {activeTab === "pinned" &&
-              getQuestions.map((question) => {
-                return <CommunityQuestionItem question={question} />;
-              })}
+            {activeTab === "pinned" && (
+              <PinnedQuestion pinnedQuestions={pinnedQuestions} />
+            )}
+
+            <div className="my-10">
+              {hasQuestionsNextPage && (
+                <div className="loading" ref={ref}>
+                  <Loader />
+                </div>
+              )}
+            </div>
           </div>
         </>
       )}

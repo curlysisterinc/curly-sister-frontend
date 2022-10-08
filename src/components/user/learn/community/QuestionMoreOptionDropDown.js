@@ -9,6 +9,8 @@ import DropDownItem from "components/customdropdown/primitive/DropDownItem";
 import { Loadersmall } from "components/loader-component/loader";
 import { useAuthContext } from "redux/auth";
 import usePinQuestion from "hooks/data/learn/usePinQuestion";
+import useSavedQuestion from "hooks/data/learn/useSavedQuestion";
+import useDeleteSavedQuestion from "hooks/data/learn/useDeleteSavedQuestion";
 import useUnPinQuestion from "hooks/data/learn/useUnPinQuestion";
 import useDeleteQuestion from "hooks/data/learn/useDeleteQuestion";
 import { ReactComponent as KebabIcon } from "../../../../assets/images/kebab.svg";
@@ -23,8 +25,9 @@ function QuestionMoreOptionContent({
   isAdmin,
   deleteQuestion,
   openEditQuestionModal,
+  isPinned: isQuestionPinned,
 }) {
-  const [isQuestionPinned, setIsQuestionPinned] = useState(false);
+  // const [isQuestionPinned, setIsQuestionPinned] = useState(false);
 
   return (
     <DropDownMenuContent className=" z-40 bg-white  border border-gray-600 shadow-s01  overflow-hidden text-sm text-gray-400 w-44 rounded-2xl  ">
@@ -33,7 +36,7 @@ function QuestionMoreOptionContent({
           <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm w-full p-3 hover:bg-gray-50">
             <button
               type="button"
-              className="flex items-center space-x-3"
+              className="flex items-center space-x-3 w-full h-full"
               //   onClick={pinQuestion}
               onClick={!isQuestionPinned ? pinQuestion : unPinQuestion}
             >
@@ -79,7 +82,11 @@ function QuestionMoreOptionContent({
   );
 }
 
-function QuestionMoreOptionDropDown({ question, openEditQuestionModal }) {
+function QuestionMoreOptionDropDown({
+  question,
+  openEditQuestionModal,
+  isPinned,
+}) {
   const { token } = useParams();
   const navigate = useNavigate();
 
@@ -122,6 +129,7 @@ function QuestionMoreOptionDropDown({ question, openEditQuestionModal }) {
       <DropDown
         content={
           <QuestionMoreOptionContent
+            isPinned={isPinned}
             pinQuestion={pinQuestion}
             unPinQuestion={unPinQuestion}
             deleteQuestion={deleteQuestion}

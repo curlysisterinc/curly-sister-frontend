@@ -7,8 +7,15 @@ export default {
     return curlySistersApi.post("/v1/user/ask-question", data);
   },
 
-  async GetAllQuestions() {
-    return curlySistersOnboarding.get("/v1/user/get-questions");
+  async GetAllQuestions({ isSignedIn, page }) {
+    const res = isSignedIn
+      ? await curlySistersApi.get(
+          `/v1/user/get-questions-protected?page=${page}&size=20`
+        )
+      : await curlySistersOnboarding.get(
+          `/v1/user/get-questions?page=${page}&size=20`
+        );
+    return res.data;
   },
 
   async GetOneQuestion(questionId) {
@@ -114,10 +121,7 @@ export default {
     const data = {
       questionId,
     };
-    return curlySistersOnboarding.post(
-      `/v1/user/get-comment-for-question`,
-      data
-    );
+    return curlySistersApi.post(`/v1/user/get-comment-for-question`, data);
   },
   async GetCommentForVideo(videoId) {
     const data = {
@@ -146,6 +150,20 @@ export default {
     };
     return curlySistersApi.post(`/v1/user/unpin-question`, data);
   },
+  async SaveQuestion(questionId) {
+    const data = {
+      questionId,
+    };
+    return curlySistersApi.post(`/v1/user/save-question`, data);
+  },
+
+  async DeleteSavedQuestion(questionId) {
+    const data = {
+      questionId,
+    };
+    return curlySistersApi.post(`/v1/user/delete-saved-question`, data);
+  },
+
   async DeleteQuestion(questionId) {
     return curlySistersApi.delete(`/v1/user/delete-question/${questionId}`);
   },

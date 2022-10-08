@@ -37,7 +37,9 @@ export default () => {
           isSignedIn: true,
         })
       );
-      navigate(NonAuthRoutes.home);
+      const link = sessionStorage.getItem("link");
+      sessionStorage.removeItem("link");
+      return link ? navigate(link) : navigate(NonAuthRoutes.home);
     },
     onError: async (error) => {
       const mainError = error.response.data;

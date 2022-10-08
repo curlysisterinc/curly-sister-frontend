@@ -121,6 +121,7 @@ function SideNav() {
                 <NavLink
                   key={link.title}
                   to={link.path}
+                  onClick={toggleNav}
                   className={
                     ({ isActive }) =>
                       isActive
@@ -152,6 +153,7 @@ function SideNav() {
                 <NavLink
                   key={dashboardLink.title}
                   to={dashboardLink.path}
+                  onClick={() => setIsOpen(false)}
                   className={({ isActive }) =>
                     isActive ? "mb-4 text-purple-100" : "mb-4"
                   }

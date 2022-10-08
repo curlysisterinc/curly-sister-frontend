@@ -5,7 +5,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AuthRoutes } from "constants";
 import learn from "api/learn";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
@@ -39,6 +39,9 @@ import AskQuestionModal from "./AddQuestionModal";
 function CommunityContent() {
   const navigate = useNavigate();
   const { token } = useParams();
+
+  const { state } = useLocation();
+
   const [questionDropdown, setQuestionDropdown] = useState(false);
   const [reportDropdown, setReportDropdown] = useState(false);
   const [replyComment, setReplyComment] = useState(false);
@@ -134,7 +137,7 @@ function CommunityContent() {
   return (
     <div className="max-w-1111 bg-white px-3 md:px-5 lg:px-10 py-8 pt-20 md:pt-12 w-full  m-auto">
       <div
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/learn/communities")}
         className="flex items-center mb-4 cursor-pointer text-sm text-gray-300"
       >
         <img src={backArrow} alt="go back" className="mr-4" />
@@ -148,7 +151,9 @@ function CommunityContent() {
           <div className="">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl">
-                {getQuestion?.title ? getQuestion.title : getQuestion?.question}
+                {getQuestion?.title
+                  ? getQuestion?.title
+                  : getQuestion?.question}
               </h3>
               <div className="">
                 <img src={bgBookmark} alt="" />
@@ -164,6 +169,7 @@ function CommunityContent() {
               <QuestionMoreOptionDropDown
                 question={getQuestion}
                 openEditQuestionModal={() => setIsQuestionModalOpen(true)}
+                isPinned={!!state?.isPinned}
               />
 
               {isQuestionModalOpen ? (
@@ -176,7 +182,7 @@ function CommunityContent() {
             </div>
 
             <p className="text-gray-400 text-base leading-6">
-              {getQuestion.question}
+              {getQuestion?.question}
             </p>
           </div>
 
@@ -206,8 +212,8 @@ function CommunityContent() {
                   ) : null}
                 </div>
               </div>
-              {getQuestion.comments &&
-                getQuestion.comments?.map((element) => {
+              {getQuestion?.comments &&
+                getQuestion?.comments?.map((element) => {
                   return (
                     <div className="mt-8" key={element._id}>
                       <div className="flex items-start">

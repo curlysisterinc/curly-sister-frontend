@@ -4,6 +4,7 @@ import { NonAuthRoutes } from "constants";
 import Loader from "components/loader-component/loader";
 import { useAuthContext } from "redux/auth";
 import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
+import { queryClient } from "App";
 import { CommunityQuestionItem } from "../community/CommunityQuestionItem";
 
 export function CommunityQuestionSection() {
@@ -13,18 +14,26 @@ export function CommunityQuestionSection() {
   } = useAuthContext();
 
   const [getQuestions, setGetQuestions] = useState([]);
-  const [saveQst, setSaveQst] = useState(false);
+  const [pinnedQuestions, setPinnedQuestions] = useState([]);
 
   const {
     data: questionsData,
-    isLoading: isQuestionsLoading,
+    isFetching: isQuestionsLoading,
     error: questionsRrror,
     refetch: questionsRefetch,
+    fetchNextPage: fetchNextQuestionsPage,
+    hasNextPage: hasQuestionsNextPage,
   } = useGetAllQuestions();
 
   useEffect(() => {
     if (questionsData) {
-      setGetQuestions(questionsData.data.data);
+      const data = queryClient.getQueryData(["questions"]);
+
+      const currentData = data.pages[0].data.payload.questions;
+      const pinnedData = data.pages[0].data.pinnedQuestions;
+
+      setGetQuestions(currentData);
+      setPinnedQuestions(pinnedData);
     }
   }, [questionsData]);
 

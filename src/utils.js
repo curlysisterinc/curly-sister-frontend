@@ -33,9 +33,14 @@ export const toggleFixedAppLayout = () => {
 };
 
 export const getNextPageParam = (currentPage) => {
-  const totalPage = currentPage.data.totalStylistCount / currentPage.data.size;
+  const totalCountKey = Object.keys(currentPage.data).find(
+    (item) =>
+      item.toLowerCase().includes("total") &&
+      item.toLowerCase().includes("count")
+  );
+  const totalPage = currentPage.data[totalCountKey] / currentPage.data.size;
   const lastPage =
-    currentPage.data.totalStylistCount % currentPage.data.size === 0
+    currentPage.data[totalCountKey] % currentPage.data.size === 0
       ? totalPage
       : Math.floor(totalPage + 1);
   const nextPage =
