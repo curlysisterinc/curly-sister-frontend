@@ -6,6 +6,7 @@ import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
 import moment from "moment";
+import Image from "../../../image";
 
 export function ArticleItem({ article }) {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ export function ArticleItem({ article }) {
       }
       className="bg-white border rounded-2xl border-gray-600 shadow-s01 relative max-h-372 overflow-hidden"
     >
-      <img
+      <Image
         src={article.image}
         alt="curly-1 "
         className="relative w-full h-159 object-cover"

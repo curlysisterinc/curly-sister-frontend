@@ -83,7 +83,11 @@ function ContentRow({
       {typeValue === "all types" &&
         allContent?.map((content) => {
           return (
-            <tr key={content._id} className="bg-white border-b border-gray-600">
+            <tr
+              key={content._id}
+              className="bg-white border-b border-gray-600 cursor-pointer"
+              onClick={() => navigate(`/learn/article/${content._id}`)}
+            >
               <th scope="row">
                 <input
                   type="checkbox"
@@ -94,10 +98,7 @@ function ContentRow({
                   onChange={(e) => onCheck(e, content._id)}
                 />
               </th>
-              <td
-                className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-                onClick={() => navigate(`/learn/article/${content._id}`)}
-              >
+              <td className="px-6 py-4 whitespace-nowrap flex items-center ">
                 <img
                   className="w-12 h-12 rounded-lg"
                   src={content.image ? content.image : colorHairVideo}
@@ -112,19 +113,19 @@ function ContentRow({
                 </div>
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-                {content.type}
+                {content.content_type}
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-                {moment(content.createdAt).format("DD MM YYYY")}
+                {moment(content.createdAt).format("DD MMM YY")}
               </td>{" "}
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-                {content.views}
+                {content.number_of_views}
               </td>{" "}
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
                 {content.likes.length}
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-                {content.saves}
+                {content.number_of_saves}
               </td>
               <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
                 {content.status === "PUBLISHED" ? (

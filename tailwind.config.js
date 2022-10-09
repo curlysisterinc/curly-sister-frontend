@@ -71,6 +71,8 @@ module.exports = {
         "screen-420px": "calc(100vh - 420px)",
         "screen-250px": "calc(100vh - 250px)",
         "screen-170px": "calc(100vh - 170px)",
+        "screen-200px": "calc(100vh - 200px)",
+        "screen-300px": "calc(100vh - 300px)",
         "full-90px": "calc(100% - 90px)",
         "full-62px": "calc(100% - 62px)",
         "full-20px": "calc(100% - 20px)",

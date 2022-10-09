@@ -59,7 +59,12 @@ export function CommunityQuestionSection() {
           {getQuestions.length > 0 ? (
             <div className="flex flex-col">
               {getQuestions.slice(0, 4).map((question) => {
-                return <CommunityQuestionItem question={question} />;
+                return (
+                  <CommunityQuestionItem
+                    question={question}
+                    key={question._id}
+                  />
+                );
               })}
             </div>
           ) : (

@@ -1,21 +1,9 @@
-/* eslint-disable import/order */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import { useNavigate } from "react-router-dom";
-import { NonAuthRoutes } from "constants";
-import admin from "api/admin";
-import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
-import moment from "moment";
-import { ArticleItem } from "./ArticleItem";
 import useGetAllArticles from "hooks/data/admin/useGetAllArticles";
 import Loader from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
+import { ArticleItem } from "./ArticleItem";
 
 function ArticleTab() {
   const [getArticles, setGetArticles] = useState([]);
@@ -46,7 +34,8 @@ function ArticleTab() {
       {articlesData && (
         <>
           <div className="mt-6 flex space-x-6">
-            <div
+            <button
+              type="button"
               onClick={() => setActiveTab("all")}
               className={clsx(
                 activeTab === "all"
@@ -56,8 +45,9 @@ function ArticleTab() {
               )}
             >
               All
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab("popular")}
               className={clsx(
                 activeTab === "popular"
@@ -67,8 +57,9 @@ function ArticleTab() {
               )}
             >
               Popular
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab("recent")}
               className={clsx(
                 activeTab === "recent"
@@ -78,8 +69,9 @@ function ArticleTab() {
               )}
             >
               Recent
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab("featured")}
               className={clsx(
                 activeTab === "featured"
@@ -89,7 +81,7 @@ function ArticleTab() {
               )}
             >
               Featured
-            </div>
+            </button>
           </div>
           <div className="mt-10">
             {activeTab === "all" && (
@@ -97,7 +89,9 @@ function ArticleTab() {
                 {getArticles.length > 0 ? (
                   <div className="grid grid-cols-3 gap-6">
                     {getArticles.map((article) => {
-                      return <ArticleItem article={article} />;
+                      return (
+                        <ArticleItem article={article} key={article._id} />
+                      );
                     })}
                   </div>
                 ) : (

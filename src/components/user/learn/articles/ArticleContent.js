@@ -26,6 +26,7 @@ import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
+import Image from "components/image";
 
 function ArticleContent() {
   const navigate = useNavigate();
@@ -219,8 +220,8 @@ function ArticleContent() {
           </div>
         </div>
         <div className="w-full h-auto mt-6">
-          <img
-            className="w-full h-full object-cover"
+          <Image
+            className="w-full h-full max-h-400 object-cover rounded-2xl"
             src={getArticles?.image}
             alt=""
           />
@@ -278,8 +279,8 @@ function ArticleContent() {
                   ) : null}
                 </div>
               </div>
-              {getComments &&
-                getComments.map((comment) => {
+              {/* {getComments &&
+                getComments?.map((comment) => {
                   return (
                     <div className="mt-8">
                       <div className="flex items-start">
@@ -395,7 +396,7 @@ function ArticleContent() {
                       </div>
                     </div>
                   );
-                })}
+                })} */}
             </div>
 
             <div className="">

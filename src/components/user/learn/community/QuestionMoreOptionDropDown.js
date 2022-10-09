@@ -66,7 +66,7 @@ function QuestionMoreOptionContent({
           <p>Edit</p>
         </button>
       </DropDownItem>
-      {(isUserCreatorOfQuestion || isAdmin) && (
+      {(isUserCreatorOfQuestion || isAdmin) && !isQuestionPinned && (
         <DropDownItem>
           <button
             type="button"

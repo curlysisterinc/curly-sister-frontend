@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import useGetVideoCategory from "hooks/data/admin/useGetVideoCategory";
 import { AuthRoutes } from "../../../../../constants";
 import admin from "../../../../../api/admin";
 import SideBarComponent from "../../../../sidebar";
@@ -29,10 +30,14 @@ function NewVideo() {
     status: "published",
     source: "Super Admin",
   });
-  // const [radioStatus, setRadioStatus] = useState(2);
-  // const radioHandler = (status) => {
-  //   setRadioStatus(status);
-  // };
+  const {
+    isLoading: isVideoCategoryLoading,
+    data: videoCategoryData,
+    isError: videoCategoryError,
+    refetch: videoCategoryRefetch,
+    mutateAsync: videoCategory,
+  } = useGetVideoCategory();
+
   const handleChange = (event) => {
     setVideoInputs({ ...videoInputs, [event.target.name]: event.target.value });
   };
@@ -51,14 +56,17 @@ function NewVideo() {
 
   useEffect(() => {
     const ac = new AbortController();
-    admin.GetVideoCategory().then((result) => {
-      setOptions(result.data.data);
-      setVideoInputs({ ...videoInputs, category: result.data.data[0].name });
-    });
+    if (videoCategoryData) {
+      setOptions(videoCategoryData.data.data);
+      setVideoInputs({
+        ...videoInputs,
+        category: videoCategoryData?.data?.data[0]?.name ?? "",
+      });
+    }
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [videoCategoryData]);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -122,7 +130,6 @@ function NewVideo() {
 
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="dashboard" isLoggedIn />
       <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
         <div className="flex items-start ">
           <div
@@ -308,7 +315,10 @@ function NewVideo() {
       </div>
       {/* new category modal */}
       {openCategoryModal ? (
-        <NewVideoCategory handleClose={handleModalClose} />
+        <NewVideoCategory
+          handleClose={handleModalClose}
+          videoCategories={options}
+        />
       ) : null}
     </div>
   );

@@ -141,8 +141,15 @@ export default {
   },
 
   async CreateVideoCategory(name) {
-    const data = { name };
-    return curlySistersApi.post("/v1/admin/create-video-category", data);
+    return curlySistersApi.post("/v1/admin/create-video-category", { name });
+  },
+  async updateVideoCategory(data) {
+    return curlySistersApi.post("/v1/admin/update-video-category", data);
+  },
+  async DeleteVideoCategory(videoCategoryId) {
+    return curlySistersApi.post("/v1/admin/delete-video-category", {
+      videoCategoryId,
+    });
   },
 
   async GetVideoCategory() {
