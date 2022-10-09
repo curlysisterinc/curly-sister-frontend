@@ -23,7 +23,9 @@ function LoginComponent() {
   useEffect(() => {
     const ac = new AbortController();
     document.title = "Curly sisters • Log In";
-    if (isSignedIn) navigate(NonAuthRoutes.home);
+    if (isSignedIn === true) {
+      navigate(NonAuthRoutes.home);
+    }
     return function cleanup() {
       ac.abort();
     };

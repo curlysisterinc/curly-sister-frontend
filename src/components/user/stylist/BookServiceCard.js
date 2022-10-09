@@ -149,7 +149,7 @@ export function BookServiceCard({
 
           {props.website && (
             <a
-              href={`https://${props.website.replace("https://", "")}`}
+              href={props.website}
               target="_blank"
               rel="noopener noreferrer"
               aria-describedby="users website account"

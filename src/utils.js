@@ -62,3 +62,16 @@ export function getRandomInt({ min = 0, max = 0 }) {
   const maximum = Math.floor(max);
   return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 }
+
+/**
+ *Replaces item in an array.
+ * @param {any[]} array - the array of values whos values you want replaced
+ * @param {number} index - the index of the item to be replacs
+ * @param {any} value - the replacement value you want to insert
+ * @returns {any[]}
+ */
+function replaceItemInArray(array, index, value) {
+  const ret = array.slice(0);
+  ret[index] = value;
+  return ret;
+}

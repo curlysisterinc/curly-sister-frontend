@@ -46,7 +46,7 @@ export default {
       questionId,
       comment,
     };
-    return curlySistersApi.post(`/v1/user/comment-on-question`, data);
+    return curlySistersApi.post(`/v1/user/comment-on-question`, { ...data });
   },
 
   async ReactToVideo(videoId, reaction) {
@@ -78,12 +78,12 @@ export default {
     };
     return curlySistersOnboarding.post(`/v1/user/react-to-article`, data);
   },
-  async ReactToQuestion(articleId, reaction) {
+  async ReactToComment({ commentId, reaction }) {
     const data = {
-      articleId,
+      commentId,
       reaction,
     };
-    return curlySistersOnboarding.post(`/v1/user/react-to-article`, data);
+    return curlySistersApi.post(`/v1/user/react-to-question`, data);
   },
   async CommentOnVideo(videoId, comment) {
     const data = {

@@ -35,7 +35,7 @@ export function ArticleItem({ article }) {
       onKeyPress={(e) =>
         runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(article))
       }
-      className="bg-white border rounded-2xl border-gray-600 shadow-s01 relative h-372 overflow-hidden"
+      className="bg-white border rounded-2xl border-gray-600 shadow-s01 relative max-h-372 overflow-hidden"
     >
       <img
         src={article.image}

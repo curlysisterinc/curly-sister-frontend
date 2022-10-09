@@ -61,21 +61,21 @@ function SideNav() {
       path: NonAuthRoutes.learn,
       permission: "both",
     },
-    {
-      title: "Inbox",
-      path: "/inbox",
-      permission: "loggedin",
-    },
+    // {
+    //   title: "Inbox",
+    //   path: "/inbox",
+    //   permission: "loggedin",
+    // },
     {
       title: "About",
       path: NonAuthRoutes.about,
       permission: "loggedout",
     },
-    {
-      title: "Profile",
-      path: "/profile",
-      permission: "loggedin",
-    },
+    // {
+    //   title: "Profile",
+    //   path: "/profile",
+    //   permission: "loggedin",
+    // },
   ];
 
   const dashboardLink = {
