@@ -9,6 +9,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import useGetVideoCategory from "hooks/data/admin/useGetVideoCategory";
+import useAddVideoToContent from "hooks/data/admin/useAddVideoToContent";
+import { Loadersmall } from "components/loader-component/loader";
 import { AuthRoutes } from "../../../../../constants";
 import admin from "../../../../../api/admin";
 import SideBarComponent from "../../../../sidebar";
@@ -17,19 +19,17 @@ import NewVideoCategory from "./newVideoCategory";
 
 function NewVideo() {
   const navigate = useNavigate();
-  const [draftBtn, setDraftBtn] = useState(false);
   const [options, setOptions] = useState([]);
-  // const [status, setStatus] = useState([]);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
-  // const [status, setStatus] = useState("published");
   const [videoInputs, setVideoInputs] = useState({
     link: "",
     category: "",
     title: "",
     description: "",
-    status: "published",
+    // status: "published",
     source: "Super Admin",
   });
+
   const {
     isLoading: isVideoCategoryLoading,
     data: videoCategoryData,
@@ -37,6 +37,13 @@ function NewVideo() {
     refetch: videoCategoryRefetch,
     mutateAsync: videoCategory,
   } = useGetVideoCategory();
+  const {
+    isLoading: isAddVideoToContentLoading,
+    data: addVideoToContentData,
+    isError: addVideoToContentError,
+    refetch: addVideoToContentRefetch,
+    mutate: addVideoToContent,
+  } = useAddVideoToContent();
 
   const handleChange = (event) => {
     setVideoInputs({ ...videoInputs, [event.target.name]: event.target.value });
@@ -70,62 +77,23 @@ function NewVideo() {
 
   useEffect(() => {
     const ac = new AbortController();
-    document.title = "CurlySisters • Create Video";
-    const isValid =
-      videoInputs.link.trim().length ||
-      videoInputs.category.trim().length ||
-      videoInputs.title.trim().length ||
-      videoInputs.description.trim().length ||
-      videoInputs.source.trim().length;
-
-    if (isValid) {
-      setBtnDisabled(false);
-      setDraftBtn(true);
-    } else {
-      setBtnDisabled(true);
-      setDraftBtn(false);
+    if (addVideoToContentData) {
+      navigate(`/learn/video/${addVideoToContentData.data.data.tag._id}`);
     }
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [addVideoToContentData]);
 
-  const handleSubmit = (e) => {
-    // setVideoInputs(prevState=>{ prevState, status });
+  const disableButton = Object.values(videoInputs).some((item) => item === "");
 
-    e.preventDefault();
-    admin
-      .AddVideoToContent(videoInputs)
-      .then((response) => {
-        if (response.status === 200) {
-          const res = response.data;
-        }
-      })
-      .catch((error) => {
-        if (error) {
-          console.error(error, videoInputs, "error");
-        }
-      });
-  };
-
-  const handleSaveDraft = (e) => {
-    setVideoInputs({ ...videoInputs, status: "unpublished" });
-
-    e.preventDefault();
-
-    admin
-      .AddVideoToContent(videoInputs)
-      .then((response) => {
-        if (response.status === 200) {
-          const res = response.data;
-          console.log(res);
-        }
-      })
-      .catch((error) => {
-        if (error) {
-          console.error(error, videoInputs, "error");
-        }
-      });
+  const handleSubmit = (e, status) => {
+    setVideoInputs({ ...videoInputs, status });
+    // console.log({ options, videoInputs });
+    const newCategory =
+      options.find((item) => item.name === videoInputs.category)?._id ?? "";
+    const data = { ...videoInputs, category: newCategory, status };
+    addVideoToContent(data);
   };
 
   return (
@@ -145,22 +113,32 @@ function NewVideo() {
                 Video
               </div>
               <div className="flex">
-                {draftBtn && (
-                  <button
-                    type="button"
-                    onClick={handleSaveDraft}
-                    className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400"
-                  >
-                    Draft saved
-                  </button>
-                )}
                 <button
                   type="button"
-                  disabled={btnDisabled}
-                  onClick={handleSubmit}
+                  onClick={(e) => handleSubmit(e, "unpublish")}
+                  disabled={disableButton}
+                  className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400 disabled:opacity-40"
+                >
+                  {isAddVideoToContentLoading &&
+                  videoInputs.status === "unpublish" ? (
+                    <Loadersmall />
+                  ) : (
+                    "Save"
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={disableButton}
+                  onClick={(e) => handleSubmit(e, "published")}
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
                 >
-                  Publish
+                  {isAddVideoToContentLoading &&
+                  videoInputs.status === "published" ? (
+                    <Loadersmall />
+                  ) : (
+                    "Publish"
+                  )}
                 </button>
               </div>
             </div>
