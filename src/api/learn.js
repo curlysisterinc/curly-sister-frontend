@@ -117,6 +117,9 @@ export default {
       data
     );
   },
+  async ReplyToComment(data) {
+    return curlySistersApi.post(`/v1/user/reply-to-comment`, data);
+  },
   async GetCommentForQuestion(questionId) {
     const data = {
       questionId,

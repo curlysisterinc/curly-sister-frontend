@@ -10,7 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import useGetVideoCategory from "hooks/data/admin/useGetVideoCategory";
 import useAddVideoToContent from "hooks/data/admin/useAddVideoToContent";
+import useGetExternalVideoData from "hooks/data/utility/useGetExternalVideoData";
 import { Loadersmall } from "components/loader-component/loader";
+import utility from "api/utility";
 import { AuthRoutes } from "../../../../../constants";
 import admin from "../../../../../api/admin";
 import SideBarComponent from "../../../../sidebar";
@@ -44,6 +46,14 @@ function NewVideo() {
     refetch: addVideoToContentRefetch,
     mutate: addVideoToContent,
   } = useAddVideoToContent();
+
+  const {
+    isLoading: isVideoLoading,
+    data: videoData,
+    isError: videoError,
+    refetch: videoRefetch,
+    mutate: getVideoData,
+  } = useGetExternalVideoData();
 
   const handleChange = (event) => {
     setVideoInputs({ ...videoInputs, [event.target.name]: event.target.value });
@@ -85,21 +95,39 @@ function NewVideo() {
     };
   }, [addVideoToContentData]);
 
+  useEffect(() => {
+    const ac = new AbortController();
+    if (videoData) {
+      handleSubmit(videoData);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [videoData]);
+
   const disableButton = Object.values(videoInputs).some((item) => item === "");
 
-  const handleSubmit = (e, status) => {
+  const handleGetVideoDataBeforeSubmit = (e, status) => {
     setVideoInputs({ ...videoInputs, status });
-    // console.log({ options, videoInputs });
+    getVideoData(videoInputs.link);
+  };
+
+  const handleSubmit = (response) => {
     const newCategory =
       options.find((item) => item.name === videoInputs.category)?._id ?? "";
-    const data = { ...videoInputs, category: newCategory, status };
+    const data = {
+      ...videoInputs,
+      category: newCategory,
+      thumbnail: response?.thumbnail_url || "",
+      duration: response?.duration || "",
+    };
     addVideoToContent(data);
   };
 
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
-        <div className="flex items-start ">
+        <div className=" ">
           <div
             className="flex items-center cursor-pointer"
             onClick={() => navigate(-1)}
@@ -107,7 +135,7 @@ function NewVideo() {
             <img className="mr-2" src={backArrow} alt="back arrow" />
             Go Back
           </div>
-          <form autoComplete="off" className="ml-28 w-4/6 ">
+          <form autoComplete="off" className="w-full max-w-640 m-auto">
             <div className=" flex justify-between items-center">
               <div className="text-22 text-gray-400 font-BeatriceSemiBold">
                 Video
@@ -115,11 +143,13 @@ function NewVideo() {
               <div className="flex">
                 <button
                   type="button"
-                  onClick={(e) => handleSubmit(e, "unpublish")}
+                  onClick={(e) =>
+                    handleGetVideoDataBeforeSubmit(e, "unpublish")
+                  }
                   disabled={disableButton}
                   className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400 disabled:opacity-40"
                 >
-                  {isAddVideoToContentLoading &&
+                  {(isAddVideoToContentLoading || isVideoLoading) &&
                   videoInputs.status === "unpublish" ? (
                     <Loadersmall />
                   ) : (
@@ -130,10 +160,12 @@ function NewVideo() {
                 <button
                   type="button"
                   disabled={disableButton}
-                  onClick={(e) => handleSubmit(e, "published")}
+                  onClick={(e) =>
+                    handleGetVideoDataBeforeSubmit(e, "published")
+                  }
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
                 >
-                  {isAddVideoToContentLoading &&
+                  {(isAddVideoToContentLoading || isVideoLoading) &&
                   videoInputs.status === "published" ? (
                     <Loadersmall />
                   ) : (

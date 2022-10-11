@@ -24,6 +24,7 @@ import rightArrow from "../../../../../assets/images/right-arrow.svg";
 import moment from "moment";
 import spencerAvatar from "../../../../../assets/images/spencer.png";
 import admin from "../../../../../api/admin";
+import IndividualDropDown from "./individualDropDown";
 
 function IndividualsRow({
   individualList,
@@ -138,52 +139,11 @@ function IndividualsRow({
               )}
             </td>
             <td className="px-2 py-y relative cursor-pointer ">
-              <div
-                className="hover:bg-gray-500 rounded-full  flex justify-center items-center p-2"
-                onClick={() => handleDropdownOpen(index)}
-              >
-                <img src={kebabIcon} alt="kebab icon" className="h-5 w-5" />
-              </div>
-
-              <div
-                className={clsx(
-                  toggleDropdownStyle(index),
-                  "absolute bg-white rounded-lg shadow-lg w-40 right-10 overflow-hidden text-sm text-gray-400"
-                )}
-              >
-                {individual.status === "active" ? (
-                  <>
-                    <div
-                      onClick={() => handleDeactivateUser(individual._id)}
-                      className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                    >
-                      <img className="mr-3" src={activateIcon} alt="key icon" />
-                      Deactivate
-                    </div>
-                    <div
-                      onClick={() => handleDeleteUser(individual._id)}
-                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                    >
-                      <img className="mr-3" src={trashIcon} alt="key icon" />
-                      Delete
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2">
-                      <img className="mr-3" src={activateIcon} alt="key icon" />
-                      Activate
-                    </div>
-                    <div
-                      onClick={() => handleDeleteUser(individual._id)}
-                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                    >
-                      <img className="mr-3" src={trashIcon} alt="key icon" />
-                      Delete
-                    </div>
-                  </>
-                )}
-              </div>
+              <IndividualDropDown
+                status={individual.active}
+                deteleAction={() => null}
+                publishAction={() => null}
+              />
             </td>
           </tr>
         );

@@ -453,3 +453,21 @@ ul.react-datepicker__time-list {
 .react-datepicker__time-list-item--selected {
   background-color: #590ba9 !important;
 }
+.comment-box {
+  position: relative;
+}
+
+.comment-box:after {
+  content: "";
+  display: table;
+  height: calc(100% - 10px);
+  width: 2px;
+  background: #e2e0e4;
+  position: absolute;
+  top: 45px;
+  left: 20px;
+}
+
+.comment-box:last-child:after {
+  position: unset;
+}

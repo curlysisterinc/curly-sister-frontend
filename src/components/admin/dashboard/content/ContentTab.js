@@ -18,7 +18,7 @@ import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
 import searchIcon from "../../../../assets/images/search-normal-2.svg";
-import ContentRow from "./contentTableRow";
+import ContentTableRow from "./ContentTableRow";
 // import { contents } from "../users/data";
 import admin from "../../../../api/admin";
 import TypesContent from "../../../customdropdown/dashboard/types";
@@ -266,7 +266,7 @@ function ContentTab({ active }) {
                       </tr>
                     </thead>
                     <tbody className="">
-                      <ContentRow
+                      <ContentTableRow
                         getVideos={getVideos}
                         setGetVideos={setGetVideos}
                         getArticles={getArticles}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactPlayer from "react-player/lazy";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "redux/auth";
@@ -9,6 +9,7 @@ import moment from "moment";
 import { ReactComponent as PlayIcon } from "../../../../assets/images/play-btn.svg";
 
 export function VideoItem({ video }) {
+  const playerRef = useRef();
   const navigate = useNavigate();
   const {
     state: { isSignedIn },
@@ -26,6 +27,27 @@ export function VideoItem({ video }) {
     alert("clicked");
     console.log(video);
   };
+
+  const handleVideoLink = (videoLink) => {
+    if (videoLink.startsWith("//s3")) {
+      return `https:${videoLink}`;
+    }
+    return videoLink;
+  };
+
+  const handleVideoThumbnail = (thumbnail) => {
+    if (thumbnail?.startsWith("//s3")) {
+      return `https:${thumbnail}`;
+    }
+    return true;
+  };
+
+  const handleReadyOption = () => {
+    console.log(playerRef.current);
+    console.log(playerRef.current.getDuration());
+    console.log(playerRef.current.references.player());
+  };
+
   return (
     <div
       role="button"
@@ -38,13 +60,15 @@ export function VideoItem({ video }) {
       }
     >
       <ReactPlayer
-        url={video.link}
+        url={handleVideoLink(video.link)}
         onStart={() => handleNavigate(video)}
-        light
+        light={handleVideoThumbnail(video.thumbnail)}
         controls={false}
         width="100%"
         height="100%"
         playIcon={<PlayIcon height={27} width={27} fill="red" />}
+        // onReady={handleReadyOption}
+        ref={playerRef}
       />
 
       <div

@@ -51,7 +51,7 @@ function VideoTab() {
               <div className="cursor-grab carousel overflow-x-hidden">
                 <div className="grid grid-cols-3 gap-6">
                   {getVideos?.map((video) => {
-                    return <VideoItem video={video} />;
+                    return <VideoItem video={video} key={video._id} />;
                   })}
                 </div>
               </div>
