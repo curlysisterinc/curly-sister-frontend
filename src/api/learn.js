@@ -160,9 +160,9 @@ export default {
     return curlySistersApi.post(`/v1/user/save-question`, data);
   },
 
-  async DeleteSavedQuestion(questionId) {
+  async DeleteSavedQuestion(savedQuestionId) {
     const data = {
-      questionId,
+      savedQuestionId,
     };
     return curlySistersApi.post(`/v1/user/delete-saved-question`, data);
   },

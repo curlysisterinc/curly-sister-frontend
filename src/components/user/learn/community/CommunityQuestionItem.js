@@ -52,14 +52,19 @@ export function CommunityQuestionItem({
     return navigate(NonAuthRoutes.login);
   };
 
-  const handleClickBookmarkButton = (e) => {
+  const handleClickBookmarkButton = (e, isSaved) => {
     e.stopPropagation();
-    SaveQuestion();
+    if (!isSaved) {
+      SaveQuestion();
+    } else {
+      deleteSavedQuestion();
+    }
   };
 
   const isLoading = isSavedQuestionLoading || isDeleteSavedQuestionLoading;
 
   const isData = SavedQuestionData || deleteSavedQuestionData;
+
   return (
     <div
       role="button"
@@ -114,13 +119,15 @@ export function CommunityQuestionItem({
             tabIndex={0}
             type="button"
             className=""
-            onClick={handleClickBookmarkButton}
+            onClick={(e) => handleClickBookmarkButton(e, question.is_saved)}
             onKeyPress={(e) =>
-              runFunctionWhenSpaceOrEnterIsClicked(e, handleClickBookmarkButton)
+              runFunctionWhenSpaceOrEnterIsClicked(e, (a) =>
+                handleClickBookmarkButton(a, question.is_saved)
+              )
             }
           >
             {isLoading && <Loadersmall />}
-            {isData && saveQst ? (
+            {!isLoading && question.is_saved ? (
               <img src={bookmarkfilled} alt="bookmark" className="" />
             ) : (
               <img src={bookmark} alt="bookmark" className="" />

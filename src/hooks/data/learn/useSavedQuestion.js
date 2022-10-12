@@ -15,7 +15,7 @@ export default (questionId) => {
       addToast(data.message, {
         appearance: "success",
       });
-      queryClient.invalidateQueries(["questions", questionId]);
+      queryClient.invalidateQueries(["questions"]);
     },
     onError: async (error) => {
       const mainError = error.response.data;
