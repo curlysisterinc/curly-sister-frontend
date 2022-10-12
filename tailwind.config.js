@@ -64,6 +64,8 @@ module.exports = {
         520: "520px",
         "90vh": "90vh",
         "screen-420px": "calc(100vh - 420px)",
+        "screen-250px": "calc(100vh - 250px)",
+        "screen-170px": "calc(100vh - 170px)",
         "full-90px": "calc(100% - 90px)",
         "full-62px": "calc(100% - 62px)",
         "full-20px": "calc(100% - 20px)",
@@ -99,6 +101,8 @@ module.exports = {
       },
       maxHeight: {
         700: "700px",
+        "screen-420px": "calc(100vh - 420px)",
+        "screen-250px": "calc(100vh - 250px)",
       },
       minWidth: {
         30: "30%",

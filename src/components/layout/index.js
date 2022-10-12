@@ -25,7 +25,7 @@ function AppLayout() {
       <SideNav />
       <div className="md:ml-60 xl:ml-80 w-full content" id="content">
         {verifyUsersAccount.display()}
-        <div className="max-w-screen-2xl m-auto">
+        <div className="max-w-screen-2xl m-auto min-h-screen">
           <Outlet />
         </div>
       </div>

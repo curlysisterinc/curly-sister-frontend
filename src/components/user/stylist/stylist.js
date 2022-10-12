@@ -100,7 +100,7 @@ function Stylist() {
 
       setFilteredArr(currentData);
       setStylistList(currentData);
-      setTotalStylistCount(data.pages[0].data.totalSearchCount);
+      // setTotalStylistCount(data.pages[0].data.totalSearchCount);
       const stylistWithCords = currentData.find((item) => item.longitude);
       if (stylistWithCords) {
         setCoord({

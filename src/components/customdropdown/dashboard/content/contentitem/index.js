@@ -24,9 +24,9 @@ function ContentDropDown({
     >
       <button
         type="button"
-        className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
+        className="hover:bg-gray-500 rounded-full flex justify-center items-center p-2"
       >
-        <img src={kebabIcon} alt="kebab icon" />
+        <img src={kebabIcon} alt="kebab icon" className="h-5 w-5" />
       </button>
     </DropDown>
   );

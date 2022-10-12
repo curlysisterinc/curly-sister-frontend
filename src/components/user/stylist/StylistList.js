@@ -78,7 +78,9 @@ function StylistList({
           <div className="flex justify-between items-center pt-32px">
             <p className="text-gray-200 text-sm">
               {totalStylistCount
-                ? `${list.length} stylists out of ${totalStylistCount}`
+                ? `${list.length} ${
+                    list.length > 1 ? "stylists" : "stylist"
+                  }  out of ${totalStylistCount}`
                 : ""}
             </p>
             {!isMapLoadingFailed && (

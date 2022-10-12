@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import onBoarding from "api/onBoarding";
+import { queryClient } from "App";
 import authHandler from "authHandler";
 import { NonAuthRoutes } from "constants";
 import Cookies from "js-cookie";
@@ -20,6 +21,7 @@ export default () => {
       addToast(data.message, {
         appearance: "success",
       });
+      queryClient.fetchQuery(["profile"]);
       authHandler.setUserInfo(data.user);
       // JWT DECODE SETUP
       const accessToken = data.access_token;

@@ -139,10 +139,10 @@ function IndividualsRow({
             </td>
             <td className="px-2 py-y relative cursor-pointer ">
               <div
-                className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
+                className="hover:bg-gray-500 rounded-full  flex justify-center items-center p-2"
                 onClick={() => handleDropdownOpen(index)}
               >
-                <img src={kebabIcon} alt="kebab icon" />
+                <img src={kebabIcon} alt="kebab icon" className="h-5 w-5" />
               </div>
 
               <div

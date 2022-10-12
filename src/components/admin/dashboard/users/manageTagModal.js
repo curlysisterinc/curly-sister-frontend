@@ -156,7 +156,7 @@ function ManageTagModal({ handleClose, setIsTagUpdate, tags }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full z-500"
+      className="fixed top-0 left-0 h-full overflow-y-auto z-200 bg-black-100 w-full flex  justify-end items-center"
     >
       <div
         className="flex items-start justify-end h-full"
@@ -174,6 +174,7 @@ function ManageTagModal({ handleClose, setIsTagUpdate, tags }) {
           <img src={closeModalBtn} alt="close button" />
         </div>
         <div className="bg-white min-h-screen p-5 pt-10 sm:p-10 w-full max-w-480 ">
+          {" "}
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Tags
           </h4>

@@ -4,7 +4,7 @@ import { curlySistersOnboarding, curlySistersApi } from "../config";
 export default {
   async AskQuestion(data) {
     // const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post("/v1/user/ask-question", data);
+    return curlySistersApi.post("/v1/user/ask-question", data);
   },
 
   async GetAllQuestions() {

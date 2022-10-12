@@ -11,6 +11,7 @@ function CertificationFilter({
   setCertifications,
   isCertificationsLoading,
   certificationsData,
+  selectedCertificates,
 }) {
   const [inputSearch, setInputSearch] = useState("");
 
@@ -59,7 +60,17 @@ function CertificationFilter({
   return (
     <div className="flex-grow-0 w-1/2 h-full">
       <div className="pb-2.5">
-        <h3 className="text-gray-300 text-sm">Certifications</h3>
+        <h3 className="text-gray-300 text-sm flex">
+          Certifications
+          {!!selectedCertificates.length && (
+            <p
+              className="relative -top-3 right-0 text-xs rounded-full  border-gray-550 text-white
+bg-purple-500 border w-5 h-5 flex items-start justify-center"
+            >
+              {selectedCertificates.length}
+            </p>
+          )}
+        </h3>
         <input
           className="border border-gray-100 rounded text-sm w-full px-3 py-2"
           type="input"
