@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// import kebabIcon from "../../../../assets/images/kebab.svg";
-// import trashIcon from "../../../../assets/images/trash.svg";
-// import activateIcon from "../../../../assets/images/activate.svg";
-// import editIcon from "../../../../assets/images/edit.svg";
-// import publishIcon from "../../../../assets/images/publish.svg";
 import admin from "../../../../api/admin";
 import { ContentBody } from "./ContentItem";
 

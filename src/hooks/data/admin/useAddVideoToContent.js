@@ -19,11 +19,10 @@ export default () => {
       queryClient.invalidateQueries(["contents"]);
     },
     onError: async (error) => {
-      const mainError = error.response.data;
-
-      // addToast(mainError.message, {
-      //   appearance: "error",
-      // });
+      const mainError = error?.response?.data || error?.response?.data?.message;
+      addToast(mainError?.message?.message || "error", {
+        appearance: "error",
+      });
     },
   });
 };

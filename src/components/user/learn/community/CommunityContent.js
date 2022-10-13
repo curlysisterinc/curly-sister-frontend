@@ -9,6 +9,9 @@ import useGetCommentForQuestion from "hooks/data/learn/useGetCommentForQuestion"
 import Loader from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import moment from "moment";
+import { queryClient } from "App";
+import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
+import { getRandomInt } from "utils";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
 
 import bgBookmark from "../../../../assets/images/bg-bookmark.svg";
@@ -22,6 +25,7 @@ import backArrow from "../../../../assets/images/back-arrow.svg";
 import QuestionMoreOptionDropDown from "./QuestionMoreOptionDropDown";
 import AskQuestionModal from "./AddQuestionModal";
 import CommunityCommentSection from "./CommunityCommentSection";
+import { CommunityQuestionItem } from "./CommunityQuestionItem";
 
 function CommunityContent() {
   const navigate = useNavigate();
@@ -30,6 +34,7 @@ function CommunityContent() {
   const { state } = useLocation();
 
   const [getQuestion, setGetQuestion] = useState({});
+  const [otherQuestions, setOtherQuestions] = useState(null);
 
   const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
 
@@ -50,6 +55,32 @@ function CommunityContent() {
       ac.abort();
     };
   }, [questionData]);
+
+  const {
+    data: questionsData,
+    isFetching: isQuestionsLoading,
+    error: questionsRrror,
+    refetch: questionsRefetch,
+    fetchNextPage: fetchNextQuestionsPage,
+    hasNextPage: hasQuestionsNextPage,
+  } = useGetAllQuestions();
+
+  useEffect(() => {
+    if (questionsData) {
+      const Allquestions = [];
+      queryClient
+        .getQueryData(["questions"])
+        .pages.forEach((item) =>
+          Allquestions.push(...item.data.payload.questions)
+        );
+      const randomNumber = getRandomInt({
+        min: 0,
+        max: Allquestions.length - 1,
+      });
+
+      setOtherQuestions(Allquestions[randomNumber]);
+    }
+  }, [questionsData]);
 
   return (
     <div className="max-w-1111 bg-white px-3 md:px-5 lg:px-10 py-8 pt-20 md:pt-12 w-full  m-auto">
@@ -109,51 +140,12 @@ function CommunityContent() {
           <CommunityCommentSection />
 
           <div className="mt-20">
-            <p>Related questions</p>
-            <button
-              type="button"
-              onClick={() => navigate(AuthRoutes.communityContent)}
-              className="flex mb-5 align-center justify-between border-gray-100 rounded-md shadow p-4"
-            >
-              <div className="flex">
-                <img src={serena} alt="serena" />
-                <div className="flex flex-col ml-4">
-                  <h4 className="text-base font-semibold mb-2 text-gray-400">
-                    Help, my hair is breaking.
-                  </h4>
-                  <div className="flex">
-                    <h4 className="text-sm text-gray-400 font-normal">
-                      Serena Williams
-                    </h4>
-                    <p className="ml-2 text-gray-200 font-normal text-sm">
-                      24 comments · 05 Dec 2021
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <div className="-space-x-6 mr-4">
-                  <img
-                    src={pix7}
-                    alt="pix7"
-                    className="relative z-10 inline object-cover w-10 h-10"
-                  />
-                  <img
-                    src={pix8}
-                    alt="pix8"
-                    className="relative z-20 inline object-cover w-10 h-10"
-                  />
-                  <img
-                    src={pix1}
-                    alt="pix1"
-                    className="relative z-30 inline object-cover w-10 h-10"
-                  />
-                </div>
-                <div className="">
-                  <img src={bookmark} alt="bookmark" className="" />
-                </div>
-              </div>
-            </button>
+            <p className="flex mb-5 ">
+              Other questions you may be interested in
+            </p>
+            {otherQuestions && (
+              <CommunityQuestionItem question={otherQuestions} />
+            )}
           </div>
         </div>
       )}

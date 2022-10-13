@@ -113,11 +113,8 @@ function NewVideo() {
   };
 
   const handleSubmit = (response) => {
-    const newCategory =
-      options.find((item) => item.name === videoInputs.category)?._id ?? "";
     const data = {
       ...videoInputs,
-      category: newCategory,
       thumbnail: response?.thumbnail_url || "",
       duration: response?.duration || "",
     };
@@ -128,13 +125,14 @@ function NewVideo() {
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
         <div className=" ">
-          <div
+          <button
+            type="button"
             className="flex items-center cursor-pointer"
             onClick={() => navigate(-1)}
           >
             <img className="mr-2" src={backArrow} alt="back arrow" />
             Go Back
-          </div>
+          </button>
           <form autoComplete="off" className="w-full max-w-640 m-auto">
             <div className=" flex justify-between items-center">
               <div className="text-22 text-gray-400 font-BeatriceSemiBold">

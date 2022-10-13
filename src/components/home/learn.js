@@ -4,6 +4,7 @@ import videoGirl from "../../assets/images/video-girl.png";
 import playBtn from "../../assets/images/play-btn.svg";
 import { NonAuthRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import Image from "components/image";
 
 function LearnSection() {
   const navigate = useNavigate();
@@ -11,9 +12,7 @@ function LearnSection() {
   return (
     <div className="relative w-full h-520 ">
       <img
-        className="w-full object-cover h-full
-
-        "
+        className="w-full object-cover h-full"
         src={videoGirl}
         alt="video clip"
         loading="lazy"

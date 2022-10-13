@@ -19,7 +19,7 @@ export default {
   },
 
   async GetOneQuestion(questionId) {
-    return curlySistersOnboarding.get(`/v1/user/get-question/${questionId}`);
+    return curlySistersApi.get(`/v1/user/get-question/${questionId}`);
   },
   async GetOneArticle(articleId) {
     return curlySistersOnboarding.get(`/v1/user/get-article/${articleId}`);

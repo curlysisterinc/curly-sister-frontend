@@ -65,6 +65,21 @@ export function CommunityQuestionItem({
 
   const isData = SavedQuestionData || deleteSavedQuestionData;
 
+  const handleReturnUsersImage = (userQuestion, ownerOfQuestion) => {
+    const user =
+      typeof userQuestion.created_by === "string"
+        ? ownerOfQuestion
+        : userQuestion.created_by;
+    const firstNameLetter = user?.firstName[0].toUpperCase();
+    const lastNameLetter = user?.lastName[0].toUpperCase();
+    const photo = user?.profile_pic || "";
+    return photo ? (
+      <img src={photo} alt="user profile avatar" />
+    ) : (
+      `${firstNameLetter}${lastNameLetter}`
+    );
+  };
+
   return (
     <div
       role="button"
@@ -78,7 +93,9 @@ export function CommunityQuestionItem({
       } `}
     >
       <div className="flex">
-        <img src={serena} alt="serena" />
+        <div className="h-14 w-14 rounded-full flex justify-center items-center bg-purple-700 text-white text-22">
+          {handleReturnUsersImage(question, owner)}
+        </div>
         <div className="flex flex-col ml-4">
           <h4 className="text-base font-semibold mb-2 text-gray-400 flex">
             {question?.title ?? question?.question}{" "}
@@ -97,23 +114,6 @@ export function CommunityQuestionItem({
         </div>
       </div>
       <div className="flex items-center">
-        <div className="-space-x-6 mr-4">
-          <img
-            src={pix1}
-            alt="pix1"
-            className="relative z-10 inline object-cover w-10 h-10"
-          />
-          <img
-            src={pix2}
-            alt="pix2"
-            className="relative z-20 inline object-cover w-10 h-10"
-          />
-          <img
-            src={pix3}
-            alt="pix3"
-            className="relative z-30 inline object-cover w-10 h-10"
-          />
-        </div>
         {isSignedIn && (
           <button
             tabIndex={0}
@@ -126,12 +126,17 @@ export function CommunityQuestionItem({
               )
             }
           >
-            {isLoading && <Loadersmall />}
-            {!isLoading && question.is_saved ? (
-              <img src={bookmarkfilled} alt="bookmark" className="" />
-            ) : (
-              <img src={bookmark} alt="bookmark" className="" />
+            {isLoading && (
+              <div className="h-8 w-8">
+                <Loadersmall />
+              </div>
             )}
+            {!isLoading &&
+              (question.is_saved ? (
+                <img src={bookmarkfilled} alt="bookmark" className="" />
+              ) : (
+                <img src={bookmark} alt="bookmark" className="" />
+              ))}
           </button>
         )}
       </div>

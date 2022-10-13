@@ -6,7 +6,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 export function Image({ ...image }) {
   return (
     <LazyLoadImage
-      wrapperClassName="w-full"
+      wrapperClassName="w-full relative"
       alt={image.alt}
       effect="blur"
       src={image.src}

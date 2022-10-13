@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "components/image";
 import course from "../../../../assets/images/course-bg.png";
 import more from "../../../../assets/images/there's-more.png";
 import FooterComponent from "../../../footer/footer";
@@ -31,11 +32,11 @@ function AllTab() {
                   Visit blog
                 </a>
               </div>
-              <div className="w-1/2 absolute right-0 h-full">
-                <img
+              <div className="w-5/5 absolute  h-full bottom-5 top-4 -right-10">
+                <Image
                   src={more}
                   alt="shocked woman"
-                  className="w-full object-cover h-full "
+                  className="w-full object-cover h-full top-0 z-200"
                 />
               </div>
             </div>
@@ -57,8 +58,8 @@ function AllTab() {
                   View courses
                 </a>
               </div>
-              <div className="w-1/2 absolute right-0 h-full ">
-                <img
+              <div className="w-5/5 absolute  h-full bottom-5 top-4 -right-10">
+                <Image
                   src={course}
                   alt="shocked woman"
                   className="w-full object-cover h-full "

@@ -136,7 +136,7 @@ function ArticleContent() {
     <>
       <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full max-w-1111 m-auto">
         <div
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/dashboard/content")}
           className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
         >
           <img src={backArrow} alt="go back" className="mr-4" />
@@ -219,7 +219,7 @@ function ArticleContent() {
             </div>
           </div>
         </div>
-        <div className="w-full h-auto mt-6">
+        <div className="w-full h-auto mt-6 rounded-2xl overflow-hidden">
           <Image
             className="w-full h-full max-h-400 object-cover rounded-2xl"
             src={getArticles?.image}
@@ -227,7 +227,8 @@ function ArticleContent() {
           />
         </div>
         <div className="mt-8 text-gray-400">
-          <p className="text-gray-400 text-base leading-6 mb-6">
+          {getArticles?.content}
+          {/* <p className="text-gray-400 text-base leading-6 mb-6">
             This is a sample article posted on the platform. It sounded an
             excellent plan, no doubt, and very neatly and simply arranged; the
             only difficulty was, that she had not the smallest idea how to set
@@ -253,7 +254,7 @@ function ArticleContent() {
             hurry to get hold of it; then Alice, thinking it was very like
             having a game of play with a cart-horse.
           </p>
-          <hr className="w-full border border-gray-250 my-10" />
+          <hr className="w-full border border-gray-250 my-10" /> */}
           <div className="flex justify-between space-x-8 items-start">
             <div className="w-8/12">
               <div className="flex items-center">
@@ -268,7 +269,7 @@ function ArticleContent() {
                     placeholder="Add a comment"
                     className="ml-5 w-full border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
                   />
-                  {commentValue.length ? (
+                  {/* {commentValue.length ? (
                     <button
                       type="button"
                       onClick={handleSubmitComment}
@@ -276,7 +277,7 @@ function ArticleContent() {
                     >
                       post
                     </button>
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
               {/* {getComments &&

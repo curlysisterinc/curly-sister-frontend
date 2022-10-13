@@ -19,7 +19,7 @@ export function ContentItem({
     <tr
       key={content._id}
       className="bg-white border-b border-gray-600 cursor-pointer"
-      onClick={() => navigate(`/learn/article/${content._id}`)}
+      onClick={() => navigate(`/learn/${content.content_type}/${content._id}`)}
     >
       <th scope="row">
         <input

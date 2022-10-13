@@ -57,11 +57,12 @@ function CommunityTab() {
 
   const {
     data: questionsData,
-    isFetching: isQuestionsLoading,
+    isFetching: isQuestionsFetching,
     error: questionsRrror,
     refetch: questionsRefetch,
     fetchNextPage: fetchNextQuestionsPage,
     hasNextPage: hasQuestionsNextPage,
+    isLoading: isQuestionsLoading,
   } = useGetAllQuestions();
 
   useEffect(() => {
@@ -71,8 +72,6 @@ function CommunityTab() {
         .map((item) => item.data.payload.questions)
         .flatMap((a) => a);
       const pinnedData = data.pages[0].data.pinnedQuestions;
-      console.log({ pinnedData });
-      console.log({ currentData });
       setGetQuestions(currentData);
       setPinnedQuestions(pinnedData);
     }

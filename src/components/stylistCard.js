@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "redux/auth";
 import avatar2 from "../assets/images/gradient-avatar.svg";
 import galleryBanner from "../assets/images/stylist-profile-banner.png";
+import Image from "./image";
 
 export default function CommonCard({ stylist }) {
   const navigate = useNavigate();
@@ -33,22 +34,22 @@ export default function CommonCard({ stylist }) {
       </div>
       <div className="w-full h-40">
         {stylist?.gallery?.length > 0 ? (
-          <img
+          <Image
             src={stylist?.gallery[0]}
             className="w-full h-40 object-cover "
             alt=""
           />
         ) : (
-          <img
+          <Image
             src={galleryBanner}
-            className="w-full h-40 absolute object-none"
+            className="w-full h-40 absolute object-none -top-4"
             alt=""
           />
         )}
       </div>
       <div className="bg-white px-5 py-3 relative">
         <div className="flex justify-between items-start">
-          <img
+          <Image
             className="-mt-14  w-20 h-20 rounded-full object-cover"
             src={stylist?.photo ? stylist.photo : avatar2}
             alt=""

@@ -153,7 +153,7 @@ function VideoContent() {
         Go Back
       </div>
 
-      <div className="w-full h-auto">
+      <div className="w-full h-auto rounded-2xl overflow-hidden">
         <div>
           <ReactPlayer
             controls

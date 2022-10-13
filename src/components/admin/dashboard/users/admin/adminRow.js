@@ -27,10 +27,9 @@ function AdminRow({
   setSelectedId,
   profile,
 }) {
-  // const {
-  //   state: { _id, role: userRole },
-  // } = useAuthContext();
-  const { _id, role: userRole } = profile;
+  const {
+    state: { _id, role: userRole },
+  } = useAuthContext();
   const [currentId, setCurrentId] = useState("");
   console.log({ profile });
   const {

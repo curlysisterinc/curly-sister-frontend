@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-shadow */
@@ -10,6 +11,7 @@ import { Editable, withReact, useSlate, Slate } from "slate-react";
 import { Editor, Transforms, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import isHotkey from "is-hotkey";
+import { jsx } from "slate-hyperscript";
 import { Button, Icon, Toolbar } from "./slateComponents";
 
 const HOTKEYS = {
@@ -20,11 +22,41 @@ const HOTKEYS = {
 };
 
 const LIST_TYPES = ["numbered-list", "bulleted-list"];
+const ELEMENT_TAGS = {
+  A: (el) => ({ type: "link", url: el.getAttribute("href") }),
+  BLOCKQUOTE: () => ({ type: "quote" }),
+  H1: () => ({ type: "heading-one" }),
+  H2: () => ({ type: "heading-two" }),
+  H3: () => ({ type: "heading-three" }),
+  H4: () => ({ type: "heading-four" }),
+  H5: () => ({ type: "heading-five" }),
+  H6: () => ({ type: "heading-six" }),
+  IMG: (el) => ({ type: "image", url: el.getAttribute("src") }),
+  LI: () => ({ type: "list-item" }),
+  OL: () => ({ type: "numbered-list" }),
+  P: () => ({ type: "paragraph" }),
+  PRE: () => ({ type: "code" }),
+  UL: () => ({ type: "bulleted-list" }),
+};
+
+// COMPAT: `B` is omitted here because Google Docs uses `<b>` in weird ways.
+const TEXT_TAGS = {
+  CODE: () => ({ code: true }),
+  DEL: () => ({ strikethrough: true }),
+  EM: () => ({ italic: true }),
+  I: () => ({ italic: true }),
+  S: () => ({ strikethrough: true }),
+  STRONG: () => ({ bold: true }),
+  U: () => ({ underline: true }),
+};
 
 function SlateContent({ value, onChange }) {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
-  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const editor = useMemo(
+    () => withHtml(withHistory(withReact(createEditor()))),
+    []
+  );
 
   return (
     <div className="border border-gray-800 rounded-xl mt-3">
@@ -62,6 +94,77 @@ function SlateContent({ value, onChange }) {
   );
 }
 
+const withHtml = (editor) => {
+  const { insertData, isInline, isVoid } = editor;
+
+  editor.isInline = (element) => {
+    return element.type === "link" ? true : isInline(element);
+  };
+
+  editor.isVoid = (element) => {
+    return element.type === "image" ? true : isVoid(element);
+  };
+
+  editor.insertData = (data) => {
+    const html = data.getData("text/html");
+
+    if (html) {
+      const parsed = new DOMParser().parseFromString(html, "text/html");
+      const fragment = deserialize(parsed.body);
+      Transforms.insertFragment(editor, fragment);
+      return;
+    }
+
+    insertData(data);
+  };
+
+  return editor;
+};
+
+export const deserialize = (el) => {
+  if (el.nodeType === 3) {
+    return el.textContent;
+  }
+  if (el.nodeType !== 1) {
+    return null;
+  }
+  if (el.nodeName === "BR") {
+    return "\n";
+  }
+
+  const { nodeName } = el;
+  let parent = el;
+
+  if (
+    nodeName === "PRE" &&
+    el.childNodes[0] &&
+    el.childNodes[0].nodeName === "CODE"
+  ) {
+    parent = el.childNodes[0];
+  }
+  let children = Array.from(parent.childNodes).map(deserialize).flat();
+
+  if (children.length === 0) {
+    children = [{ text: "" }];
+  }
+
+  if (el.nodeName === "BODY") {
+    return jsx("fragment", {}, children);
+  }
+
+  if (ELEMENT_TAGS[nodeName]) {
+    const attrs = ELEMENT_TAGS[nodeName](el);
+    return jsx("element", attrs, children);
+  }
+
+  if (TEXT_TAGS[nodeName]) {
+    const attrs = TEXT_TAGS[nodeName](el);
+    return children.map((child) => jsx("text", attrs, child));
+  }
+
+  return children;
+};
+
 const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(editor, format);
   const isList = LIST_TYPES.includes(format);
@@ -83,7 +186,7 @@ const toggleBlock = (editor, format) => {
 
 const toggleMark = (editor, format) => {
   const isActive = isMarkActive(editor, format);
-
+  Editor.addMark(editor, format, true);
   if (isActive) {
     Editor.removeMark(editor, format);
   } else {
@@ -95,8 +198,7 @@ const isBlockActive = (editor, format) => {
   const [match] = Editor.nodes(editor, {
     match: (n) => n.type === format,
   });
-
-  return !!match;
+  return match;
 };
 
 const isMarkActive = (editor, format) => {
@@ -114,8 +216,22 @@ const Element = ({ attributes, children, element, isFocused }) => {
       return <h1 {...attributes}>{children}</h1>;
     case "heading-two":
       return <h2 {...attributes}>{children}</h2>;
+    case "heading-three":
+      return <h3 {...attributes}>{children}</h3>;
+    case "heading-four":
+      return <h4 {...attributes}>{children}</h4>;
+    case "heading-five":
+      return <h5 {...attributes}>{children}</h5>;
+    case "heading-six":
+      return <h6 {...attributes}>{children}</h6>;
     case "list-item":
       return <li {...attributes}>{children}</li>;
+    case "link":
+      return (
+        <a href={element.url} {...attributes}>
+          {children}
+        </a>
+      );
     case "numbered-list":
       return <ol {...attributes}>{children}</ol>;
     case "image": {
@@ -150,7 +266,9 @@ const Leaf = ({ attributes, children, leaf }) => {
   if (leaf.underline) {
     children = <u>{children}</u>;
   }
-
+  if (leaf.strikethrough) {
+    children = <del>{children}</del>;
+  }
   return <span {...attributes}>{children}</span>;
 };
 
