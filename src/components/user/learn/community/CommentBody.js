@@ -44,8 +44,8 @@ export default function CommentBody({ comments, setComments, isReplay }) {
     error: replyToCommentDataError,
   } = useReplyToComment(token);
 
-  const handleQuestionReaction = (id, reaction) => {
-    reactToComment({ commentId: id, reaction });
+  const handleQuestionReaction = (id, reaction, isCommentReply) => {
+    reactToComment({ commentId: id, reaction, isCommentReply });
   };
 
   const displayLikeIcon = useCallback(
@@ -167,7 +167,9 @@ export function CommentItem({
               <button
                 type="button"
                 className="mr-2 items-center"
-                onClick={() => handleQuestionReaction(item._id, "like")}
+                onClick={() =>
+                  handleQuestionReaction(item._id, "like", isReply)
+                }
               >
                 {displayLikeIcon(item)}
               </button>
@@ -177,7 +179,9 @@ export function CommentItem({
               <button
                 type="button"
                 className="mr-2"
-                onClick={() => handleQuestionReaction(item._id, "unlikes")}
+                onClick={() =>
+                  handleQuestionReaction(item._id, "unlikes", isReply)
+                }
               >
                 {displayDisLikeIcon(item)}
               </button>

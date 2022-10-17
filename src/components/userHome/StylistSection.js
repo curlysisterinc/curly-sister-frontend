@@ -49,7 +49,7 @@ export function StylistSection() {
       </div>
       {isFetching && <Loadersmall />}
       {/* stylists */}
-      <div className="grid grid-cols-2 gap-8">
+      <div className="flex flex-col md:grid md:grid-cols-2 gap-8">
         {stylistList.length > 0 &&
           stylistList.map((item) => {
             return <CommonCard key={item._id} stylist={item} />;

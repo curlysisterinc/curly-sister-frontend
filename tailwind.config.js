@@ -112,6 +112,9 @@ module.exports = {
         "screen-250px": "calc(100vh - 250px)",
         "screen-300px": "calc(100vh - 300px)",
       },
+      minHeight: {
+        200: "200px",
+      },
       minWidth: {
         30: "30%",
       },

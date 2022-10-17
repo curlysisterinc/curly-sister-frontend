@@ -6,12 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { Node } from "slate";
 import { runFunctionWhenSpaceOrEnterIsClicked, serializeToHTML } from "utils";
 // import Html from "slate-html-serializer";
+import {
+  EditorState,
+  ContentState,
+  convertToRaw,
+  convertFromRaw,
+} from "draft-js";
+import { convertToHTML } from "draft-convert";
 import admin from "../../../../../api/admin";
 // import { AuthRoutes } from "../../../../../constants";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import uploadFile from "../../../../../assets/images/upload-file.png";
 import SlateContent from "../slateContent";
-import ContentEditor from "../ContentEditor";
+import { DraftContentEditor } from "../DraftContentEditor";
 
 function NewArticle() {
   const navigate = useNavigate();
@@ -62,7 +69,7 @@ function NewArticle() {
       addArticleToContent({
         ...inputValues,
         file: photoUploadData.data.file,
-        content: serializeToHTML(JSON.parse(content)),
+        content,
         // content,
       });
     }
@@ -92,7 +99,10 @@ function NewArticle() {
 
   const handlePublishArticle = (e, status) => {
     e.preventDefault();
-    // console.log(content);
+
+    const newContent = JSON.parse(localStorage.getItem("content"));
+    const convertedHtmlText = convertToHTML(convertFromRaw(newContent));
+    setContent(convertedHtmlText);
     setInputValues({ ...inputValues, status });
     const formData = new FormData();
     formData.append("file", inputValues.file);
@@ -128,7 +138,7 @@ function NewArticle() {
   }, [image]);
 
   return (
-    <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
+    <div className="max-w-screen-2xl w-full flex m-auto">
       <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
         <div className=" ">
           <button
@@ -229,7 +239,7 @@ function NewArticle() {
                           setImage(null);
                         }
                       }}
-                      className="opacity-0 absolute h-16 w-120  border cursor-pointer"
+                      className="opacity-0 absolute h-16 w-120  border cursor-pointer z-50"
                     />
                     {filePreview == null ? (
                       <img src={uploadFile} className="h-16 w-120" alt="" />
@@ -258,15 +268,7 @@ function NewArticle() {
 
                 <div className="mt-5">
                   <p>Content</p>
-                  {content.length && (
-                    <>
-                      <SlateContent
-                        value={content}
-                        onChange={handleSlateChange}
-                      />
-                      {/* <ContentEditor /> */}
-                    </>
-                  )}
+                  <DraftContentEditor />
                 </div>
               </div>
             </div>

@@ -44,8 +44,8 @@ function UserHome({ upcomingBookings }) {
   };
 
   return (
-    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
-      <div className="flex flex-col w-full lg:flex-row justify-between items-center">
+    <div className="bg-white px-3 md:px-10 py-8 pt-20 md:pt-12 w-full">
+      <div className="flex flex-col w-full lg:flex-row justify-between items-center gap-2">
         <div className="flex justify-start items-center ">
           <img className="mr-3" src={profileDp} alt="profile pix" />
           <div className="">
@@ -80,11 +80,11 @@ function UserHome({ upcomingBookings }) {
       </div>
 
       {/* flexed-content */}
-      <div className="grid grid-cols-12 gap-10  mt-10 w-full ">
+      <div className="  md:grid md:grid-cols-12 gap-10 mt-5 md:mt-10 w-full ">
         {/* left-content */}
         <div className="col-span-8">
-          <div className="bg-orange-300 border border-orange-100 rounded-lg p-6">
-            <div className="w-full flex justify-between items-center mb-5">
+          <div className="bg-orange-300 border border-orange-100 rounded-lg p-3 md:p-6">
+            <div className="w-full flex flex-col md:flex-row justify-between items-center gap-3 mb-0 md:mb-5">
               <p className="text-gray-400 text-base">Your upcoming bookings</p>
               <Link
                 to="/all-bookings"

@@ -471,3 +471,23 @@ ul.react-datepicker__time-list {
 .comment-box:last-child:after {
   position: unset;
 }
+
+.rdw-option-wrapper {
+  border: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  padding: 2px !important;
+}
+
+.rdw-option-active {
+  background-color: #e2e0e4 !important;
+}
+
+.blog-preview p {
+  margin-bottom: 24px;
+}
+.blog-preview {
+  max-width: 678px;
+  margin: auto;
+  margin-bottom: 48px;
+}
