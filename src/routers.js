@@ -57,7 +57,7 @@ const IndividualTab = lazy(() =>
   import("./components/admin/dashboard/users/individuals/individuals")
 );
 const ContentTab = lazy(() =>
-  import("./components/admin/dashboard/content/contentTable")
+  import("./components/admin/dashboard/content/ContentTab")
 );
 const DataTab = lazy(() => import("./components/admin/dashboard/data/data"));
 const EditVideo = lazy(() =>

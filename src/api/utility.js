@@ -7,4 +7,8 @@ export default {
     });
     return res.data;
   },
+  async GetExternalVideoData(link) {
+    const res = await fetch(`https://noembed.com/embed?url=${link}`);
+    return res.json();
+  },
 };

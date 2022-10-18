@@ -16,7 +16,9 @@ export default {
       password,
       firstName,
       lastName,
+      callbackUrl: `${window.location.origin}/verify-user`,
     };
+
     const stringifiedData = JSON.stringify(data);
     return curlySistersOnboarding.post("/api/users/register", stringifiedData);
   },

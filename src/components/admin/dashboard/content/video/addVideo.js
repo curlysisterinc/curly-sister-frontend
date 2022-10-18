@@ -8,6 +8,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import useGetVideoCategory from "hooks/data/admin/useGetVideoCategory";
+import useAddVideoToContent from "hooks/data/admin/useAddVideoToContent";
+import useGetExternalVideoData from "hooks/data/utility/useGetExternalVideoData";
+import { Loadersmall } from "components/loader-component/loader";
+import utility from "api/utility";
 import { AuthRoutes } from "../../../../../constants";
 import admin from "../../../../../api/admin";
 import SideBarComponent from "../../../../sidebar";
@@ -16,23 +21,40 @@ import NewVideoCategory from "./newVideoCategory";
 
 function NewVideo() {
   const navigate = useNavigate();
-  const [draftBtn, setDraftBtn] = useState(false);
   const [options, setOptions] = useState([]);
-  // const [status, setStatus] = useState([]);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
-  // const [status, setStatus] = useState("published");
   const [videoInputs, setVideoInputs] = useState({
     link: "",
     category: "",
     title: "",
     description: "",
-    status: "published",
+    // status: "published",
     source: "Super Admin",
   });
-  // const [radioStatus, setRadioStatus] = useState(2);
-  // const radioHandler = (status) => {
-  //   setRadioStatus(status);
-  // };
+
+  const {
+    isLoading: isVideoCategoryLoading,
+    data: videoCategoryData,
+    isError: videoCategoryError,
+    refetch: videoCategoryRefetch,
+    mutateAsync: videoCategory,
+  } = useGetVideoCategory();
+  const {
+    isLoading: isAddVideoToContentLoading,
+    data: addVideoToContentData,
+    isError: addVideoToContentError,
+    refetch: addVideoToContentRefetch,
+    mutate: addVideoToContent,
+  } = useAddVideoToContent();
+
+  const {
+    isLoading: isVideoLoading,
+    data: videoData,
+    isError: videoError,
+    refetch: videoRefetch,
+    mutate: getVideoData,
+  } = useGetExternalVideoData();
+
   const handleChange = (event) => {
     setVideoInputs({ ...videoInputs, [event.target.name]: event.target.value });
   };
@@ -51,109 +73,102 @@ function NewVideo() {
 
   useEffect(() => {
     const ac = new AbortController();
-    admin.GetVideoCategory().then((result) => {
-      setOptions(result.data.data);
-      setVideoInputs({ ...videoInputs, category: result.data.data[0].name });
-    });
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ac = new AbortController();
-    document.title = "CurlySisters • Create Video";
-    const isValid =
-      videoInputs.link.trim().length ||
-      videoInputs.category.trim().length ||
-      videoInputs.title.trim().length ||
-      videoInputs.description.trim().length ||
-      videoInputs.source.trim().length;
-
-    if (isValid) {
-      setBtnDisabled(false);
-      setDraftBtn(true);
-    } else {
-      setBtnDisabled(true);
-      setDraftBtn(false);
+    if (videoCategoryData) {
+      setOptions(videoCategoryData.data.data);
+      setVideoInputs({
+        ...videoInputs,
+        category: videoCategoryData?.data?.data[0]?.name ?? "",
+      });
     }
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [videoCategoryData]);
 
-  const handleSubmit = (e) => {
-    // setVideoInputs(prevState=>{ prevState, status });
+  useEffect(() => {
+    const ac = new AbortController();
+    if (addVideoToContentData) {
+      navigate(`/learn/video/${addVideoToContentData.data.data.tag._id}`);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [addVideoToContentData]);
 
-    e.preventDefault();
-    admin
-      .AddVideoToContent(videoInputs)
-      .then((response) => {
-        if (response.status === 200) {
-          const res = response.data;
-        }
-      })
-      .catch((error) => {
-        if (error) {
-          console.error(error, videoInputs, "error");
-        }
-      });
+  useEffect(() => {
+    const ac = new AbortController();
+    if (videoData) {
+      handleSubmit(videoData);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [videoData]);
+
+  const disableButton = Object.values(videoInputs).some((item) => item === "");
+
+  const handleGetVideoDataBeforeSubmit = (e, status) => {
+    setVideoInputs({ ...videoInputs, status });
+    getVideoData(videoInputs.link);
   };
 
-  const handleSaveDraft = (e) => {
-    setVideoInputs({ ...videoInputs, status: "unpublished" });
-
-    e.preventDefault();
-
-    admin
-      .AddVideoToContent(videoInputs)
-      .then((response) => {
-        if (response.status === 200) {
-          const res = response.data;
-          console.log(res);
-        }
-      })
-      .catch((error) => {
-        if (error) {
-          console.error(error, videoInputs, "error");
-        }
-      });
+  const handleSubmit = (response) => {
+    const data = {
+      ...videoInputs,
+      thumbnail: response?.thumbnail_url || "",
+      duration: response?.duration || "",
+    };
+    addVideoToContent(data);
   };
 
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
-      <SideBarComponent active="dashboard" isLoggedIn />
       <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
-        <div className="flex items-start ">
-          <div
+        <div className=" ">
+          <button
+            type="button"
             className="flex items-center cursor-pointer"
             onClick={() => navigate(-1)}
           >
             <img className="mr-2" src={backArrow} alt="back arrow" />
             Go Back
-          </div>
-          <form autoComplete="off" className="ml-28 w-4/6 ">
+          </button>
+          <form autoComplete="off" className="w-full max-w-640 m-auto">
             <div className=" flex justify-between items-center">
               <div className="text-22 text-gray-400 font-BeatriceSemiBold">
                 Video
               </div>
               <div className="flex">
-                {draftBtn && (
-                  <button
-                    type="button"
-                    onClick={handleSaveDraft}
-                    className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400"
-                  >
-                    Draft saved
-                  </button>
-                )}
                 <button
                   type="button"
-                  disabled={btnDisabled}
-                  onClick={handleSubmit}
+                  onClick={(e) =>
+                    handleGetVideoDataBeforeSubmit(e, "unpublish")
+                  }
+                  disabled={disableButton}
+                  className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400 disabled:opacity-40"
+                >
+                  {(isAddVideoToContentLoading || isVideoLoading) &&
+                  videoInputs.status === "unpublish" ? (
+                    <Loadersmall />
+                  ) : (
+                    "Save"
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  disabled={disableButton}
+                  onClick={(e) =>
+                    handleGetVideoDataBeforeSubmit(e, "published")
+                  }
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
                 >
-                  Publish
+                  {(isAddVideoToContentLoading || isVideoLoading) &&
+                  videoInputs.status === "published" ? (
+                    <Loadersmall />
+                  ) : (
+                    "Publish"
+                  )}
                 </button>
               </div>
             </div>
@@ -308,7 +323,10 @@ function NewVideo() {
       </div>
       {/* new category modal */}
       {openCategoryModal ? (
-        <NewVideoCategory handleClose={handleModalClose} />
+        <NewVideoCategory
+          handleClose={handleModalClose}
+          videoCategories={options}
+        />
       ) : null}
     </div>
   );

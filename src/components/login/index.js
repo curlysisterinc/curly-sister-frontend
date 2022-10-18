@@ -1,15 +1,19 @@
 /* eslint-disable prefer-regex-literals */
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useFormik } from "formik";
+import { useAuthContext } from "redux/auth";
+import { NonAuthRoutes } from "constants";
 import AuthSideBarComponent from "../authSidebar";
 import googleIcon from "../../assets/images/google-icon.svg";
 import facebookIcon from "../../assets/images/facebook-icon.svg";
 import useLoginUser from "../../hooks/data/onboarding/useLoginUser";
 
 function LoginComponent() {
+  const { state: isSignedIn } = useAuthContext();
   const { mutate, isLoading: btnIsLoading, error: Err, data } = useLoginUser();
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [disableBtn, setBtnDisabled] = useState(true);
@@ -19,7 +23,9 @@ function LoginComponent() {
   useEffect(() => {
     const ac = new AbortController();
     document.title = "Curly sisters • Log In";
-
+    if (isSignedIn === true) {
+      navigate(NonAuthRoutes.home);
+    }
     return function cleanup() {
       ac.abort();
     };

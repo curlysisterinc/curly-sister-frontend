@@ -1,21 +1,8 @@
-/* eslint-disable import/order */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { AuthRoutes } from "constants";
 import learn from "api/learn";
-import imagineHairVideo from "../../../../assets/images/imagine-video.png";
-import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
-import reply from "../../../../assets/images/reply.svg";
-import ellipses from "../../../../assets/images/dark-ellipses.svg";
-import backArrow from "../../../../assets/images/back-arrow.svg";
-import trash from "../../../../assets/images/trash.svg";
-import edit from "../../../../assets/images/edit.svg";
-import report from "../../../../assets/images/report.svg";
+import DOMPurify from "dompurify";
 import {
   AiTwotoneDislike,
   AiOutlineDislike,
@@ -24,8 +11,22 @@ import {
 } from "react-icons/ai";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
+import Image from "components/image";
+import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
+
+import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
+import imagineHairVideo from "../../../../assets/images/imagine-video.png";
+import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
+import reply from "../../../../assets/images/reply.svg";
+import ellipses from "../../../../assets/images/dark-ellipses.svg";
+import backArrow from "../../../../assets/images/back-arrow.svg";
+import trash from "../../../../assets/images/trash.svg";
+import edit from "../../../../assets/images/edit.svg";
+import report from "../../../../assets/images/report.svg";
+import ContentOptionDropDown from "../ContentOptionDropDown";
+
+import "react-toastify/dist/ReactToastify.css";
 
 function ArticleContent() {
   const navigate = useNavigate();
@@ -40,6 +41,21 @@ function ArticleContent() {
   const [replyValue, setReplyValue] = useState("");
   const [commentValue, setCommentValue] = useState("");
   const [getArticles, setGetArticles] = useState({});
+
+  const {
+    isLoading: isBeleteQuestionLoading,
+    data: deleteQuestionData,
+    mutate: deleteQuestion,
+  } = useDeleteArticle(token);
+
+  useEffect(() => {
+    if (deleteQuestionData) {
+      navigate("/dashboard/content");
+    }
+  }, [deleteQuestionData]);
+
+  const [isContentModalOpen, setIsContentModalOpen] = useState(false);
+
   useEffect(() => {
     const ac = new AbortController();
 
@@ -131,48 +147,47 @@ function ArticleContent() {
       })
       .catch((error) => {});
   };
+
+  const createMarkup = (html) => {
+    return {
+      __html: DOMPurify.sanitize(html),
+    };
+  };
+
   return (
     <>
-      <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
-        <div
-          onClick={() => navigate(-1)}
+      <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full max-w-1111 m-auto">
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard/content")}
           className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
         >
           <img src={backArrow} alt="go back" className="mr-4" />
           Go Back
-        </div>
+        </button>
         <div className="flex justify-between space-x-5 items-start">
           <div className="w-9/12">
             <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl mb-6">
               {getArticles.title}
             </h3>
-            <p className="text-sm text-gray-200 flex items-center">
-              {getArticles?.created_by?.firstName}{" "}
-              {getArticles?.created_by?.lastName}{" "}
-              {moment(getArticles?.createdAt).format("DD MM YYYY")}
-              <span
-                className="ml-5 relative"
-                onClick={() => setQuestionDropdown(!questionDropdown)}
-              >
-                <img className="cursor-pointer" src={ellipses} alt="" />
-                {questionDropdown ? (
-                  <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                    <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm my-3">
-                      <img src={edit} alt="pin" className="mr-3" />
-                      <p>Edit</p>
-                    </div>
-                    <div className="flex items-center justify-start cursor-pointer text-red-400 text-sm">
-                      <img src={trash} alt="pin" className="mr-3" />
-                      <p>Delete</p>
-                    </div>
-                  </div>
-                ) : null}
-              </span>
-            </p>
+            <div className="flex items-center mb-4 relative">
+              <p className="text-sm text-gray-200 flex items-center">
+                {getArticles?.created_by?.firstName}{" "}
+                {getArticles?.created_by?.lastName}{" "}
+                {moment(getArticles?.createdAt).format("DD MMM YYYY")}
+              </p>
+              <ContentOptionDropDown
+                content={getArticles}
+                openEditContentModal={() => setIsContentModalOpen(true)}
+                deleteContent={deleteQuestion}
+                isContentDeleting={isBeleteQuestionLoading}
+              />
+            </div>
           </div>
           <div className="flex space-x-7">
             <div className="flex flex-row items-center space-x-2">
-              <span
+              <button
+                type="button"
                 className="rounded-full p-2 bg-gray-200"
                 onClick={handleArticleReactionLike}
               >
@@ -181,11 +196,12 @@ function ArticleContent() {
                 ) : (
                   <AiTwotoneLike color="white" />
                 )}
-              </span>
+              </button>
               <p>{getArticles?.likes?.length}</p>
             </div>
             <div className="flex flex-row items-center space-x-2">
-              <span
+              <button
+                type="button"
                 className="rounded-full p-2 bg-gray-200"
                 onClick={handleArticleReactionDisLike}
               >
@@ -194,11 +210,12 @@ function ArticleContent() {
                 ) : (
                   <AiTwotoneDislike color="white" />
                 )}
-              </span>
+              </button>
               <p>{getArticles?.unlikes?.length}</p>
             </div>
             <div className="flex flex-row items-center space-x-2">
-              <span
+              <button
+                type="button"
                 className="rounded-full p-2 bg-gray-200"
                 onClick={() => setIsSaved(!isSaved)}
               >
@@ -213,46 +230,23 @@ function ArticleContent() {
                     color="white"
                   />
                 )}
-              </span>
+              </button>
               <p>{getArticles?.number_of_saves}</p>
             </div>
           </div>
         </div>
-        <div className="w-full h-auto mt-6">
-          <img
-            className="w-full h-full object-cover"
+        <div className="w-full h-auto mt-6 rounded-2xl overflow-hidden">
+          <Image
+            className="w-full h-full max-h-400 object-cover rounded-2xl"
             src={getArticles?.image}
             alt=""
           />
         </div>
         <div className="mt-8 text-gray-400">
-          <p className="text-gray-400 text-base leading-6 mb-6">
-            This is a sample article posted on the platform. It sounded an
-            excellent plan, no doubt, and very neatly and simply arranged; the
-            only difficulty was, that she had not the smallest idea how to set
-            about it.
-          </p>
-          <h4 className="text-lg text-gray-400 font-BeatriceSemiBold mb-6">
-            Steps to follow
-          </h4>
-          <p className="text-gray-400 text-base leading-6 mb-6">
-            And while she was peering about anxiously among the trees, a little
-            sharp bark just over her head made her look up in a great hurry.
-          </p>{" "}
-          <p className="text-gray-400 text-base leading-6 mb-6">
-            Hardly knowing what she did, she picked up a little bit of stick,
-            and held it out to the puppy; whereupon the puppy jumped into the
-            air off all its feet at once, with a yelp of delight, and rushed at
-            the stick, and made believe to worry it.
-          </p>{" "}
-          <p className="text-gray-400 text-base leading-6">
-            Then Alice dodged behind a great thistle, to keep herself from being
-            run over; and the moment she appeared on the other side, the puppy
-            made another rush at the stick, and tumbled head over heels in its
-            hurry to get hold of it; then Alice, thinking it was very like
-            having a game of play with a cart-horse.
-          </p>
-          <hr className="w-full border border-gray-250 my-10" />
+          <div
+            className="blog-preview"
+            dangerouslySetInnerHTML={createMarkup(getArticles?.content)}
+          />
           <div className="flex justify-between space-x-8 items-start">
             <div className="w-8/12">
               <div className="flex items-center">
@@ -267,19 +261,20 @@ function ArticleContent() {
                     placeholder="Add a comment"
                     className="ml-5 w-full border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
                   />
-                  {commentValue.length ? (
+                  {/* {commentValue.length ? (
                     <button
+                    type="button"
                       type="button"
                       onClick={handleSubmitComment}
                       className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
                     >
                       post
                     </button>
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
-              {getComments &&
-                getComments.map((comment) => {
+              {/* {getComments &&
+                getComments?.map((comment) => {
                   return (
                     <div className="mt-8">
                       <div className="flex items-start">
@@ -381,6 +376,7 @@ function ArticleContent() {
                                 />
                                 {replyValue.length ? (
                                   <button
+                                  type="button"
                                     type="button"
                                     onClick={handleSubmitReply}
                                     className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
@@ -395,17 +391,23 @@ function ArticleContent() {
                       </div>
                     </div>
                   );
-                })}
+                })} */}
             </div>
 
             <div className="">
               Related Videos
-              <img
+              <div
                 onClick={() => navigate(AuthRoutes.videoContent)}
-                src={imagineHairVideo}
-                alt=""
-                className="mt-4"
-              />
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) =>
+                  runFunctionWhenSpaceOrEnterIsClicked(e, () => {
+                    navigate(AuthRoutes.videoContent);
+                  })
+                }
+              >
+                <img src={imagineHairVideo} alt="" className="mt-4" />
+              </div>
             </div>
           </div>
         </div>

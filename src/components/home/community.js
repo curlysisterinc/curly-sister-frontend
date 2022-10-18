@@ -4,6 +4,7 @@ import communityPix1 from "../../assets/images/community-pix1.png";
 import communityPix2 from "../../assets/images/community-pix2.png";
 import { NonAuthRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import Image from "components/image";
 
 function CommunitySection() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ function CommunitySection() {
   return (
     <div className="p-4 md:p-10 flex justify-center items-center">
       <div className="flex flex-col md:flex-row justify-between w-full">
-        <img
+        <Image
           className="h-auto w-20 md:w-auto md:h-52"
           src={communityPix1}
           alt="community pix"
@@ -38,7 +39,7 @@ function CommunitySection() {
             Visit the community
           </button>
         </div>
-        <img
+        <Image
           className="mt-6 md:mt-40 h-auto md:h-52 w-20 md:w-auto self-end"
           src={communityPix2}
           alt="community pix"

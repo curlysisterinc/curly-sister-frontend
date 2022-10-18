@@ -1,14 +1,15 @@
-import React from "react";
-import ReactPlayer from "react-player";
+import React, { useRef } from "react";
+import ReactPlayer from "react-player/lazy";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "redux/auth";
 import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
 import moment from "moment";
-import play from "../../../../assets/images/play-btn.svg";
+import { ReactComponent as PlayIcon } from "../../../../assets/images/play-btn.svg";
 
 export function VideoItem({ video }) {
+  const playerRef = useRef();
   const navigate = useNavigate();
   const {
     state: { isSignedIn },
@@ -20,48 +21,73 @@ export function VideoItem({ video }) {
       : navigate(NonAuthRoutes.login);
   };
 
+  const handleClickBookmarkButton = (e) => {
+    e.stopPropagation();
+    // e.preventDefault();
+    alert("clicked");
+    console.log(video);
+  };
+
+  const handleVideoLink = (videoLink) => {
+    if (videoLink.startsWith("//s3")) {
+      return `https:${videoLink}`;
+    }
+    return videoLink;
+  };
+
+  const handleVideoThumbnail = (thumbnail) => {
+    if (thumbnail?.startsWith("//s3")) {
+      return `https:${thumbnail}`;
+    }
+    return true;
+  };
+
+  const handleReadyOption = () => {
+    console.log(playerRef.current);
+    console.log(playerRef.current.getDuration());
+    console.log(playerRef.current.references.player());
+  };
+
   return (
     <div
+      role="button"
       key={video._id}
-      className="relative col-1 h-80 overflow-hidden rounded-lg"
+      className="relative col-1 h-234 overflow-hidden rounded-lg cursor-pointer "
+      tabIndex={0}
+      onClick={() => handleNavigate(video)}
+      onKeyPress={(e) =>
+        runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(video))
+      }
     >
       <ReactPlayer
-        url={video.link}
+        url={handleVideoLink(video.link)}
         onStart={() => handleNavigate(video)}
-        light
+        light={handleVideoThumbnail(video.thumbnail)}
         controls={false}
         width="100%"
         height="100%"
+        playIcon={<PlayIcon height={27} width={27} fill="red" />}
+        // onReady={handleReadyOption}
+        ref={playerRef}
       />
-      {/* <img
-                  src={video.link}
-                  alt="allyn"
-                  className="w-full h-full relative"
-                /> */}
-      <div className="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-gray-400 rounded-2xl" />
+
       <div
-        role="button"
-        tabIndex={0}
-        onClick={() => handleNavigate(video)}
-        onKeyPress={(e) =>
-          runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(video))
-        }
+        className="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-purple-200 rounded-2xl"
+        overflow-hidden
+      />
+      <button
+        type="button"
+        className="absolute top-0 right-0 mr-4 mt-4 z-40"
+        onClick={handleClickBookmarkButton}
       >
-        <img
-          src={play}
-          alt="play"
-          className="mx-auto cursor-pointer z-2 absolute top-1/2 left-1/2  transform -translate-x-1/2 -translate-y-1/2"
-        />
-      </div>
-      <div className="absolute top-0 right-0 mr-4 mt-4 ">
-        <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">
+        <span className="rounded-full p-2 bg-gray-200 opacity-80  flex justify-center items-center">
           {video.number_of_saves.length > 0 ? (
-            <MdOutlineBookmarkBorder color="white" />
-          ) : (
             <MdBookmark color="white" />
+          ) : (
+            <MdOutlineBookmarkBorder color="white" />
           )}
         </span>
-      </div>
+      </button>
 
       <div className="absolute top-0 left-0 mt-4 ml-4 bg-gray-400 bg-opacity-50 rounded-xl">
         <p className="py-1 px-2 text-xs text-white font-normal leading-5">

@@ -12,18 +12,25 @@ function VerifyUser() {
   const { email } = useParams();
   const navigate = useNavigate();
   const { data, isLoading, error } = useVerifyUserEmail(email);
-  const { dispatch } = useAuthContext();
+  const {
+    dispatch,
+    state: { isSignedIn },
+  } = useAuthContext();
 
   useEffect(() => {
     if (data) {
-      authHandler.setUserInfo(data.data.user);
-      dispatch(
-        loginUser({
-          ...data.data.user,
-          isSignedIn: true,
-        })
-      );
-      navigate(NonAuthRoutes.home);
+      if (isSignedIn) {
+        authHandler.setUserInfo(data.data.user);
+        dispatch(
+          loginUser({
+            ...data.data.user,
+            isSignedIn: true,
+          })
+        );
+        navigate(NonAuthRoutes.home);
+      } else {
+        navigate(NonAuthRoutes.login);
+      }
     }
     // for the top loading bar
     ref?.current?.continuousStart();

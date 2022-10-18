@@ -1,16 +1,17 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React from "react";
 import { Link } from "react-router-dom";
+import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
 import facebookIcon from "../../assets/images/facebook.svg";
 import instagramIcon from "../../assets/images/instagram.svg";
 import smsIcon from "../../assets/images/sms.svg";
 import productImg from "../../assets/images/product-img.png";
 import WaitList from "./waitList";
 
-function FooterComponent({ getStylist }) {
+function FooterComponent() {
   return (
     <div>
-      <WaitList getStylist={getStylist} />
+      <WaitList />
 
       <div className="bg-purple-200 md:p-10 py-6 px-4 flex flex-col md:flex-row  justify-between items-start relative z-20">
         <div className="w-full max-w-280 md:w-1/3">

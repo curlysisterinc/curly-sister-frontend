@@ -5,89 +5,140 @@ import { useAuthContext } from "redux/auth";
 import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import moment from "moment";
+import useDeleteSavedQuestion from "hooks/data/learn/useDeleteSavedQuestion";
+import useUnPinQuestion from "hooks/data/learn/useUnPinQuestion";
+import useSavedQuestion from "hooks/data/learn/useSavedQuestion";
+import { Loadersmall } from "components/loader-component/loader";
 import bookmarkfilled from "../../../../assets/images/bookmark-filled.png";
 import bookmark from "../../../../assets/images/book-mark.png";
-import play from "../../../../assets/images/play-btn.svg";
+import { ReactComponent as PinIcon } from "../../../../assets/images/pinIcon.svg";
 import pix3 from "../../../../assets/images/pix3.png";
 import pix2 from "../../../../assets/images/pix2.png";
 import pix1 from "../../../../assets/images/pix1.png";
 import serena from "../../../../assets/images/serena.png";
 
-export function CommunityQuestionItem({ question }) {
+export function CommunityQuestionItem({
+  question,
+  isPinned = false,
+  owner = {},
+}) {
   const navigate = useNavigate();
   const {
     state: { isSignedIn },
   } = useAuthContext();
   const [saveQst, setSaveQst] = useState(false);
 
+  const {
+    isLoading: isSavedQuestionLoading,
+    data: SavedQuestionData,
+    mutate: SaveQuestion,
+  } = useSavedQuestion(question._id);
+
+  const {
+    isLoading: isDeleteSavedQuestionLoading,
+    data: deleteSavedQuestionData,
+    mutate: deleteSavedQuestion,
+  } = useDeleteSavedQuestion(question._id);
+
   const handleNavigate = (item) => {
-    return navigate(`/learn/communities/${item._id}`);
+    if (isSignedIn) {
+      return navigate(`/learn/communities/${item._id}`, {
+        state: {
+          isPinned,
+        },
+      });
+    }
+    sessionStorage.setItem("link", `/learn/communities/${item._id}`);
+    return navigate(NonAuthRoutes.login);
+  };
+
+  const handleClickBookmarkButton = (e, isSaved) => {
+    e.stopPropagation();
+    if (!isSaved) {
+      SaveQuestion();
+    } else {
+      deleteSavedQuestion();
+    }
+  };
+
+  const isLoading = isSavedQuestionLoading || isDeleteSavedQuestionLoading;
+
+  const isData = SavedQuestionData || deleteSavedQuestionData;
+
+  const handleReturnUsersImage = (userQuestion, ownerOfQuestion) => {
+    const user =
+      typeof userQuestion.created_by === "string"
+        ? ownerOfQuestion
+        : userQuestion.created_by;
+    const firstNameLetter = user?.firstName[0].toUpperCase();
+    const lastNameLetter = user?.lastName[0].toUpperCase();
+    const photo = user?.profile_pic || "";
+    return photo ? (
+      <img src={photo} alt="user profile avatar" />
+    ) : (
+      `${firstNameLetter}${lastNameLetter}`
+    );
   };
 
   return (
     <div
-      key={question._id}
-      className="cursor-pointer flex mb-5 align-center justify-between border-gray-100 rounded-md shadow p-4"
+      role="button"
+      tabIndex={0}
+      onClick={() => handleNavigate(question)}
+      onKeyPress={(e) =>
+        runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(question))
+      }
+      className={`cursor-pointer flex  mb-5 align-center justify-between border rounded-2xl shadow-s01 p-6 relative ${
+        isPinned ? " bg-orange-400 border-orange-200" : "border-gray-600"
+      } `}
     >
-      <div className="flex">
-        <img src={serena} alt="serena" />
-        <div className="flex flex-col ml-4">
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={() => handleNavigate(question)}
-            onKeyPress={(e) =>
-              runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(question))
-            }
-          >
-            <h4 className="text-base font-semibold mb-2 text-gray-400">
-              {question?.title ?? question?.question}
-            </h4>
-          </div>
-          <div className="flex">
+      <div className="flex flex-col md:flex-row gap-3">
+        <div className="h-14 w-14 rounded-full flex justify-center items-center bg-purple-700 text-white text-22">
+          {handleReturnUsersImage(question, owner)}
+        </div>
+        <div className="flex flex-col  md:ml-4">
+          <h4 className="text-base font-semibold mb-2 text-gray-400 flex">
+            {question?.title ?? question?.question}{" "}
+            {isPinned && <PinIcon className="ml-3" />}
+          </h4>
+          <div className="flex  gap-1 flex-wrap">
             <h4 className="text-sm text-gray-400 font-normal">
-              {question.created_by.firstName} {question.created_by.lastName}
+              {owner?.firstName ?? question.created_by?.firstName}{" "}
+              {owner?.lastName ?? question.created_by?.lastName}
             </h4>
-            <p className="ml-2 text-gray-200 font-normal text-sm">
+            <p className="md:ml-2 text-gray-200 font-normal text-sm">
               · {question.comments.length} comments ·{" "}
-              {moment(question.createdAt).format("YYYY-MM-DD")}
+              {moment(question.createdAt).format("DD MMM YYYY")}
             </p>
           </div>
         </div>
       </div>
-      <div className="flex items-center">
-        <div className="-space-x-6 mr-4">
-          <img
-            src={pix1}
-            alt="pix1"
-            className="relative z-10 inline object-cover w-10 h-10"
-          />
-          <img
-            src={pix2}
-            alt="pix2"
-            className="relative z-20 inline object-cover w-10 h-10"
-          />
-          <img
-            src={pix3}
-            alt="pix3"
-            className="relative z-30 inline object-cover w-10 h-10"
-          />
-        </div>
-        <div
-          tabIndex={0}
-          role="button"
-          className=""
-          onClick={() => setSaveQst(!saveQst)}
-          onKeyPress={(e) =>
-            runFunctionWhenSpaceOrEnterIsClicked(e, setSaveQst(!saveQst))
-          }
-        >
-          {saveQst ? (
-            <img src={bookmarkfilled} alt="bookmark" className="" />
-          ) : (
-            <img src={bookmark} alt="bookmark" className="" />
-          )}
-        </div>
+      <div className="flex items-center absolute md:static right-2 top-2">
+        {isSignedIn && (
+          <button
+            tabIndex={0}
+            type="button"
+            className=""
+            onClick={(e) => handleClickBookmarkButton(e, question.is_saved)}
+            onKeyPress={(e) =>
+              runFunctionWhenSpaceOrEnterIsClicked(e, (a) =>
+                handleClickBookmarkButton(a, question.is_saved)
+              )
+            }
+          >
+            {isLoading && (
+              <div className="h-8 w-8">
+                <Loadersmall />
+              </div>
+            )}
+            {!isLoading &&
+              (question.is_saved ? (
+                <img src={bookmarkfilled} alt="bookmark" className="" />
+              ) : (
+                <img src={bookmark} alt="bookmark" className="" />
+              ))}
+          </button>
+        )}
       </div>
     </div>
   );

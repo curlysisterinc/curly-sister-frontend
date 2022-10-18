@@ -17,14 +17,8 @@ export default () => {
       // queryClient.invalidateQueries("gallery");
     },
     onError: async (error) => {
-      let mainError;
-      if (error.response.data.includes("compatible")) {
-        mainError = "Upload failed!, this file type is not allowed";
-      } else {
-        mainError = "Upload failed!";
-      }
-
-      addToast(mainError, {
+      // console.log(error.response.data.message);
+      addToast(error?.response?.data?.message, {
         appearance: "error",
       });
     },

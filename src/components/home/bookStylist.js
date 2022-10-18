@@ -7,6 +7,7 @@ import { NonAuthRoutes, AuthRoutes } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import ratingIcon from "../../assets/images/rating.svg";
 import stylistAvatar from "../../assets/images/stylist-1.png";
+import Image from "components/image";
 
 const CommonCard = ({ stylist }) => {
   const splitName = (fullname) => {
@@ -17,7 +18,7 @@ const CommonCard = ({ stylist }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg">
-      <img
+      <Image
         className="rounded-full h-20 w-20 object-cover"
         src={stylist.photo ? stylist.photo : stylistAvatar}
         alt="stylist"
@@ -26,7 +27,7 @@ const CommonCard = ({ stylist }) => {
         <h5 className="text-lg capitalize text-gray-400 mr-3 font-BeatriceSemiBold">
           {stylist.business_name}
         </h5>
-        <img src={ratingIcon} alt="rating" />
+        <Image src={ratingIcon} alt="rating" />
       </div>
       <p className="text-gray-200 text-sm leading-6 line-clamp-7">
         {stylist.description}

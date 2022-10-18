@@ -1,3 +1,6 @@
+import escapeHtml from "escape-html";
+import { Text } from "slate";
+
 /**
  *function for accessibility that allows user to run a function using the
  *keyboard instead of click.
@@ -33,9 +36,14 @@ export const toggleFixedAppLayout = () => {
 };
 
 export const getNextPageParam = (currentPage) => {
-  const totalPage = currentPage.data.totalStylistCount / currentPage.data.size;
+  const totalCountKey = Object.keys(currentPage.data).find(
+    (item) =>
+      item.toLowerCase().includes("total") &&
+      item.toLowerCase().includes("count")
+  );
+  const totalPage = currentPage.data[totalCountKey] / currentPage.data.size;
   const lastPage =
-    currentPage.data.totalStylistCount % currentPage.data.size === 0
+    currentPage.data[totalCountKey] % currentPage.data.size === 0
       ? totalPage
       : Math.floor(totalPage + 1);
   const nextPage =
@@ -43,4 +51,53 @@ export const getNextPageParam = (currentPage) => {
       ? currentPage.data.page + 1
       : undefined;
   return nextPage;
+};
+
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ * The value is no lower than min (or the next integer greater than min
+ * if min isn't an integer) and no greater than max (or the next integer
+ * lower than max if max isn't an integer).
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+export function getRandomInt({ min = 0, max = 0 }) {
+  const minimum = Math.ceil(min);
+  const maximum = Math.floor(max);
+  return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+}
+
+/**
+ *Replaces item in an array.
+ * @param {any[]} array - the array of values whos values you want replaced
+ * @param {number} index - the index of the item to be replacs
+ * @param {any} value - the replacement value you want to insert
+ * @returns {any[]}
+ */
+function replaceItemInArray(array, index, value) {
+  const ret = array.slice(0);
+  ret[index] = value;
+  return ret;
+}
+
+export const serializeToHTML = (node) => {
+  if (Text.isText(node)) {
+    let string = escapeHtml(node.text);
+    if (node.bold) {
+      string = `<strong>${string}</strong>`;
+    }
+    return string;
+  }
+
+  const children = node.children.map((n) => serializeToHTML(n)).join("");
+
+  switch (node.type) {
+    case "quote":
+      return `<blockquote><p>${children}</p></blockquote>`;
+    case "paragraph":
+      return `<p>${children}</p>`;
+    case "link":
+      return `<a href="${escapeHtml(node.url)}">${children}</a>`;
+    default:
+      return children;
+  }
 };

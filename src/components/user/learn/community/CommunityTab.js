@@ -18,17 +18,23 @@ import orangePin from "../../../../assets/images/orange-pin.svg";
 import bookmarkfilled from "../../../../assets/images/bookmark-filled.png";
 import AskQuestionModal from "./AddQuestionModal";
 import moment from "moment";
-import authHandler from "authHandler";
-import learn from "api/learn";
 import { NonAuthRoutes } from "constants";
 import { CommunityQuestionItem } from "./CommunityQuestionItem";
+import { PinnedQuestion } from "./PinnedQuestion";
 import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
 import { useAuthContext } from "redux/auth";
+import Loader from "components/loader-component/loader";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
+import { queryClient } from "App";
+import { useInView } from "react-intersection-observer";
 
 function CommunityTab() {
   const [activeTab, setActiveTab] = useState("all");
   const [getQuestions, setGetQuestions] = useState([]);
-  const [questionModal, setQuestionModal] = useState(false);
+  const [isQuestionModalOpen, setIsQuestionModalOpen] = useState(false);
+  const [pinnedQuestions, setPinnedQuestions] = useState([]);
+
+  const [ref, inView] = useInView();
 
   const navigate = useNavigate();
   const {
@@ -38,7 +44,7 @@ function CommunityTab() {
   // open question dialog
   const openQuestionModal = () => {
     if (isSignedIn) {
-      setQuestionModal(true);
+      setIsQuestionModalOpen(true);
     } else {
       navigate(NonAuthRoutes.login);
     }
@@ -46,32 +52,44 @@ function CommunityTab() {
 
   // close question dialog
   const closeQuestionModal = () => {
-    setQuestionModal(false);
+    setIsQuestionModalOpen(false);
   };
 
   const {
     data: questionsData,
-    isLoading: isQuestionsLoading,
+    isFetching: isQuestionsFetching,
     error: questionsRrror,
     refetch: questionsRefetch,
+    fetchNextPage: fetchNextQuestionsPage,
+    hasNextPage: hasQuestionsNextPage,
+    isLoading: isQuestionsLoading,
   } = useGetAllQuestions();
 
   useEffect(() => {
     if (questionsData) {
-      setGetQuestions(questionsData.data.data);
+      const data = queryClient.getQueryData(["questions"]);
+      const currentData = data.pages
+        .map((item) => item.data.payload.questions)
+        .flatMap((a) => a);
+      const pinnedData = data.pages[0].data.pinnedQuestions;
+      setGetQuestions(currentData);
+      setPinnedQuestions(pinnedData);
     }
   }, [questionsData]);
 
+  React.useEffect(() => {
+    if (inView) {
+      fetchNextQuestionsPage();
+    }
+  }, [inView]);
+
   return (
-    <>
-      {/* <div>
-        <LearnTabComponent active="communities" />
-      </div> */}
-      <div className="m-20">
-        <div className="flex justify-between">
-          <h2 className="text-2xl text-gray-400 font-BeatriceSemiBold">
-            Questions
-          </h2>
+    <div className="mt-10 max-w-777 mx-auto">
+      <div className="flex justify-between">
+        <h2 className="text-2xl text-gray-400 font-BeatriceSemiBold">
+          Questions
+        </h2>
+        {questionsData && (
           <button
             type="button"
             onClick={openQuestionModal}
@@ -79,81 +97,101 @@ function CommunityTab() {
           >
             Ask a question
           </button>
-          {questionModal ? (
-            <AskQuestionModal
-              getQuestions={getQuestions}
-              setGetQuestions={setGetQuestions}
-              handleClose={closeQuestionModal}
-            />
-          ) : null}
-        </div>
-        <div className="mt-6 flex space-x-6">
-          <div
-            onClick={() => setActiveTab("all")}
-            className={clsx(
-              activeTab === "all"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
-            )}
-          >
-            All
+        )}
+        {isQuestionModalOpen ? (
+          <AskQuestionModal
+            getQuestions={getQuestions}
+            setGetQuestions={setGetQuestions}
+            handleClose={closeQuestionModal}
+          />
+        ) : null}
+      </div>
+      {questionsRrror && <ErrorDisplayComponent refetch={questionsRefetch} />}
+      {isQuestionsLoading && <Loader />}
+
+      {questionsData && (
+        <>
+          <div className="mt-6 flex space-x-6">
+            <div
+              onClick={() => setActiveTab("all")}
+              className={clsx(
+                activeTab === "all"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              All
+            </div>
+            <div
+              onClick={() => setActiveTab("popular")}
+              className={clsx(
+                activeTab === "popular"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              Popular
+            </div>
+            <div
+              onClick={() => setActiveTab("recent")}
+              className={clsx(
+                activeTab === "recent"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              Recent
+            </div>
+            <div
+              onClick={() => setActiveTab("pinned")}
+              className={clsx(
+                activeTab === "pinned"
+                  ? "text-purple-100 border-purple-100"
+                  : "text-gray-300 border-gray-250",
+                "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+              )}
+            >
+              Pinned
+            </div>
           </div>
-          <div
-            onClick={() => setActiveTab("popular")}
-            className={clsx(
-              activeTab === "popular"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+          <div className="mt-10 overflow-auto pr-5 max-h-screen-300px scroll-smooth">
+            {activeTab === "all" && (
+              <div>
+                <PinnedQuestion pinnedQuestions={pinnedQuestions} />
+                {getQuestions.length > 0 ? (
+                  getQuestions.map((question) => {
+                    return (
+                      <CommunityQuestionItem
+                        question={question}
+                        key={question._id}
+                      />
+                    );
+                  })
+                ) : (
+                  <h3 className="text-center text-black text-xl font-BeatriceSemiBold">
+                    No content added
+                  </h3>
+                )}
+              </div>
             )}
-          >
-            Popular
-          </div>
-          <div
-            onClick={() => setActiveTab("recent")}
-            className={clsx(
-              activeTab === "recent"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
+            {activeTab === "pinned" && (
+              <PinnedQuestion pinnedQuestions={pinnedQuestions} />
             )}
-          >
-            Recent
-          </div>
-          <div
-            onClick={() => setActiveTab("pinned")}
-            className={clsx(
-              activeTab === "pinned"
-                ? "text-purple-100 border-purple-100"
-                : "text-gray-300 border-gray-250",
-              "border rounded-full px-3 py-1 text-sm  cursor-pointer"
-            )}
-          >
-            Pinned
-          </div>
-        </div>
-        <div className="mt-10">
-          {activeTab === "all" && (
-            <div>
-              {getQuestions.length > 0 ? (
-                getQuestions.map((question) => {
-                  return <CommunityQuestionItem question={question} />;
-                })
-              ) : (
-                <h3 className="text-center text-black text-xl font-BeatriceSemiBold">
-                  No content added
-                </h3>
+
+            <div className="my-10">
+              {hasQuestionsNextPage && (
+                <div className="loading" ref={ref}>
+                  <Loader />
+                </div>
               )}
             </div>
-          )}
-          {activeTab === "pinned" &&
-            getQuestions.map((question) => {
-              return <CommunityQuestionItem question={question} />;
-            })}
-        </div>
-      </div>
-    </>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 

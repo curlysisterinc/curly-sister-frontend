@@ -5,6 +5,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Loadersmall } from "components/loader-component/loader";
 import useAskQuestion from "hooks/data/learn/useAskQuestion";
+import useUpdateQuestion from "hooks/data/learn/useUpdateQuestion";
 import React, { useState, useEffect } from "react";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
@@ -19,32 +20,50 @@ function AddQuestionModal({ handleClose, setGetQuestions, getQuestions }) {
     mutate: sendQuestion,
     data: askQuestionData,
   } = useAskQuestion();
+  const {
+    isLoading: isUpdatedQuestionLoading,
+    mutate: updatedQuestion,
+    data: updatedQuestionData,
+  } = useUpdateQuestion(getQuestions._id);
 
   useEffect(() => {
     const ac = new AbortController();
     document.title = "Curly sisters • Ask a question";
+    if (getQuestions) {
+      setAskQuestion({
+        title: getQuestions?.title ?? "",
+        question: getQuestions?.question ?? "",
+      });
+    }
     return function cleanup() {
       ac.abort();
     };
-  }, []);
+  }, [getQuestions]);
 
   useEffect(() => {
-    if (askQuestionData) {
+    if (askQuestionData || updatedQuestionData) {
       handleClose();
     }
-  }, [askQuestionData]);
+  }, [askQuestionData, updatedQuestionData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const isDisabled = Object.values(askQuestion).some((item) => item === "");
 
     if (!isDisabled) {
       const data = {
         ...askQuestion,
       };
-      sendQuestion(data);
+      return getQuestions?.question
+        ? updatedQuestion(data)
+        : sendQuestion(data);
     }
+    return null;
   };
+
+  const isDisabled =
+    Object.values(askQuestion).some((item) => item === "") ||
+    isLoading ||
+    isUpdatedQuestionLoading;
 
   // handle input change
   const handleInputChange = (e) => {
@@ -113,9 +132,14 @@ function AddQuestionModal({ handleClose, setGetQuestions, getQuestions }) {
 
             <button
               type="submit"
-              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold flex justify-center items-center"
+              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold flex justify-center items-center disabled:opacity-40"
+              disabled={isDisabled}
             >
-              {isLoading ? <Loadersmall /> : "Ask question"}
+              {isLoading || isUpdatedQuestionLoading ? (
+                <Loadersmall />
+              ) : (
+                "Ask question"
+              )}
             </button>
           </form>
         </div>

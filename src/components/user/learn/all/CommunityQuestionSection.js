@@ -4,6 +4,7 @@ import { NonAuthRoutes } from "constants";
 import Loader from "components/loader-component/loader";
 import { useAuthContext } from "redux/auth";
 import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
+import { queryClient } from "App";
 import { CommunityQuestionItem } from "../community/CommunityQuestionItem";
 
 export function CommunityQuestionSection() {
@@ -13,24 +14,32 @@ export function CommunityQuestionSection() {
   } = useAuthContext();
 
   const [getQuestions, setGetQuestions] = useState([]);
-  const [saveQst, setSaveQst] = useState(false);
+  const [pinnedQuestions, setPinnedQuestions] = useState([]);
 
   const {
     data: questionsData,
-    isLoading: isQuestionsLoading,
+    isFetching: isQuestionsLoading,
     error: questionsRrror,
     refetch: questionsRefetch,
+    fetchNextPage: fetchNextQuestionsPage,
+    hasNextPage: hasQuestionsNextPage,
   } = useGetAllQuestions();
 
   useEffect(() => {
     if (questionsData) {
-      setGetQuestions(questionsData.data.data);
+      const data = queryClient.getQueryData(["questions"]);
+
+      const currentData = data.pages[0].data.payload.questions;
+      const pinnedData = data.pages[0].data.pinnedQuestions;
+
+      setGetQuestions(currentData);
+      setPinnedQuestions(pinnedData);
     }
   }, [questionsData]);
 
   return (
-    <div>
-      <div className="flex mt-20 mb-10 items-center justify-between">
+    <div className="mb-20">
+      <div className="flex mt-10 mb-6 items-center justify-between">
         <h2 className="text-gray-400 text-2xl font-semibold">
           Latest from community
         </h2>
@@ -49,8 +58,13 @@ export function CommunityQuestionSection() {
         <div>
           {getQuestions.length > 0 ? (
             <div className="flex flex-col">
-              {getQuestions.slice(0, 3).map((question) => {
-                return <CommunityQuestionItem question={question} />;
+              {getQuestions.slice(0, 4).map((question) => {
+                return (
+                  <CommunityQuestionItem
+                    question={question}
+                    key={question._id}
+                  />
+                );
               })}
             </div>
           ) : (

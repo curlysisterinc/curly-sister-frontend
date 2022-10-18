@@ -45,7 +45,7 @@ export function BookServiceCard({
         <p className="text-base font-BeatriceSemiBold text-gray-400">
           Book a service
         </p>
-        <button
+        {/* <button
           type="button"
           onClick={() => setChooseServiceVisible((prev) => !prev)}
           className="border border-gray-250 rounded-full w-full my-4 flex justify-between items-center h-12 px-3"
@@ -53,10 +53,13 @@ export function BookServiceCard({
           <span className="text-sm text-gray-400">
             Select service, day and time
           </span>
+          <span className="text-sm text-gray-400">
+            Select service, day and time
+          </span>
           <MdArrowForwardIos color="#8E8695" />
-        </button>
+        </button> */}
       </div>
-      {hasService && (
+      {/* {hasService && (
         <div className="bg-gray-50 p-4 mb-5">
           <div className="flex justify-between items-start mb-4">
             <div className="">
@@ -83,9 +86,9 @@ export function BookServiceCard({
             </p>
           </div>
         </div>
-      )}
+      )} */}
       <div className="px-6 ">
-        <button
+        {/* <button
           type="button"
           disabled={!hasService}
           onClick={() =>
@@ -99,7 +102,16 @@ export function BookServiceCard({
         </button>
         <p className="text-xs text-gray-300 text-center mt-3">
           Don’t worry, you won’t be charged yet
-        </p>
+        </p> */}
+
+        <a
+          href="mailto:info@curlysister.com"
+          // type="button"
+          // onClick={() => setChooseServiceVisible((prev) => !prev)}
+          className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold my-4 "
+        >
+          Request a booking
+        </a>
       </div>
       <hr className="w-full border border-gray-600 my-4" />
       <div className="px-6 py-3 flex flex-col space-y-3">
@@ -149,7 +161,7 @@ export function BookServiceCard({
 
           {props.website && (
             <a
-              href={`https://${props.website.replace("https://", "")}`}
+              href={props.website}
               target="_blank"
               rel="noopener noreferrer"
               aria-describedby="users website account"

@@ -7,12 +7,19 @@ export default {
     return curlySistersApi.post("/v1/user/ask-question", data);
   },
 
-  async GetAllQuestions() {
-    return curlySistersOnboarding.get("/v1/user/get-questions");
+  async GetAllQuestions({ isSignedIn, page }) {
+    const res = isSignedIn
+      ? await curlySistersApi.get(
+          `/v1/user/get-questions-protected?page=${page}&size=20`
+        )
+      : await curlySistersOnboarding.get(
+          `/v1/user/get-questions?page=${page}&size=20`
+        );
+    return res.data;
   },
 
   async GetOneQuestion(questionId) {
-    return curlySistersOnboarding.get(`/v1/user/get-question/${questionId}`);
+    return curlySistersApi.get(`/v1/user/get-question/${questionId}`);
   },
   async GetOneArticle(articleId) {
     return curlySistersOnboarding.get(`/v1/user/get-article/${articleId}`);
@@ -39,7 +46,7 @@ export default {
       questionId,
       comment,
     };
-    return curlySistersApi.post(`/v1/user/comment-on-question`, data);
+    return curlySistersApi.post(`/v1/user/comment-on-question`, { ...data });
   },
 
   async ReactToVideo(videoId, reaction) {
@@ -71,12 +78,12 @@ export default {
     };
     return curlySistersOnboarding.post(`/v1/user/react-to-article`, data);
   },
-  async ReactToQuestion(articleId, reaction) {
+  async ReactToComment({ commentId, reaction }) {
     const data = {
-      articleId,
+      commentId,
       reaction,
     };
-    return curlySistersOnboarding.post(`/v1/user/react-to-article`, data);
+    return curlySistersApi.post(`/v1/user/react-to-question`, data);
   },
   async CommentOnVideo(videoId, comment) {
     const data = {
@@ -110,14 +117,14 @@ export default {
       data
     );
   },
+  async ReplyToComment(data) {
+    return curlySistersApi.post(`/v1/user/reply-to-comment`, data);
+  },
   async GetCommentForQuestion(questionId) {
     const data = {
       questionId,
     };
-    return curlySistersOnboarding.post(
-      `/v1/user/get-comment-for-question`,
-      data
-    );
+    return curlySistersApi.post(`/v1/user/get-comment-for-question`, data);
   },
   async GetCommentForVideo(videoId) {
     const data = {
@@ -138,12 +145,32 @@ export default {
     const data = {
       questionId,
     };
-    return curlySistersOnboarding.post(`/v1/user/pin-question`, data);
+    return curlySistersApi.post(`/v1/user/pin-question`, data);
   },
   async UnPinQuestion(questionId) {
     const data = {
       questionId,
     };
-    return curlySistersOnboarding.post(`/v1/user/unpin-question`, data);
+    return curlySistersApi.post(`/v1/user/unpin-question`, data);
+  },
+  async SaveQuestion(questionId) {
+    const data = {
+      questionId,
+    };
+    return curlySistersApi.post(`/v1/user/save-question`, data);
+  },
+
+  async DeleteSavedQuestion(savedQuestionId) {
+    const data = {
+      savedQuestionId,
+    };
+    return curlySistersApi.post(`/v1/user/delete-saved-question`, data);
+  },
+
+  async DeleteQuestion(questionId) {
+    return curlySistersApi.delete(`/v1/user/delete-question/${questionId}`);
+  },
+  async UpdateQuestion({ id, ...data }) {
+    return curlySistersApi.put(`/v1/user/update-question/${id}`, data);
   },
 };

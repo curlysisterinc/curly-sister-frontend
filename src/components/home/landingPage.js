@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "redux/auth";
 import useVerifyUsersAccount from "hooks/useVerifyUsersAccount";
+import Image from "components/image";
 import girl0 from "../../assets/images/girl-0.png";
 import girl1 from "../../assets/images/girl-1.png";
 import girl2 from "../../assets/images/girl-2.png";
@@ -72,11 +73,11 @@ function LandingPage({ getStylist }) {
           </div>
         </div>
         <div className="flex justify-start flex-nowrap overflow-x-hidden h-28 md:h-72">
-          <img src={girl0} alt="girl with hair" />
-          <img src={girl1} alt="girl with hair" />
-          <img src={girl2} alt="girl with hair" />
-          <img src={girl3} alt="girl with hair" />
-          <img src={girl4} alt="girl with hair" />
+          <Image src={girl0} alt="girl with hair" />
+          <Image src={girl1} alt="girl with hair" />
+          <Image src={girl2} alt="girl with hair" />
+          <Image src={girl3} alt="girl with hair" />
+          <Image src={girl4} alt="girl with hair" />
         </div>
       </div>
       <div className="md:mt-20">
@@ -84,7 +85,7 @@ function LandingPage({ getStylist }) {
         <LearnSection />
         <CommunitySection />
       </div>
-      <FooterComponent getStylist={getStylist} />
+      <FooterComponent />
     </div>
   );
 }

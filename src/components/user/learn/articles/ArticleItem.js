@@ -6,7 +6,7 @@ import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
 import moment from "moment";
-import play from "../../../../assets/images/play-btn.svg";
+import Image from "../../../image";
 
 export function ArticleItem({ article }) {
   const navigate = useNavigate();
@@ -20,6 +20,13 @@ export function ArticleItem({ article }) {
       : navigate(NonAuthRoutes.login);
   };
 
+  const handleClickBookmarkButton = (e) => {
+    e.stopPropagation();
+    // e.preventDefault();
+    alert("clicked");
+    console.log(article);
+  };
+
   return (
     <div
       role="button"
@@ -29,39 +36,38 @@ export function ArticleItem({ article }) {
       onKeyPress={(e) =>
         runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(article))
       }
-      className="bg-white border rounded-2xl border-gray-100 shadow relative"
+      className="bg-white border rounded-2xl border-gray-600 shadow-s01 relative max-h-372 overflow-hidden"
     >
-      <img src={article.image} alt="curly-1 " className="relative w-full " />
-      {/* <img src={article.image} alt="curly-1" className="relative" /> */}
-      <div className="absolute top-0 right-0 mr-4 mt-4 ">
-        <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">
+      <Image
+        src={article.image}
+        alt="curly-1 "
+        className="relative w-full h-159 object-cover"
+      />
+
+      <button
+        type="button"
+        className="absolute top-0 right-0 mr-4 mt-4 z-40"
+        onClick={handleClickBookmarkButton}
+      >
+        <span className="rounded-full p-2 bg-gray-200 opacity-80  flex justify-center items-center">
           {article.number_of_saves.length > 0 ? (
-            <MdOutlineBookmarkBorder color="white" />
-          ) : (
             <MdBookmark color="white" />
+          ) : (
+            <MdOutlineBookmarkBorder color="white" />
           )}
         </span>
-      </div>
-      <div className="p-4">
-        <p className="text-gray-400 text-opacity-50 text-sm font-normal">
+      </button>
+
+      <div className="pt-5 pb-8 px-6">
+        <p className="text-gray-200 text-sm mb-2 font-normal">
           {article.created_by.firstName} {article.created_by.lastName} ·{" "}
-          {article.number_of_views} views ·{" "}
-          {moment(article.createdAt).fromNow()}
+          {moment(article.createdAt).format("DD MMM YYYY")}
         </p>
-        <div
-          role="button"
-          tabIndex={0}
-          key={article._id}
-          onClick={() => handleNavigate(article)}
-          onKeyPress={(e) =>
-            runFunctionWhenSpaceOrEnterIsClicked(e, handleNavigate(article))
-          }
-        >
-          <h2 className="text-base cursor-pointer text-gray-400 font-semibold mb-2">
-            {article.title}
-          </h2>
-        </div>
-        <p className="text-sm text-gray-200 font-normal">
+
+        <h2 className="text-base cursor-pointer text-gray-400 font-semibold mb-2">
+          {article.title}
+        </h2>
+        <p className="text-sm text-gray-200 font-normal max-h-24 overflow-hidden">
           {article.description}
         </p>
       </div>

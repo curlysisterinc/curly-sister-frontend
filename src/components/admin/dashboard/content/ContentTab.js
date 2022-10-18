@@ -18,7 +18,7 @@ import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
 import searchIcon from "../../../../assets/images/search-normal-2.svg";
-import ContentRow from "./contentTableRow";
+import ContentTableRow from "./ContentTableRow";
 // import { contents } from "../users/data";
 import admin from "../../../../api/admin";
 import TypesContent from "../../../customdropdown/dashboard/types";
@@ -122,7 +122,7 @@ function ContentTab({ active }) {
   return (
     <>
       {/* tabs */}
-      <div className="h-screen-170px">
+      <div className="h-screen-170px mt-10">
         <div className="flex items-end justify-between">
           <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
             Content
@@ -202,7 +202,7 @@ function ContentTab({ active }) {
 
         {/* table */}
         {isSuccess && (
-          <div className="flex flex-col mt-4 min-h-screen">
+          <div className="flex flex-col mt-4 ">
             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="max-h-screen-250px overflow-auto shadow-s01 border border-gray-600 rounded-2xl">
@@ -266,7 +266,7 @@ function ContentTab({ active }) {
                       </tr>
                     </thead>
                     <tbody className="">
-                      <ContentRow
+                      <ContentTableRow
                         getVideos={getVideos}
                         setGetVideos={setGetVideos}
                         getArticles={getArticles}

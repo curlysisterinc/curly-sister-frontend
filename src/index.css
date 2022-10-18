@@ -66,6 +66,12 @@ input:checked + .toggle-bg {
       url(./assets/fonts/GTSuperTextBlack.otf) format("opentype");
   }
   @font-face {
+    font-family: "GTSuperText";
+    font-weight: 400;
+    src: local("GTSuperText"),
+      url(./assets/fonts/GTSuperText.otf) format("opentype");
+  }
+  @font-face {
     font-family: "BeatriceSemiBold";
     font-weight: 600;
     src: local("BeatriceSemiBold"),
@@ -446,4 +452,42 @@ ul.react-datepicker__time-list {
 }
 .react-datepicker__time-list-item--selected {
   background-color: #590ba9 !important;
+}
+.comment-box {
+  position: relative;
+}
+
+.comment-box:after {
+  content: "";
+  display: table;
+  height: calc(100% - 10px);
+  width: 2px;
+  background: #e2e0e4;
+  position: absolute;
+  top: 45px;
+  left: 20px;
+}
+
+.comment-box:last-child:after {
+  position: unset;
+}
+
+.rdw-option-wrapper {
+  border: none !important;
+  width: 24px !important;
+  height: 24px !important;
+  padding: 2px !important;
+}
+
+.rdw-option-active {
+  background-color: #e2e0e4 !important;
+}
+
+.blog-preview p {
+  margin-bottom: 24px;
+}
+.blog-preview {
+  max-width: 678px;
+  margin: auto;
+  margin-bottom: 48px;
 }

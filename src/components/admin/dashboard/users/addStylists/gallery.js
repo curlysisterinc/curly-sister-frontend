@@ -139,7 +139,7 @@ function GalleryTab({ ariaHidden, idx }) {
             accept="image/*"
             name="gallery"
             onChange={handleFileChange}
-            className="opacity-0 absolute h-16 w-120  border cursor-pointer"
+            className="opacity-0 absolute h-16 w-120  border cursor-pointer z-50 "
           />
 
           <img src={uploadFile} className="h-16 w-120 cursor-pointer" alt="" />

@@ -20,24 +20,10 @@ export default () => {
     {
       onSuccess: (context) => {
         const { data } = context;
-        addToast("Signin Successful", {
+        addToast("SignUp Successful", {
           appearance: "success",
         });
 
-        authHandler.setUserInfo(data.user);
-        // JWT DECODE SETUP
-        const accessToken = data.jwtToken;
-        const refreshToken = data.refresh_token;
-        Cookies.set("accessToken", accessToken);
-        authHandler.handle(refreshToken);
-        // const accessToken = res.access_token;
-        // authHandler.handle(accessToken);
-        dispatch(
-          loginUser({
-            token: accessToken,
-            isSignedIn: true,
-          })
-        );
         navigate(NonAuthRoutes.home);
       },
       onError: async (error) => {
