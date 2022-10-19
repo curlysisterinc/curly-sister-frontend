@@ -7,21 +7,23 @@ import learn from "../../../api/learn";
 
 export default (id) => {
   const { addToast } = useToasts();
-  const { DeleteArticleById } = learn;
+  const { CommentOnVideo } = learn;
 
-  return useMutation(() => DeleteArticleById(id), {
+  return useMutation((commentValue) => CommentOnVideo(id, commentValue), {
     onSuccess: (context) => {
       const { data } = context;
       addToast(data.message, {
         appearance: "success",
       });
-      queryClient.invalidateQueries(["articles", id]);
-      queryClient.invalidateQueries(["contents"]);
+      queryClient.invalidateQueries(["videos", id, "comments"]);
     },
     onError: async (error) => {
       const mainError = error.response.data;
-
-      addToast(mainError.message, {
+      let errorToDisplay = mainError?.message;
+      if (typeof mainError?.message !== "string") {
+        errorToDisplay = mainError?.message?.message;
+      }
+      addToast(errorToDisplay, {
         appearance: "error",
       });
     },

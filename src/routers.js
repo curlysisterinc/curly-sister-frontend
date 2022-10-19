@@ -237,11 +237,11 @@ function Routers() {
 
                   <Route
                     path={AuthRoutes.editVideoById}
-                    element={<EditVideo />}
+                    element={<NewVideo />}
                   />
                   <Route
                     path={AuthRoutes.editArticleById}
-                    element={<EditArticle />}
+                    element={<NewArticle />}
                   />
                 </Route>
               </Route>

@@ -11,8 +11,8 @@ import admin from "../../../../../api/admin";
 import { AuthRoutes } from "../../../../../constants";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import uploadFile from "../../../../../assets/images/upload-file.png";
-import SlateContent from "../slateContent";
 import learn from "../../../../../api/learn";
+import { DraftContentEditor } from "../DraftContentEditor";
 
 const initialValue = [
   {
@@ -281,10 +281,7 @@ function EditArticle() {
 
               <div className="mt-5">
                 <p>Content</p>
-                <SlateContent
-                  value={inputValues.content}
-                  onChange={handleSlateChange}
-                />
+                <DraftContentEditor />
               </div>
             </div>
           </div>

@@ -21,7 +21,7 @@ import reply from "../../../../assets/images/reply.svg";
 import ellipses from "../../../../assets/images/dark-ellipses.svg";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
 
-export default function CommentBody({ comments, setComments, isReplay }) {
+export default function CommentBody({ comments, setComments, type }) {
   const { token } = useParams();
   const {
     state: { _id },
@@ -35,14 +35,14 @@ export default function CommentBody({ comments, setComments, isReplay }) {
     data: reactionData,
     mutate: reactToComment,
     error: reactionDataError,
-  } = useReactToComment(token);
+  } = useReactToComment(token, type);
 
   const {
     isLoading: isReplyToCommentLoading,
     data: replyToCommentData,
     mutate: replyToComment,
     error: replyToCommentDataError,
-  } = useReplyToComment(token);
+  } = useReplyToComment(token, type);
 
   const handleQuestionReaction = (id, reaction, isCommentReply) => {
     reactToComment({ commentId: id, reaction, isCommentReply });

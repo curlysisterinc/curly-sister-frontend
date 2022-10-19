@@ -9,7 +9,6 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { ToastProvider } from "react-toast-notifications";
-import { toast } from "react-toastify";
 import { process } from "postcss-flexbugs-fixes";
 import Routers from "./routers";
 import CustomToast from "./components/toast";
@@ -30,7 +29,6 @@ export const queryClient = new QueryClient({
 
   queryCache: new QueryCache({
     onError: (error, query) => {
-      toast.error(error?.response?.data?.message);
       if (error?.response?.status === 401) {
         authHandler.deleteUser();
         window.location.href = "/";
@@ -40,7 +38,6 @@ export const queryClient = new QueryClient({
 
   mutationCache: new MutationCache({
     onError: (error, query) => {
-      toast.error(error?.response?.data?.message);
       if (error?.response?.status === 401) {
         authHandler.deleteUser();
         window.location.href = "/login";

@@ -87,7 +87,7 @@ function Stylist() {
         .flatMap((a) => a);
       setFilteredArr(currentData);
       setStylistList(currentData);
-      setTotalStylistCount(data.pages[0].data.totalStylistCount);
+      setTotalStylistCount(data.pages[0].data.totalCount);
     }
   }, [stylistData, !isSearchMode]);
 

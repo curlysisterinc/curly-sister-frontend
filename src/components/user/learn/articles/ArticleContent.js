@@ -10,12 +10,15 @@ import {
   AiOutlineLike,
 } from "react-icons/ai";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
-import { ToastContainer, toast } from "react-toastify";
 import moment from "moment";
 import Image from "components/image";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 
+import Loader from "components/loader-component/loader";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
 import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
+import useGetOneArticle from "hooks/data/learn/useGetOneArticle";
+import useGetCommentForArticle from "hooks/data/learn/useGetCommentForArticle";
 import imagineHairVideo from "../../../../assets/images/imagine-video.png";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
 import reply from "../../../../assets/images/reply.svg";
@@ -25,8 +28,7 @@ import trash from "../../../../assets/images/trash.svg";
 import edit from "../../../../assets/images/edit.svg";
 import report from "../../../../assets/images/report.svg";
 import ContentOptionDropDown from "../ContentOptionDropDown";
-
-import "react-toastify/dist/ReactToastify.css";
+import ArticleCommentSection from "./ArticleCommentSection";
 
 function ArticleContent() {
   const navigate = useNavigate();
@@ -43,68 +45,44 @@ function ArticleContent() {
   const [getArticles, setGetArticles] = useState({});
 
   const {
-    isLoading: isBeleteQuestionLoading,
-    data: deleteQuestionData,
-    mutate: deleteQuestion,
+    isLoading: isDeleteArticleLoading,
+    data: deleteArticleData,
+    mutate: deleteArticle,
   } = useDeleteArticle(token);
 
+  const {
+    isLoading: isArticleLoading,
+    data: articleData,
+    error: articleError,
+    refetch: refetchArticle,
+  } = useGetOneArticle(token);
+  const {
+    isLoading: isCommentForArticleLoading,
+    data: commentForArticleData,
+    error: commentForArticleError,
+    refetch: refetchCommentForArticle,
+  } = useGetCommentForArticle(token);
+
   useEffect(() => {
-    if (deleteQuestionData) {
+    if (deleteArticleData) {
       navigate("/dashboard/content");
     }
-  }, [deleteQuestionData]);
+  }, [deleteArticleData]);
 
   const [isContentModalOpen, setIsContentModalOpen] = useState(false);
 
   useEffect(() => {
-    const ac = new AbortController();
+    if (articleData) {
+      setGetArticles(articleData.data.data);
+    }
+  }, [articleData]);
 
-    learn
-      .GetOneArticle(token)
-      .then((response) => {
-        setGetArticles(response.data.data);
-      })
-      .catch((error) => {});
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
   useEffect(() => {
-    const ac = new AbortController();
+    if (commentForArticleData) {
+      setGetComments(commentForArticleData.data.data);
+    }
+  }, [commentForArticleData]);
 
-    learn
-      .GetCommentForArticle(token)
-      .then((response) => {
-        setGetComments(response.data.data);
-      })
-      .catch((error) => {});
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
-  const handleSubmitComment = (e) => {
-    e.preventDefault();
-
-    learn
-      .CommentOnArticle(token, commentValue)
-      .then((response) => {
-        setGetComments([response.data.data.comment, ...getComments]);
-
-        setCommentValue("");
-      })
-      .catch((error) => {});
-  };
-  const handleSubmitReply = (e) => {
-    e.preventDefault();
-
-    learn
-      .ReplyCommentOnArticle(token, replyValue)
-      .then((response) => {
-        setReplyValue("");
-      })
-      .catch((error) => {});
-  };
   const handleArticleReactionLike = () => {
     setIsLiked(true);
     if (isLiked) {
@@ -133,7 +111,6 @@ function ArticleContent() {
     learn
       .SaveArticle({ articleId: token })
       .then((response) => {
-        toast("Article saved!");
         // setGetArticles([...getArticles, number_of_saves: response.data.data.])
       })
       .catch((error) => {});
@@ -142,9 +119,7 @@ function ArticleContent() {
   const handleDeleteSavedArticle = () => {
     learn
       .DeleteSavedArticle({ id: token })
-      .then((response) => {
-        toast("Article unsaved!");
-      })
+      .then((response) => {})
       .catch((error) => {});
   };
 
@@ -155,265 +130,130 @@ function ArticleContent() {
   };
 
   return (
-    <>
-      <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full max-w-1111 m-auto">
-        <button
-          type="button"
-          onClick={() => navigate("/dashboard/content")}
-          className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
-        >
-          <img src={backArrow} alt="go back" className="mr-4" />
-          Go Back
-        </button>
-        <div className="flex justify-between space-x-5 items-start">
-          <div className="w-9/12">
-            <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl mb-6">
-              {getArticles.title}
-            </h3>
-            <div className="flex items-center mb-4 relative">
-              <p className="text-sm text-gray-200 flex items-center">
-                {getArticles?.created_by?.firstName}{" "}
-                {getArticles?.created_by?.lastName}{" "}
-                {moment(getArticles?.createdAt).format("DD MMM YYYY")}
-              </p>
-              <ContentOptionDropDown
-                content={getArticles}
-                openEditContentModal={() => setIsContentModalOpen(true)}
-                deleteContent={deleteQuestion}
-                isContentDeleting={isBeleteQuestionLoading}
-              />
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full max-w-1111 m-auto">
+      <button
+        type="button"
+        onClick={() => navigate("/dashboard/content")}
+        className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
+      >
+        <img src={backArrow} alt="go back" className="mr-4" />
+        Go Back
+      </button>
+
+      {isArticleLoading && <Loader />}
+
+      {articleError && <ErrorDisplayComponent refetch={refetchArticle} />}
+
+      {articleData && (
+        <>
+          {" "}
+          <div className="flex justify-between space-x-5 items-start">
+            <div className="w-9/12">
+              <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl mb-6">
+                {getArticles.title}
+              </h3>
+              <div className="flex items-center mb-4 relative">
+                <p className="text-sm text-gray-200 flex items-center">
+                  {getArticles?.created_by?.firstName}{" "}
+                  {getArticles?.created_by?.lastName}{" "}
+                  {moment(getArticles?.createdAt).format("DD MMM YYYY")}
+                </p>
+                <ContentOptionDropDown
+                  content={getArticles}
+                  openEditContentModal={() => setIsContentModalOpen(true)}
+                  deleteContent={deleteArticle}
+                  isContentDeleting={isDeleteArticleLoading}
+                />
+              </div>
+            </div>
+            <div className="flex space-x-7">
+              <div className="flex flex-row items-center space-x-2">
+                <button
+                  type="button"
+                  className="rounded-full p-2 bg-gray-200"
+                  onClick={handleArticleReactionLike}
+                >
+                  {!isLiked ? (
+                    <AiOutlineLike color="white" />
+                  ) : (
+                    <AiTwotoneLike color="white" />
+                  )}
+                </button>
+                <p>{getArticles?.likes?.length}</p>
+              </div>
+              <div className="flex flex-row items-center space-x-2">
+                <button
+                  type="button"
+                  className="rounded-full p-2 bg-gray-200"
+                  onClick={handleArticleReactionDisLike}
+                >
+                  {!isDisLiked ? (
+                    <AiOutlineDislike color="white" />
+                  ) : (
+                    <AiTwotoneDislike color="white" />
+                  )}
+                </button>
+                <p>{getArticles?.unlikes?.length}</p>
+              </div>
+              <div className="flex flex-row items-center space-x-2">
+                <button
+                  type="button"
+                  className="rounded-full p-2 bg-gray-200"
+                  onClick={() => setIsSaved(!isSaved)}
+                >
+                  {!isSaved ? (
+                    <MdOutlineBookmarkBorder
+                      onClick={handleSaveArticle}
+                      color="white"
+                    />
+                  ) : (
+                    <MdBookmark
+                      onClick={handleDeleteSavedArticle}
+                      color="white"
+                    />
+                  )}
+                </button>
+                <p>{getArticles?.number_of_saves}</p>
+              </div>
             </div>
           </div>
-          <div className="flex space-x-7">
-            <div className="flex flex-row items-center space-x-2">
-              <button
-                type="button"
-                className="rounded-full p-2 bg-gray-200"
-                onClick={handleArticleReactionLike}
-              >
-                {!isLiked ? (
-                  <AiOutlineLike color="white" />
-                ) : (
-                  <AiTwotoneLike color="white" />
-                )}
-              </button>
-              <p>{getArticles?.likes?.length}</p>
-            </div>
-            <div className="flex flex-row items-center space-x-2">
-              <button
-                type="button"
-                className="rounded-full p-2 bg-gray-200"
-                onClick={handleArticleReactionDisLike}
-              >
-                {!isDisLiked ? (
-                  <AiOutlineDislike color="white" />
-                ) : (
-                  <AiTwotoneDislike color="white" />
-                )}
-              </button>
-              <p>{getArticles?.unlikes?.length}</p>
-            </div>
-            <div className="flex flex-row items-center space-x-2">
-              <button
-                type="button"
-                className="rounded-full p-2 bg-gray-200"
-                onClick={() => setIsSaved(!isSaved)}
-              >
-                {!isSaved ? (
-                  <MdOutlineBookmarkBorder
-                    onClick={handleSaveArticle}
-                    color="white"
-                  />
-                ) : (
-                  <MdBookmark
-                    onClick={handleDeleteSavedArticle}
-                    color="white"
-                  />
-                )}
-              </button>
-              <p>{getArticles?.number_of_saves}</p>
-            </div>
+          <div className="w-full h-auto mt-6 rounded-2xl overflow-hidden">
+            <Image
+              className="w-full h-full max-h-400 object-cover rounded-2xl"
+              src={getArticles?.image}
+              alt=""
+            />
           </div>
-        </div>
-        <div className="w-full h-auto mt-6 rounded-2xl overflow-hidden">
-          <Image
-            className="w-full h-full max-h-400 object-cover rounded-2xl"
-            src={getArticles?.image}
-            alt=""
-          />
-        </div>
-        <div className="mt-8 text-gray-400">
-          <div
-            className="blog-preview"
-            dangerouslySetInnerHTML={createMarkup(getArticles?.content)}
-          />
-          <div className="flex justify-between space-x-8 items-start">
-            <div className="w-8/12">
-              <div className="flex items-center">
-                <img src={gradientAvatar} alt="" className="h-10 w-10" />
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    value={commentValue}
-                    name="comment"
-                    id="comment"
-                    onChange={(e) => setCommentValue(e.target.value)}
-                    placeholder="Add a comment"
-                    className="ml-5 w-full border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
-                  />
-                  {/* {commentValue.length ? (
-                    <button
-                    type="button"
-                      type="button"
-                      onClick={handleSubmitComment}
-                      className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
-                    >
-                      post
-                    </button>
-                  ) : null} */}
+          <div className="mt-8 text-gray-400">
+            <div
+              className="blog-preview"
+              dangerouslySetInnerHTML={createMarkup(getArticles?.content)}
+            />
+            <div className="flex justify-between space-x-8 items-start">
+              <div className="w-8/12">
+                <ArticleCommentSection />
+              </div>
+
+              <div className="">
+                Related Videos
+                <div
+                  onClick={() => navigate(AuthRoutes.videoContent)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) =>
+                    runFunctionWhenSpaceOrEnterIsClicked(e, () => {
+                      navigate(AuthRoutes.videoContent);
+                    })
+                  }
+                >
+                  <img src={imagineHairVideo} alt="" className="mt-4" />
                 </div>
               </div>
-              {/* {getComments &&
-                getComments?.map((comment) => {
-                  return (
-                    <div className="mt-8">
-                      <div className="flex items-start">
-                        <img
-                          className="h-10 w-10 mt-2"
-                          src={gradientAvatar}
-                          alt=""
-                        />
-                        <div className="ml-5 text-sm text-gray-400">
-                          <div className="flex items-center">
-                            <p className="mr-3">Serena Williams</p>
-                            <span className="text-gray-200 text-xs ">
-                              3 mins ago
-                            </span>
-                          </div>
-                          <p className="mt-3 leading-6">{comment.comment}</p>
-                          <div className="flex space-x-4 mt-4 items-center">
-                            <div className="flex">
-                              <span
-                                className="mr-2 items-center"
-                                onClick={() => setIsLiked(!isLiked)}
-                              >
-                                {!isLiked ? (
-                                  <AiOutlineLike color="#8E8695" />
-                                ) : (
-                                  <AiTwotoneLike color="#8E8695" />
-                                )}
-                              </span>
-                              <p>{comment.likes.length}</p>
-                            </div>
-                            <div className="flex items-center">
-                              <span
-                                className="mr-2"
-                                onClick={() => setIsDisLiked(!isDisLiked)}
-                              >
-                                {!isDisLiked ? (
-                                  <AiOutlineDislike color="#8E8695" />
-                                ) : (
-                                  <AiTwotoneDislike color="#8E8695" />
-                                )}
-                              </span>
-
-                              <p>{comment.unlikes.length}</p>
-                            </div>
-
-                            <img
-                              onClick={() => setOpenReply(!openReply)}
-                              className="cursor-pointer"
-                              src={reply}
-                              alt=""
-                            />
-                            <span className="relative">
-                              <img
-                                onClick={() =>
-                                  setReportDropdown(!reportDropdown)
-                                }
-                                className="cursor-pointer"
-                                src={ellipses}
-                                alt=""
-                              />
-                              {reportDropdown ? (
-                                <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                                  <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                                    <img
-                                      src={report}
-                                      alt="report"
-                                      className="mr-3"
-                                    />
-                                    Report
-                                  </div>
-                                </div>
-                              ) : null}
-                            </span>
-                            <span
-                              onClick={() => setOpenReply(true)}
-                              className="text-purple-100 cursor-pointer"
-                            >
-                              {comment.replies.length} replies
-                            </span>
-                          </div>
-                          {openReply ? (
-                            <div className="m-6 flex items-center">
-                              <img
-                                src={gradientAvatar}
-                                alt=""
-                                className="h-10 w-10"
-                              />
-                              <div className="relative w-full">
-                                <input
-                                  type="text"
-                                  value={replyValue}
-                                  name="comment"
-                                  id="comment"
-                                  onChange={(e) =>
-                                    setReplyValue(e.target.value)
-                                  }
-                                  placeholder="Reply comment"
-                                  className="ml-5 w-300 border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
-                                />
-                                {replyValue.length ? (
-                                  <button
-                                  type="button"
-                                    type="button"
-                                    onClick={handleSubmitReply}
-                                    className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
-                                  >
-                                    post
-                                  </button>
-                                ) : null}
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })} */}
-            </div>
-
-            <div className="">
-              Related Videos
-              <div
-                onClick={() => navigate(AuthRoutes.videoContent)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) =>
-                  runFunctionWhenSpaceOrEnterIsClicked(e, () => {
-                    navigate(AuthRoutes.videoContent);
-                  })
-                }
-              >
-                <img src={imagineHairVideo} alt="" className="mt-4" />
-              </div>
             </div>
           </div>
-        </div>
-      </div>
-      <ToastContainer />
-    </>
+        </>
+      )}
+    </div>
   );
 }
 

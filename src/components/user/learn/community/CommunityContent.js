@@ -94,7 +94,9 @@ function CommunityContent() {
       </button>
 
       {isQuestionLoading && <Loader />}
+
       {questionDataError && <ErrorDisplayComponent refetch={refetchQuestion} />}
+
       {questionData && (
         <div className="mx-auto max-w-678">
           <div className="">

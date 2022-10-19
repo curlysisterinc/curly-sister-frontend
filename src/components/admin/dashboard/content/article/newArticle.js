@@ -17,7 +17,6 @@ import admin from "../../../../../api/admin";
 // import { AuthRoutes } from "../../../../../constants";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import uploadFile from "../../../../../assets/images/upload-file.png";
-import SlateContent from "../slateContent";
 import { DraftContentEditor } from "../DraftContentEditor";
 
 function NewArticle() {

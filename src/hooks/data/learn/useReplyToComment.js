@@ -5,18 +5,19 @@ import { useToasts } from "react-toast-notifications";
 import { useAuthContext } from "redux/auth";
 import learn from "../../../api/learn";
 
-export default (id) => {
+export default (id, type) => {
   const { addToast } = useToasts();
   const { ReplyToComment } = learn;
+
   return useMutation(
-    ({ commentId, comment }) => ReplyToComment({ commentId, comment }),
+    ({ commentId, comment }) => ReplyToComment({ commentId, comment, type }),
     {
       onSuccess: (context) => {
         const { data } = context;
         // addToast(data.message, {
         //   appearance: "success",
         // });
-        queryClient.invalidateQueries(["questions", id, "comments"]);
+        queryClient.invalidateQueries([type, id, "comments"]);
       },
       onError: async (error) => {
         const mainError = error.response.data;

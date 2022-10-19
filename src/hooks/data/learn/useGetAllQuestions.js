@@ -19,10 +19,9 @@ export default () => {
 
 export const getNextPageParam = (currentPage) => {
   const totalPage =
-    currentPage.data.payload.totalQuestionCount /
-    Number(currentPage.data.payload.size);
+    currentPage.data.payload.totalCount / Number(currentPage.data.payload.size);
   const lastPage =
-    currentPage.data.payload.totalQuestionCount %
+    currentPage.data.payload.totalCount %
       Number(currentPage.data.payload.size) ===
     0
       ? totalPage

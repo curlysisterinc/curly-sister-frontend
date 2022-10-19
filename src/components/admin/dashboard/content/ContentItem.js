@@ -1,3 +1,6 @@
+import ContentOptionDropDown from "components/user/learn/ContentOptionDropDown";
+import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
+import useDeleteVideo from "hooks/data/learn/useDeleteVideo";
 import moment from "moment";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -11,15 +14,50 @@ export function ContentItem({
   content,
   selectedId,
   onCheck,
-  handleDeleteContent,
+  // handleDeleteContent,
 }) {
   const navigate = useNavigate();
+
+  const {
+    isLoading: isDeleteArticleLoading,
+    data: deleteArticleData,
+    mutate: deleteArticle,
+  } = useDeleteArticle(content._id);
+
+  const {
+    isLoading: isDeleteVideoLoading,
+    data: deleteVideoData,
+    mutate: deleteVideo,
+  } = useDeleteVideo(content._id);
+
+  const isLoading = isDeleteArticleLoading || isDeleteVideoLoading;
+
+  const handleDeleteContent = (e) => {
+    e.stopPropagation();
+    e.stopPropagation();
+
+    if (content.content_type === "article") {
+      deleteArticle();
+    } else {
+      deleteVideo();
+    }
+  };
+
+  const handleClickRow = (e) => {
+    if (!e.target.type) {
+      navigate(`/learn/${content.content_type}/${content._id}`);
+    }
+  };
+
+  const handleOpenEditPage = () => {
+    navigate(`/edit-${content.content_type}/${content._id}`);
+  };
 
   return (
     <tr
       key={content._id}
       className="bg-white border-b border-gray-600 cursor-pointer"
-      onClick={() => navigate(`/learn/${content.content_type}/${content._id}`)}
+      onClick={handleClickRow}
     >
       <th scope="row">
         <input
@@ -68,10 +106,11 @@ export function ContentItem({
       </td>
       <td className="px-2 py-y relative cursor-pointer ">
         <ContentDropDown
-          deleteAction={handleDeleteContent}
-          editAction={() => navigate(AuthRoutes.addArticle)}
+          handleDeleteContent={handleDeleteContent}
+          editAction={handleOpenEditPage}
           publishAction={() => console.log("publish")}
           status={content.status}
+          isLoading={isLoading}
         />
       </td>
     </tr>

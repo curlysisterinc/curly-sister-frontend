@@ -72,7 +72,6 @@
     "react-stripe-checkout": "^2.6.3",
     "react-textarea-autosize": "^8.3.4",
     "react-toast-notifications": "^2.5.1",
-    "react-toastify": "^9.0.5",
     "react-top-loading-bar": "^2.1.0",
     "slate": "^0.78.0",
     "slate-history": "^0.66.0",

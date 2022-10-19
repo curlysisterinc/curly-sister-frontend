@@ -25,9 +25,10 @@ import {
   AiOutlineLike,
 } from "react-icons/ai";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import moment from "moment";
+import VideoCommentSection from "./VideoCommentSection";
+import useGetCommentForVideo from "hooks/data/learn/useGetCommentForVideo";
+// import useCommentOnVideo from "hooks/data/learn/useCommentOnVideo";
 
 function VideoContent() {
   const navigate = useNavigate();
@@ -50,20 +51,6 @@ function VideoContent() {
       .GetOneVideo(token)
       .then((response) => {
         setGetVideos(response.data.data);
-      })
-      .catch((error) => {});
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
-
-  useEffect(() => {
-    const ac = new AbortController();
-
-    learn
-      .GetCommentForVideo(token)
-      .then((response) => {
-        setGetComments(response.data.data);
       })
       .catch((error) => {});
     return function cleanup() {
@@ -129,18 +116,14 @@ function VideoContent() {
   const handleSaveVideo = () => {
     learn
       .SaveVideo({ videoId: token })
-      .then((response) => {
-        toast("Video saved!");
-      })
+      .then((response) => {})
       .catch((error) => {});
   };
 
   const handleDeleteSavedVideo = () => {
     learn
       .DeleteSavedVideo({ id: token })
-      .then((response) => {
-        toast("Video unsaved!");
-      })
+      .then((response) => {})
       .catch((error) => {});
   };
   return (
@@ -232,161 +215,14 @@ function VideoContent() {
                 <MdBookmark color="white" onClick={handleDeleteSavedVideo} />
               )}
             </span>
-            <ToastContainer />
           </div>
         </div>
         <hr className="w-full border border-gray-250 my-10" />
         <div className="flex justify-between space-x-8 items-start">
           <div className="w-8/12">
-            <div className="flex items-center">
-              <img src={gradientAvatar} alt="" className="h-10 w-10" />
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  value={commentValue}
-                  name="comment"
-                  id="comment"
-                  onChange={(e) => setCommentValue(e.target.value)}
-                  placeholder="Add a comment"
-                  className="ml-5 w-full border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
-                />
-                {commentValue.length ? (
-                  <button
-                    type="button"
-                    onClick={handleSubmitComment}
-                    className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
-                  >
-                    post
-                  </button>
-                ) : null}
-              </div>
-            </div>
-            <div className="w-full">
-              {getComments &&
-                getComments?.map((comment) => {
-                  return (
-                    <div className="mt-8">
-                      <div className="flex items-start">
-                        <img
-                          className="h-10 w-10 mt-2"
-                          src={gradientAvatar}
-                          alt=""
-                        />
-                        <div className="ml-5 text-sm text-gray-400">
-                          <div className="flex items-center">
-                            <p className="mr-3">Serena Williams</p>
-                            <span className="text-gray-200 text-xs ">
-                              {moment(comment.createdAt).fromNow()}
-                            </span>
-                          </div>
-                          <p className="mt-3 leading-6">{comment.comment}</p>
-                          <div className="flex space-x-4 mt-4 items-center">
-                            <div className="flex">
-                              <span
-                                className="mr-2 items-center"
-                                onClick={() => setIsLiked(!isLiked)}
-                              >
-                                {!isLiked ? (
-                                  <AiOutlineLike color="#8E8695" />
-                                ) : (
-                                  <AiTwotoneLike color="#8E8695" />
-                                )}
-                              </span>
-                              <p>{comment?.likes?.length}</p>
-                            </div>
-                            <div className="flex items-center">
-                              <span
-                                className="mr-2"
-                                onClick={() => setIsDisLiked(!isDisLiked)}
-                              >
-                                {!isDisLiked ? (
-                                  <AiOutlineDislike color="#8E8695" />
-                                ) : (
-                                  <AiTwotoneDislike color="#8E8695" />
-                                )}
-                              </span>
-                              {/* <img
-                                  className="cursor-pointer mr-2"
-                                  src={dislike}
-                                  alt=""
-                                /> */}
-                              <p>{comment?.unlikes?.length}</p>
-                            </div>
-
-                            <img
-                              onClick={() => setOpenReply(!openReply)}
-                              className="cursor-pointer"
-                              src={reply}
-                              alt=""
-                            />
-                            <span className="relative">
-                              <img
-                                onClick={() =>
-                                  setReportDropdown(!reportDropdown)
-                                }
-                                className="cursor-pointer"
-                                src={ellipses}
-                                alt=""
-                              />
-                              {reportDropdown ? (
-                                <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                                  <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                                    <img
-                                      src={report}
-                                      alt="report"
-                                      className="mr-3"
-                                    />
-                                    Report
-                                  </div>
-                                </div>
-                              ) : null}
-                            </span>
-                            <span
-                              onClick={() => setOpenReply(true)}
-                              className="text-purple-100 cursor-pointer"
-                            >
-                              {comment?.replies?.length} replies
-                            </span>
-                          </div>
-                          {openReply ? (
-                            <div className="m-6 flex items-center">
-                              <img
-                                src={gradientAvatar}
-                                alt=""
-                                className="h-10 w-10"
-                              />
-                              <div className="relative w-full">
-                                <input
-                                  type="text"
-                                  value={replyValue}
-                                  name="comment"
-                                  id="comment"
-                                  onChange={(e) =>
-                                    setReplyValue(e.target.value)
-                                  }
-                                  placeholder="Reply comment"
-                                  className="ml-5 w-300 border h-46 rounded-xl border-gray-800 3 placeholder:text-gray-400 text-gray-400 text-sm"
-                                />
-                                {replyValue?.length ? (
-                                  <button
-                                    type="button"
-                                    onClick={handleSubmitReply}
-                                    onKeyPress={handleSubmitReply}
-                                    className="disabled:text-gray-300 border-0 outline-0 text-sm text-purple-100 cursor-pointer absolute right-0 top-3"
-                                  >
-                                    post
-                                  </button>
-                                ) : null}
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
+            <VideoCommentSection />
           </div>
+
           <div className="">
             Related Videos
             <img

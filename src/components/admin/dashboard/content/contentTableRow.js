@@ -1,3 +1,4 @@
+import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import admin from "../../../../api/admin";
@@ -16,6 +17,7 @@ function ContentTableRow({
   setCallToAction,
 }) {
   const navigate = useNavigate();
+
   const onCheck = (e, id) => {
     if (e.target.checked) {
       setCallToAction(true);

@@ -7,15 +7,15 @@ import learn from "../../../api/learn";
 
 export default (id) => {
   const { addToast } = useToasts();
-  const { DeleteArticleById } = learn;
+  const { DeleteVideoById } = learn;
 
-  return useMutation(() => DeleteArticleById(id), {
+  return useMutation(() => DeleteVideoById(id), {
     onSuccess: (context) => {
       const { data } = context;
       addToast(data.message, {
         appearance: "success",
       });
-      queryClient.invalidateQueries(["articles", id]);
+      queryClient.invalidateQueries(["videos", id]);
       queryClient.invalidateQueries(["contents"]);
     },
     onError: async (error) => {

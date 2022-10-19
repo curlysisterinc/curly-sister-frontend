@@ -6,26 +6,32 @@ import { useToasts } from "react-toast-notifications";
 import { useAuthContext } from "redux/auth";
 import learn from "../../../api/learn";
 
-export default (id) => {
+export default (id, type) => {
   const { addToast } = useToasts();
   const {
     state: { _id: userId },
   } = useAuthContext();
-  const { ReactToComment } = learn;
+  const { ReactToQuestion, ReactToArticle, ReactToVideo } = learn;
+
+  const reactionfn = {
+    questions: ReactToQuestion,
+    articles: ReactToArticle,
+    videos: ReactToVideo,
+  };
+
   return useMutation(
-    ({ commentId, reaction }) => ReactToComment({ commentId, reaction }),
+    ({ commentId, reaction }) => reactionfn[type](commentId, reaction),
     {
       // When mutate is called:
       onMutate: async (variables) => {
         // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
         // await queryClient.cancelQueries(["questions", id, "comments"]);
-
         // Snapshot the previous value
         const previousComments = queryClient.getQueryData([
-          "questions",
+          `${type}`,
           id,
           "comments",
-        ]).data.data;
+        ]).data.data.comment;
 
         if (!variables.isCommentReply) {
           const newComments = previousComments.map((item) => {
@@ -79,8 +85,11 @@ export default (id) => {
             return item;
           });
 
-          queryClient.setQueryData(["questions", id, "comments"], (oldData) => {
-            return { ...oldData, data: { data: [...newComments] } };
+          queryClient.setQueryData([`${type}`, id, "comments"], (oldData) => {
+            return {
+              ...oldData,
+              data: { data: { comment: [...newComments] } },
+            };
           });
         }
 
@@ -89,7 +98,7 @@ export default (id) => {
       },
 
       onSettled: () => {
-        queryClient.invalidateQueries(["questions", id, "comments"]);
+        queryClient.invalidateQueries([`${type}`, id, "comments"]);
       },
 
       onError: async (error) => {

@@ -50,7 +50,7 @@ function StylistTab() {
         .flatMap((a) => a);
 
       setStylists(currentData);
-      setTotalStylistCount(data.pages[0].data.totalStylistCount);
+      setTotalStylistCount(data.pages[0].data.totalCount);
     }
   }, [stylistData]);
 

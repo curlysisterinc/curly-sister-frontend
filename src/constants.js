@@ -6,6 +6,7 @@ const AuthRoutes = {
   admin: "/dashboard/users/admin",
   analytics: "/analytics",
   addArticle: "/create-article",
+  Article: "/create-article",
   bookings: "/bookings",
   bookedStylistProfile: "/stylists/stylist-profile/:token",
   confirmBooking: "/stylists/confirm-booking",
