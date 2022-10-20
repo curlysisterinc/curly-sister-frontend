@@ -1,8 +1,9 @@
+/* eslint-disable no-shadow */
 import { Loadersmall } from "components/loader-component/loader";
 import useAddArticleToContent from "hooks/data/admin/useAddArticleToContent";
 import useUploadPhoto from "hooks/data/admin/useUploadPhoto";
 import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Node } from "slate";
 import { runFunctionWhenSpaceOrEnterIsClicked, serializeToHTML } from "utils";
 // import Html from "slate-html-serializer";
@@ -12,7 +13,9 @@ import {
   convertToRaw,
   convertFromRaw,
 } from "draft-js";
-import { convertToHTML } from "draft-convert";
+import { convertFromHTML, convertToHTML } from "draft-convert";
+import useGetOneArticle from "hooks/data/learn/useGetOneArticle";
+import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
 import admin from "../../../../../api/admin";
 // import { AuthRoutes } from "../../../../../constants";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
@@ -21,20 +24,25 @@ import { DraftContentEditor } from "../DraftContentEditor";
 
 function NewArticle() {
   const navigate = useNavigate();
-  // const inputRef = useRef();
-  const [btnDisabled, setBtnDisabled] = useState(true);
-  const [draftBtn, setDraftBtn] = useState(false);
+  const token = useParams()?.token ?? null;
+
   const [image, setImage] = useState(null);
   const [filePreview, setFilePreview] = useState("");
-  const [content, setContent] = useState([]);
+  const [content, setContent] = useState(null);
   const [inputValues, setInputValues] = useState({
     title: "",
     source: "curly sister",
     file: null,
-    status1: "published",
-    status2: "unpublished",
+    status: "unpublished",
     // content: "",
   });
+
+  const {
+    isLoading: isArticleLoading,
+    data: articleData,
+    error: articleError,
+    refetch: refetchArticle,
+  } = useGetOneArticle(token);
 
   const {
     isLoading: isAddArticleToContentLoading,
@@ -52,25 +60,50 @@ function NewArticle() {
     mutate: uploadPhoto,
   } = useUploadPhoto();
 
+  const {
+    isLoading: isUpdateArticleLoading,
+    data: updatedArticleData,
+    error: updateArticleError,
+    mutate: updateArticle,
+  } = useUpdateArticle(token);
+
   useEffect(() => {
-    const initialValue = JSON.parse(localStorage.getItem("content")) || [
-      {
-        type: "paragraph",
-        children: [{ text: "" }],
-      },
-    ];
-    // console.log(initialValue);
-    setContent(initialValue);
-  }, []);
+    if (updatedArticleData) {
+      navigate(-1);
+    }
+  }, [updatedArticleData]);
+
+  useEffect(() => {
+    if (articleData) {
+      const { data } = articleData.data;
+      handleParseHtmlData(data.content);
+      setInputValues({
+        ...inputValues,
+        title: data.title,
+        source: data.source,
+        file: data.image,
+        status: data.status,
+      });
+      setFilePreview(data.image);
+    }
+  }, [articleData]);
 
   useEffect(() => {
     if (photoUploadData) {
-      addArticleToContent({
-        ...inputValues,
-        file: photoUploadData.data.file,
-        content,
-        // content,
-      });
+      if (token) {
+        updateArticle({
+          ...inputValues,
+          content,
+          file: photoUploadData.data.file,
+        });
+      } else {
+        addArticleToContent({
+          ...inputValues,
+          file: photoUploadData.data.file,
+          content,
+          // content,
+        });
+      }
     }
   }, [photoUploadData]);
 
@@ -85,43 +118,38 @@ function NewArticle() {
     };
   }, [addArticleToContentData]);
 
-  // Define a serializing function that takes a value and returns a string.
-  const serialize = (value) => {
-    return (
-      value
-        // Return the string content of each paragraph in the value's children.
-        .map((n) => Node.string(n))
-        // Join them all with line breaks denoting paragraphs.
-        .join("\n")
-    );
+  const handleParseHtmlData = (htmlContent) => {
+    const blocksFromHTML = convertToRaw(convertFromHTML(htmlContent));
+    localStorage.setItem("content", JSON.stringify(blocksFromHTML));
+    setContent(blocksFromHTML);
   };
 
   const handlePublishArticle = (e, status) => {
     e.preventDefault();
-
     const newContent = JSON.parse(localStorage.getItem("content"));
     const convertedHtmlText = convertToHTML(convertFromRaw(newContent));
     setContent(convertedHtmlText);
-    setInputValues({ ...inputValues, status });
-    const formData = new FormData();
-    formData.append("file", inputValues.file);
-    uploadPhoto(formData);
+    if (status) setInputValues({ ...inputValues, status });
+    if (articleData?.data?.data?.image !== filePreview) {
+      const formData = new FormData();
+      formData.append("file", inputValues.file);
+      uploadPhoto(formData);
+    } else {
+      updateArticle({
+        ...inputValues,
+        content: convertedHtmlText,
+        // content,
+      });
+    }
   };
+
+  const handleUpdateArticle = (e) => handlePublishArticle(e);
 
   const disableButton = Object.values(inputValues).some((item) => item === "");
 
   const handleChange = (e) => {
     const { value } = e.target;
     setInputValues({ ...inputValues, [e.target.name]: value });
-  };
-
-  const handleSlateChange = (value) => {
-    // const content = JSON.stringify(value.toJSON());
-    const newValue = JSON.stringify(value);
-    localStorage.setItem("content", newValue);
-    setContent(newValue);
-    // console.log(value);
-    // setInputValues({ ...inputValues, content });
   };
 
   useEffect(() => {
@@ -151,38 +179,50 @@ function NewArticle() {
           <form autoComplete="off" className="w-full max-w-640 m-auto">
             <div className=" flex justify-between items-center">
               <div className="text-22 text-gray-400 font-BeatriceSemiBold">
-                Article
+                {token ? "Edit Article" : "Article"}
               </div>
-              <div className="flex">
-                <button
-                  type="button"
-                  onClick={(e) => handlePublishArticle(e, "unpublish")}
-                  disabled={disableButton}
-                  className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400 disabled:opacity-40"
-                >
-                  {(isAddArticleToContentLoading || isPhotoUploadLoading) &&
-                  inputValues.status === "unpublish" ? (
-                    <Loadersmall />
-                  ) : (
-                    "Save"
-                  )}
-                </button>
-
+              {token ? (
                 <button
                   type="button"
                   disabled={disableButton}
-                  onClick={(e) => handlePublishArticle(e, "published")}
+                  onClick={(e) => handleUpdateArticle(e)}
                   // onClick={handlePublishArticle}
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
                 >
-                  {(isAddArticleToContentLoading || isPhotoUploadLoading) &&
-                  inputValues.status === "published" ? (
-                    <Loadersmall />
-                  ) : (
-                    "Publish"
-                  )}
+                  {isUpdateArticleLoading ? <Loadersmall /> : "Update"}
                 </button>
-              </div>
+              ) : (
+                <div className="flex">
+                  <button
+                    type="button"
+                    onClick={(e) => handlePublishArticle(e, "unpublish")}
+                    disabled={disableButton}
+                    className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400 disabled:opacity-40"
+                  >
+                    {(isAddArticleToContentLoading || isPhotoUploadLoading) &&
+                    inputValues.status === "unpublish" ? (
+                      <Loadersmall />
+                    ) : (
+                      "Save"
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={disableButton}
+                    onClick={(e) => handlePublishArticle(e, "published")}
+                    // onClick={handlePublishArticle}
+                    className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
+                  >
+                    {(isAddArticleToContentLoading || isPhotoUploadLoading) &&
+                    inputValues.status === "published" ? (
+                      <Loadersmall />
+                    ) : (
+                      "Publish"
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
 
             <hr className="mb-5 mt-5 border-b border-gray-600  mx-auto" />
@@ -267,7 +307,7 @@ function NewArticle() {
 
                 <div className="mt-5">
                   <p>Content</p>
-                  <DraftContentEditor />
+                  <DraftContentEditor content={content} />
                 </div>
               </div>
             </div>

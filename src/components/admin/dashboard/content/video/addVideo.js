@@ -6,20 +6,20 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import useGetVideoCategory from "hooks/data/admin/useGetVideoCategory";
 import useAddVideoToContent from "hooks/data/admin/useAddVideoToContent";
 import useGetExternalVideoData from "hooks/data/utility/useGetExternalVideoData";
 import { Loadersmall } from "components/loader-component/loader";
 import utility from "api/utility";
-import { AuthRoutes } from "../../../../../constants";
-import admin from "../../../../../api/admin";
-import SideBarComponent from "../../../../sidebar";
+import useGetOneVideo from "hooks/data/learn/useGetOneVideo";
+import useUpdateVideo from "hooks/data/admin/useUpdateVideo";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import NewVideoCategory from "./newVideoCategory";
 
 function NewVideo() {
+  const token = useParams()?.token ?? null;
   const navigate = useNavigate();
   const [options, setOptions] = useState([]);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -48,12 +48,46 @@ function NewVideo() {
   } = useAddVideoToContent();
 
   const {
+    isLoading: isExternalVideoLoading,
+    data: externalVideoData,
+    isError: externalVideoError,
+    refetch: externalVideoRefetch,
+    mutate: getExternalVideoData,
+  } = useGetExternalVideoData();
+
+  const {
     isLoading: isVideoLoading,
     data: videoData,
-    isError: videoError,
-    refetch: videoRefetch,
-    mutate: getVideoData,
-  } = useGetExternalVideoData();
+    error: videoError,
+    refetch: refetchVideo,
+  } = useGetOneVideo(token);
+
+  useEffect(() => {
+    if (videoData) {
+      const { data } = videoData.data;
+      setVideoInputs({
+        ...videoInputs,
+        description: data.description,
+        title: data.title,
+        link: data.link,
+        category: data.category[0],
+        source: data.source,
+      });
+    }
+  }, [videoData]);
+
+  const {
+    isLoading: isUpdateVideoLoading,
+    data: updatedVideoData,
+    error: updateVideoError,
+    mutate: updateVideo,
+  } = useUpdateVideo(token);
+
+  useEffect(() => {
+    if (updatedVideoData) {
+      navigate(-1);
+    }
+  }, [updatedVideoData]);
 
   const handleChange = (event) => {
     setVideoInputs({ ...videoInputs, [event.target.name]: event.target.value });
@@ -97,20 +131,38 @@ function NewVideo() {
 
   useEffect(() => {
     const ac = new AbortController();
-    if (videoData) {
-      handleSubmit(videoData);
+    if (externalVideoData) {
+      if (token) {
+        updateVideo({
+          ...videoInputs,
+          thumbnail: externalVideoData?.thumbnail_url || "",
+          duration: externalVideoData?.duration || "",
+        });
+      } else {
+        handleSubmit(externalVideoData);
+      }
     }
     return function cleanup() {
       ac.abort();
     };
-  }, [videoData]);
+  }, [externalVideoData]);
 
   const disableButton = Object.values(videoInputs).some((item) => item === "");
 
   const handleGetVideoDataBeforeSubmit = (e, status) => {
-    setVideoInputs({ ...videoInputs, status });
-    getVideoData(videoInputs.link);
+    if (status) setVideoInputs({ ...videoInputs, status });
+    if (videoData?.data?.data?.link !== videoInputs.link) {
+      getExternalVideoData(videoInputs.link);
+    } else {
+      console.log({ ...videoInputs });
+
+      updateVideo({
+        ...videoInputs,
+      });
+    }
   };
+
+  const handleUpdateVideo = (e) => handleGetVideoDataBeforeSubmit(e);
 
   const handleSubmit = (response) => {
     const data = {
@@ -138,39 +190,51 @@ function NewVideo() {
               <div className="text-22 text-gray-400 font-BeatriceSemiBold">
                 Video
               </div>
-              <div className="flex">
-                <button
-                  type="button"
-                  onClick={(e) =>
-                    handleGetVideoDataBeforeSubmit(e, "unpublish")
-                  }
-                  disabled={disableButton}
-                  className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400 disabled:opacity-40"
-                >
-                  {(isAddVideoToContentLoading || isVideoLoading) &&
-                  videoInputs.status === "unpublish" ? (
-                    <Loadersmall />
-                  ) : (
-                    "Save"
-                  )}
-                </button>
-
+              {token ? (
                 <button
                   type="button"
                   disabled={disableButton}
-                  onClick={(e) =>
-                    handleGetVideoDataBeforeSubmit(e, "published")
-                  }
+                  onClick={(e) => handleUpdateVideo(e)}
+                  // onClick={handlePublishArticle}
                   className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
                 >
-                  {(isAddVideoToContentLoading || isVideoLoading) &&
-                  videoInputs.status === "published" ? (
-                    <Loadersmall />
-                  ) : (
-                    "Publish"
-                  )}
+                  {isUpdateVideoLoading ? <Loadersmall /> : "Update"}
                 </button>
-              </div>
+              ) : (
+                <div className="flex">
+                  <button
+                    type="button"
+                    onClick={(e) =>
+                      handleGetVideoDataBeforeSubmit(e, "unpublish")
+                    }
+                    disabled={disableButton}
+                    className="text-sm mr-5 font-BeatriceSemiBold rounded-full bg-gray-50 border border-gray-250 py-2 px-8 text-gray-400 disabled:opacity-40"
+                  >
+                    {(isAddVideoToContentLoading || isExternalVideoLoading) &&
+                    videoInputs.status === "unpublish" ? (
+                      <Loadersmall />
+                    ) : (
+                      "Save"
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={disableButton}
+                    onClick={(e) =>
+                      handleGetVideoDataBeforeSubmit(e, "published")
+                    }
+                    className="text-sm font-BeatriceSemiBold rounded-full bg-orange-200 py-2 px-8 text-white disabled:opacity-40"
+                  >
+                    {(isAddVideoToContentLoading || isExternalVideoLoading) &&
+                    videoInputs.status === "published" ? (
+                      <Loadersmall />
+                    ) : (
+                      "Publish"
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
 
             <hr className="mb-5 mt-5 border-b border-gray-600  mx-auto" />
@@ -311,7 +375,7 @@ function NewVideo() {
                     placeholder="Enter a description for this service"
                     name="description"
                     id="description"
-                    values={videoInputs.description}
+                    value={videoInputs.description}
                     onChange={handleChange}
                     rows="3"
                   />

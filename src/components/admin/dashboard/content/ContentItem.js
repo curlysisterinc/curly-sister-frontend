@@ -1,4 +1,6 @@
 import ContentOptionDropDown from "components/user/learn/ContentOptionDropDown";
+import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
+import useUpdateVideo from "hooks/data/admin/useUpdateVideo";
 import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
 import useDeleteVideo from "hooks/data/learn/useDeleteVideo";
 import moment from "moment";
@@ -10,12 +12,7 @@ import greenIndicator from "../../../../assets/images/green-indicator.svg";
 import { AuthRoutes } from "../../../../constants";
 import ContentDropDown from "../../../customdropdown/dashboard/content/contentitem";
 
-export function ContentItem({
-  content,
-  selectedId,
-  onCheck,
-  // handleDeleteContent,
-}) {
+export function ContentItem({ content, selectedId, onCheck }) {
   const navigate = useNavigate();
 
   const {
@@ -30,7 +27,40 @@ export function ContentItem({
     mutate: deleteVideo,
   } = useDeleteVideo(content._id);
 
-  const isLoading = isDeleteArticleLoading || isDeleteVideoLoading;
+  const {
+    isLoading: isUpdateVideoLoading,
+    data: updatedVideoData,
+    error: updateVideoError,
+    mutate: updateVideo,
+  } = useUpdateVideo(content._id);
+
+  const {
+    isLoading: isUpdateArticleLoading,
+    data: updatedArticleData,
+    error: updateArticleError,
+    mutate: updateArticle,
+  } = useUpdateArticle(content._id);
+
+  const isLoading =
+    isDeleteArticleLoading ||
+    isDeleteVideoLoading ||
+    isUpdateVideoLoading ||
+    isUpdateArticleLoading;
+
+  const handleChangeStatus = (e) => {
+    e.stopPropagation();
+    e.stopPropagation();
+
+    const newStatus =
+      content.status === "PUBLISHED" ? "unpublished" : "published";
+    const newData = { ...content, status: newStatus };
+
+    if (content.content_type === "article") {
+      updateArticle(newData);
+    } else {
+      updateVideo(newData);
+    }
+  };
 
   const handleDeleteContent = (e) => {
     e.stopPropagation();
@@ -106,30 +136,24 @@ export function ContentItem({
       </td>
       <td className="px-2 py-y relative cursor-pointer ">
         <ContentDropDown
-          handleDeleteContent={handleDeleteContent}
           editAction={handleOpenEditPage}
-          publishAction={() => console.log("publish")}
+          publishAction={handleChangeStatus}
           status={content.status}
           isLoading={isLoading}
+          handleDeleteContent={handleDeleteContent}
         />
       </td>
     </tr>
   );
 }
 
-export const ContentBody = ({
-  data,
-  selectedId,
-  onCheck,
-  handleDeleteContent,
-}) => {
+export const ContentBody = ({ data, selectedId, onCheck }) => {
   return data?.map((content) => {
     return (
       <ContentItem
         content={content}
         selectedId={selectedId}
         onCheck={onCheck}
-        handleDeleteContent={handleDeleteContent}
       />
     );
   });

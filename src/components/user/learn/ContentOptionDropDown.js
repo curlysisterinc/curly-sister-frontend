@@ -59,17 +59,6 @@ function ContentOptionDropDown({
     state: { role, _id },
   } = useAuthContext();
 
-  // const {
-  //   isLoading: isBeleteArticleLoading,
-  //   data: deleteArticleData,
-  //   mutate: deleteContent,
-  // } = useDeleteArticle(token);
-
-  // useEffect(() => {
-  //   if (deleteArticleData) navigate(-1);
-  // }, [deleteArticleData]);
-
-  // const isLoading = isBeleteArticleLoading;
   const isUserCreatorOfContent = useMemo(
     () => _id === content?.created_by?._id,
     [content, _id]

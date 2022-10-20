@@ -13,7 +13,10 @@ function Content() {
       <DropDownItem>
         <button
           type="button"
-          onClick={() => navigate(AuthRoutes.addArticle)}
+          onClick={() => {
+            localStorage.setItem("content", null);
+            navigate(AuthRoutes.addArticle);
+          }}
           className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
         >
           <img className="mr-2" src={articleIcon} alt="" />

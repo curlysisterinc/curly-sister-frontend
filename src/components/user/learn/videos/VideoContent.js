@@ -28,6 +28,11 @@ import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import moment from "moment";
 import VideoCommentSection from "./VideoCommentSection";
 import useGetCommentForVideo from "hooks/data/learn/useGetCommentForVideo";
+import useDeleteVideo from "hooks/data/learn/useDeleteVideo";
+import useGetOneVideo from "hooks/data/learn/useGetOneVideo";
+import ContentOptionDropDown from "../ContentOptionDropDown";
+import { formartCount } from "utils";
+
 // import useCommentOnVideo from "hooks/data/learn/useCommentOnVideo";
 
 function VideoContent() {
@@ -44,50 +49,44 @@ function VideoContent() {
   const [isDisLiked, setIsDisLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
+  const {
+    isLoading: isDeleteVideoLoading,
+    data: deleteVideoData,
+    mutate: deleteVideo,
+  } = useDeleteVideo(token);
+
+  const {
+    isLoading: isVideoLoading,
+    data: videoData,
+    error: videoError,
+    refetch: refetchVideo,
+  } = useGetOneVideo(token);
+  const {
+    isLoading: isCommentForVideoLoading,
+    data: commentForVideoData,
+    error: commentForVideoError,
+    refetch: refetchCommentForVideo,
+  } = useGetCommentForVideo(token);
+
   useEffect(() => {
-    const ac = new AbortController();
+    if (deleteVideoData) {
+      navigate("/dashboard/content");
+    }
+  }, [deleteVideoData]);
 
-    learn
-      .GetOneVideo(token)
-      .then((response) => {
-        setGetVideos(response.data.data);
-      })
-      .catch((error) => {});
-    return function cleanup() {
-      ac.abort();
-    };
-  }, []);
+  const [isContentModalOpen, setIsContentModalOpen] = useState(false);
 
-  const deleteVideoById = () => {
-    learn
-      .DeleteVideoById(token)
-      .then((response) => {
-        setGetVideos(response.data.data);
-        navigate(-1);
-      })
-      .catch((error) => {});
-  };
-  const handleSubmitComment = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (videoData) {
+      setGetVideos(videoData.data.data);
+    }
+  }, [videoData]);
 
-    learn
-      .CommentOnVideo(token, commentValue)
-      .then((response) => {
-        setGetComments([response.data.data.comment, ...getComments]);
-        setCommentValue("");
-      })
-      .catch((error) => {});
-  };
-  const handleSubmitReply = (e) => {
-    e.preventDefault();
-
-    learn
-      .ReplyCommentOnVideo(token, replyValue)
-      .then((response) => {
-        setReplyValue("");
-      })
-      .catch((error) => {});
-  };
+  useEffect(() => {
+    if (commentForVideoData) {
+      setGetComments(commentForVideoData.data.data);
+    }
+  }, [commentForVideoData]);
 
   const handleVideoReactionLike = () => {
     setIsLiked(true);
@@ -153,30 +152,22 @@ function VideoContent() {
             <h3 className="text-gray-400 font-BeatriceSemiBold text-2xl mb-6">
               {getVideos.title}
             </h3>
-            <p className="text-sm text-gray-200 flex items-center">
-              Allyn Antoine · 9k views · 22 Jan 2022
-              <span
-                className="ml-5 relative"
-                onClick={() => setQuestionDropdown(!questionDropdown)}
-              >
-                <img className="cursor-pointer" src={ellipses} alt="" />
-                {questionDropdown ? (
-                  <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                    <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm my-3">
-                      <img src={edit} alt="pin" className="mr-3" />
-                      <p>Edit</p>
-                    </div>
-                    <div
-                      className="flex items-center justify-start cursor-pointer text-red-400 text-sm"
-                      onClick={deleteVideoById}
-                    >
-                      <img src={trash} alt="pin" className="mr-3" />
-                      <p>Delete</p>
-                    </div>
-                  </div>
-                ) : null}
-              </span>
-            </p>
+            <div className="flex items-center mb-4 relative">
+              <p className="text-sm text-gray-200 flex items-center">
+                {getVideos?.created_by?.firstName}{" "}
+                {getVideos?.created_by?.lastName} ·{" "}
+                {formartCount(getVideos?.number_of_views)} views ·{" "}
+                {moment(getVideos?.createdAt).format("DD MMM YYYY")}
+              </p>
+              <ContentOptionDropDown
+                content={getVideos}
+                openEditContentModal={() =>
+                  navigate(`/edit-video/${getVideos._id}`)
+                }
+                deleteContent={deleteVideo}
+                isContentDeleting={isDeleteVideoLoading}
+              />
+            </div>
             <p className="text-base mt-5 text-gray-400 leading-7">
               {getVideos.description}
             </p>

@@ -28,32 +28,6 @@ function ContentTableRow({
     }
   };
 
-  const handleDeleteContent = (id) => {
-    admin
-      .DeleteContent(id)
-      .then((response) => {
-        setAllContent(allContent.filter((content) => content._id !== id));
-      })
-      .catch((error) => {});
-  };
-
-  const handleDeleteArticle = (id) => {
-    admin
-      .DeleteArticleById(id)
-      .then((response) => {
-        setGetArticles(getArticles.filter((article) => article._id !== id));
-      })
-      .catch((error) => {});
-  };
-  const handleDeleteVideo = (id) => {
-    admin
-      .DeleteVideoById(id)
-      .then((response) => {
-        setGetVideos(getVideos.filter((video) => video._id !== id));
-        // setAllContent()
-      })
-      .catch((error) => {});
-  };
   return (
     <>
       {typeValue === "all types" && (
@@ -61,7 +35,6 @@ function ContentTableRow({
           data={allContent}
           selectedId={selectedId}
           onCheck={onCheck}
-          handleDeleteContent={handleDeleteContent}
         />
       )}
       {typeValue === "video" && (
@@ -69,7 +42,6 @@ function ContentTableRow({
           data={getVideos}
           selectedId={selectedId}
           onCheck={onCheck}
-          handleDeleteContent={handleDeleteContent}
         />
       )}
 
@@ -78,7 +50,6 @@ function ContentTableRow({
           data={getArticles}
           selectedId={selectedId}
           onCheck={onCheck}
-          handleDeleteContent={handleDeleteContent}
         />
       )}
     </>

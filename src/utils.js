@@ -72,8 +72,13 @@ export function getRandomInt({ min = 0, max = 0 }) {
  * @param {any} value - the replacement value you want to insert
  * @returns {any[]}
  */
-function replaceItemInArray(array, index, value) {
+export function replaceItemInArray(array, index, value) {
   const ret = array.slice(0);
   ret[index] = value;
   return ret;
+}
+
+export function formartCount(num) {
+  const formatter = Intl.NumberFormat("en", { notation: "compact" });
+  return formatter.format(num);
 }

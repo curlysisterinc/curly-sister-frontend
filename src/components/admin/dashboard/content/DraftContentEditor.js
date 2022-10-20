@@ -3,22 +3,28 @@ import { EditorState, ContentState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import admin from "api/admin";
+import { useLocation, useParams } from "react-router-dom";
 import * as Icons from "./assets";
 
-export function DraftContentEditor() {
+export function DraftContentEditor({ content }) {
   const { UploadPhoto } = admin;
   const [value, setValue] = useState(null);
-
+  const token = useParams()?.token ?? null;
+  const location = useLocation();
   const [contentState, setContentState] = useState(null);
   const [isContentLoaded, setIsContentLoaded] = useState(false);
 
   useEffect(() => {
-    const content = JSON.parse(localStorage.getItem("content"));
-    setIsContentLoaded(true);
-    if (content) {
+    if (content && location.pathname.includes("edit-article")) {
       setContentState(content);
+      setIsContentLoaded(true);
     }
-  }, []);
+    if (!content && location.pathname.includes("create-article")) {
+      const newContent = JSON.parse(localStorage.getItem("content"));
+      setContentState(newContent);
+      setIsContentLoaded(true);
+    }
+  }, [content]);
 
   const uploadCallback = (file, callback) => {
     return new Promise((resolve, reject) => {

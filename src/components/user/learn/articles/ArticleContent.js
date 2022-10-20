@@ -18,6 +18,7 @@ import Loader from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
 import useGetOneArticle from "hooks/data/learn/useGetOneArticle";
+import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
 import useGetCommentForArticle from "hooks/data/learn/useGetCommentForArticle";
 import imagineHairVideo from "../../../../assets/images/imagine-video.png";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
@@ -56,6 +57,7 @@ function ArticleContent() {
     error: articleError,
     refetch: refetchArticle,
   } = useGetOneArticle(token);
+
   const {
     isLoading: isCommentForArticleLoading,
     data: commentForArticleData,
@@ -154,13 +156,16 @@ function ArticleContent() {
               </h3>
               <div className="flex items-center mb-4 relative">
                 <p className="text-sm text-gray-200 flex items-center">
-                  {getArticles?.created_by?.firstName}{" "}
-                  {getArticles?.created_by?.lastName}{" "}
+                  {getArticles?.created_by?.firstName}
+                  {getArticles?.created_by?.lastName}
+                  {" . "}
                   {moment(getArticles?.createdAt).format("DD MMM YYYY")}
                 </p>
                 <ContentOptionDropDown
                   content={getArticles}
-                  openEditContentModal={() => setIsContentModalOpen(true)}
+                  openEditContentModal={() =>
+                    navigate(`/edit-article/${getArticles._id}`)
+                  }
                   deleteContent={deleteArticle}
                   isContentDeleting={isDeleteArticleLoading}
                 />
