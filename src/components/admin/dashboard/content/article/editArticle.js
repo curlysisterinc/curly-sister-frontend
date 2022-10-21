@@ -98,7 +98,7 @@ function EditArticle() {
     formData.append("status", inputValues.status1);
     formData.append("articleId", inputValues.articleId);
     admin
-      .EditArticle(formData)
+      .updateArticle(formData)
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;

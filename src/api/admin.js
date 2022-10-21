@@ -43,9 +43,7 @@ export default {
   async EditVideo(data) {
     return curlySistersApi.post("/v1/admin/update-video", data);
   },
-  async EditArticle(data) {
-    return curlySistersApi.post("/v1/admin/update-article", data);
-  },
+
   async CreateStylist(data) {
     return curlySistersApi.post("/v1/admin/add-stylist", data);
   },
@@ -140,7 +138,7 @@ export default {
   },
   /** Send a POST request to add video to content */
   async AddArticleToContent(data) {
-    return curlySistersApi.post("/v1/admin/article/create-article", data);
+    return curlySistersApi.post("/v1/admin/create-article", data);
   },
   async updateArticle(data) {
     return curlySistersApi.post("/v1/admin/update-article", data);

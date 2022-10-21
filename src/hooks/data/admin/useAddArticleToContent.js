@@ -12,9 +12,9 @@ export default () => {
   return useMutation((emailValue) => AddArticleToContent(emailValue), {
     onSuccess: (context) => {
       const { data } = context;
-      addToast(data.message, {
-        appearance: "success",
-      });
+      // addToast(data.message, {
+      //   appearance: "success",
+      // });
       queryClient.invalidateQueries(["articles"]);
       queryClient.invalidateQueries(["contents"]);
     },

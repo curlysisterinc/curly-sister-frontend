@@ -11,9 +11,9 @@ export default () => {
   return useMutation((formdata) => UploadPhoto(formdata), {
     onSuccess: (context) => {
       const { data } = context;
-      addToast(data.message, {
-        appearance: "success",
-      });
+      // addToast(data.message, {
+      //   appearance: "success",
+      // });
       // queryClient.invalidateQueries("gallery");
     },
     onError: async (error) => {

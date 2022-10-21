@@ -156,7 +156,7 @@ function ArticleContent() {
               </h3>
               <div className="flex items-center mb-4 relative">
                 <p className="text-sm text-gray-200 flex items-center">
-                  {getArticles?.created_by?.firstName}
+                  {getArticles?.created_by?.firstName}{" "}
                   {getArticles?.created_by?.lastName}
                   {" . "}
                   {moment(getArticles?.createdAt).format("DD MMM YYYY")}
