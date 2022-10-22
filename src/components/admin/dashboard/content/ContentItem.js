@@ -1,3 +1,4 @@
+import Image from "components/image";
 import ContentOptionDropDown from "components/user/learn/ContentOptionDropDown";
 import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
 import useUpdateVideo from "hooks/data/admin/useUpdateVideo";
@@ -100,11 +101,13 @@ export function ContentItem({ content, selectedId, onCheck }) {
         />
       </th>
       <td className="px-6 py-4 whitespace-nowrap flex items-center ">
-        <img
-          className="w-12 h-12 rounded-lg object-cover"
-          src={content.image ? content.image : content?.thumbnail}
-          alt=""
-        />
+        <div className="w-12">
+          <Image
+            className="w-12 h-12 rounded-lg object-cover"
+            src={content.image ? content.image : content?.thumbnail}
+            alt=""
+          />
+        </div>
         <div className="ml-2">
           <p className="text-sm text-gray-400 mb-1">{content.title}</p>
           <p className="text-xs text-gray-200 ">

@@ -5,18 +5,18 @@ import { useToasts } from "react-toast-notifications";
 import { useAuthContext } from "redux/auth";
 import learn from "../../../api/learn";
 
-export default (id) => {
+export default (savedVideoId) => {
   const { addToast } = useToasts();
-  const { DeleteVideoById } = learn;
+  const { DeleteSavedVideo } = learn;
 
-  return useMutation(() => DeleteVideoById(id), {
+  return useMutation(() => DeleteSavedVideo(savedVideoId), {
     onSuccess: (context) => {
       const { data } = context;
       addToast(data.message, {
         appearance: "success",
       });
       queryClient.invalidateQueries(["videos"]);
-      queryClient.invalidateQueries(["contents"]);
+      queryClient.invalidateQueries(["videos", savedVideoId]);
     },
     onError: async (error) => {
       const mainError = error.response.data;

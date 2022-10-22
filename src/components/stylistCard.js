@@ -27,7 +27,7 @@ export default function CommonCard({ stylist }) {
         email_verified && "cursor-pointer"
       }`}
     >
-      <div className="absolute top-0 right-0 mr-4 mt-4 ">
+      <div className="absolute top-0 right-0 mr-4 mt-4 z-500 ">
         <span className="rounded-full p-2 bg-gray-200 opacity-80 w-8 h-8 flex justify-center items-center">
           <MdOutlineBookmarkBorder color="white" />
         </span>

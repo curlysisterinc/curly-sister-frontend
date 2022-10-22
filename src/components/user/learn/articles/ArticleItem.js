@@ -6,6 +6,9 @@ import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
 import moment from "moment";
+import useSaveArticle from "hooks/data/learn/useSaveArticle";
+import useDeleteSavedArticle from "hooks/data/learn/useDeleteSavedArticle";
+import { Loadersmall } from "components/loader-component/loader";
 import Image from "../../../image";
 
 export function ArticleItem({ article }) {
@@ -13,6 +16,18 @@ export function ArticleItem({ article }) {
   const {
     state: { isSignedIn },
   } = useAuthContext();
+
+  const {
+    isLoading: isSavedArticleLoading,
+    data: SavedArticleData,
+    mutate: SaveArticle,
+  } = useSaveArticle(article._id);
+
+  const {
+    isLoading: isDeleteSavedArticleLoading,
+    data: deleteSavedArticleData,
+    mutate: deleteSavedArticle,
+  } = useDeleteSavedArticle(article._id);
 
   const handleNavigate = (item) => {
     return isSignedIn
@@ -22,11 +37,16 @@ export function ArticleItem({ article }) {
 
   const handleClickBookmarkButton = (e) => {
     e.stopPropagation();
-    // e.preventDefault();
-    alert("clicked");
-    console.log(article);
+    if (!article.is_saved) {
+      SaveArticle();
+    } else {
+      deleteSavedArticle();
+    }
   };
 
+  const isLoading = isSavedArticleLoading || isDeleteSavedArticleLoading;
+
+  const isData = SavedArticleData || deleteSavedArticleData;
   return (
     <div
       role="button"
@@ -50,11 +70,18 @@ export function ArticleItem({ article }) {
         onClick={handleClickBookmarkButton}
       >
         <span className="rounded-full p-2 bg-gray-200 opacity-80  flex justify-center items-center">
-          {article.number_of_saves.length > 0 ? (
-            <MdBookmark color="white" />
-          ) : (
-            <MdOutlineBookmarkBorder color="white" />
+          {isLoading && (
+            <div className="h-8 w-8">
+              <Loadersmall />
+            </div>
           )}
+
+          {!isLoading &&
+            (article.is_saved ? (
+              <MdBookmark color="white" />
+            ) : (
+              <MdOutlineBookmarkBorder color="white" />
+            ))}
         </span>
       </button>
 

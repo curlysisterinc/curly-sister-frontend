@@ -6,11 +6,26 @@ import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
 import moment from "moment";
+import useSaveVideo from "hooks/data/learn/useSaveVideo";
+import useDeleteSavedVideo from "hooks/data/learn/useDeleteSavedVideo";
+import { Loadersmall } from "components/loader-component/loader";
 import { ReactComponent as PlayIcon } from "../../../../assets/images/play-btn.svg";
 
 export function VideoItem({ video }) {
   const playerRef = useRef();
   const navigate = useNavigate();
+  const {
+    isLoading: isSavedVideoLoading,
+    data: SavedVideoData,
+    mutate: SaveVideo,
+  } = useSaveVideo(video._id);
+
+  const {
+    isLoading: isDeleteSavedVideoLoading,
+    data: deleteSavedVideoData,
+    mutate: deleteSavedVideo,
+  } = useDeleteSavedVideo(video._id);
+
   const {
     state: { isSignedIn },
   } = useAuthContext();
@@ -23,10 +38,15 @@ export function VideoItem({ video }) {
 
   const handleClickBookmarkButton = (e) => {
     e.stopPropagation();
-    // e.preventDefault();
-    alert("clicked");
-    console.log(video);
+    if (!video.is_saved) {
+      SaveVideo();
+    } else {
+      deleteSavedVideo();
+    }
   };
+  const isLoading = isSavedVideoLoading || isDeleteSavedVideoLoading;
+
+  const isData = SavedVideoData || deleteSavedVideoData;
 
   const handleVideoLink = (videoLink) => {
     if (videoLink.startsWith("//s3")) {
@@ -81,11 +101,18 @@ export function VideoItem({ video }) {
         onClick={handleClickBookmarkButton}
       >
         <span className="rounded-full p-2 bg-gray-200 opacity-80  flex justify-center items-center">
-          {video.number_of_saves.length > 0 ? (
-            <MdBookmark color="white" />
-          ) : (
-            <MdOutlineBookmarkBorder color="white" />
+          {isLoading && (
+            <div className="h-8 w-8">
+              <Loadersmall />
+            </div>
           )}
+
+          {!isLoading &&
+            (video.is_saved ? (
+              <MdBookmark color="white" />
+            ) : (
+              <MdOutlineBookmarkBorder color="white" />
+            ))}
         </span>
       </button>
 

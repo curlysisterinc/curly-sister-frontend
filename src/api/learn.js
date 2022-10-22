@@ -57,19 +57,29 @@ export default {
     return curlySistersApi.post(`/v1/user/react-to-video`, data);
   },
   async SaveVideo(videoId) {
-    return curlySistersApi.post(`v1/user/save-video`, videoId);
+    const data = {
+      videoId,
+    };
+    return curlySistersApi.post(`v1/user/save-video`, data);
   },
   async DeleteSavedVideo(videoId) {
-    return curlySistersOnboarding.post(`v1/user/delete-saved-video`, videoId);
+    const data = {
+      videoId,
+    };
+
+    return curlySistersApi.post(`v1/user/delete-saved-video`, data);
   },
   async SaveArticle(articleId) {
-    return curlySistersOnboarding.post(`v1/user/save-article`, articleId);
+    const data = {
+      articleId,
+    };
+    return curlySistersApi.post(`v1/user/save-article`, data);
   },
   async DeleteSavedArticle(articleId) {
-    return curlySistersOnboarding.post(
-      `v1/user/delete-saved-article`,
-      articleId
-    );
+    const data = {
+      articleId,
+    };
+    return curlySistersApi.post(`v1/user/delete-saved-article`, data);
   },
   async ReactToArticle(articleId, reaction) {
     const data = {

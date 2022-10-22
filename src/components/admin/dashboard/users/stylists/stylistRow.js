@@ -9,6 +9,7 @@
 /* eslint-disable no-param-reassign */
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Image from "components/image";
 import StylistDropDown from "../../../../customdropdown/dashboard/stylist/stylistitm";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
@@ -55,11 +56,13 @@ function StylistRow({
               />
             </th>
             <td className="px-6 py-4 whitespace-nowrap flex items-center ">
-              <img
-                src={stylist.photo ? stylist.photo : Avatar}
-                alt=""
-                className="h-10 w-10 rounded-full object-cover"
-              />
+              <div className="w-12">
+                <Image
+                  src={stylist.photo ? stylist.photo : Avatar}
+                  alt=""
+                  className="h-10 w-10 rounded-full object-cover"
+                />
+              </div>
               <div className="ml-2">
                 <p className="text-sm text-gray-400 mb-1">
                   {stylist.business_name}
