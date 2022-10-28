@@ -96,7 +96,7 @@ bg-purple-500 border w-5 h-5 flex items-start justify-center"
         {isServicesLoading && <Loadersmall />}
       </button>
       {toggleType && (
-        <div className="absolute  md:right-0 md:left-auto top-14 left-0 xl:left-0  bg-white shadow-s07 rounded-xl  overflow-hidden w-full md:w-543 h-500 z-300  p-0 ">
+        <div className="absolute  md:right-0 md:left-auto top-14 left-0 xl:left-0  bg-white shadow-s07 rounded-xl  overflow-hidden w-full md:w-543 h-500 z-500  p-0 ">
           <div className="flex items-center space-x-5 w-full p-5">
             <button
               type="button"

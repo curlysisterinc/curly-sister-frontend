@@ -22,7 +22,8 @@ import trashIcon from "../../../../../assets/images/trash.svg";
 import activateIcon from "../../../../../assets/images/activate.svg";
 import rightArrow from "../../../../../assets/images/right-arrow.svg";
 import moment from "moment";
-import spencerAvatar from "../../../../../assets/images/spencer.png";
+
+import spencerAvatar from "../../../../../assets/images/product-recommendation.png";
 import admin from "../../../../../api/admin";
 import IndividualDropDown from "./individualDropDown";
 
@@ -78,15 +79,9 @@ function IndividualsRow({
     admin.SuspendOrActivateUser({ status: "false", userId: id });
   };
 
-  // .filter((filteredindividual) => {
-  //   if (query === "") {
-  //     return filteredindividual;
-  //   } else if (
-  //     filteredindividual.name.toLowerCase().includes(query.toLowerCase())
-  //   ) {
-  //     return filteredindividual;
-  //   }
-  // })
+  const displayUsersName = (user) => {
+    return `${user?.firstName ?? ""} ${user?.lastName ?? ""}`;
+  };
   return (
     <>
       {individualList.map((individual, index) => {
@@ -115,7 +110,9 @@ function IndividualsRow({
                 alt="profile pix"
               />
               <div className="ml-2">
-                <p className="text-sm text-gray-400 mb-1">Adun Tope</p>
+                <p className="text-sm text-gray-400 mb-1">
+                  {displayUsersName(individual)}
+                </p>
                 <p className="text-xs text-gray-200 ">{individual.email}</p>
               </div>
             </td>

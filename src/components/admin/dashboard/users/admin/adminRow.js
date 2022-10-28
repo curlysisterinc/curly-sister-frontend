@@ -9,7 +9,8 @@ import useGetUserProfile from "hooks/data/admin/useGetUserProfile";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
-import allynAvatar from "../../../../../assets/images/allyn.png";
+
+import allynAvatar from "../../../../../assets/images/product-recommendation.png";
 import admin from "../../../../../api/admin";
 import AdminDropDown from "../../../../customdropdown/dashboard/admin/adminitm";
 

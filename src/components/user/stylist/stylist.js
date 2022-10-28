@@ -15,6 +15,7 @@ import Loader from "components/loader-component/loader";
 import { useInView } from "react-intersection-observer";
 import { queryClient } from "App";
 import useVerifyUsersAccount from "hooks/useVerifyUsersAccount";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
 import FilterPanel from "./filterPanel";
 import StylistList from "./StylistList";
 
@@ -36,6 +37,7 @@ function Stylist() {
   const {
     data: stylistData,
     isFetching,
+    refetch,
     fetchNextPage,
     hasNextPage,
     error,
@@ -174,7 +176,7 @@ function Stylist() {
           />
         </>
       )}
-      {(error || searchError) && <p>Error </p>}
+      {(error || searchError) && <ErrorDisplayComponent refetch={refetch} />}
     </div>
   );
 }

@@ -104,10 +104,10 @@ function MoreFilters({ handleSearchAddress, setIsSearchMode }) {
   }, [selectedCertificates, selectedTags]);
 
   return (
-    <div className="max-w-fit h-full">
+    <div className="max-w-fit w-140 h-full">
       <div
         onClick={() => setIsMoreFiltersOpen(!isMoreFiltersOpen)}
-        className={`cursor-pointer ml-auto h-10 flex items-center justify-center border bg-white rounded-full  px-4 text-sm text-gray-400 relative ${
+        className={`cursor-pointer ml-auto h-12 flex items-center justify-center border bg-white rounded-full  px-4 text-sm text-gray-400 relative ${
           hasAtLeastOneSelectedService
             ? "border-purple-100 bg-gray-550"
             : "border-gray-250 bg-white"
@@ -124,7 +124,7 @@ bg-purple-500 border w-5 h-5 flex items-start justify-center"
         )}
       </div>
       {isMoreFiltersOpen ? (
-        <div className="bg-white   rounded-2xl p-5 shadow-s07 absolute top-12 right-0 z-20  w-full   py-5 px-2.5 lg:px-4 max-w-500 lg:w-500 left-0 lg:left-auto h-screen-420px ">
+        <div className="bg-white   rounded-2xl p-5 shadow-s07 absolute top-12 right-0 z-500  w-full   py-5 px-2.5 lg:px-4 max-w-500 lg:w-500 left-0 lg:left-auto h-screen-420px ">
           <div className="flex items-start flex-nowrap space-x-4 justify-between h-full-62px">
             <CertificationFilter
               handleSelectedCertificate={handleSelectedCertificate}
@@ -158,7 +158,7 @@ bg-purple-500 border w-5 h-5 flex items-start justify-center"
             <button
               type="button"
               onClick={handleSubmitTagAndCert}
-              className="font-semibold text-sm text-white px-18 py-8 bg-gray-350 rounded-3xl"
+              className="font-semibold text-sm text-white px-18 py-2 bg-gray-350 rounded-3xl"
             >
               Apply filters
             </button>
