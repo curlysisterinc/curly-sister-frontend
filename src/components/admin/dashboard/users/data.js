@@ -141,7 +141,7 @@ export const stylistTypes = [
   },
   {
     id: 2,
-    name: "Walk-in only",
+    name: "Walk-in only stylist",
   },
   {
     id: 3,

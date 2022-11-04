@@ -96,7 +96,7 @@ export default function CommentBody({ comments, setComments, type }) {
 
   return comments?.map((item) => {
     return (
-      <div className="mt-10 comment-box">
+      <div className="mt-2 comment-box">
         <CommentItem
           item={item}
           handleQuestionReaction={handleQuestionReaction}
@@ -148,10 +148,25 @@ export function CommentItem({
   isReply,
   isReplyToCommentLoading,
 }) {
+  const handleReturnUsersImage = (userQuestion, ownerOfQuestion) => {
+    const user = item.created_by;
+    const firstNameLetter = user?.firstName[0].toUpperCase();
+    const lastNameLetter = user?.lastName[0].toUpperCase();
+    const photo = item?.image || "";
+    return photo.trim() !== "" ? (
+      <img src={photo} alt="user profile avatar" />
+    ) : (
+      `${firstNameLetter}${lastNameLetter}`
+    );
+  };
   return (
     <div className="mb-5" key={item._id}>
       <div className="flex items-start">
-        <img className="h-10 w-10 " src={gradientAvatar} alt="" />
+        <div className=" mr-5 rounded-full flex justify-center items-center  text-white text-15">
+          <p className="h-10 w-10 rounded-full flex justify-center items-center bg-purple-700 text-white text-15">
+            {handleReturnUsersImage()}
+          </p>
+        </div>
         <div className="ml-5 text-sm text-gray-400 w-full">
           <div className="flex items-center">
             <p className="mr-3">{`${item?.created_by?.firstName ?? ""} ${

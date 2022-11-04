@@ -4,6 +4,7 @@ import { NonAuthRoutes } from "constants";
 import Loader from "components/loader-component/loader";
 import { useAuthContext } from "redux/auth";
 import useGetAllVideos from "hooks/data/admin/useGetAllVideos";
+import { queryClient } from "App";
 import { VideoItem } from "../videos/VideoItem";
 
 export function PopularVideoSection() {
@@ -14,11 +15,16 @@ export function PopularVideoSection() {
     isLoading: isVideosLoading,
     error: videosRrror,
     refetch: videosRefetch,
-  } = useGetAllVideos();
+    isFetching: isVideosFetching,
+    fetchNextPage: fetchNextVideosPage,
+    hasNextPage: hasVideosNextPage,
+  } = useGetAllVideos({ size: 10 });
 
   useEffect(() => {
     if (videosData) {
-      setGetVideos(videosData.data.data);
+      const data = queryClient.getQueryData(["videos"]);
+      const currentData = data.pages[0].data.video;
+      setGetVideos(currentData);
     }
   }, [videosData]);
 

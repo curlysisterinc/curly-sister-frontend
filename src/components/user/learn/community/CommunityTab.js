@@ -1,32 +1,16 @@
-/* eslint-disable import/order */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/no-cycle */
-/* eslint-disable import/newline-after-import */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useNavigate } from "react-router-dom";
-import serena from "../../../../assets/images/serena.png";
-import pix1 from "../../../../assets/images/pix1.png";
-import pix2 from "../../../../assets/images/pix2.png";
-import pix3 from "../../../../assets/images/pix3.png";
-import bookmark from "../../../../assets/images/book-mark.png";
-import orangePin from "../../../../assets/images/orange-pin.svg";
-import bookmarkfilled from "../../../../assets/images/bookmark-filled.png";
-import AskQuestionModal from "./AddQuestionModal";
-import moment from "moment";
 import { NonAuthRoutes } from "constants";
-import { CommunityQuestionItem } from "./CommunityQuestionItem";
-import { PinnedQuestion } from "./PinnedQuestion";
 import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
 import { useAuthContext } from "redux/auth";
 import Loader from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import { queryClient } from "App";
 import { useInView } from "react-intersection-observer";
+import AskQuestionModal from "./AddQuestionModal";
+import { CommunityQuestionItem } from "./CommunityQuestionItem";
+import { PinnedQuestion } from "./PinnedQuestion";
 
 function CommunityTab() {
   const [activeTab, setActiveTab] = useState("all");
@@ -112,7 +96,8 @@ function CommunityTab() {
       {questionsData && (
         <>
           <div className="mt-6 flex space-x-6">
-            <div
+            <button
+              type="button"
               onClick={() => setActiveTab("all")}
               className={clsx(
                 activeTab === "all"
@@ -122,8 +107,9 @@ function CommunityTab() {
               )}
             >
               All
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab("popular")}
               className={clsx(
                 activeTab === "popular"
@@ -133,8 +119,9 @@ function CommunityTab() {
               )}
             >
               Popular
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab("recent")}
               className={clsx(
                 activeTab === "recent"
@@ -144,8 +131,9 @@ function CommunityTab() {
               )}
             >
               Recent
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab("pinned")}
               className={clsx(
                 activeTab === "pinned"
@@ -155,7 +143,7 @@ function CommunityTab() {
               )}
             >
               Pinned
-            </div>
+            </button>
           </div>
           <div className="mt-10 overflow-auto pr-5 max-h-screen-300px scroll-smooth">
             {activeTab === "all" && (

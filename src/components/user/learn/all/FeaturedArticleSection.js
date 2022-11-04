@@ -7,6 +7,7 @@ import Loader from "components/loader-component/loader";
 import { useAuthContext } from "redux/auth";
 import useGetAllArticles from "hooks/data/admin/useGetAllArticles";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
+import { queryClient } from "App";
 import { ArticleItem } from "../articles/ArticleItem";
 
 export function FeaturedArticleSection() {
@@ -16,11 +17,16 @@ export function FeaturedArticleSection() {
     isLoading: isArticlesLoading,
     error: articlesRrror,
     refetch: articlesRefetch,
-  } = useGetAllArticles();
+    isFetching: isArticlesFetching,
+    fetchNextPage: fetchNextArticlesPage,
+    hasNextPage: hasArticlesNextPage,
+  } = useGetAllArticles({ size: 10 });
 
   useEffect(() => {
     if (articlesData) {
-      setGetArticles(articlesData.data.data);
+      const data = queryClient.getQueryData(["articles"]);
+      const currentData = data.pages[0].data.article;
+      setGetArticles(currentData);
     }
   }, [articlesData]);
 

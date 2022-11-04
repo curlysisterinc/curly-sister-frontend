@@ -12,10 +12,6 @@ import { Loadersmall } from "components/loader-component/loader";
 import bookmarkfilled from "../../../../assets/images/bookmark-filled.png";
 import bookmark from "../../../../assets/images/book-mark.png";
 import { ReactComponent as PinIcon } from "../../../../assets/images/pinIcon.svg";
-import pix3 from "../../../../assets/images/pix3.png";
-import pix2 from "../../../../assets/images/pix2.png";
-import pix1 from "../../../../assets/images/pix1.png";
-import serena from "../../../../assets/images/serena.png";
 
 export function CommunityQuestionItem({
   question,

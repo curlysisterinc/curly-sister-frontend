@@ -37,10 +37,10 @@ export function ArticleItem({ article }) {
 
   const handleClickBookmarkButton = (e) => {
     e.stopPropagation();
-    if (!article.is_saved) {
-      SaveArticle();
-    } else {
+    if (article?.is_saved || article?.isSaved) {
       deleteSavedArticle();
+    } else {
+      SaveArticle();
     }
   };
 
@@ -64,26 +64,26 @@ export function ArticleItem({ article }) {
         className="relative w-full h-159 object-cover"
       />
 
-      <button
-        type="button"
-        className="absolute top-0 right-0 mr-4 mt-4 z-40"
-        onClick={handleClickBookmarkButton}
-      >
-        <span className="rounded-full p-2 bg-gray-200 opacity-80  flex justify-center items-center">
+      {/* <span className="flex items-center absolute right-2 top-2 z-40"> */}
+      <span className="rounded-full p-2 bg-gray-200 opacity-80  flex justify-center items-center absolute right-2 top-2 z-40">
+        <button
+          type="button"
+          // className="absolute top-0 right-0 mr-4 mt-4 z-40"
+          onClick={handleClickBookmarkButton}
+        >
           {isLoading && (
-            <div className="h-8 w-8">
-              <Loadersmall />
+            <div className="h-4 w-4 flex items-center justify-center">
+              <Loadersmall color="gray" />
             </div>
           )}
-
           {!isLoading &&
-            (article.is_saved ? (
+            (article.is_saved || article.isSaved ? (
               <MdBookmark color="white" />
             ) : (
               <MdOutlineBookmarkBorder color="white" />
             ))}
-        </span>
-      </button>
+        </button>
+      </span>
 
       <div className="pt-5 pb-8 px-6">
         <p className="text-gray-200 text-sm mb-2 font-normal">

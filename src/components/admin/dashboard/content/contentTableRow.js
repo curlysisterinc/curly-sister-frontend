@@ -42,6 +42,7 @@ function ContentTableRow({
           data={getVideos}
           selectedId={selectedId}
           onCheck={onCheck}
+          // hasNextPage={hasVideosNextPage}
         />
       )}
 
@@ -50,6 +51,7 @@ function ContentTableRow({
           data={getArticles}
           selectedId={selectedId}
           onCheck={onCheck}
+          // hasNextPage={hasArticlesNextPage}
         />
       )}
     </>

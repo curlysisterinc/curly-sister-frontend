@@ -11,8 +11,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { useQueries } from "@tanstack/react-query";
-import { Loadersmall } from "components/loader-component/loader";
+import Loader, { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
+import { queryClient } from "App";
+import { useInView } from "react-intersection-observer";
 import { AuthRoutes } from "../../../../constants";
 import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../assets/images/trash.svg";
@@ -37,43 +39,75 @@ function ContentTab({ active }) {
   const [selectedId, setSelectedId] = useState([]);
   const [allContent, setAllContent] = useState([]);
   const [callToAction, setCallToAction] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const navigate = useNavigate();
 
-  const results = useQueries({
-    queries: [
-      { queryKey: ["videos"], queryFn: admin.GetAllVideos },
-      { queryKey: ["articles"], queryFn: admin.GetAllArticles },
-      { queryKey: ["contents"], queryFn: admin.GetAllContents },
-    ],
-  });
+  const [ref, inView] = useInView();
 
-  const refetchAll = useCallback(() => {
-    results.forEach((result) => result.refetch());
-  }, [results]);
+  const {
+    data: contentData,
+    isLoading: isContentLoading,
+    error: contentError,
+    refetch: contentRefetch,
+    isFetching: isContentFetching,
+    fetchNextPage: fetchNextContentPage,
+    hasNextPage: hasContentNextPage,
+  } = useGetAllContents({ size: 10 });
+  const {
+    data: articlesData,
+    isLoading: isArticlesLoading,
+    error: articlesError,
+    refetch: articlesRefetch,
+    isFetching: isArticlesFetching,
+    fetchNextPage: fetchNextArticlesPage,
+    hasNextPage: hasArticlesNextPage,
+  } = useGetAllArticles({ size: 10 });
+
+  const {
+    data: videosData,
+    isLoading: isVideosLoading,
+    error: videosErrror,
+    refetch: videosRefetch,
+    isFetching: isVideosFetching,
+    fetchNextPage: fetchNextVideosPage,
+    hasNextPage: hasVideosNextPage,
+  } = useGetAllVideos({ size: 10 });
 
   useEffect(() => {
-    const ac = new AbortController();
+    if (articlesData) {
+      const data = queryClient.getQueryData(["articles"]);
+      const currentData = data.pages
+        .map((item) => item.data.article)
+        .flatMap((a) => a);
+      setGetArticles(currentData);
+    }
+  }, [articlesData]);
 
-    const isDataLoading = results.some((result) => result.isLoading);
-    setIsLoading(isDataLoading);
-    const isDataSuccess = results.every((result) => result.isSuccess);
-    const isDataError = results.some((result) => result.error);
-    if (isDataSuccess) {
-      setGetVideos(results[0].data.data.data);
-      setGetArticles(results[1].data.data.data);
-      setAllContent(results[2].data.data.data);
-      setIsSuccess(isDataSuccess);
+  useEffect(() => {
+    if (videosData) {
+      const data = queryClient.getQueryData(["videos"]);
+      const currentData = data.pages
+        .map((item) => item.data.video)
+        .flatMap((a) => a);
+      setGetVideos(currentData);
     }
-    if (isDataError) {
-      setIsError(isDataError);
+  }, [videosData]);
+
+  useEffect(() => {
+    if (contentData) {
+      const data = queryClient.getQueryData(["content"]);
+      const currentData = data.pages
+        .map((item) => item.data.content)
+        .flatMap((a) => a);
+      setAllContent(currentData);
     }
-    return function cleanup() {
-      ac.abort();
-    };
-  }, [results]);
+  }, [contentData]);
+
+  React.useEffect(() => {
+    if (inView) {
+      if (typeValue === "all types") fetchNextContentPage();
+      if (typeValue === "article") fetchNextArticlesPage();
+      if (typeValue === "video") fetchNextVideosPage();
+    }
+  }, [inView, typeValue]);
 
   const checkAll = (e) => {
     switch (typeValue) {
@@ -119,15 +153,27 @@ function ContentTab({ active }) {
     setDeleteModal(false);
   };
 
+  const refetchCurrentTab = () => {
+    if (typeValue === "all types") contentRefetch();
+    if (typeValue === "article") articlesRefetch();
+    if (typeValue === "video") videosRefetch();
+  };
+
+  const isSuccess = articlesData && videosData && contentData;
+
   return (
     <>
       {/* tabs */}
       <div className="h-screen-170px mt-10">
         <div className="flex items-end justify-between">
           <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
-            Content
+            {typeValue === "all types" && "All Contents"}
+            {typeValue === "article" && "All Articles"}
+            {typeValue === "video" && "All Videos"}
             <span className="text-gray-300 ml-2 text-sm">
-              {allContent.length}
+              {typeValue === "all types" && allContent.length}
+              {typeValue === "article" && getArticles.length}
+              {typeValue === "video" && getVideos.length}
             </span>
           </div>
           <div className="">
@@ -281,15 +327,35 @@ function ContentTab({ active }) {
                       />
                     </tbody>
                   </table>
-                  <div className="my-10" />
+                  <div className="my-10">
+                    {typeValue === "article" && hasArticlesNextPage && (
+                      <div className="loading" ref={ref}>
+                        <Loader />
+                      </div>
+                    )}
+                    {typeValue === "video" && hasVideosNextPage && (
+                      <div className="loading" ref={ref}>
+                        <Loader />
+                      </div>
+                    )}
+                    {typeValue === "all types" && hasContentNextPage && (
+                      <div className="loading" ref={ref}>
+                        <Loader />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {isLoading && <Loadersmall />}
-        {isError && <ErrorDisplayComponent refetch={refetchAll} />}
+        {(isContentLoading || isArticlesLoading || isVideosLoading) && (
+          <Loadersmall />
+        )}
+        {(contentError || articlesError || videosErrror) && (
+          <ErrorDisplayComponent refetch={refetchCurrentTab} />
+        )}
         {deleteModal && <DeleteContentModal handleClose={closeDeleteModal} />}
       </div>
     </>

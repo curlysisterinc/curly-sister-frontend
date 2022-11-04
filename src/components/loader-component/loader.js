@@ -4,10 +4,10 @@ export function Loadersmall({ color }) {
   return (
     <div>
       <div
+        className={`w-5 h-5 border-2  border-solid rounded-full animate-spin ${
+          color ? `border-${color}-600` : "border-purple-600"
+        }`}
         style={{ borderTopColor: "transparent" }}
-        className={`w-5 h-5 border-2  border-solid rounded-full animate-spin border-${
-          color ?? "purple"
-        }-500`}
       />
     </div>
   );

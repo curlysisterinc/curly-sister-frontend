@@ -31,6 +31,8 @@ export function BookServiceCard({
   const [booking, setBooking] = useState(null);
   const [timeZone, setTimeZone] = useState(null);
 
+  console.log({ serviceOffered, availability, stylistId, ...props });
+
   const bookedservice = useMemo(() => {
     return serviceOffered.find((item) => item._id === data?.bookedservice);
   }, [serviceOffered, data]);
@@ -104,11 +106,15 @@ export function BookServiceCard({
           Don’t worry, you won’t be charged yet
         </p> */}
 
+        {/* <a
+          href="mailto:info@curlysister.com&subject=Request%20a%20booking%20with%20a%20stylist" */}
+
         <a
-          href="mailto:info@curlysister.com"
-          // type="button"
+          href={`mailto:info@curlysister.com?subject=Request%20a%20booking%20with%20${props.business_name}&body=i'd%20like%20to%20request%20a%20booking%20with%20${props.business_name}%20whose%20profile%20can%20be%20found%20here%20${window.location.href}`}
+          target="_blank" // type="button"
           // onClick={() => setChooseServiceVisible((prev) => !prev)}
           className="disabled:opacity-40 bg-orange-200 rounded-full w-full h-12 flex justify-center items-center text-white font-BeatriceSemiBold my-4 "
+          rel="noreferrer"
         >
           Request a booking
         </a>

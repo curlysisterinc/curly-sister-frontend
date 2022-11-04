@@ -75,9 +75,9 @@ export default {
     };
     return curlySistersApi.post(`v1/user/save-article`, data);
   },
-  async DeleteSavedArticle(articleId) {
+  async DeleteSavedArticle(id) {
     const data = {
-      articleId,
+      id,
     };
     return curlySistersApi.post(`v1/user/delete-saved-article`, data);
   },

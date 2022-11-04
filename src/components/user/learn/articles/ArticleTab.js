@@ -3,24 +3,41 @@ import clsx from "clsx";
 import useGetAllArticles from "hooks/data/admin/useGetAllArticles";
 import Loader from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
+import { useInView } from "react-intersection-observer";
+import { queryClient } from "App";
 import { ArticleItem } from "./ArticleItem";
 
 function ArticleTab() {
   const [getArticles, setGetArticles] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
 
+  const [ref, inView] = useInView();
+
   const {
     data: articlesData,
     isLoading: isArticlesLoading,
     error: articlesRrror,
     refetch: articlesRefetch,
-  } = useGetAllArticles();
+    isFetching: isArticlesFetching,
+    fetchNextPage: fetchNextArticlesPage,
+    hasNextPage: hasArticlesNextPage,
+  } = useGetAllArticles({ size: 10 });
 
   useEffect(() => {
     if (articlesData) {
-      setGetArticles(articlesData.data.data);
+      const data = queryClient.getQueryData(["articles"]);
+      const currentData = data.pages
+        .map((item) => item.data.article)
+        .flatMap((a) => a);
+      setGetArticles(currentData);
     }
   }, [articlesData]);
+
+  React.useEffect(() => {
+    if (inView) {
+      fetchNextArticlesPage();
+    }
+  }, [inView]);
 
   return (
     <div className="my-10">
@@ -147,6 +164,13 @@ function ArticleTab() {
                     No content added
                   </h3>
                 )}
+              </div>
+            )}
+          </div>
+          <div className="my-10">
+            {hasArticlesNextPage && (
+              <div className="loading" ref={ref}>
+                <Loader />
               </div>
             )}
           </div>

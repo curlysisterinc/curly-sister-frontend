@@ -71,11 +71,11 @@ function StylistRow({
               </div>
             </td>
 
-            <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
+            <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap first-letter:uppercase">
               {stylist?.category_type ||
                 (stylist?.services.length
-                  ? "Curly sister stylist"
-                  : "Walk-in only stylist")}
+                  ? "curly sister stylist"
+                  : "walk-in only (default)")}
             </td>
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
               {stylist?.location || stylist?.country}

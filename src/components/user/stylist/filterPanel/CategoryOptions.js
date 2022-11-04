@@ -10,12 +10,12 @@ export const categoryList = [
   },
   {
     id: 2,
-    value: "walk-in only",
-    label: "Walk-in only stylist",
+    value: "walk-in",
+    label: "Walk-in only",
   },
   {
     id: 3,
-    value: "curly sister stylist",
+    value: "curly sister",
     label: "Curly sister stylist",
   },
   {

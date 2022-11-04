@@ -491,3 +491,19 @@ ul.react-datepicker__time-list {
   margin: auto;
   margin-bottom: 48px;
 }
+.blog-preview ul,
+.blog-preview ol {
+  list-style-type: auto;
+  margin-left: 1.5em;
+  margin-bottom: 24px;
+}
+.blog-preview ol {
+  list-style-type: disc;
+}
+.blog-preview code {
+  font-family: monospace;
+  overflow-wrap: break-word;
+  background: rgb(241, 241, 241);
+  border-radius: 3px;
+  padding: 1px 3px;
+}

@@ -43,13 +43,11 @@ export function AdminTable({ profile, children }) {
                   >
                     Status
                   </th>
-                  {userRole === "SUPER_ADMIN" && (
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                      aria-label="extra action"
-                    />
-                  )}
+                  <th
+                    scope="col"
+                    className="text-sm font-medium text-gray-400 px-6 py-4"
+                    aria-label="extra action"
+                  />
                 </tr>
               </thead>
               <tbody className="">{children}</tbody>

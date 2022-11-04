@@ -75,8 +75,13 @@ export default {
   async DeleteIndividual(data) {
     return curlySistersApi.post("/v1/admin/delete-user", data);
   },
-  async GetAllContents() {
-    return curlySistersOnboarding.post("/v1/admin/fetch-all-content");
+  async GetAllContents({ isSignedIn, page, size }) {
+    const newSize = size || 20;
+    const res = await curlySistersApi.get(
+      `/v1/admin/fetch-all-content?page=${page}&size=${newSize}`
+    );
+
+    return res.data;
   },
   async UploadPhoto(formData) {
     return curlySistersFormDataApi.post(
@@ -160,13 +165,30 @@ export default {
     return curlySistersOnboarding.get("/v1/admin/find-all-video-category");
   },
 
-  async GetAllVideos() {
-    return curlySistersOnboarding.get("/v1/admin/find-all-videos");
+  async GetAllVideos({ isSignedIn, page, size }) {
+    const newSize = size || 20;
+    const res = isSignedIn
+      ? await curlySistersApi.get(
+          `/v1/admin/find-all-videos-protected?page=${page}&size=${newSize}`
+        )
+      : await curlySistersOnboarding.get(
+          `/v1/admin/find-all-videos?page=${page}&size=${newSize}`
+        );
+    return res.data;
   },
 
-  async GetAllArticles() {
-    return curlySistersOnboarding.get("/v1/admin/find-all-article");
+  async GetAllArticles({ isSignedIn, page, size }) {
+    const newSize = size || 20;
+    const res = isSignedIn
+      ? await curlySistersApi.get(
+          `/v1/admin/find-all-article-protected?page=${page}&size=${newSize}`
+        )
+      : await curlySistersOnboarding.get(
+          `/v1/admin/find-all-article?page=${page}&size=${newSize}`
+        );
+    return res.data;
   },
+
   async DeleteArticleById(articleId) {
     const data = {
       articleId,
