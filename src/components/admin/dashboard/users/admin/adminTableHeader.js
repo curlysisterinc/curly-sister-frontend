@@ -1,7 +1,7 @@
 import React from "react";
 import { useAuthContext } from "redux/auth";
 
-export function AdminTable({ profile, children }) {
+export function AdminTable({ profile, children, empty }) {
   const { _id, role: userRole } = profile;
   return (
     <div className="flex flex-col mt-4">
@@ -52,7 +52,7 @@ export function AdminTable({ profile, children }) {
               </thead>
               <tbody className="">{children}</tbody>
             </table>
-            {/* <div className="my-10" /> */}
+            {empty && <div className="text-lg text-center my-8">{empty}</div>}
           </div>
         </div>
       </div>

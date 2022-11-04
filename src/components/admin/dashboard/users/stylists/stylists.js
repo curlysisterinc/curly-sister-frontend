@@ -9,6 +9,7 @@ import { useInView } from "react-intersection-observer";
 import { queryClient } from "App";
 import MoreFilters from "components/user/stylist/filterPanel/MoreFilters";
 import useSearchStylist from "hooks/data/utility/useSearchStylist";
+import { filterOutEmptyObject } from "utils";
 import StylistFilterPanel from "./stylistFilterPanel";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import StylistRow from "./stylistRow";
@@ -27,12 +28,13 @@ function StylistTab() {
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [totalStylistCount, setTotalStylistCount] = useState(null);
-  const searchRef = useRef({});
   const [searchParam, setSearchParam] = useState({});
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [filteredArr, setFilteredArr] = useState([]);
   const [stylistList, setStylistList] = React.useState([]);
   const [coord, setCoord] = useState({ lat: "", lng: "" });
+
+  const searchRef = useRef({});
 
   const {
     data: stylistSearchData,
@@ -127,7 +129,10 @@ function StylistTab() {
   }, [searchParam]);
 
   const handleSearchAddress = (data) => {
-    setDataToRef(data);
+    setDataToRef({
+      business_name: data,
+    });
+    setIsSearchMode(true);
     setSearchParam(searchRef.current.value);
   };
 
@@ -142,32 +147,21 @@ function StylistTab() {
     }
   };
 
-  const filterOutEmptyObject = (obj) => {
-    Object.keys(obj).map((item) => {
-      if (!obj[item] || (Array.isArray(obj[item]) && !obj[item].length)) {
-        delete obj[item];
-      }
-      return null;
-    });
-  };
-
   const isPaginationLoading =
     (!isSearchMode && hasNextPage) || (isSearchMode && hasSearchNextPage);
 
   return (
     <div className="h-screen-300px mt-10">
+      <StylistFilterPanel
+        handleSearchAddress={handleSearchAddress}
+        setIsSearchMode={setIsSearchMode}
+        isSearchLoading={isSearchFetching}
+        totalStylistCount={totalStylistCount}
+        stylists={stylistList}
+        // getLocation={getLocation}
+      />
       {stylistData && (
-        <>
-          <div ref={ref2}>
-            <StylistFilterPanel
-              handleSearchAddress={handleSearchAddress}
-              setIsSearchMode={setIsSearchMode}
-              isSearchLoading={isSearchFetching}
-              totalStylistCount={totalStylistCount}
-              stylists={stylistList}
-              // getLocation={getLocation}
-            />
-          </div>
+        <div ref={ref2}>
           <div className="flex flex-col mt-4">
             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
@@ -246,9 +240,10 @@ function StylistTab() {
               <DeleteContentModal handleClose={closeDeleteModal} />
             )}
           </div>
-        </>
+        </div>
       )}
-      {/* {isFetching && <Loader />} */}
+      {isFetching && <Loader />}
+      {(isLoading || isFetching) && <Loadersmall />}
       {(error || searchError) && <ErrorDisplayComponent refetch={refetch} />}
     </div>
   );

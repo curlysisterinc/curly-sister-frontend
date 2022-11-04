@@ -25,8 +25,8 @@ export default {
     };
     return curlySistersApi.post("/v1/admin/add-admin", data);
   },
-  async GetAllAdmin() {
-    return curlySistersApi.get("/v1/admin/get-all-admin");
+  async GetAllAdmin(page) {
+    return curlySistersApi.get(`/v1/admin/get-all-admin?page=${page}&size=20`);
   },
   async DeleteContent(data) {
     return curlySistersApi.get("/v1/admin/delete-content-by-id", data);
@@ -69,8 +69,8 @@ export default {
   async GetServices() {
     return curlySistersOnboarding.get("/v1/admin/find-all-service");
   },
-  async GetAllIndividuals() {
-    return curlySistersApi.get("/v1/admin/view-users");
+  async GetAllIndividuals(page) {
+    return curlySistersApi.get(`/v1/admin/view-users?page=${page}&size=20`);
   },
   async DeleteIndividual(data) {
     return curlySistersApi.post("/v1/admin/delete-user", data);

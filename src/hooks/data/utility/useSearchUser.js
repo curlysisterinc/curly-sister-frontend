@@ -2,11 +2,11 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getNextPageParam } from "utils";
 import utility from "../../../api/utility";
 
-export default ({ query }) => {
-  const { Search } = utility;
+export default ({ query, role }) => {
+  const { SearchUser } = utility;
   return useInfiniteQuery(
-    ["stylistsSearch", query],
-    ({ pageParam = 0 }) => Search({ page: pageParam, ...query }),
+    ["userSearch", query],
+    ({ pageParam = 0 }) => SearchUser({ page: pageParam, ...query, role }),
     {
       enabled: JSON.stringify(query) !== "{}",
       getNextPageParam,

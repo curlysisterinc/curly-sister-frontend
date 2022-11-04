@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
 import useGetAllIndividuals from "hooks/data/admin/useGetAllIndividuals";
 import { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
+import useGetUserProfile from "hooks/data/admin/useGetUserProfile";
+import useSearchUser from "hooks/data/utility/useSearchUser";
+import { useInView } from "react-intersection-observer";
+import { queryClient } from "App";
+import { filterOutEmptyObject } from "utils";
 import searchIcon from "../../../../../assets/images/search-normal-2.svg";
 import IndividualsRow from "./individualRow";
 import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
+import StylistSearch from "../stylists/stylistSearch";
 
 function InvidiualsTab({ active }) {
   const navigate = useNavigate();
@@ -19,9 +25,69 @@ function InvidiualsTab({ active }) {
   const [deleteModal, setDeleteModal] = useState(false);
   const [allIndividuals, setAllIndividuals] = useState([]);
   const [callToAction, setCallToAction] = useState(false);
+  const [searchParam, setSearchParam] = useState({});
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [totalStylistCount, setTotalStylistCount] = useState(null);
+  const [filteredArr, setFilteredArr] = useState([]);
 
-  const { data, isLoading, error: err, refetch } = useGetAllIndividuals();
-  const individuals = data?.data?.data;
+  const searchRef = useRef({});
+
+  const {
+    data: userData,
+    isLoading,
+    error: err,
+    refetch,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetAllIndividuals();
+  // const individuals = data?.data?.data;
+
+  const { isLoading: isUserprofileLoading, data: userProfileData } =
+    useGetUserProfile();
+
+  const {
+    data: userSearchData,
+    isFetching: isSearchFetching,
+    fetchNextPage: fetchNextSearchPage,
+    hasNextPage: hasSearchNextPage,
+    error: searchError,
+  } = useSearchUser({ query: searchParam, role: "user" });
+
+  const [ref2, inView] = useInView();
+
+  React.useEffect(() => {
+    const fetchNextDatePage = !isSearchMode
+      ? fetchNextPage
+      : fetchNextSearchPage;
+
+    if (inView) {
+      fetchNextDatePage();
+    }
+  }, [inView, isSearchMode]);
+
+  React.useEffect(() => {
+    if (userData && !isSearchMode) {
+      const data = queryClient.getQueryData(["individuals"]);
+      const currentData = data.pages
+        .map((item) => item.data.data.users)
+        .flatMap((a) => a);
+      setFilteredArr(currentData);
+      setAllIndividuals(currentData);
+      setTotalStylistCount(data.pages[0].data.totalCount);
+    }
+  }, [userData, !isSearchMode]);
+
+  useEffect(() => {
+    if (userSearchData && isSearchMode) {
+      const data = queryClient.getQueryData(["userSearch", searchParam]);
+      const currentData = data.pages
+        .map((item) => item.data.users)
+        .flatMap((a) => a);
+      setFilteredArr(currentData);
+      setAllIndividuals(currentData);
+    }
+  }, [userSearchData, isSearchMode]);
 
   const onMasterCheck = (e) => {
     if (e.target.checked) {
@@ -40,11 +106,37 @@ function InvidiualsTab({ active }) {
     setDeleteModal(false);
   };
 
-  useEffect(() => {
-    if (individuals) {
-      setAllIndividuals(individuals.users.filter((user) => !user.is_deleted));
+  const handleSearchAddress = (search) => {
+    setDataToRef({
+      query: search,
+    });
+    setIsSearchMode(true);
+    setSearchParam(searchRef.current.value);
+  };
+
+  const setDataToRef = (searchValue) => {
+    if (searchRef?.current?.value) {
+      const newData = { ...searchRef.current.value, ...searchValue };
+      filterOutEmptyObject(newData);
+      searchRef.current.value = { ...newData };
+    } else {
+      filterOutEmptyObject(searchValue);
+      searchRef.current.value = { ...searchValue };
     }
-  }, [individuals]);
+  };
+
+  React.useEffect(() => {
+    const ac = new AbortController();
+    if (!Object.keys(searchParam).length) {
+      setIsSearchMode(false);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [searchParam]);
+
+  const isPaginationLoading =
+    (!isSearchMode && hasNextPage) || (isSearchMode && hasSearchNextPage);
   return (
     <div className="h-screen-300px">
       <div className="flex items-end justify-between">
@@ -91,25 +183,12 @@ function InvidiualsTab({ active }) {
                   <div className="mr-2 w-140 border border-gray-800  rounded-full px-3 h-10 flex justify-center items-center">
                     More filters
                   </div>
-                  <div className="mr-2 relative text-gray-600 focus-within:text-gray-400">
-                    <span className="absolute inset-y-0 right-2 flex items-center pl-2">
-                      <button
-                        type="submit"
-                        className="p-1 focus:outline-none focus:shadow-outline"
-                      >
-                        <img src={searchIcon} alt="" />
-                      </button>
-                    </span>
-                    <input
-                      type="text"
-                      value={query}
-                      name="query"
-                      onChange={(e) => setQuery(e.target.value)}
-                      className="py-2 w-140 text-sm text-gray-400 bg-white rounded-full pl-3 focus:outline-none focus:bg-white focus:text-gray-400"
-                      placeholder="Search..."
-                      autoComplete="off"
-                    />
-                  </div>
+
+                  <StylistSearch
+                    handleSearchAddress={handleSearchAddress}
+                    setIsSearchMode={setIsSearchMode}
+                    isSearchLoading={isSearchFetching}
+                  />
                 </div>
               </div>
             </div>
@@ -118,7 +197,7 @@ function InvidiualsTab({ active }) {
       </div>
 
       {/* table */}
-      {data && (
+      {allIndividuals && (
         <div className="flex flex-col mt-4">
           <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
@@ -181,7 +260,7 @@ function InvidiualsTab({ active }) {
           </div>
         </div>
       )}
-      {isLoading && <Loadersmall />}
+      {(isLoading || isUserprofileLoading) && <Loadersmall />}
       {err && <ErrorDisplayComponent refetch={refetch} />}
       {deleteModal && <DeleteContentModal handleClose={closeDeleteModal} />}
     </div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import escapeHtml from "escape-html";
 
 /**
@@ -82,3 +83,12 @@ export function formartCount(num) {
   const formatter = Intl.NumberFormat("en", { notation: "compact" });
   return formatter.format(num);
 }
+
+export const filterOutEmptyObject = (obj) => {
+  Object.keys(obj).map((item) => {
+    if (!obj[item] || (Array.isArray(obj[item]) && !obj[item].length)) {
+      delete obj[item];
+    }
+    return null;
+  });
+};

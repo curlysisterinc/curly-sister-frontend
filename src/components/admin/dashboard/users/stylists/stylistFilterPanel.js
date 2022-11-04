@@ -38,23 +38,25 @@ function StylistFilterPanel({
         </div>
       </div>
 
-      <div className="relative  flex items-center justify-start flex-1 flex-wrap md:justify-end space-x-4">
-        <CategoryDropdown
-          handleSearchAddress={handleSearchAddress}
-          setIsSearchMode={setIsSearchMode}
-        />
-        <MoreFilters
-          handleSearchAddress={handleSearchAddress}
-          setIsSearchMode={setIsSearchMode}
-        />
+      {stylists.length && (
+        <div className="relative  flex items-center justify-start flex-1 flex-wrap md:justify-end space-x-4">
+          <CategoryDropdown
+            handleSearchAddress={handleSearchAddress}
+            setIsSearchMode={setIsSearchMode}
+          />
+          <MoreFilters
+            handleSearchAddress={handleSearchAddress}
+            setIsSearchMode={setIsSearchMode}
+          />
 
-        <StylistSearch
-          handleSearchAddress={handleSearchAddress}
-          setIsSearchMode={setIsSearchMode}
-          isSearchLoading={isSearchLoading}
-        />
-        <NewStylist />
-      </div>
+          <StylistSearch
+            handleSearchAddress={handleSearchAddress}
+            setIsSearchMode={setIsSearchMode}
+            isSearchLoading={isSearchLoading}
+          />
+          <NewStylist />
+        </div>
+      )}
     </div>
   );
 }
