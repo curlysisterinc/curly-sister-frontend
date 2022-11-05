@@ -32,7 +32,7 @@ function AdminRow({
     state: { _id, role: userRole },
   } = useAuthContext();
   const [currentId, setCurrentId] = useState("");
-  console.log({ profile });
+
   const {
     isLoading: suspendOrActivateLoading,
     data,

@@ -32,8 +32,6 @@ function IndividualsRow({
   selectedId,
   setSelectedId,
 }) {
-  const [activeDropdown, setActiveDropdown] = useState(null);
-
   const navigate = useNavigate();
 
   const handleCheck = (e, id) => {
@@ -44,38 +42,6 @@ function IndividualsRow({
       setCallToAction(false);
       setSelectedId((prev) => prev.filter((item) => item !== id));
     }
-  };
-
-  const toggleDropdownStyle = (index) => {
-    const mylist = [...individualList];
-    if (mylist[index]._id === activeDropdown) {
-      return "block";
-    } else return "hidden";
-  };
-
-  const handleDropdownOpen = (index) => {
-    const newList = [...individualList];
-    setActiveDropdown(newList[index]._id);
-
-    if (newList[index]._id === activeDropdown) {
-      setActiveDropdown(null);
-    }
-  };
-  const handleDeleteUser = (id) => {
-    const data = {
-      userId: id,
-    };
-    admin
-      .DeleteIndividual(data)
-      .then((response) => {
-        console.log(response.data, "delete user");
-      })
-      .catch((error) => {
-        console.log(error, "error delete user");
-      });
-  };
-  const handleDeactivateUser = (id) => {
-    admin.SuspendOrActivateUser({ status: "false", userId: id });
   };
 
   const displayUsersName = (user) => {
@@ -128,18 +94,14 @@ function IndividualsRow({
               </div>
             </td>
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {individual.status === "active" ? (
+              {individual.active ? (
                 <img src={greenIndicator} alt="" />
               ) : (
                 <img src={grayIndicator} alt="" />
               )}
             </td>
             <td className="px-2 py-y relative cursor-pointer ">
-              <IndividualDropDown
-                status={individual.active}
-                deteleAction={() => null}
-                publishAction={() => null}
-              />
+              <IndividualDropDown user={individual} />
             </td>
           </tr>
         );

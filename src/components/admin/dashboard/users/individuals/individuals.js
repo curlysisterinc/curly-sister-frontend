@@ -255,6 +255,11 @@ function InvidiualsTab({ active }) {
                     />
                   </tbody>
                 </table>
+                {allIndividuals?.length === 0 && (
+                  <div className="text-lg text-center mt-8">
+                    No user available
+                  </div>
+                )}
                 <div className="my-10" />
               </div>
             </div>

@@ -100,17 +100,18 @@ function UserHome({ upcomingBookings }) {
               {upcomingBookings &&
                 upcomingBookings.map((booking) => {
                   return (
-                    <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-12 p-3 mr-3">
-                      <Image src={productRecommendation} alt="circle" />
+                    <div className="mb-4 bg-white flex shadow-s01 rounded-xl border border-gray-250 w-full p-3 ">
+                      <div className="w-12 mr-3">
+                        <Image src={productRecommendation} alt="circle" />
+                      </div>
                       <div className="flex-1">
                         <p className="font-semibold text-gray-400 text-base">
                           {booking?.service?.name ?? "Booked Service"}
                         </p>
                         <p className="text-sm text-gray-200">
-                          {booking?.service?.stylist_name ||
-                            booking?.service?.business_name}{" "}
-                          · Fri, 18 Mar{" "}
-                          {dayjs(booking?.booked_date).format("ddd, DD MMM")} ·
+                          {booking?.stylist?.stylist_name ||
+                            booking?.stylist?.business_name}{" "}
+                          ·{dayjs(booking?.booked_date).format("ddd, DD MMM")} ·
                           {dayjs(booking?.booked_date).format("h :mm A (Z)")}
                           {/* 4:30 PM (GMT +1) */}
                         </p>

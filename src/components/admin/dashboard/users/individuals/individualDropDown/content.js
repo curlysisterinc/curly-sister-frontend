@@ -5,7 +5,7 @@ import activateIcon from "assets/images/activate.svg";
 import trashIcon from "assets/images/trash.svg";
 import swapIcon from "assets/images/arrow-swap-horizontal.svg";
 
-function Content({ status, toggleActivation, deleteIndividual }) {
+function Content({ status, toggleActivation, handleDeleteUser }) {
   return (
     <DropDownMenuContent className=" z-40 bg-white rounded-lg shadow-lg w-40 overflow-hidden text-sm text-gray-400">
       <DropDownItem>
@@ -41,7 +41,7 @@ function Content({ status, toggleActivation, deleteIndividual }) {
       <DropDownItem>
         <button
           type="button"
-          onClick={deleteIndividual}
+          onClick={handleDeleteUser}
           className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500 w-full"
         >
           <img className="mr-3" src={trashIcon} alt="key icon" />
