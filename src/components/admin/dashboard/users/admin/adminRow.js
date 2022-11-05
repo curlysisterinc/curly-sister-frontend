@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import clsx from "clsx";
-import Moment from "moment";
 import { useAuthContext } from "redux/auth";
 import useSuspendOrActivateAdmin from "hooks/data/admin/useSuspendOrActivateAdmin";
 import useDeleteAdmin from "hooks/data/admin/useDeleteAdmin";
 import useGetUserProfile from "hooks/data/admin/useGetUserProfile";
+import dayjs from "dayjs";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
@@ -132,7 +132,7 @@ function AdminRow({
                   "text-sm text-gray-400     whitespace-nowrap"
                 )}
               >
-                {Moment(ad.createdAt).format("DD MMM  YYYY")}
+                {dayjs(ad.createdAt).format("DD MMM  YYYY")}
               </div>
             </td>
             <td className="text-left text-sm text-gray-400  px-6 py-4 whitespace-nowrap">

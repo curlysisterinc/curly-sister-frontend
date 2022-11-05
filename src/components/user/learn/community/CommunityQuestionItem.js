@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "redux/auth";
 import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
-import moment from "moment";
 import useDeleteSavedQuestion from "hooks/data/learn/useDeleteSavedQuestion";
 import useUnPinQuestion from "hooks/data/learn/useUnPinQuestion";
 import useSavedQuestion from "hooks/data/learn/useSavedQuestion";
 import { Loadersmall } from "components/loader-component/loader";
+import dayjs from "dayjs";
 import bookmarkfilled from "../../../../assets/images/bookmark-filled.png";
 import bookmark from "../../../../assets/images/book-mark.png";
 import { ReactComponent as PinIcon } from "../../../../assets/images/pinIcon.svg";
@@ -104,7 +104,7 @@ export function CommunityQuestionItem({
             </h4>
             <p className="md:ml-2 text-gray-200 font-normal text-sm">
               · {question.comments.length} comments ·{" "}
-              {moment(question.createdAt).format("DD MMM YYYY")}
+              {dayjs(question.createdAt).format("DD MMM YYYY")}
             </p>
           </div>
         </div>

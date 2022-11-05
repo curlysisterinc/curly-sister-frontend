@@ -4,7 +4,7 @@ import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
 import useUpdateVideo from "hooks/data/admin/useUpdateVideo";
 import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
 import useDeleteVideo from "hooks/data/learn/useDeleteVideo";
-import moment from "moment";
+import * as dayjs from "dayjs";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import admin from "../../../../api/admin";
@@ -119,7 +119,7 @@ export function ContentItem({ content, selectedId, onCheck }) {
         {content.content_type}
       </td>
       <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
-        {moment(content.createdAt).format("DD MMM YY")}
+        {dayjs(content.createdAt).format("DD MMM YY")}
       </td>{" "}
       <td className="text-sm text-gray-400  px-3 py-4 whitespace-nowrap">
         {content.number_of_views}

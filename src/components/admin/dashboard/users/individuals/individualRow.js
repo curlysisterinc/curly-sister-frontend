@@ -21,8 +21,7 @@ import kebabIcon from "../../../../../assets/images/kebab.svg";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import activateIcon from "../../../../../assets/images/activate.svg";
 import rightArrow from "../../../../../assets/images/right-arrow.svg";
-import moment from "moment";
-
+import * as dayjs from "dayjs";
 import spencerAvatar from "../../../../../assets/images/product-recommendation.png";
 import admin from "../../../../../api/admin";
 import IndividualDropDown from "./individualDropDown";
@@ -117,7 +116,7 @@ function IndividualsRow({
               </div>
             </td>
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {moment(individual.createdAt).format("DD MM YYYY")}
+              {dayjs(individual.createdAt).format("DD MMM YYYY")}
             </td>
             <td
               onClick={() => navigate(AuthRoutes.bookings)}

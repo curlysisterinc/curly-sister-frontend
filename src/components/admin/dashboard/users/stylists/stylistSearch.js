@@ -6,7 +6,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { RiSearchLine } from "react-icons/ri";
 import { useLocation } from "react-router-dom";
 
-function StylistSearch({ handleSearchAddress, isSearchLoading }) {
+function StylistSearch({ handleSearchAddress, isSearchLoading, placeholder }) {
   const handleInputChange = (e) => {
     handleSearchAddress(e.target.value);
   };
@@ -18,7 +18,7 @@ function StylistSearch({ handleSearchAddress, isSearchLoading }) {
   return (
     <div className="relative h-12">
       <input
-        placeholder="Search business name?"
+        placeholder={placeholder ?? "Search"}
         className="border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 w-full h-full px-3 pr-12"
         id="searchInput"
         onChange={debouncedResults}

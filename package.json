@@ -44,7 +44,6 @@
     "jwt-decode": "^3.1.2",
     "lodash.debounce": "^4.0.8",
     "lodash.differencewith": "^4.5.0",
-    "moment": "^2.29.3",
     "multiselect-react-dropdown": "^2.0.21",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-preset-env": "^7.4.3",

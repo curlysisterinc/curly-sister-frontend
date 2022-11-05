@@ -10,7 +10,6 @@ import {
   AiOutlineLike,
 } from "react-icons/ai";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
-import moment from "moment";
 import Image from "components/image";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 
@@ -20,6 +19,7 @@ import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
 import useGetOneArticle from "hooks/data/learn/useGetOneArticle";
 import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
 import useGetCommentForArticle from "hooks/data/learn/useGetCommentForArticle";
+import dayjs from "dayjs";
 import imagineHairVideo from "../../../../assets/images/imagine-video.png";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
 import reply from "../../../../assets/images/reply.svg";
@@ -159,7 +159,7 @@ function ArticleContent() {
                   {getArticles?.created_by?.firstName}{" "}
                   {getArticles?.created_by?.lastName}
                   {" . "}
-                  {moment(getArticles?.createdAt).format("DD MMM YYYY")}
+                  {dayjs(getArticles?.createdAt).format("DD MMM YYYY")}
                 </p>
                 <ContentOptionDropDown
                   content={getArticles}

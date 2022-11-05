@@ -188,6 +188,7 @@ function InvidiualsTab({ active }) {
                     handleSearchAddress={handleSearchAddress}
                     setIsSearchMode={setIsSearchMode}
                     isSearchLoading={isSearchFetching}
+                    placeholder="Search Users"
                   />
                 </div>
               </div>

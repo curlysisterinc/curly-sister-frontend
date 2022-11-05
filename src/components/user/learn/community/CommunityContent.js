@@ -8,10 +8,10 @@ import useGetOneQuestion from "hooks/data/learn/useGetOneQuestion";
 import useGetCommentForQuestion from "hooks/data/learn/useGetCommentForQuestion";
 import Loader from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
-import moment from "moment";
 import { queryClient } from "App";
 import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
 import { getRandomInt } from "utils";
+import dayjs from "dayjs";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
 
 import bgBookmark from "../../../../assets/images/bg-bookmark.svg";
@@ -115,7 +115,7 @@ function CommunityContent() {
               <p className="text-sm text-gray-200 flex items-center">
                 {getQuestion?.created_by?.firstName}{" "}
                 {getQuestion?.created_by?.lastName} ·{" "}
-                {moment(getQuestion?.createdAt).format("DD MMM YYYY")}
+                {dayjs(getQuestion?.createdAt).format("DD MMM YYYY")}
               </p>
               <QuestionMoreOptionDropDown
                 question={getQuestion}

@@ -8,7 +8,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
-import moment from "moment";
+import dayjs from "dayjs";
 import { history } from "./index";
 import { NonAuthRoutes } from "./constants";
 import authHandler from "./authHandler";
@@ -27,7 +27,7 @@ const TokenValidate = async () => {
     return history.push(NonAuthRoutes.login);
   }
 
-  if (moment.unix(accessTokenExpireTime) - moment(Date.now()) < 10000) {
+  if (dayjs.unix(accessTokenExpireTime) - dayjs(Date.now()) < 10000) {
     // generating new accessToken
     let refreshTokenExpireTime;
 
@@ -37,7 +37,7 @@ const TokenValidate = async () => {
       return history.push(NonAuthRoutes.login);
     }
 
-    if (moment.unix(refreshTokenExpireTime) - moment(Date.now()) > 10000) {
+    if (dayjs.unix(refreshTokenExpireTime) - dayjs(Date.now()) > 10000) {
       // eslint-disable-next-line no-unused-vars
       return new Promise((resolve, reject) => {
         // eslint-disable-next-line consistent-return

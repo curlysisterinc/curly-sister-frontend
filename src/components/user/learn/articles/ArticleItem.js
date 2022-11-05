@@ -5,10 +5,10 @@ import { useAuthContext } from "redux/auth";
 import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
-import moment from "moment";
 import useSaveArticle from "hooks/data/learn/useSaveArticle";
 import useDeleteSavedArticle from "hooks/data/learn/useDeleteSavedArticle";
 import { Loadersmall } from "components/loader-component/loader";
+import dayjs from "dayjs";
 import Image from "../../../image";
 
 export function ArticleItem({ article }) {
@@ -88,7 +88,7 @@ export function ArticleItem({ article }) {
       <div className="pt-5 pb-8 px-6">
         <p className="text-gray-200 text-sm mb-2 font-normal">
           {article.created_by.firstName} {article.created_by.lastName} ·{" "}
-          {moment(article.createdAt).format("DD MMM YYYY")}
+          {dayjs(article.createdAt).format("DD MMM YYYY")}
         </p>
 
         <h2 className="text-base cursor-pointer text-gray-400 font-semibold mb-2">

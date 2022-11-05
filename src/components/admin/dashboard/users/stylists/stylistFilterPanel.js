@@ -53,6 +53,7 @@ function StylistFilterPanel({
             handleSearchAddress={handleSearchAddress}
             setIsSearchMode={setIsSearchMode}
             isSearchLoading={isSearchLoading}
+            placeholder="Search Stylists"
           />
           <NewStylist />
         </div>

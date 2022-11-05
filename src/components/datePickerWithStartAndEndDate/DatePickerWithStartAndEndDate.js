@@ -53,7 +53,7 @@ export function DatePickerWithStartAndEndDate(props) {
   const { startDate, endDate } = calenderDate;
 
   return (
-    <div isCalenderOpen={isCalenderOpen} labelColor={labelColor}>
+    <div>
       <button
         type="button"
         className="relative border border-gray-800 rounded-xl h-46 py-0 px-4 text-gray-400 w-full mt-1 text-left flex items-center cursor-pointer outline-none bg-white text-sm focus:shadow-sinput"

@@ -25,13 +25,13 @@ import {
   AiOutlineLike,
 } from "react-icons/ai";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
-import moment from "moment";
 import VideoCommentSection from "./VideoCommentSection";
 import useGetCommentForVideo from "hooks/data/learn/useGetCommentForVideo";
 import useDeleteVideo from "hooks/data/learn/useDeleteVideo";
 import useGetOneVideo from "hooks/data/learn/useGetOneVideo";
 import ContentOptionDropDown from "../ContentOptionDropDown";
 import { formartCount } from "utils";
+import dayjs from "dayjs";
 
 // import useCommentOnVideo from "hooks/data/learn/useCommentOnVideo";
 
@@ -157,7 +157,7 @@ function VideoContent() {
                 {getVideos?.created_by?.firstName}{" "}
                 {getVideos?.created_by?.lastName} ·{" "}
                 {formartCount(getVideos?.number_of_views)} views ·{" "}
-                {moment(getVideos?.createdAt).format("DD MMM YYYY")}
+                {dayjs(getVideos?.createdAt).format("DD MMM YYYY")}
               </p>
               <ContentOptionDropDown
                 content={getVideos}

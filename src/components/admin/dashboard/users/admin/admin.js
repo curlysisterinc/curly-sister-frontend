@@ -182,6 +182,7 @@ function AdminTab({ active }) {
               handleSearchAddress={handleSearchAddress}
               setIsSearchMode={setIsSearchMode}
               isSearchLoading={isSearchFetching}
+              placeholder="Search Admin"
             />
             <button
               type="button"

@@ -5,7 +5,7 @@ import { useAuthContext } from "redux/auth";
 import { NonAuthRoutes } from "constants";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import { MdBookmark, MdOutlineBookmarkBorder } from "react-icons/md";
-import moment from "moment";
+import * as dayjs from "dayjs";
 import useSaveVideo from "hooks/data/learn/useSaveVideo";
 import useDeleteSavedVideo from "hooks/data/learn/useDeleteSavedVideo";
 import { Loadersmall } from "components/loader-component/loader";
@@ -92,8 +92,8 @@ export function VideoItem({ video }) {
       />
 
       <div
-        className="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-purple-200 rounded-2xl"
-        overflow-hidden
+        className="absolute top-0 right-0 bottom-0 left-0 bg-gradient-to-b from-transparent to-purple-200 rounded-2xl
+        overflow-hidden"
       />
       <button
         type="button"
@@ -125,7 +125,7 @@ export function VideoItem({ video }) {
         <h5 className="text-white text-base font-semibold">{video.title}</h5>
         <p className="text-white text-opacity-50 text-sm font-normal">
           {video.created_by.firstName} {video.created_by.lastName} ·{" "}
-          {video.number_of_views} views · {moment(video.createdAt).fromNow()}
+          {video.number_of_views} views · {dayjs(video.createdAt).fromNow()}
         </p>
       </div>
     </div>

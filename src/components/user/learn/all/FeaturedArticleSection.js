@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { NonAuthRoutes } from "constants";
-import moment from "moment";
 import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import Loader from "components/loader-component/loader";
 import { useAuthContext } from "redux/auth";
