@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "redux/auth";
 import Image from "components/image";
 
+import dayjs from "dayjs";
 import authHandler from "../../authHandler";
 import profileDp from "../../assets/images/profile-dp.png";
 import { ReactComponent as RiSearchLine } from "../../assets/images/search-normal.svg";
@@ -83,45 +84,50 @@ function UserHome({ upcomingBookings }) {
       <div className="  md:grid md:grid-cols-12 gap-10 mt-5 md:mt-10 w-full ">
         {/* left-content */}
         <div className="col-span-8">
-          <div className="bg-orange-300 border border-orange-100 rounded-lg p-3 md:p-6">
-            <div className="w-full flex flex-col md:flex-row justify-between items-center gap-3 mb-0 md:mb-5">
-              <p className="text-gray-400 text-base">Your upcoming bookings</p>
-              <Link
-                to="/all-bookings"
-                className="text-sm font-bold text-purple-100"
-              >
-                View all bookings
-              </Link>
-            </div>
-            {upcomingBookings &&
-              upcomingBookings.map((booking) => {
-                return (
-                  <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-full p-3">
-                    <Image
-                      className="mr-3"
-                      src={productRecommendation}
-                      alt="circle"
-                    />
-                    <div>
-                      <p className="font-semibold text-gray-400 text-base">
-                        Product recommendation
-                      </p>
-                      <p className="text-sm text-gray-200">
-                        All Naturals · Fri, 18 Mar · 4:30 PM (GMT +1)
-                      </p>
+          {upcomingBookings.length ? (
+            <div className="bg-orange-300 border border-orange-100 rounded-lg p-3 md:p-6 mb-10">
+              <div className="w-full flex flex-col md:flex-row justify-between items-center gap-3 mb-0 md:mb-5">
+                <p className="text-gray-400 text-base">
+                  Your upcoming bookings
+                </p>
+                <Link
+                  to="/all-bookings"
+                  className="text-sm font-bold text-purple-100"
+                >
+                  View all bookings
+                </Link>
+              </div>
+              {upcomingBookings &&
+                upcomingBookings.map((booking) => {
+                  return (
+                    <div className="mb-4 bg-white flex shadow rounded-lg border border-gray-250 w-12 p-3 mr-3">
+                      <Image src={productRecommendation} alt="circle" />
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-400 text-base">
+                          {booking?.service?.name ?? "Booked Service"}
+                        </p>
+                        <p className="text-sm text-gray-200">
+                          {booking?.service?.stylist_name ||
+                            booking?.service?.business_name}{" "}
+                          · Fri, 18 Mar{" "}
+                          {dayjs(booking?.booked_date).format("ddd, DD MMM")} ·
+                          {dayjs(booking?.booked_date).format("h :mm A (Z)")}
+                          {/* 4:30 PM (GMT +1) */}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
-          </div>
+                  );
+                })}
+            </div>
+          ) : null}
 
           {/* popular arund you */}
-          <div className="mt-10">
+          <div className="mb-10">
             <StylistSection />
           </div>
 
           {/* questions */}
-          <div className="mt-10">
+          <div className="mb-10">
             <QuestionSection />
           </div>
         </div>
