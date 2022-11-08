@@ -4,6 +4,7 @@ import React from "react";
 import kebabIcon from "assets/images/kebab.svg";
 import useSuspendOrActivateUser from "hooks/data/admin/useSuspendOrActivateUser";
 import useDeleteIndividual from "hooks/data/admin/useDeleteIndividual";
+import useChangeUserRole from "hooks/data/admin/useChangeUserRole";
 import { Loadersmall } from "components/loader-component/loader";
 import Content from "./content";
 
@@ -14,6 +15,8 @@ function IndividualDropDown({ user }) {
   } = useSuspendOrActivateUser();
   const { isLoading: isDeleteUserLoading, mutate: deleteUser } =
     useDeleteIndividual();
+  const { isLoading: isChangeUserRoleLoading, mutate: changeUserRole } =
+    useChangeUserRole();
 
   const toggleActivation = () => {
     suspendOrActivateUser({
@@ -28,7 +31,17 @@ function IndividualDropDown({ user }) {
     });
   };
 
-  const isLoading = isSuspendOrActivateUserLoading || isDeleteUserLoading;
+  const changeRoleToAdmin = () => {
+    changeUserRole({
+      userId: user._id,
+      role: "admin",
+    });
+  };
+
+  const isLoading =
+    isSuspendOrActivateUserLoading ||
+    isDeleteUserLoading ||
+    isChangeUserRoleLoading;
   return (
     <DropDown
       content={
@@ -36,6 +49,7 @@ function IndividualDropDown({ user }) {
           status={user.active}
           toggleActivation={toggleActivation}
           handleDeleteUser={handleDeleteUser}
+          changeRoleToAdmin={changeRoleToAdmin}
         />
       }
     >

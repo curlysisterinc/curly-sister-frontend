@@ -6,13 +6,7 @@ import activateIcon from "../../../../../assets/images/activate.svg";
 import arrowSwapIcon from "../../../../../assets/images/arrow-swap-horizontal.svg";
 import arrowIcon from "../../../../../assets/images/next-arrow.svg";
 
-function Content({
-  status,
-  deteleAction,
-  activateAction,
-  mkadminAction,
-  mkStylistAction,
-}) {
+function Content({ status, deteleAction, activateAction, changeAdminToUser }) {
   const [showHiddenMenu, setShowHiddenMenu] = useState(false);
   return (
     <DropDownMenuContent className=" z-40 bg-white rounded-lg shadow-lg w-40 overflow-hidden text-sm text-gray-400">
@@ -29,11 +23,11 @@ function Content({
       <DropDownItem>
         <button
           type="button"
-          onClick={mkStylistAction}
+          onClick={changeAdminToUser}
           className="flex items-center w-full px-2 hover:bg-gray-600  py-2"
         >
           <img className="mr-3" src={arrowSwapIcon} alt="key icon" />
-          Make Stylist
+          Make User
         </button>
       </DropDownItem>
       <DropDownItem>

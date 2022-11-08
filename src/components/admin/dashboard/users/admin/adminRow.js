@@ -6,6 +6,7 @@ import useSuspendOrActivateAdmin from "hooks/data/admin/useSuspendOrActivateAdmi
 import useDeleteAdmin from "hooks/data/admin/useDeleteAdmin";
 import useGetUserProfile from "hooks/data/admin/useGetUserProfile";
 import dayjs from "dayjs";
+import useChangeUserRole from "hooks/data/admin/useChangeUserRole";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
 import greenIndicator from "../../../../../assets/images/green-indicator.svg";
@@ -44,7 +45,11 @@ function AdminRow({
     mutate: deleteAdmin,
   } = useDeleteAdmin();
 
-  const isLoading = deleteAdminLoading || suspendOrActivateLoading;
+  const { isLoading: isChangeUserRoleLoading, mutate: changeUserRole } =
+    useChangeUserRole();
+
+  const isLoading =
+    deleteAdminLoading || suspendOrActivateLoading || isChangeUserRoleLoading;
 
   const [adminValue, setAdminValue] = useState({
     status: false,
@@ -53,7 +58,7 @@ function AdminRow({
 
   useEffect(() => {
     if (getAdmin) {
-      const getAdminId = getAdmin.map((ad) => ad._id);
+      const getAdminId = getAdmin.map((ad) => ad?._id);
       setAdminValue({ ...adminValue, adminId: getAdminId });
     }
   }, [getAdmin]);
@@ -91,18 +96,25 @@ function AdminRow({
     }`;
   };
 
+  const changeRoleToUser = (userId) => {
+    changeUserRole({
+      userId,
+      role: "user",
+    });
+  };
+
   return (
     <>
       {getAdmin.map((ad) => {
         return (
-          <tr key={ad._id} className="bg-white border-b border-gray-600">
+          <tr key={ad?._id} className="bg-white border-b border-gray-600">
             <th scope="row">
               <input
                 type="checkbox"
                 className="ml-3"
-                id={ad._id}
-                checked={selectedId.includes(ad._id)}
-                onChange={(e) => handleCheck(e, ad._id)}
+                id={ad?._id}
+                checked={selectedId.includes(ad?._id)}
+                onChange={(e) => handleCheck(e, ad?._id)}
               />
             </th>
             <td className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer">
@@ -116,27 +128,27 @@ function AdminRow({
                   <p className="text-sm text-gray-400 mb-1">
                     {displayUsersName(ad)}
                   </p>
-                  <p className="text-xs text-gray-200 ">{ad.email}</p>
+                  <p className="text-xs text-gray-200 ">{ad?.email}</p>
                 </div>
               </div>
             </td>
             <td className="text-left text-sm text-gray-400 capitalize  py-4 whitespace-nowrap">
-              {selectRole(ad.role)}
+              {selectRole(ad?.role)}
             </td>
             <td className="text-sm text-gray-400 capitalize  py-4 whitespace-nowrap">
               <div
                 className={clsx(
-                  ad.date === "Pending invite"
+                  ad?.date === "Pending invite"
                     ? "border border-gray-100 bg-gray-50 rounded-full flex px-2 justify-center items-center py-2"
                     : "border-0 py-4 px-6",
                   "text-sm text-gray-400     whitespace-nowrap"
                 )}
               >
-                {dayjs(ad.createdAt).format("DD MMM  YYYY")}
+                {dayjs(ad?.createdAt).format("DD MMM  YYYY")}
               </div>
             </td>
             <td className="text-left text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {ad.active === true ? (
+              {ad?.active === true ? (
                 <img src={greenIndicator} alt="" />
               ) : (
                 <img src={grayIndicator} alt="" />
@@ -144,18 +156,17 @@ function AdminRow({
             </td>
             {selectRole(userRole) === "Super Admin" && (
               <td className="px-2 py-y relative cursor-pointer ">
-                {ad._id !== _id && (
+                {ad?._id !== _id && (
                   <AdminDropDown
                     status={ad.active}
                     activateAction={() =>
-                      ad.active
-                        ? handleDeactivateAdmin(ad._id)
-                        : handleActivateAdmin(ad._id)
+                      ad?.active
+                        ? handleDeactivateAdmin(ad?._id)
+                        : handleActivateAdmin(ad?._id)
                     }
-                    deteleAction={() => handleDeleteAdmin(ad._id)}
-                    mkStylistAction={() => null}
-                    mkadminAction={() => null}
-                    isLoading={ad._id === currentId && isLoading}
+                    deteleAction={() => handleDeleteAdmin(ad?._id)}
+                    changeAdminToUser={() => changeRoleToUser(ad?._id)}
+                    isLoading={ad?._id === currentId && isLoading}
                     currentId={currentId}
                   />
                 )}

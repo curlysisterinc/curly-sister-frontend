@@ -12,6 +12,7 @@ function AdminDropDown({
   activateAction,
   isLoading,
   mkStylistAction,
+  changeAdminToUser,
 }) {
   return (
     <DropDown
@@ -21,6 +22,7 @@ function AdminDropDown({
           deteleAction={deteleAction}
           activateAction={activateAction}
           mkStylistAction={mkStylistAction}
+          changeAdminToUser={changeAdminToUser}
         />
       }
     >

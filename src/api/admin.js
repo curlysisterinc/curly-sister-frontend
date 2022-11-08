@@ -40,6 +40,9 @@ export default {
   async SuspendOrActivateUser(data) {
     return curlySistersApi.post("/v1/admin/suspend-user", data);
   },
+  async ChangeUserRole(data) {
+    return curlySistersApi.post("/v1/admin/change-user-role", data);
+  },
   async EditVideo(data) {
     return curlySistersApi.post("/v1/admin/update-video", data);
   },

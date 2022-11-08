@@ -1,28 +1,15 @@
-/* eslint-disable prefer-const */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-return-assign */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { useQueries } from "@tanstack/react-query";
 import Loader, { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import { queryClient } from "App";
 import { useInView } from "react-intersection-observer";
-import { AuthRoutes } from "../../../../constants";
 import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
 import searchIcon from "../../../../assets/images/search-normal-2.svg";
 import ContentTableRow from "./ContentTableRow";
-// import { contents } from "../users/data";
-import admin from "../../../../api/admin";
 import TypesContent from "../../../customdropdown/dashboard/types";
 import Newcontent from "../../../customdropdown/dashboard/content/newcontent";
 import useGetAllContents from "../../../../hooks/data/admin/useGetAllContents";
@@ -179,7 +166,8 @@ function ContentTab({ active }) {
           <div className="">
             {/* filters */}
             {callToAction ? (
-              <div
+              <button
+                type="button"
                 onClick={() => setToggleActions(!toggleActions)}
                 className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
               >
@@ -194,16 +182,17 @@ function ContentTab({ active }) {
                 />
                 {toggleActions && (
                   <div className="absolute bg-white rounded-xl top-10 shadow w-full right-0">
-                    <div
+                    <button
+                      type="button"
                       onClick={openDeleteModal}
                       className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
                     >
                       <img className="mr-2" src={trashIcon} alt="" />
                       Delete
-                    </div>
+                    </button>
                   </div>
                 )}
-              </div>
+              </button>
             ) : (
               <div className="">
                 <div className="flex justify-between items-center">
