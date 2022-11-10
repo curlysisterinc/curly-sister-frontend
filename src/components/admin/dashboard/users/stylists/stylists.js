@@ -69,32 +69,34 @@ function StylistTab() {
   React.useEffect(() => {
     if (stylistData && !isSearchMode) {
       const data = queryClient.getQueryData(["stylists"]);
-      const currentData = data.pages
-        .map((item) => item.data.stylist)
-        .flatMap((a) => a);
-      setFilteredArr(currentData);
-      setStylistList(currentData);
-      setTotalStylistCount(data.pages[0].data.totalCount);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.stylist).flatMap((a) => a) ?? [];
+        setFilteredArr(currentData);
+        setStylistList(currentData);
+        setTotalStylistCount(data.pages[0].data.totalCount);
+      }
     }
   }, [stylistData, !isSearchMode]);
 
   useEffect(() => {
     if (stylistSearchData && isSearchMode) {
       const data = queryClient.getQueryData(["stylistsSearch", searchParam]);
-      const currentData = data.pages
-        .map((item) => item.data.stylist)
-        .flatMap((a) => a);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.stylist).flatMap((a) => a) ?? [];
 
-      setFilteredArr(currentData);
-      setStylistList(currentData);
-      // setTotalStylistCount(data.pages[0].data.totalSearchCount);
-      const stylistWithCords = currentData.find((item) => item.longitude);
-      if (stylistWithCords) {
-        setCoord({
-          ...coord,
-          lat: Number(stylistWithCords.latitude),
-          lng: Number(stylistWithCords.longitude),
-        });
+        setFilteredArr(currentData);
+        setStylistList(currentData);
+        // setTotalStylistCount(data.pages[0].data.totalSearchCount);
+        const stylistWithCords = currentData.find((item) => item.longitude);
+        if (stylistWithCords) {
+          setCoord({
+            ...coord,
+            lat: Number(stylistWithCords.latitude),
+            lng: Number(stylistWithCords.longitude),
+          });
+        }
       }
     }
   }, [stylistSearchData, isSearchMode]);

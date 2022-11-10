@@ -9,7 +9,10 @@ import * as dayjs from "dayjs";
 import useSaveVideo from "hooks/data/learn/useSaveVideo";
 import useDeleteSavedVideo from "hooks/data/learn/useDeleteSavedVideo";
 import { Loadersmall } from "components/loader-component/loader";
+import * as relativeTime from "dayjs/plugin/relativeTime";
 import { ReactComponent as PlayIcon } from "../../../../assets/images/play-btn.svg";
+
+dayjs.extend(relativeTime);
 
 export function VideoItem({ video }) {
   const playerRef = useRef();
@@ -102,7 +105,7 @@ export function VideoItem({ video }) {
       >
         <span className="rounded-full p-2 bg-gray-200 opacity-80  flex justify-center items-center">
           {isLoading && (
-            <div className="h-8 w-8">
+            <div className="h-4 w-4 flex justify-center items-center">
               <Loadersmall />
             </div>
           )}
@@ -124,8 +127,9 @@ export function VideoItem({ video }) {
       <div className="absolute bottom-0 mb-4 ml-4">
         <h5 className="text-white text-base font-semibold">{video.title}</h5>
         <p className="text-white text-opacity-50 text-sm font-normal">
-          {video.created_by.firstName} {video.created_by.lastName} ·{" "}
-          {video.number_of_views} views · {dayjs(video.createdAt).fromNow()}
+          {video?.created_by?.firstName} {video?.created_by?.lastName} ·{" "}
+          {video?.number_of_views} views ·{" "}
+          {video?.createdAt ? dayjs(video.createdAt).fromNow() : ""}
         </p>
       </div>
     </div>

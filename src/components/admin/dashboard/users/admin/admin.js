@@ -71,25 +71,27 @@ function AdminTab({ active }) {
   React.useEffect(() => {
     if (adminData && !isSearchMode) {
       const data = queryClient.getQueryData(["admins"]);
-      const currentData = data.pages
-        .map((item) => item.data.data.admins)
-        .flatMap((a) => a);
-      setFilteredArr(currentData);
-      setAdminDataList(currentData);
-      setTotalStylistCount(data.pages[0].data.totalCount);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.data.admins).flatMap((a) => a) ??
+          [];
+        setFilteredArr(currentData);
+        setAdminDataList(currentData);
+        setTotalStylistCount(data.pages[0].data.totalCount);
+      }
     }
   }, [adminData, !isSearchMode]);
 
   useEffect(() => {
     if (adminSearchData && isSearchMode) {
       const data = queryClient.getQueryData(["userSearch", searchParam]);
-
-      const currentData = data.pages
-        .map((item) => item.data.users)
-        .flatMap((a) => a);
-      setFilteredArr(currentData);
-      setAdminDataList(currentData);
-      // setTotalStylistCount(data.pages[0].data.totalSearchCount);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.users).flatMap((a) => a) ?? [];
+        setFilteredArr(currentData);
+        setAdminDataList(currentData);
+        // setTotalStylistCount(data.pages[0].data.totalSearchCount);
+      }
     }
   }, [adminSearchData, isSearchMode]);
 

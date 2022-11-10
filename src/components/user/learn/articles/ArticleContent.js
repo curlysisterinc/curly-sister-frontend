@@ -13,13 +13,15 @@ import { MdOutlineBookmarkBorder, MdBookmark } from "react-icons/md";
 import Image from "components/image";
 import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 
-import Loader from "components/loader-component/loader";
+import Loader, { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
 import useGetOneArticle from "hooks/data/learn/useGetOneArticle";
 import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
 import useGetCommentForArticle from "hooks/data/learn/useGetCommentForArticle";
 import dayjs from "dayjs";
+import useSaveArticle from "hooks/data/learn/useSaveArticle";
+import useDeleteSavedArticle from "hooks/data/learn/useDeleteSavedArticle";
 import imagineHairVideo from "../../../../assets/images/imagine-video.png";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
 import reply from "../../../../assets/images/reply.svg";
@@ -131,11 +133,36 @@ function ArticleContent() {
     };
   };
 
+  const {
+    isLoading: isSavedArticleLoading,
+    data: SavedArticleData,
+    mutate: SaveArticle,
+  } = useSaveArticle(getArticles._id);
+
+  const {
+    isLoading: isDeleteSavedArticleLoading,
+    data: deleteSavedArticleData,
+    mutate: deleteSavedArticle,
+  } = useDeleteSavedArticle(getArticles._id);
+
+  const handleClickBookmarkButton = (e) => {
+    console.log(getArticles);
+    e.stopPropagation();
+    if (getArticles?.is_saved || getArticles?.isSaved) {
+      deleteSavedArticle();
+    } else {
+      SaveArticle();
+    }
+  };
+
+  const isBookmarkLoading =
+    isSavedArticleLoading || isDeleteSavedArticleLoading;
+
   return (
     <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full max-w-1111 m-auto">
       <button
         type="button"
-        onClick={() => navigate("/dashboard/content")}
+        onClick={() => navigate(-1)}
         className="flex items-center mb-10 cursor-pointer text-sm text-gray-300"
       >
         <img src={backArrow} alt="go back" className="mr-4" />
@@ -204,19 +231,22 @@ function ArticleContent() {
                 <button
                   type="button"
                   className="rounded-full p-2 bg-gray-200"
-                  onClick={() => setIsSaved(!isSaved)}
+                  onClick={handleClickBookmarkButton}
                 >
-                  {!isSaved ? (
-                    <MdOutlineBookmarkBorder
-                      onClick={handleSaveArticle}
-                      color="white"
-                    />
-                  ) : (
-                    <MdBookmark
-                      onClick={handleDeleteSavedArticle}
-                      color="white"
-                    />
+                  {isBookmarkLoading && (
+                    <div className="h-4 w-4 flex items-center justify-center">
+                      <Loadersmall color="gray" />
+                    </div>
                   )}
+                  {!isBookmarkLoading &&
+                    (getArticles.is_saved || getArticles.isSaved ? (
+                      <MdBookmark onClick={handleSaveArticle} color="white" />
+                    ) : (
+                      <MdOutlineBookmarkBorder
+                        onClick={handleDeleteSavedArticle}
+                        color="white"
+                      />
+                    ))}
                 </button>
                 <p>{getArticles?.number_of_saves}</p>
               </div>

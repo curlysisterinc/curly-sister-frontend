@@ -23,8 +23,10 @@ export function PopularVideoSection() {
   useEffect(() => {
     if (videosData) {
       const data = queryClient.getQueryData(["videos"]);
-      const currentData = data.pages[0].data.video;
-      setGetVideos(currentData);
+      if (data?.pages) {
+        const currentData = data?.pages[0]?.data?.video ?? {};
+        setGetVideos(currentData);
+      }
     }
   }, [videosData]);
 
@@ -49,7 +51,7 @@ export function PopularVideoSection() {
             <div>
               <div className="grid grid-cols-3 gap-6">
                 {getVideos.slice(0, 3).map((video) => {
-                  return <VideoItem video={video} />;
+                  return <VideoItem video={video} key={video?._id} />;
                 })}
               </div>
             </div>

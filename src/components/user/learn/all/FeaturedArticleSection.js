@@ -24,8 +24,10 @@ export function FeaturedArticleSection() {
   useEffect(() => {
     if (articlesData) {
       const data = queryClient.getQueryData(["articles"]);
-      const currentData = data.pages[0].data.article;
-      setGetArticles(currentData);
+      if (data?.pages) {
+        const currentData = data?.pages[0].data.article;
+        setGetArticles(currentData);
+      }
     }
   }, [articlesData]);
 
@@ -51,7 +53,7 @@ export function FeaturedArticleSection() {
           {getArticles.length > 0 ? (
             <div className="grid grid-cols-3 gap-6">
               {getArticles.slice(0, 3).map((article) => {
-                return <ArticleItem article={article} />;
+                return <ArticleItem article={article} key={article._id} />;
               })}
             </div>
           ) : (

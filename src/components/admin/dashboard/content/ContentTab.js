@@ -61,30 +61,33 @@ function ContentTab({ active }) {
   useEffect(() => {
     if (articlesData) {
       const data = queryClient.getQueryData(["articles"]);
-      const currentData = data.pages
-        .map((item) => item.data.article)
-        .flatMap((a) => a);
-      setGetArticles(currentData);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.article).flatMap((a) => a) ?? [];
+        setGetArticles(currentData ?? []);
+      }
     }
   }, [articlesData]);
 
   useEffect(() => {
     if (videosData) {
       const data = queryClient.getQueryData(["videos"]);
-      const currentData = data.pages
-        .map((item) => item.data.video)
-        .flatMap((a) => a);
-      setGetVideos(currentData);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.video).flatMap((a) => a) ?? [];
+        setGetVideos(currentData);
+      }
     }
   }, [videosData]);
 
   useEffect(() => {
     if (contentData) {
       const data = queryClient.getQueryData(["content"]);
-      const currentData = data.pages
-        .map((item) => item.data.content)
-        .flatMap((a) => a);
-      setAllContent(currentData);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.content).flatMap((a) => a) ?? [];
+        setAllContent(currentData);
+      }
     }
   }, [contentData]);
 

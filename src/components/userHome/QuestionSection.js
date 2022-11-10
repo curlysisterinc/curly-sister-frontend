@@ -45,7 +45,9 @@ export function QuestionSection() {
       {isQuestionsLoading && <Loadersmall />}
       {questionsData &&
         otherQuestions &&
-        otherQuestions.map((item) => <CommunityQuestionItem question={item} />)}
+        otherQuestions.map((item) => (
+          <CommunityQuestionItem question={item} key={item?._id} />
+        ))}
     </div>
   );
 }

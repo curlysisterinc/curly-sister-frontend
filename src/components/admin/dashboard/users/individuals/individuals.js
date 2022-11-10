@@ -69,23 +69,26 @@ function InvidiualsTab({ active }) {
   React.useEffect(() => {
     if (userData && !isSearchMode) {
       const data = queryClient.getQueryData(["individuals"]);
-      const currentData = data.pages
-        .map((item) => item.data.data.users)
-        .flatMap((a) => a);
-      setFilteredArr(currentData);
-      setAllIndividuals(currentData);
-      setTotalStylistCount(data.pages[0].data.totalCount);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.data.users).flatMap((a) => a) ??
+          [];
+        setFilteredArr(currentData);
+        setAllIndividuals(currentData);
+        setTotalStylistCount(data.pages[0].data.totalCount);
+      }
     }
   }, [userData, !isSearchMode]);
 
   useEffect(() => {
     if (userSearchData && isSearchMode) {
       const data = queryClient.getQueryData(["userSearch", searchParam]);
-      const currentData = data.pages
-        .map((item) => item.data.users)
-        .flatMap((a) => a);
-      setFilteredArr(currentData);
-      setAllIndividuals(currentData);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.users).flatMap((a) => a) ?? [];
+        setFilteredArr(currentData);
+        setAllIndividuals(currentData);
+      }
     }
   }, [userSearchData, isSearchMode]);
 

@@ -52,12 +52,15 @@ function CommunityTab() {
   useEffect(() => {
     if (questionsData) {
       const data = queryClient.getQueryData(["questions"]);
-      const currentData = data.pages
-        .map((item) => item.data.payload.questions)
-        .flatMap((a) => a);
-      const pinnedData = data.pages[0].data.pinnedQuestions;
-      setGetQuestions(currentData);
-      setPinnedQuestions(pinnedData);
+      if (data?.pages) {
+        const currentData =
+          data?.pages
+            .map((item) => item.data.payload.questions)
+            .flatMap((a) => a) ?? [];
+        const pinnedData = data.pages[0].data.pinnedQuestions;
+        setGetQuestions(currentData);
+        setPinnedQuestions(pinnedData);
+      }
     }
   }, [questionsData]);
 

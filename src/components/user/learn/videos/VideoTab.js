@@ -24,10 +24,11 @@ function VideoTab() {
   useEffect(() => {
     if (videosData) {
       const data = queryClient.getQueryData(["videos"]);
-      const currentData = data.pages
-        .map((item) => item.data.video)
-        .flatMap((a) => a);
-      setGetVideos(currentData);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.video).flatMap((a) => a) ?? [];
+        setGetVideos(currentData);
+      }
     }
   }, [videosData]);
 

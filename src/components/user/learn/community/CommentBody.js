@@ -96,7 +96,7 @@ export default function CommentBody({ comments, setComments, type }) {
 
   return comments?.map((item) => {
     return (
-      <div className="mt-2 comment-box">
+      <div className="mt-2 comment-box" key={item._id}>
         <CommentItem
           item={item}
           handleQuestionReaction={handleQuestionReaction}
@@ -111,7 +111,7 @@ export default function CommentBody({ comments, setComments, type }) {
         />
         <div className="pl-14">
           {item?.replies?.map((rep) => (
-            <div className="comment-box">
+            <div className="comment-box" key={rep._id}>
               <CommentItem
                 item={rep}
                 handleQuestionReaction={handleQuestionReaction}

@@ -32,6 +32,9 @@ import useGetOneVideo from "hooks/data/learn/useGetOneVideo";
 import ContentOptionDropDown from "../ContentOptionDropDown";
 import { formartCount } from "utils";
 import dayjs from "dayjs";
+import { Loadersmall } from "components/loader-component/loader";
+import useSaveVideo from "hooks/data/learn/useSaveVideo";
+import useDeleteSavedVideo from "hooks/data/learn/useDeleteSavedVideo";
 
 // import useCommentOnVideo from "hooks/data/learn/useCommentOnVideo";
 
@@ -112,19 +115,29 @@ function VideoContent() {
       .catch((error) => {});
   };
 
-  const handleSaveVideo = () => {
-    learn
-      .SaveVideo({ videoId: token })
-      .then((response) => {})
-      .catch((error) => {});
+  const {
+    isLoading: isSavedVideoLoading,
+    data: SavedVideoData,
+    mutate: SaveVideo,
+  } = useSaveVideo(getVideos._id);
+
+  const {
+    isLoading: isDeleteSavedVideoLoading,
+    data: deleteSavedVideoData,
+    mutate: deleteSavedVideo,
+  } = useDeleteSavedVideo(getVideos._id);
+
+  const handleClickBookmarkButton = (e) => {
+    e.stopPropagation();
+    if (!getVideos.is_saved) {
+      SaveVideo();
+    } else {
+      deleteSavedVideo();
+    }
   };
 
-  const handleDeleteSavedVideo = () => {
-    learn
-      .DeleteSavedVideo({ id: token })
-      .then((response) => {})
-      .catch((error) => {});
-  };
+  const isSavingsLoading = isSavedVideoLoading || isDeleteSavedVideoLoading;
+
   return (
     <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full max-w-1111 m-auto">
       <div
@@ -193,19 +206,24 @@ function VideoContent() {
                 <AiTwotoneDislike color="white" />
               )}
             </span>
-            <span
+            <button
               className="rounded-full p-2 bg-gray-200"
-              onClick={() => setIsSaved(!isSaved)}
+              type="button"
+              onClick={handleClickBookmarkButton}
             >
-              {!isSaved ? (
-                <MdOutlineBookmarkBorder
-                  color="white"
-                  onClick={handleSaveVideo}
-                />
-              ) : (
-                <MdBookmark color="white" onClick={handleDeleteSavedVideo} />
+              {isSavingsLoading && (
+                <div className="h-4 w-4 flex justify-center items-center">
+                  <Loadersmall />
+                </div>
               )}
-            </span>
+
+              {!isSavingsLoading &&
+                (!getVideos.is_saved ? (
+                  <MdOutlineBookmarkBorder color="white" />
+                ) : (
+                  <MdBookmark color="white" />
+                ))}
+            </button>
           </div>
         </div>
         <hr className="w-full border border-gray-250 my-10" />

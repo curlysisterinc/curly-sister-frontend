@@ -28,12 +28,13 @@ export function CommunityQuestionSection() {
   useEffect(() => {
     if (questionsData) {
       const data = queryClient.getQueryData(["questions"]);
+      if (data?.pages) {
+        const currentData = data?.pages[0].data.payload.questions;
+        const pinnedData = data.pages[0].data.pinnedQuestions;
 
-      const currentData = data.pages[0].data.payload.questions;
-      const pinnedData = data.pages[0].data.pinnedQuestions;
-
-      setGetQuestions(currentData);
-      setPinnedQuestions(pinnedData);
+        setGetQuestions(currentData);
+        setPinnedQuestions(pinnedData);
+      }
     }
   }, [questionsData]);
 

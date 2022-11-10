@@ -22,16 +22,17 @@ export function StylistSection() {
   React.useEffect(() => {
     if (stylistData) {
       const data = queryClient.getQueryData(["stylists"]);
-      const currentData = data.pages
-        .map((item) => item.data.stylist)
-        .flatMap((a) => a);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.stylist).flatMap((a) => a) ?? [];
 
-      const randomNumber = getRandomInt({
-        min: 0,
-        max: currentData.length - 3,
-      });
+        const randomNumber = getRandomInt({
+          min: 0,
+          max: currentData.length - 3,
+        });
 
-      setStylistList(currentData.splice(randomNumber, 2));
+        setStylistList(currentData.splice(randomNumber, 2));
+      }
     }
   }, [stylistData]);
 

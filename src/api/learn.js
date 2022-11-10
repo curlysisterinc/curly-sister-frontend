@@ -22,10 +22,10 @@ export default {
     return curlySistersApi.get(`/v1/user/get-question/${questionId}`);
   },
   async GetOneArticle(articleId) {
-    return curlySistersOnboarding.get(`/v1/user/get-article/${articleId}`);
+    return curlySistersApi.get(`/v1/user/get-article/${articleId}`);
   },
   async GetOneVideo(videoId) {
-    return curlySistersOnboarding.get(`/v1/user/get-video/${videoId}`);
+    return curlySistersApi.get(`/v1/user/get-video/${videoId}`);
   },
   async GetVideoCategories() {
     return curlySistersOnboarding.get(`/admin/find-all-video-category`);
@@ -64,7 +64,7 @@ export default {
   },
   async DeleteSavedVideo(videoId) {
     const data = {
-      videoId,
+      id: videoId,
     };
 
     return curlySistersApi.post(`v1/user/delete-saved-video`, data);

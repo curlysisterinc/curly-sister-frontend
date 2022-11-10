@@ -44,10 +44,10 @@ function HomeComponent() {
     setIsLoading(isDataLoading);
     const isSuccess = results.every((result) => result.isSuccess);
     if (isSuccess) {
-      setGetVideos(results[0].data.data.data);
-      setGetArticles(results[1].data.data.data);
-      setGetStylist(results[2].data.data.stylist);
-      setUpcomingBookings(results[3].data.data.data);
+      setGetVideos(results[0]?.data?.data?.data);
+      setGetArticles(results[1]?.data?.data?.data);
+      setGetStylist(results[2]?.data?.data?.stylist);
+      setUpcomingBookings(results[3]?.data?.data?.data);
     }
     return function cleanup() {
       ac.abort();

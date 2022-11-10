@@ -26,10 +26,11 @@ function ArticleTab() {
   useEffect(() => {
     if (articlesData) {
       const data = queryClient.getQueryData(["articles"]);
-      const currentData = data.pages
-        .map((item) => item.data.article)
-        .flatMap((a) => a);
-      setGetArticles(currentData);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.article).flatMap((a) => a) ?? [];
+        setGetArticles(currentData);
+      }
     }
   }, [articlesData]);
 

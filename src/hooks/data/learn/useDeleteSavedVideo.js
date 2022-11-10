@@ -21,7 +21,7 @@ export default (savedVideoId) => {
     onError: async (error) => {
       const mainError = error.response.data;
 
-      addToast(mainError.message, {
+      addToast(mainError.message.message, {
         appearance: "error",
       });
     },

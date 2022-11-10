@@ -157,6 +157,7 @@ export const ContentBody = ({ data, selectedId, onCheck }) => {
         content={content}
         selectedId={selectedId}
         onCheck={onCheck}
+        key={content._id}
       />
     );
   });
