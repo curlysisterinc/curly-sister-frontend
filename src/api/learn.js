@@ -49,12 +49,18 @@ export default {
     return curlySistersApi.post(`/v1/user/comment-on-question`, { ...data });
   },
 
-  async ReactToVideo(videoId, reaction) {
+  async ReactToVideoComment(videoId, reaction) {
     const data = {
       videoId,
       reaction,
     };
     return curlySistersApi.post(`/v1/user/react-to-video`, data);
+  },
+  async ReactToVideo(videoId, reaction) {
+    return curlySistersApi.post(`/v1/user/video/${videoId}/${reaction}`);
+  },
+  async ReactToArticle(articleId, reaction) {
+    return curlySistersApi.post(`/v1/user/article/${articleId}/${reaction}`);
   },
   async SaveVideo(videoId) {
     const data = {
@@ -81,7 +87,7 @@ export default {
     };
     return curlySistersApi.post(`v1/user/delete-saved-article`, data);
   },
-  async ReactToArticle(articleId, reaction) {
+  async ReactToArticleComment(articleId, reaction) {
     const data = {
       articleId,
       reaction,
@@ -127,6 +133,16 @@ export default {
   async ReplyToComment(data) {
     return curlySistersApi.post(`/v1/user/reply-to-comment`, data);
   },
+  async DeleteArticleComment(commentId) {
+    return curlySistersApi.delete(`/v1/user/article/comment/${commentId}`);
+  },
+  async DeleteVideoComment(commentId) {
+    return curlySistersApi.delete(`/v1/user/video/comment/${commentId}`);
+  },
+  async DeleteQuestionComment(commentId) {
+    return curlySistersApi.delete(`/v1/user/question/comment/${commentId}`);
+  },
+
   async GetCommentForQuestion(questionId) {
     const data = {
       questionId,

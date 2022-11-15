@@ -12,6 +12,7 @@ import {
 } from "react-icons/ai";
 import { useAuthContext } from "redux/auth";
 import useReplyToComment from "hooks/data/learn/useReplyToComment";
+import useDeleteComment from "hooks/data/learn/useDeleteComment";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { Loadersmall } from "components/loader-component/loader";
 import trash from "../../../../assets/images/trash.svg";
@@ -20,8 +21,10 @@ import report from "../../../../assets/images/report.svg";
 import reply from "../../../../assets/images/reply.svg";
 import ellipses from "../../../../assets/images/dark-ellipses.svg";
 import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
+import CommentDropDown from "./CommentDropDown";
 
 export default function CommentBody({ comments, setComments, type }) {
+  console.log({ type });
   const { token } = useParams();
   const {
     state: { _id },
@@ -43,6 +46,12 @@ export default function CommentBody({ comments, setComments, type }) {
     mutate: replyToComment,
     error: replyToCommentDataError,
   } = useReplyToComment(token, type);
+  const {
+    isLoading: isDeleteCommentLoading,
+    data: deleteCommentData,
+    mutate: deleteComment,
+    error: deleteCommentDataError,
+  } = useDeleteComment(token, type);
 
   const handleQuestionReaction = (id, reaction, isCommentReply) => {
     reactToComment({ commentId: id, reaction, isCommentReply });
@@ -93,6 +102,10 @@ export default function CommentBody({ comments, setComments, type }) {
   const handleSubmitReply = (item) => {
     replyToComment({ comment: item.replyValue, commentId: item._id });
   };
+  const handleDeleteComment = (item) => {
+    console.log("clicked", item);
+    deleteComment({ commentId: item._id });
+  };
 
   return comments?.map((item) => {
     return (
@@ -108,6 +121,8 @@ export default function CommentBody({ comments, setComments, type }) {
           setReplyComment={setReplyComment}
           handleSetReplyValue={handleSetReplyValue}
           handleSubmitReply={handleSubmitReply}
+          handleDeleteComment={handleDeleteComment}
+          isDeleteCommentLoading={isDeleteCommentLoading}
         />
         <div className="pl-14">
           {item?.replies?.map((rep) => (
@@ -123,6 +138,8 @@ export default function CommentBody({ comments, setComments, type }) {
                 setReplyComment={setReplyComment}
                 handleSetReplyValue={handleSetReplyValue}
                 handleSubmitReply={handleSubmitReply}
+                handleDeleteComment={handleDeleteComment}
+                isDeleteCommentLoading={isDeleteCommentLoading}
                 isReplyToCommentLoading={isReplyToCommentLoading}
                 isReply
               />
@@ -147,6 +164,8 @@ export function CommentItem({
   handleSubmitReply,
   isReply,
   isReplyToCommentLoading,
+  handleDeleteComment,
+  isDeleteCommentLoading,
 }) {
   const handleReturnUsersImage = (userQuestion, ownerOfQuestion) => {
     const user = item.created_by;
@@ -181,7 +200,7 @@ export function CommentItem({
             <div className="flex">
               <button
                 type="button"
-                className="mr-2 items-center"
+                className="mr-2 items-center hover:bg-gray-500 rounded-full  flex justify-center items-center p-1"
                 onClick={() =>
                   handleQuestionReaction(item._id, "like", isReply)
                 }
@@ -193,7 +212,7 @@ export function CommentItem({
             <div className="flex items-center">
               <button
                 type="button"
-                className="mr-2"
+                className="mr-2 hover:bg-gray-500 rounded-full  flex justify-center items-center p-1"
                 onClick={() =>
                   handleQuestionReaction(item._id, "unlikes", isReply)
                 }
@@ -204,37 +223,29 @@ export function CommentItem({
               <p>{item.unlikes.length}</p>
             </div>
             {!isReply && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => handleToggleReply(item._id)}
-                >
-                  <img className="cursor-pointer" src={reply} alt="" />
-                </button>
-                {/* <button
-                  type="button"
-                  className="relative"
-                  onClick={() => setReportDropdown(!reportDropdown)}
-                >
-                  <img className="cursor-pointer" src={ellipses} alt="" />
-                  {reportDropdown ? (
-                    <div className="absolute top-4 left-0 bg-white w-44 rounded-2xl shadow-md p-3">
-                      <div className="flex items-center justify-start cursor-pointer text-gray-400 text-sm">
-                        <img src={report} alt="report" className="mr-3" />
-                        Report
-                      </div>
-                    </div>
-                  ) : null}
-                </button> */}
-                <button
-                  type="button"
-                  onClick={() => setReplyComment(true)}
-                  className="text-purple-100 cursor-pointer"
-                >
-                  {item?.replies?.length} replies
-                </button>
-              </>
+              <button
+                type="button"
+                className="cursor-pointer  hover:bg-gray-500 rounded-full  flex justify-center items-center p-1"
+                onClick={() => handleToggleReply(item._id)}
+              >
+                <img src={reply} alt="" className="w-4 h-4" />
+              </button>
             )}
+            <CommentDropDown
+              comment={item}
+              isDeleteCommentLoading={isDeleteCommentLoading}
+              // deleteComment={handleDeleteComment}
+              deleteComment={() => handleDeleteComment(item)}
+            />
+            {!isReply && (
+              <button
+                type="button"
+                onClick={() => setReplyComment(true)}
+                className="text-purple-100 cursor-pointer"
+              >
+                {item?.replies?.length} replies
+              </button>
+            )}{" "}
           </div>
           {item.isCommentOpen ? (
             <div className="m-6 mb-2 flex items-center">

@@ -171,7 +171,7 @@ function DetailsTab({
       >
         Business Name
         <input
-          className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm font-normal"
+          className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm font-normal"
           type="text"
           disabled={isLoading}
           placeholder="Enter Business name"
@@ -187,7 +187,7 @@ function DetailsTab({
       >
         Stylist Name
         <input
-          className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm font-normal"
+          className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm font-normal"
           type="text"
           disabled={isLoading}
           placeholder="Enter name here..."
@@ -203,7 +203,7 @@ function DetailsTab({
       >
         Bio
         <textarea
-          className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm font-normal"
+          className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm font-normal"
           type="textarea"
           disabled={isLoading}
           placeholder="Enter a bio for this stylist"

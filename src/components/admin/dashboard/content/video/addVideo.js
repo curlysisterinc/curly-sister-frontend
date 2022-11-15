@@ -109,9 +109,10 @@ function NewVideo() {
     const ac = new AbortController();
     if (videoCategoryData) {
       setOptions(videoCategoryData.data.data);
+
       setVideoInputs({
         ...videoInputs,
-        category: videoCategoryData?.data?.data[0]?.name ?? "",
+        category: videoCategoryData?.data?.data[0]?._id ?? "",
       });
     }
     return function cleanup() {
@@ -276,6 +277,7 @@ function NewVideo() {
                       value={videoInputs.category}
                       onChange={handleChange}
                     >
+                      <option value="">Select category</option>
                       {options.map((option) => {
                         return (
                           <option
@@ -370,7 +372,7 @@ function NewVideo() {
                 >
                   Add a description for this video (optional)
                   <textarea
-                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     type="textarea"
                     placeholder="Enter a description for this service"
                     name="description"

@@ -493,11 +493,13 @@ ul.react-datepicker__time-list {
 }
 .blog-preview ul,
 .blog-preview ol {
-  list-style-type: auto;
   margin-left: 1.5em;
   margin-bottom: 24px;
 }
 .blog-preview ol {
+  list-style-type: decimal;
+}
+.blog-preview ul {
   list-style-type: disc;
 }
 .blog-preview code {

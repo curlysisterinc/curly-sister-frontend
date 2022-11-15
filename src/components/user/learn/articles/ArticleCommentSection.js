@@ -3,7 +3,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import useGetCommentForArticle from "hooks/data/learn/useGetCommentForArticle";
 import useCommentOnArticle from "hooks/data/learn/useCommentOnArticle";
-import useReactToComment from "hooks/data/learn/useReactToComment";
 import * as dayjs from "dayjs";
 import * as relativeTime from "dayjs/plugin/relativeTime";
 import { useAuthContext } from "redux/auth";

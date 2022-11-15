@@ -17,6 +17,7 @@ import Loader, { Loadersmall } from "components/loader-component/loader";
 import ErrorDisplayComponent from "components/errorDisplayComponent";
 import useDeleteArticle from "hooks/data/learn/useDeleteArticle";
 import useGetOneArticle from "hooks/data/learn/useGetOneArticle";
+import useReactToContent from "hooks/data/learn/useReactToContent";
 import useUpdateArticle from "hooks/data/admin/useUpdateArticle";
 import useGetCommentForArticle from "hooks/data/learn/useGetCommentForArticle";
 import dayjs from "dayjs";
@@ -36,15 +37,7 @@ import ArticleCommentSection from "./ArticleCommentSection";
 function ArticleContent() {
   const navigate = useNavigate();
   const { token } = useParams();
-  const [questionDropdown, setQuestionDropdown] = useState(false);
-  const [reportDropdown, setReportDropdown] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isDisLiked, setIsDisLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [openReply, setOpenReply] = useState(false);
   const [getComments, setGetComments] = useState([]);
-  const [replyValue, setReplyValue] = useState("");
-  const [commentValue, setCommentValue] = useState("");
   const [getArticles, setGetArticles] = useState({});
 
   const {
@@ -67,6 +60,13 @@ function ArticleContent() {
     refetch: refetchCommentForArticle,
   } = useGetCommentForArticle(token);
 
+  const {
+    isLoading: isReactionLoading,
+    data: reactionData,
+    mutate: reactToArticle,
+    error: reactionDataError,
+  } = useReactToContent(token, "articles");
+
   useEffect(() => {
     if (deleteArticleData) {
       navigate("/dashboard/content");
@@ -88,27 +88,11 @@ function ArticleContent() {
   }, [commentForArticleData]);
 
   const handleArticleReactionLike = () => {
-    setIsLiked(true);
-    if (isLiked) {
-      setIsLiked(false);
-    }
-
-    learn
-      .ReactToArticle(token, "like")
-      .then((response) => {})
-      .catch((error) => {});
+    reactToArticle({ contentId: token, reaction: "like" });
   };
 
   const handleArticleReactionDisLike = () => {
-    setIsDisLiked(true);
-    if (isDisLiked) {
-      setIsDisLiked(false);
-    }
-
-    learn
-      .ReactToArticle(token, "unlike")
-      .then((response) => {})
-      .catch((error) => {});
+    reactToArticle({ contentId: token, reaction: "unlike" });
   };
 
   const handleSaveArticle = () => {
@@ -205,10 +189,10 @@ function ArticleContent() {
                   className="rounded-full p-2 bg-gray-200"
                   onClick={handleArticleReactionLike}
                 >
-                  {!isLiked ? (
-                    <AiOutlineLike color="white" />
-                  ) : (
+                  {getArticles.is_liked ? (
                     <AiTwotoneLike color="white" />
+                  ) : (
+                    <AiOutlineLike color="white" />
                   )}
                 </button>
                 <p>{getArticles?.likes?.length}</p>
@@ -219,10 +203,10 @@ function ArticleContent() {
                   className="rounded-full p-2 bg-gray-200"
                   onClick={handleArticleReactionDisLike}
                 >
-                  {!isDisLiked ? (
-                    <AiOutlineDislike color="white" />
-                  ) : (
+                  {getArticles.is_unLiked ? (
                     <AiTwotoneDislike color="white" />
+                  ) : (
+                    <AiOutlineDislike color="white" />
                   )}
                 </button>
                 <p>{getArticles?.unlikes?.length}</p>

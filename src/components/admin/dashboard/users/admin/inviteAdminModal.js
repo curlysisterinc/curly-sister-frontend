@@ -97,7 +97,7 @@ function InviteAdminModal({ handleClose }) {
             <div className="mt-5">
               <label htmlFor="email" className="">
                 <textarea
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full text-sm py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full text-sm py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="textarea"
                   placeholder="Enter email address, separate multiple emails with a comma."
                   name="email"

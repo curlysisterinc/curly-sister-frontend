@@ -35,22 +35,17 @@ import dayjs from "dayjs";
 import { Loadersmall } from "components/loader-component/loader";
 import useSaveVideo from "hooks/data/learn/useSaveVideo";
 import useDeleteSavedVideo from "hooks/data/learn/useDeleteSavedVideo";
+import useReactToContent from "hooks/data/learn/useReactToContent";
 
 // import useCommentOnVideo from "hooks/data/learn/useCommentOnVideo";
 
 function VideoContent() {
   const navigate = useNavigate();
   const { token } = useParams();
-  const [replyValue, setReplyValue] = useState("");
-  const [commentValue, setCommentValue] = useState("");
-  const [questionDropdown, setQuestionDropdown] = useState(false);
-  const [openReply, setOpenReply] = useState(false);
-  const [reportDropdown, setReportDropdown] = useState(false);
   const [getVideos, setGetVideos] = useState({});
   const [getComments, setGetComments] = useState([]);
   const [isLiked, setIsLiked] = useState(false);
   const [isDisLiked, setIsDisLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
 
   const {
     isLoading: isDeleteVideoLoading,
@@ -70,6 +65,13 @@ function VideoContent() {
     error: commentForVideoError,
     refetch: refetchCommentForVideo,
   } = useGetCommentForVideo(token);
+
+  const {
+    isLoading: isReactionLoading,
+    data: reactionData,
+    mutate: reactToVideos,
+    error: reactionDataError,
+  } = useReactToContent(token, "videos");
 
   useEffect(() => {
     if (deleteVideoData) {
@@ -92,27 +94,11 @@ function VideoContent() {
   }, [commentForVideoData]);
 
   const handleVideoReactionLike = () => {
-    setIsLiked(true);
-    if (isLiked) {
-      setIsLiked(false);
-    }
-
-    learn
-      .ReactToVideo(token, "like")
-      .then((response) => {})
-      .catch((error) => {});
+    reactToVideos({ contentId: token, reaction: "like" });
   };
 
   const handleVideoReactionDisLike = () => {
-    setIsDisLiked(true);
-    if (isDisLiked) {
-      setIsDisLiked(false);
-    }
-
-    learn
-      .ReactToVideo(token, "unlike")
-      .then((response) => {})
-      .catch((error) => {});
+    reactToVideos({ contentId: token, reaction: "unlike" });
   };
 
   const {
@@ -190,20 +176,20 @@ function VideoContent() {
               className="rounded-full p-2 bg-gray-200"
               onClick={handleVideoReactionLike}
             >
-              {!isLiked ? (
-                <AiOutlineLike color="white" />
-              ) : (
+              {getVideos.is_liked ? (
                 <AiTwotoneLike color="white" />
+              ) : (
+                <AiOutlineLike color="white" />
               )}
             </span>
             <span
               className="rounded-full p-2 bg-gray-200"
               onClick={handleVideoReactionDisLike}
             >
-              {!isDisLiked ? (
-                <AiOutlineDislike color="white" />
-              ) : (
+              {getVideos.is_unLiked ? (
                 <AiTwotoneDislike color="white" />
+              ) : (
+                <AiOutlineDislike color="white" />
               )}
             </span>
             <button

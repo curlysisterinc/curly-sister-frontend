@@ -197,7 +197,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
               >
                 Description
                 <textarea
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="textarea"
                   placeholder="Enter a description for this service"
                   name="description"
@@ -287,7 +287,7 @@ function ManageServicesModal({ handleClose, modalContent }) {
                   name="who_is_this_for"
                   value={serviceList.who_is_this_for}
                   onChange={handleChange}
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="Everyone">Everyone</option>
                   <option value="Stylists">Stylists</option>
