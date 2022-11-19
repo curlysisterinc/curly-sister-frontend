@@ -25,6 +25,7 @@ function ContentTab({ active }) {
   const [getArticles, setGetArticles] = useState([]);
   const [selectedId, setSelectedId] = useState([]);
   const [allContent, setAllContent] = useState([]);
+  const [totalCount, setTotalCount] = useState({});
   const [callToAction, setCallToAction] = useState(false);
 
   const [ref, inView] = useInView();
@@ -65,6 +66,10 @@ function ContentTab({ active }) {
         const currentData =
           data?.pages.map((item) => item.data.article).flatMap((a) => a) ?? [];
         setGetArticles(currentData ?? []);
+        setTotalCount({
+          ...totalCount,
+          article: data?.pages[0].data.payload.totalCount,
+        });
       }
     }
   }, [articlesData]);
@@ -76,6 +81,10 @@ function ContentTab({ active }) {
         const currentData =
           data?.pages.map((item) => item.data.video).flatMap((a) => a) ?? [];
         setGetVideos(currentData);
+        setTotalCount({
+          ...totalCount,
+          video: data?.pages[0].data.payload.totalCount,
+        });
       }
     }
   }, [videosData]);
@@ -87,6 +96,11 @@ function ContentTab({ active }) {
         const currentData =
           data?.pages.map((item) => item.data.content).flatMap((a) => a) ?? [];
         setAllContent(currentData);
+        console.log("Dara", data?.pages);
+        setTotalCount({
+          ...totalCount,
+          allContent: data?.pages[0].data.payload.totalCount,
+        });
       }
     }
   }, [contentData]);
@@ -150,7 +164,6 @@ function ContentTab({ active }) {
   };
 
   const isSuccess = articlesData && videosData && contentData;
-
   return (
     <>
       {/* tabs */}
@@ -161,9 +174,12 @@ function ContentTab({ active }) {
             {typeValue === "article" && "All Articles"}
             {typeValue === "video" && "All Videos"}
             <span className="text-gray-300 ml-2 text-sm">
-              {typeValue === "all types" && allContent.length}
-              {typeValue === "article" && getArticles.length}
-              {typeValue === "video" && getVideos.length}
+              {typeValue === "all types" &&
+                `${allContent.length} out of ${totalCount.allContent}`}
+              {typeValue === "article" &&
+                `${getArticles.length} out of ${totalCount.article}`}
+              {typeValue === "video" &&
+                `${getVideos.length} out of ${totalCount.video}`}
             </span>
           </div>
           <div className="">

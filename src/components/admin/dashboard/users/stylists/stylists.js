@@ -163,7 +163,7 @@ function StylistTab() {
         // getLocation={getLocation}
       />
       {stylistData && (
-        <div ref={ref2}>
+        <div>
           <div className="flex flex-col mt-4">
             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
@@ -244,8 +244,9 @@ function StylistTab() {
           </div>
         </div>
       )}
-      {isFetching && <Loader />}
-      {(isLoading || isFetching) && <Loadersmall />}
+      <div className="w-full items-center justify-center flex">
+        {!isPaginationLoading && (isLoading || isFetching) && <Loadersmall />}
+      </div>
       {(error || searchError) && <ErrorDisplayComponent refetch={refetch} />}
     </div>
   );
