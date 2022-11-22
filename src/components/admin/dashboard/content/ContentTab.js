@@ -96,7 +96,6 @@ function ContentTab({ active }) {
         const currentData =
           data?.pages.map((item) => item.data.content).flatMap((a) => a) ?? [];
         setAllContent(currentData);
-        console.log("Dara", data?.pages);
         setTotalCount({
           ...totalCount,
           allContent: data?.pages[0].data.payload.totalCount,

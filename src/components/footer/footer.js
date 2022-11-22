@@ -20,9 +20,28 @@ function FooterComponent() {
             dreams.
           </p>
           <div className="flex mt-8">
-            <img className="mr-5" src={facebookIcon} alt="Facebook icon" />
-            <img className="mr-5" src={instagramIcon} alt="Instagram icon" />
-            <img src={smsIcon} alt="Sms icon" />
+            <a
+              href="https://www.facebook.com/curlysisterinc"
+              target="_blank"
+              aria-describedby="visit our facebook"
+            >
+              {" "}
+              <img className="mr-5" src={facebookIcon} alt="Facebook icon" />
+            </a>
+            <a
+              href="https://www.instagram.com/curlysisterinc/"
+              target="_blank"
+              aria-describedby="visit our instagram"
+            >
+              <img className="mr-5" src={instagramIcon} alt="Instagram icon" />
+            </a>
+            <a
+              href="mailto:info@curlysister.com"
+              target="_blank"
+              aria-describedby="send us a mail"
+            >
+              <img src={smsIcon} alt="Sms icon" />
+            </a>
           </div>
           <div className="mt-20 text-sm text-gray-300 hidden md:block">
             &copy; Curly Sister, {new Date().getFullYear()}

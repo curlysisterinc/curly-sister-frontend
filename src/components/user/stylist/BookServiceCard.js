@@ -31,7 +31,6 @@ export function BookServiceCard({
   const [booking, setBooking] = useState(null);
   const [timeZone, setTimeZone] = useState(null);
 
-  console.log({ serviceOffered, availability, stylistId, ...props });
 
   const bookedservice = useMemo(() => {
     return serviceOffered.find((item) => item._id === data?.bookedservice);

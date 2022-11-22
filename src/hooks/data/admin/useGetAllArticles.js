@@ -33,7 +33,6 @@ export const getNextPageParam = (currentPage) => {
     Number(currentPage?.data?.payload?.page) !== lastPage
       ? Number(currentPage.data.payload.page) + 1
       : undefined;
-  console.log({ nextPage, lastPage, bb: currentPage.data.payload, totalPage });
 
   return nextPage;
 };

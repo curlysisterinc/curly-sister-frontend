@@ -111,7 +111,7 @@ export function ContentItem({ content, selectedId, onCheck }) {
         <div className="ml-2">
           <p className="text-sm text-gray-400 mb-1">{content.title}</p>
           <p className="text-xs text-gray-200 ">
-            By {content.created_by.firstName} {content.created_by.lastName}
+            By {content?.created_by?.firstName} {content?.created_by?.lastName}
           </p>
         </div>
       </td>

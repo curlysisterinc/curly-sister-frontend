@@ -87,7 +87,7 @@ export function ArticleItem({ article }) {
 
       <div className="pt-5 pb-8 px-6">
         <p className="text-gray-200 text-sm mb-2 font-normal">
-          {article.created_by.firstName} {article.created_by.lastName} ·{" "}
+          {article?.created_by?.firstName} {article?.created_by?.lastName} ·{" "}
           {dayjs(article.createdAt).format("DD MMM YYYY")}
         </p>
 

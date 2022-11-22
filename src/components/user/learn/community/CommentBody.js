@@ -168,7 +168,7 @@ export function CommentItem({
   isDeleteCommentLoading,
 }) {
   const handleReturnUsersImage = (userQuestion, ownerOfQuestion) => {
-    const user = item.created_by;
+    const user = item?.created_by;
     const firstNameLetter = user?.firstName[0].toUpperCase();
     const lastNameLetter = user?.lastName[0].toUpperCase();
     const photo = item?.image || "";

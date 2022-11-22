@@ -63,9 +63,9 @@ export function CommunityQuestionItem({
 
   const handleReturnUsersImage = (userQuestion, ownerOfQuestion) => {
     const user =
-      typeof userQuestion.created_by === "string"
+      typeof userQuestion?.created_by === "string"
         ? ownerOfQuestion
-        : userQuestion.created_by;
+        : userQuestion?.created_by;
     const firstNameLetter = user?.firstName[0].toUpperCase();
     const lastNameLetter = user?.lastName[0].toUpperCase();
     const photo = user?.profile_pic || "";

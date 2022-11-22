@@ -51,7 +51,9 @@ function WaitList() {
           </p>
           <div className="md:pt-10 p-0 mt-4">
             <a
-              href="https://hevxcdnqqzt.typeform.com/to/dPCDRkOk?typeform-source=curlysister.com"
+              href="https://airtable.com/shrj0kb8lKeHOvkie"
+              target="_blank"
+              rel="noreferrer"
               className="rounded-full bg-purple-100 w-120 md:w-44 px-6 py-3.5 md:py-4 text-white font-BeatriceSemiBold font-semibold text-sm md:text-base inline-block"
             >
               Get listed

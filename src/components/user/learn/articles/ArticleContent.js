@@ -130,7 +130,6 @@ function ArticleContent() {
   } = useDeleteSavedArticle(getArticles._id);
 
   const handleClickBookmarkButton = (e) => {
-    console.log(getArticles);
     e.stopPropagation();
     if (getArticles?.is_saved || getArticles?.isSaved) {
       deleteSavedArticle();
@@ -254,7 +253,7 @@ function ArticleContent() {
               </div>
 
               <div className="">
-                Related Videos
+                More Articles
                 <div
                   onClick={() => navigate(AuthRoutes.videoContent)}
                   role="button"

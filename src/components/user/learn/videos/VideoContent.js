@@ -30,12 +30,15 @@ import useGetCommentForVideo from "hooks/data/learn/useGetCommentForVideo";
 import useDeleteVideo from "hooks/data/learn/useDeleteVideo";
 import useGetOneVideo from "hooks/data/learn/useGetOneVideo";
 import ContentOptionDropDown from "../ContentOptionDropDown";
-import { formartCount } from "utils";
+import { formartCount, getRandomInt } from "utils";
 import dayjs from "dayjs";
 import { Loadersmall } from "components/loader-component/loader";
 import useSaveVideo from "hooks/data/learn/useSaveVideo";
 import useDeleteSavedVideo from "hooks/data/learn/useDeleteSavedVideo";
 import useReactToContent from "hooks/data/learn/useReactToContent";
+import { VideoItem } from "./VideoItem";
+import useGetAllVideos from "hooks/data/admin/useGetAllVideos";
+import { queryClient } from "App";
 
 // import useCommentOnVideo from "hooks/data/learn/useCommentOnVideo";
 
@@ -44,8 +47,7 @@ function VideoContent() {
   const { token } = useParams();
   const [getVideos, setGetVideos] = useState({});
   const [getComments, setGetComments] = useState([]);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isDisLiked, setIsDisLiked] = useState(false);
+  const [moreVideo, setMoreVideo] = useState(null);
 
   const {
     isLoading: isDeleteVideoLoading,
@@ -72,6 +74,34 @@ function VideoContent() {
     mutate: reactToVideos,
     error: reactionDataError,
   } = useReactToContent(token, "videos");
+
+  const {
+    data: videosData,
+    isLoading: isVideosLoading,
+    error: videosRrror,
+    refetch: videosRefetch,
+    isFetching: isVideosFetching,
+    fetchNextPage: fetchNextVideosPage,
+    hasNextPage: hasVideosNextPage,
+  } = useGetAllVideos({ size: 10 });
+
+  useEffect(() => {
+    if (videosData && videoData) {
+      const data = queryClient.getQueryData(["videos"]);
+      if (data?.pages) {
+        const currentData = data?.pages[0]?.data?.video ?? {};
+        const int = getRandomInt(1, currentData.length);
+        const testvideo = currentData[int];
+        if (testvideo._id === getVideos._id && currentData[int + 1]) {
+          setMoreVideo(currentData[int + 1]);
+        } else if (testvideo._id === getVideos._id && currentData[int - 1]) {
+          setMoreVideo(currentData[int - 1]);
+        } else {
+          setMoreVideo(currentData[int]);
+        }
+      }
+    }
+  }, [videosData, videoData, getVideos]);
 
   useEffect(() => {
     if (deleteVideoData) {
@@ -218,15 +248,12 @@ function VideoContent() {
             <VideoCommentSection />
           </div>
 
-          <div className="">
-            Related Videos
-            <img
-              onClick={() => navigate(AuthRoutes.videoContent)}
-              src={imagineHairVideo}
-              alt=""
-              className="mt-4"
-            />
-          </div>
+          {moreVideo && (
+            <div className="w-4/12">
+              More Videos
+              <VideoItem video={moreVideo} />
+            </div>
+          )}
         </div>
       </div>
     </div>

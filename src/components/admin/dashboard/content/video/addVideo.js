@@ -155,8 +155,6 @@ function NewVideo() {
     if (videoData?.data?.data?.link !== videoInputs.link) {
       getExternalVideoData(videoInputs.link);
     } else {
-      console.log({ ...videoInputs });
-
       updateVideo({
         ...videoInputs,
       });
