@@ -28,7 +28,6 @@ export const getNextPageParam = (currentPage) => {
     0
       ? totalPage
       : Math.floor(totalPage + 1);
-
   const nextPage =
     Number(currentPage?.data?.payload?.page) !== lastPage
       ? Number(currentPage.data.payload.page) + 1

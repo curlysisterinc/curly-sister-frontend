@@ -69,7 +69,6 @@ function AllTab() {
           </div>
         </div>
       </div>
-      <FooterComponent />
     </div>
   );
 }

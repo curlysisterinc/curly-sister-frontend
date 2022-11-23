@@ -16,7 +16,6 @@ export default (savedArticleId) => {
         appearance: "success",
       });
       queryClient.invalidateQueries(["articles"]);
-      queryClient.invalidateQueries(["articles", savedArticleId]);
     },
     onError: async (error) => {
       const mainError = error.response.data;

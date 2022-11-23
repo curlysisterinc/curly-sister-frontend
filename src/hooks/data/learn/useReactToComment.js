@@ -11,12 +11,13 @@ export default (id, type) => {
   const {
     state: { _id: userId },
   } = useAuthContext();
-  const { ReactToQuestion, ReactToArticle, ReactToVideo } = learn;
+  const { ReactToArticleComment, ReactToQuestionComment, ReactToVideoComment } =
+    learn;
 
   const reactionfn = {
-    questions: ReactToQuestion,
-    articles: ReactToArticle,
-    videos: ReactToVideo,
+    articles: ReactToArticleComment,
+    questions: ReactToQuestionComment,
+    videos: ReactToVideoComment,
   };
 
   return useMutation(

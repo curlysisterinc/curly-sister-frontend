@@ -24,7 +24,6 @@ import gradientAvatar from "../../../../assets/images/gradient-avatar.svg";
 import CommentDropDown from "./CommentDropDown";
 
 export default function CommentBody({ comments, setComments, type }) {
-  console.log({ type });
   const { token } = useParams();
   const {
     state: { _id },
@@ -103,7 +102,6 @@ export default function CommentBody({ comments, setComments, type }) {
     replyToComment({ comment: item.replyValue, commentId: item._id });
   };
   const handleDeleteComment = (item) => {
-    console.log("clicked", item);
     deleteComment({ commentId: item._id });
   };
 

@@ -49,13 +49,6 @@ export default {
     return curlySistersApi.post(`/v1/user/comment-on-question`, { ...data });
   },
 
-  async ReactToVideoComment(videoId, reaction) {
-    const data = {
-      videoId,
-      reaction,
-    };
-    return curlySistersApi.post(`/v1/user/react-to-video`, data);
-  },
   async ReactToVideo(videoId, reaction) {
     return curlySistersApi.post(`/v1/user/video/${videoId}/${reaction}`);
   },
@@ -94,12 +87,19 @@ export default {
     };
     return curlySistersApi.post(`/v1/user/react-to-article`, data);
   },
-  async ReactToQuestion(commentId, reaction) {
+  async ReactToQuestionComment(commentId, reaction) {
     const data = {
       commentId,
       reaction,
     };
     return curlySistersApi.post(`/v1/user/react-to-question`, data);
+  },
+  async ReactToVideoComment(videoId, reaction) {
+    const data = {
+      videoId,
+      reaction,
+    };
+    return curlySistersApi.post(`/v1/user/react-to-video`, data);
   },
   async CommentOnVideo(videoId, comment) {
     const data = {

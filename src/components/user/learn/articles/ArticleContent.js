@@ -73,8 +73,6 @@ function ArticleContent() {
     }
   }, [deleteArticleData]);
 
-  const [isContentModalOpen, setIsContentModalOpen] = useState(false);
-
   useEffect(() => {
     if (articleData) {
       setGetArticles(articleData.data.data);
@@ -93,22 +91,6 @@ function ArticleContent() {
 
   const handleArticleReactionDisLike = () => {
     reactToArticle({ contentId: token, reaction: "unlike" });
-  };
-
-  const handleSaveArticle = () => {
-    learn
-      .SaveArticle({ articleId: token })
-      .then((response) => {
-        // setGetArticles([...getArticles, number_of_saves: response.data.data.])
-      })
-      .catch((error) => {});
-  };
-
-  const handleDeleteSavedArticle = () => {
-    learn
-      .DeleteSavedArticle({ id: token })
-      .then((response) => {})
-      .catch((error) => {});
   };
 
   const createMarkup = (html) => {
@@ -223,12 +205,9 @@ function ArticleContent() {
                   )}
                   {!isBookmarkLoading &&
                     (getArticles.is_saved || getArticles.isSaved ? (
-                      <MdBookmark onClick={handleSaveArticle} color="white" />
+                      <MdBookmark color="white" />
                     ) : (
-                      <MdOutlineBookmarkBorder
-                        onClick={handleDeleteSavedArticle}
-                        color="white"
-                      />
+                      <MdOutlineBookmarkBorder color="white" />
                     ))}
                 </button>
                 <p>{getArticles?.number_of_saves}</p>

@@ -16,7 +16,6 @@ export default (savedVideoId) => {
         appearance: "success",
       });
       queryClient.invalidateQueries(["videos"]);
-      queryClient.invalidateQueries(["videos", savedVideoId]);
     },
     onError: async (error) => {
       const mainError = error.response.data;

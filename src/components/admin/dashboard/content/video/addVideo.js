@@ -370,7 +370,7 @@ function NewVideo() {
                 >
                   Add a description for this video (optional)
                   <textarea
-                    className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline font-normal"
                     type="textarea"
                     placeholder="Enter a description for this service"
                     name="description"

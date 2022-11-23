@@ -63,21 +63,6 @@ export function Comments({
     replyToComment(commentValue);
   };
 
-  const handleReturnUsersImage = (userQuestion, ownerOfQuestion) => {
-    const user =
-      typeof userQuestion?.created_by === "string"
-        ? ownerOfQuestion
-        : userQuestion?.created_by;
-    const firstNameLetter = user?.firstName[0].toUpperCase();
-    const lastNameLetter = user?.lastName[0].toUpperCase();
-    const photo = user?.profile_pic || "";
-    return photo ? (
-      <img src={photo} alt="user profile avatar" />
-    ) : (
-      `${firstNameLetter}${lastNameLetter}`
-    );
-  };
-
   const handleUsersImage = () => {
     const firstNameLetter = firstName[0].toUpperCase();
     const lastNameLetter = lastName[0].toUpperCase();
