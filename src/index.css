@@ -155,7 +155,7 @@ Font Weight	Numerical Weight
 }
 
 .pac-container {
-  max-width: 400px;
+  max-width: 600px;
   background: rgb(255, 255, 255);
   border-radius: 16px;
   margin-top: 8px;
@@ -178,6 +178,9 @@ Font Weight	Numerical Weight
 }
 .pac-matched {
   font-weight: 600;
+}
+.hdpi.pac-logo:after {
+  display: none;
 }
 .hdpi .pac-icon {
   background-image: url("./assets/images/location.svg");

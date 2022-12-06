@@ -1,7 +1,10 @@
+/* global google */ // To disable any eslint 'google not defined' errors
+
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "redux/auth";
 import Image from "components/image";
+import Script from "react-load-script";
 
 import dayjs from "dayjs";
 import authHandler from "../../authHandler";
@@ -21,6 +24,7 @@ function UserHome({ upcomingBookings }) {
   } = useAuthContext();
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const autocompleteRef = useRef(null);
 
   const [firstName, setFirstName] = useState("");
 
@@ -37,10 +41,45 @@ function UserHome({ upcomingBookings }) {
     };
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  const handleScriptLoad = () => {
+    // Declare Options For Autocomplete
+    const options = {
+      types: ["(cities)"],
+    };
+
+    // Initialize Google Autocomplete
+    autocompleteRef.current = new google.maps.places.Autocomplete(
+      document.getElementById("searchInput"),
+      options
+    );
+
+    // Avoid paying for data that you don't need by restricting the set of
+    // place fields that are returned to just the address components and formatted
+    // address.
+    autocompleteRef.current.setFields([
+      "address_components",
+      "formatted_address",
+    ]);
+
+    // Fire Event when a suggested name is selected
+    autocompleteRef.current.addListener("place_changed", handlePlaceSelect);
+  };
+
+  const handlePlaceSelect = () => {
+    // Extract City From Address Object
+    const addressObject = autocompleteRef.current.getPlace();
+    const address = addressObject.address_components;
+    // Check if address is valid
+    if (address) {
+      // setCity(address[0].long_name);
+      // setQuery(addressObject.formatted_address);
+      handleSearch(addressObject.formatted_address);
+    }
+  };
+
+  const handleSearch = (city) => {
     navigate(`/stylists`, {
-      state: { city: inputRef.current.value },
+      state: { city },
     });
   };
 
@@ -60,9 +99,13 @@ function UserHome({ upcomingBookings }) {
         </div>
 
         <form
-          onSubmit={handleSearch}
+          // onSubmit={handleSearch}
           className="relative h-12  mb-4 w-full lg:w-2/5 "
         >
+          <Script
+            url={`https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAP_API}&libraries=places`}
+            onLoad={handleScriptLoad}
+          />
           <input
             placeholder="What city do you live in?"
             className="border outline-none focus:outline-none border-gray-250 bg-white rounded-full placeholder:text-sm placeholder:text-gray-300 w-full h-full px-3 lg:px-6"
