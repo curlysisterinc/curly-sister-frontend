@@ -29,7 +29,6 @@ function MapMaker({
   ...rest
 }) {
   const { data, isMapLoaded } = text;
-  // console.log(data);
   const style = $hover ? "flex" : "hidden";
   // const style = "flex";
   const display = isMapLoaded ? "visible" : "invisible";
@@ -115,14 +114,6 @@ export default function StylistMap({
 
   const createMapOptions = (maps) => {
     return {
-      mapTypeControl: false,
-      scrollwheel: true,
-      fullscreenControl: false,
-      scaleControl: true,
-      gestureHandling: "greedy",
-      minZoom: 8,
-      // disableDefaultUI: true,
-      // fullscreenControl: false,
       styles: [
         {
           stylers: [
@@ -143,8 +134,8 @@ export default function StylistMap({
           type: "Feature",
           properties: {
             cluster: false,
-            category: "wells",
-            wellId: elem._id,
+            category: "stylists",
+            stylistsId: elem._id,
             data: elem,
           },
           geometry: {
@@ -156,9 +147,8 @@ export default function StylistMap({
           },
         };
       });
-    console.log("res", res);
     return res;
-  }, []);
+  }, [stylelist]);
 
   const { clusters, supercluster } = useSupercluster({
     points: stylistsWithGeoInfo,
@@ -166,17 +156,6 @@ export default function StylistMap({
     zoom,
     options: { radius: 75, maxZoom: 20 },
   });
-  console.log({ clusters, supercluster, bounds });
-
-  // const apiIsLoaded = (map, maps, places) => {
-  //   const newBounds = new maps.LatLngBounds();
-  //   console.log("newBounds", newBounds);
-  //   stylelist.forEach((place) => {
-  //     console.log("place", place);
-  //     newBounds.extend(new maps.LatLng(place.latitude, place.longitude));
-  //   });
-  //   setBounds(newBounds);
-  // };
 
   return (
     // Important! Always set the container height explicitly
@@ -190,7 +169,6 @@ export default function StylistMap({
         // background: "rgb(229, 227, 223)",
       }}
     >
-      {/* {currentLocationStatus !== "data" && currentLocationStatus} */}
       <div
         className={`${
           currentLocationStatus !== "data"
@@ -209,39 +187,18 @@ export default function StylistMap({
       >
         <div style={{ height: "100vh", width: "100%" }}>
           {defaultProps?.center?.lat && (
-            // <GoogleMapReact
-            //   bootstrapURLKeys={{
-            //     key: process.env.REACT_APP_MAP_API,
-            //     libraries: ["places"],
-            //   }}
-            //   defaultCenter={defaultProps.center}
-            //   defaultZoom={defaultProps.zoom}
-            //   // options={createMapOptions}
-            //   yesIWantToUseGoogleMapApiInternals
-            //   onGoogleApiLoaded={({ map, maps }) => {
-            //     mapRef.current = map;
-            //     // return apiIsLoaded(map, maps);
-            //   }}
-            //   // center={{
-            //   //   lat: Number(mapGeo.latitude),
-            //   //   lng: Number(mapGeo.longitude),
-            //   // }}
-            //   onChange={({ z, b }) => {
-            //     console.log({ z, b });
-            //     setZoom(zoom);
-            //     // setBounds({ ...mapGeo });
-            //   }}
-            // >
             <GoogleMapReact
               bootstrapURLKeys={{
                 key: process.env.REACT_APP_MAP_API,
-                libraries: ["places"],
+                // libraries: ["places"],
               }}
+              options={createMapOptions}
               defaultCenter={defaultProps.center}
               defaultZoom={10}
               yesIWantToUseGoogleMapApiInternals
               onGoogleApiLoaded={({ map }) => {
                 mapRef.current = map;
+                setIsMapLoaded("true");
               }}
               center={{
                 lat: Number(mapGeo.latitude),
@@ -264,22 +221,22 @@ export default function StylistMap({
                     cluster.properties;
 
                   if (isCluster) {
-                    const size = (pointCount * 20) / stylistsWithGeoInfo.length;
-
+                    const size =
+                      (pointCount * 40) / (stylistsWithGeoInfo.length * 10);
                     return (
                       <Marker
                         lat={latitude}
                         lng={longitude}
                         key={`cluster-${cluster.id}`}
-                        className="rounded-xl p-2 flex items-center justify-center bg-green-500 text-white"
+                        className="rounded-xl p-4 flex items-center justify-center bg-green-500 text-white"
                       >
                         <div
-                          className="rounded-xl p-2 flex items-center justify-center bg-green-500 text-white"
+                          className="rounded-2xl p-4 flex items-center justify-center bg-green-500 text-white text-lg cursor-pointer"
                           style={{ width: `${size}px`, height: `${size}px` }}
                           onClick={() => {
                             const expansionZoom = Math.min(
                               supercluster.getClusterExpansionZoom(cluster.id),
-                              20
+                              50
                             );
                             mapRef.current.setZoom(expansionZoom);
                             mapRef.current.panTo({
@@ -295,9 +252,9 @@ export default function StylistMap({
                   }
                   return (
                     <MapMaker
-                      lat={cluster.properties?.latitude}
-                      lng={cluster.properties?.longitude}
-                      key={cluster.properties?._id}
+                      lat={cluster.properties?.data?.latitude}
+                      lng={cluster.properties?.data?.longitude}
+                      key={cluster.properties?.data?._id}
                       text={{ data: cluster.properties.data, isMapLoaded }}
                     />
                   );
