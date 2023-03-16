@@ -1,6 +1,6 @@
 /* eslint-disable import/order */
 import React from "react";
-import Hurray from "../../../assets/images/hurray.svg";
+import Hurray from "../../../assets/images/hurray.png";
 import questionnaire from "../../../assets/images/questionnaire.svg";
 import hairProfile from "../../../assets/images/hair-profile.svg";
 import addCalendar from "../../../assets/images/add-calendar.svg";
@@ -14,7 +14,7 @@ function SuccessfullBooking() {
   const [openHairProfile, setOpenHairProfile] = React.useState(false);
   return (
     <div className="">
-      <div className="ml-80 bg-white  pt-14 w-full min-h-screen">
+      <div className="bg-white  pt-14 w-full min-h-screen">
         <div className="border border-orange-100 bg-orange-300 rounded-xl w-1/2 mx-auto p-8">
           <img src={Hurray} alt="" />
           <p className="text-base font-BeatriceSemiBold text-gray-400 my-4">

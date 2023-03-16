@@ -1,67 +1,161 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-shadow */
-/* eslint-disable import/order */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-return-assign */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useState, useEffect } from "react";
-import AdminRow from "./adminRow";
+import React, { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
-import InviteAdminModal from "./inviteAdminModal";
 import { AuthRoutes } from "constants";
 import { useNavigate } from "react-router-dom";
+import useGetAllAdmins from "hooks/data/admin/useGetAllAdmins";
+import { Loadersmall } from "components/loader-component/loader";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
+import useGetUserProfile from "hooks/data/admin/useGetUserProfile";
+import { filterOutEmptyObject } from "utils";
+import useSearchUser from "hooks/data/utility/useSearchUser";
+import { useInView } from "react-intersection-observer";
+import { queryClient } from "App";
+import AdminRow from "./adminRow";
+import InviteAdminModal from "./inviteAdminModal";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import admin from "../../../../../api/admin";
 import dropdownIcon from "../../../../../assets/images/dropdown.svg";
 import DeleteContentModal from "./deleteContentModal";
+import { AdminTable } from "./adminTableHeader";
+import StylistSearch from "../stylists/stylistSearch";
 
 function AdminTab({ active }) {
   const navigate = useNavigate();
-  const [getAdmin, setGetAdmin] = useState([]);
+  const [adminDataList, setAdminDataList] = useState([]);
   const [openInviteAdminModal, setOpenInviteAdminModal] = useState(false);
   const [callToAction, setCallToAction] = useState(false);
   const [selectedId, setSelectedId] = useState([]);
   const [toggleActions, setToggleActions] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [searchParam, setSearchParam] = useState({});
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [totalStylistCount, setTotalStylistCount] = useState(null);
+  const [filteredArr, setFilteredArr] = useState([]);
+  // const [stylistList, setStylistList] = React.useState([]);
+
+  const searchRef = useRef({});
+
+  const {
+    data: adminData,
+    isLoading,
+    error,
+    refetch,
+    isFetching,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetAllAdmins();
+
+  const { isLoading: isUserprofileLoading, data: userProfileData } =
+    useGetUserProfile();
+
+  const {
+    data: adminSearchData,
+    isFetching: isSearchFetching,
+    fetchNextPage: fetchNextSearchPage,
+    hasNextPage: hasSearchNextPage,
+    error: searchError,
+  } = useSearchUser({ query: searchParam, role: "admin" });
+
+  const [ref2, inView] = useInView();
+
+  React.useEffect(() => {
+    const fetchNextDatePage = !isSearchMode
+      ? fetchNextPage
+      : fetchNextSearchPage;
+
+    if (inView) {
+      fetchNextDatePage();
+    }
+  }, [inView, isSearchMode]);
+
+  React.useEffect(() => {
+    if (adminData && !isSearchMode) {
+      const data = queryClient.getQueryData(["admins"]);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.data.admins).flatMap((a) => a) ??
+          [];
+        setFilteredArr(currentData);
+        setAdminDataList(currentData);
+        setTotalStylistCount(data.pages[0].data.totalCount);
+      }
+    }
+  }, [adminData, !isSearchMode]);
+
+  useEffect(() => {
+    if (adminSearchData && isSearchMode) {
+      const data = queryClient.getQueryData(["userSearch", searchParam]);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.users).flatMap((a) => a) ?? [];
+        setFilteredArr(currentData);
+        setAdminDataList(currentData);
+        // setTotalStylistCount(data.pages[0].data.totalSearchCount);
+      }
+    }
+  }, [adminSearchData, isSearchMode]);
 
   const onMasterCheck = (e) => {
     if (e.target.checked) {
       setCallToAction(true);
-      setSelectedId(getAdmin.map((admin) => admin._id));
+      setSelectedId(adminDataList.map((item) => item._id));
     } else {
       setCallToAction(false);
       setSelectedId([]);
     }
   };
-  useEffect(() => {
-    admin
-      .GetAllAdmin()
-      .then((response) => {
-        console.log(response.data);
-        setGetAdmin(response.data.data.filter((admin) => !admin.is_deleted));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+
   const openDeleteModal = () => {
     setDeleteModal(true);
   };
   const closeDeleteModal = () => {
     setDeleteModal(false);
   };
+
+  const handleSearchAddress = (search) => {
+    setDataToRef({
+      query: search,
+    });
+    setIsSearchMode(true);
+    setSearchParam(searchRef.current.value);
+  };
+
+  const setDataToRef = (searchValue) => {
+    if (searchRef?.current?.value) {
+      const newData = { ...searchRef.current.value, ...searchValue };
+      filterOutEmptyObject(newData);
+      searchRef.current.value = { ...newData };
+    } else {
+      filterOutEmptyObject(searchValue);
+      searchRef.current.value = { ...searchValue };
+    }
+  };
+
+  React.useEffect(() => {
+    const ac = new AbortController();
+    if (!Object.keys(searchParam).length) {
+      setIsSearchMode(false);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [searchParam]);
+
+  const isPaginationLoading =
+    (!isSearchMode && hasNextPage) || (isSearchMode && hasSearchNextPage);
+
   return (
-    <div>
+    <div className="h-screen-170px">
       <div className="flex items-center justify-between">
         <div className="font-BeatriceSemiBold text-gray-400 text-2xl">
           Admins
-          <span className="text-gray-300 ml-2 text-sm">{getAdmin.length}</span>
+          <span className="text-gray-300 ml-2 text-sm">
+            {adminDataList.length}
+          </span>
         </div>
         {callToAction ? (
-          <div
+          <button
+            type="button"
             onClick={() => setToggleActions(!toggleActions)}
             className="cursor-pointer bg-white relative text-gray-400 border border-gray-250 h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
           >
@@ -73,19 +167,25 @@ function AdminTab({ active }) {
             />
             {toggleActions && (
               <div className="absolute bg-white rounded-xl top-10 shadow w-full right-0">
-                <div
+                <button
+                  type="button"
                   onClick={openDeleteModal}
                   className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
                 >
                   <img className="mr-2" src={trashIcon} alt="" />
                   Delete
-                </div>
+                </button>
               </div>
             )}
-          </div>
+          </button>
         ) : (
-          <div className="">
-            {/* filters */}
+          <div className="relative  flex items-center justify-start flex-1 flex-wrap md:justify-end space-x-4">
+            <StylistSearch
+              handleSearchAddress={handleSearchAddress}
+              setIsSearchMode={setIsSearchMode}
+              isSearchLoading={isSearchFetching}
+              placeholder="Search Admin"
+            />
             <button
               type="button"
               onClick={() => setOpenInviteAdminModal(true)}
@@ -96,68 +196,24 @@ function AdminTab({ active }) {
           </div>
         )}
       </div>
+      {adminData && userProfileData && (
+        <AdminTable
+          profile={userProfileData.data.data}
+          empty={adminDataList?.length === 0 && "No Admin data available"}
+        >
+          <AdminRow
+            setCallToAction={setCallToAction}
+            selectedId={selectedId}
+            setSelectedId={setSelectedId}
+            getAdmin={adminDataList}
+            setGetAdmin={setAdminDataList}
+            profile={userProfileData.data.data}
+          />
+        </AdminTable>
+      )}
 
-      {/* table */}
-      <div className="flex flex-col mt-4">
-        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="min-h-screen">
-              <table className="min-w-full text-left border border-gray-600 ">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col ">
-                      <input
-                        type="checkbox"
-                        className="ml-3"
-                        id="mastercheck"
-                        onChange={onMasterCheck}
-                      />
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Role
-                    </th>
-                    <th
-                      scope="col"
-                      className=" text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Date joined
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="text-sm font-medium text-gray-400 px-6 py-4"
-                    />
-                  </tr>
-                </thead>
-                <tbody className="">
-                  <AdminRow
-                    setCallToAction={setCallToAction}
-                    selectedId={selectedId}
-                    setSelectedId={setSelectedId}
-                    getAdmin={getAdmin}
-                    setGetAdmin={setGetAdmin}
-                  />
-                </tbody>
-              </table>
-              <div className="my-10" />
-            </div>
-          </div>
-        </div>
-      </div>
+      {(isLoading || isUserprofileLoading) && <Loadersmall />}
+      {error && <ErrorDisplayComponent refetch={refetch} />}
       {openInviteAdminModal && (
         <InviteAdminModal handleClose={() => setOpenInviteAdminModal(false)} />
       )}

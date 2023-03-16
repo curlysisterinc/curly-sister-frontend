@@ -3,9 +3,33 @@
   border: 2px #ff8500 solid;
   padding: 4px;
 }
-.slick-dots{
+.slick-dots {
   display: flex !important;
 }
-.slick-dots li{
-  flex:  1;
+.slick-dots li {
+  flex: 1;
+}
+.slick-arrow {
+  height: 40px;
+  width: 40px;
+}
+.slick-prev:before,
+.slick-next:before {
+  font-size: 40px;
+  /* background: rgba(68, 60, 77, 0.5); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  color: rgba(68, 60, 77, 0.5);
+  opacity: 1;
+}
+.slick-arrow .slick-next {
+  right: 20px;
+  z-index: 44;
+  color: red;
+}
+.slick-arrow .slick-prev {
+  left: 20px;
+  z-index: 44;
 }

@@ -5,7 +5,6 @@ function useFetchData(endpoint, stateSetter, state, dependant) {
     const ac = new AbortController();
     endpoint
       .then((response) => {
-        console.log(response.data, `data fetched ${state}`);
         stateSetter(response.data.data);
       })
       .catch((error) => {

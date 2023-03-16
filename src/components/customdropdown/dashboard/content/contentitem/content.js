@@ -5,13 +5,13 @@ import trashIcon from "../../../../../assets/images/trash.svg";
 import editIcon from "../../../../../assets/images/edit.svg";
 import publishIcon from "../../../../../assets/images/publish.svg";
 
-function Content({ status, deleteHandler, editHandler, publishHandler }) {
+function Content({ status, handleDeleteContent, editHandler, publishHandler }) {
   return (
     <DropDownMenuContent className="absolute z-40 bg-white rounded-lg shadow-lg w-40  overflow-hidden text-sm text-gray-400">
       <DropDownItem>
         <button
           type="button"
-          className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
+          className="flex items-center justify-start cursor-pointer text-gray-400 text-sm w-full p-3 hover:bg-gray-50"
           onClick={editHandler}
         >
           <img className="mr-3" src={editIcon} alt="" />
@@ -22,7 +22,7 @@ function Content({ status, deleteHandler, editHandler, publishHandler }) {
         <button
           onClick={publishHandler}
           type="button"
-          className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
+          className="flex items-center justify-start cursor-pointer text-gray-400 text-sm w-full p-3 hover:bg-gray-50"
         >
           <img className="mr-3" src={publishIcon} alt="key icon" />
           {status.toLowerCase() !== "published" ? "Publish" : "UnPublish"}
@@ -31,8 +31,8 @@ function Content({ status, deleteHandler, editHandler, publishHandler }) {
       <DropDownItem>
         <button
           type="button"
-          onClick={deleteHandler}
-          className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
+          onClick={handleDeleteContent}
+          className="flex items-center justify-start cursor-pointer text-red-400 text-sm w-full p-3 hover:bg-gray-50"
         >
           <img className="mr-3" src={trashIcon} alt="key icon" />
           Delete

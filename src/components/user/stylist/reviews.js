@@ -7,15 +7,16 @@ import { AiTwotoneStar } from "react-icons/ai";
 import reviewAvatar1 from "../../../assets/images/about-pix1.png";
 import reviewAvatar2 from "../../../assets/images/funmi.png";
 import { FaEllipsisH } from "react-icons/fa";
+import { ReactComponent as GoogleIcon } from "../../../assets/images/google-icon.svg";
 
 const GeneralReviewCard = () => {
   return (
-    <div className="rounded-xl bg-gray-650 p-6 flex items-center justify-between">
-      <div>
+    <div className="rounded-xl bg-gray-750 p-6 flex items-center  flex-col md:flex-row flex-wrap justify-center">
+      <div className="m-8 mt-0">
         <div className="bg-purple-100 rounded-lg text-white px-10 py-4">
           <span className="text-sm font-BeatriceMedium">
             4.89{" "}
-            <span className="text-slate-400 text-xs font-BeatriceRegular">
+            <span className="text-white text-xs font-BeatriceRegular">
               (12 reviews)
             </span>
           </span>
@@ -69,10 +70,14 @@ const GeneralReviewCard = () => {
 
 const ViewReview = ({ review }) => {
   return (
-    <div className="rounded-xl bg-gray-650 p-6 ">
-      <div className="flex justify-between items-center">
+    <div className="rounded-xl bg-gray-750 p-6 ">
+      <div className="flex justify-between items-center mb-2">
         <div className="flex items-center space-x-3">
-          <img src={review.avatar} alt="" />
+          <img
+            src={review.avatar}
+            alt=""
+            className="w-12 rounded-full object-cover"
+          />
           <div className="">
             <p className="text-base text-gray-400">{review.name}</p>
             <div className="flex space-x-2 items-center">
@@ -87,12 +92,22 @@ const ViewReview = ({ review }) => {
             </div>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="hidden md:flex items-center space-x-3">
           <p className="text-gray-300 text-sm">{review.date}</p>
           <FaEllipsisH color="#8E8695" />
         </div>
       </div>
-      <p className="text-gray-300 text-sm">{review.description}</p>
+      <p className="text-gray-200 text-sm">{review.description}</p>
+      <div className="flex items-center justify-between mt-4 w-full">
+        <div className="flex items-center bg-gray-600 rounded-3xl py-1.5 px-2">
+          <GoogleIcon />
+          <p className="text-gray-400 text-sm ml-2">Google</p>
+        </div>
+        <div className="flex md:hidden items-center space-x-3">
+          <p className="text-gray-300 text-sm">{review.date}</p>
+          <FaEllipsisH color="#8E8695" />
+        </div>
+      </div>
     </div>
   );
 };

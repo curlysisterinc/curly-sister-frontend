@@ -12,6 +12,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
+import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import trashIcon from "../../../../assets/images/trash.svg";
 import admin from "../../../../api/admin";
@@ -155,19 +156,24 @@ function ManageTagModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className="fixed top-0 left-0 h-full overflow-y-auto z-200 bg-black-100 w-full flex  justify-end items-center"
     >
       <div
-        className="flex items-start h-full"
+        className="flex items-start justify-end h-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          className="mt-10 mr-10 bg-white rounded-full p-2"
+        <div
+          className=" bg-white rounded-full p-2 fixed top-2  right-2 xs:left-auto xs:right-500"
           onClick={handleClose}
-          src={closeModalBtn}
-          alt="close button"
-        />
-        <div className="bg-white min-h-screen p-10">
+          role="button"
+          tabIndex="0"
+          onKeyPress={(e) =>
+            runFunctionWhenSpaceOrEnterIsClicked(e, handleClose)
+          }
+        >
+          <img src={closeModalBtn} alt="close button" />
+        </div>
+        <div className="bg-white min-h-screen p-5 pt-10 sm:p-10 w-full max-w-480 ">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Tags
           </h4>
@@ -183,7 +189,7 @@ function ManageTagModal({ handleClose }) {
                         name="certification"
                         className={clsx(
                           inputList.length > 1 ? "col-span-7" : "col-span-8",
-                          "col  pl-3 py-2 appearance-none border-0 w-full text-gray-700 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
+                          "col  pl-3 py-2 appearance-none border-0 w-full text-gray-400 placeholder-gray-700 leading-tight focus:ring-0 focus:border-transparent focus:outline-none focus:shadow-none text-sm"
                         )}
                         placeholder="Enter link here"
                         value={certificate.certification}

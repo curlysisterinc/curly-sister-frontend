@@ -5,7 +5,11 @@ import curlyGirls from "../../assets/images/curly-girl-group.png";
 
 function AuthSideBarComponent({ signin }) {
   return (
-    <div className="w-full lg:w-96 bg-orange-150 p-5 lg:p-8 lg:h-screen lg:fixed shadow">
+    <div
+      className=" bg-orange-150 lg:p-8 lg:h-screen
+    md:w-60 lg:w-80 x md:h-screen p-5 lg:px-12  md:fixed flex flex-col justify-between  z-200 w-full
+    "
+    >
       <div className="text-gray-400 text-xl font-semibold">
         <Link to="/">
           <img className="h-20" src={brandLogo} alt="brand logo" />
@@ -14,7 +18,11 @@ function AuthSideBarComponent({ signin }) {
           <h3 className="text-lg lg:text-2xl font-bold text-black">
             Welcome {signin}, Curly Sister is always here for you.
           </h3>
-          <img className="mt-10 h-84" src={curlyGirls} alt="curly girls pix" />
+          <img
+            className="mt-10 h-84 hidden lg:flex"
+            src={curlyGirls}
+            alt="curly girls pix"
+          />
         </div>
       </div>
     </div>

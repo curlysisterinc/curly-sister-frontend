@@ -1,14 +1,43 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from "@reduxjs/toolkit";
+import jwtDecode from "jwt-decode";
 
-const initialState = {
-  token: undefined,
+let initialState = {
   isSignedIn: false,
-  userEmail: undefined,
-  userPw: undefined,
-  userTitle: undefined,
-  user: null,
 };
+
+const resetAuth = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  initialState = {
+    isSignedIn: false,
+  };
+};
+
+if (
+  localStorage.getItem("token") &&
+  localStorage.getItem("token") !== "undefined" &&
+  localStorage.getItem("user") &&
+  localStorage.getItem("user") !== "undefined"
+) {
+  const token = localStorage.getItem("token") || "";
+  const user = JSON.parse(localStorage.getItem("user") || "");
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp * 1000 < Date.now()) {
+    resetAuth();
+  }
+  initialState = {
+    ...initialState,
+    ...user,
+    decodedToken,
+    token,
+    isSignedIn: true,
+  };
+} else {
+  resetAuth();
+}
+
+const getInitialState = () => initialState;
 
 const authSlice = createSlice({
   name: "auth",
@@ -21,10 +50,7 @@ const authSlice = createSlice({
       state.userPw = userPw;
     },
     loginUser(state, action) {
-      const { token, isSignedIn } = action.payload;
-
-      state.token = token;
-      state.isSignedIn = isSignedIn;
+      return { ...state, ...action.payload, isSignedIn: true };
     },
     signupUser(state, action) {
       const { isSignedIn } = action.payload;
@@ -44,8 +70,7 @@ const authSlice = createSlice({
       state.isSignedIn = isSignedIn;
     },
     logoutUser(state) {
-      state.isSignedIn = false;
-      state.user = null;
+      return { isSignedIn: false };
     },
   },
 });

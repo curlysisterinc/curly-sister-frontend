@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable new-cap */
 import React, {
   useState,
   useRef,
@@ -6,182 +8,177 @@ import React, {
   useMemo,
 } from "react";
 import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
+import useSearchStylist from "hooks/data/utility/useSearchStylist";
 import useGetCurrentLocation from "hooks/useGetCurrentLocation";
 
-import admin from "api/admin";
 import Loader from "components/loader-component/loader";
-import SideBarComponent from "../../sidebar";
-// import admin from "../../../api/admin";
+import { useInView } from "react-intersection-observer";
+import { queryClient } from "App";
+import useVerifyUsersAccount from "hooks/useVerifyUsersAccount";
+import ErrorDisplayComponent from "components/errorDisplayComponent";
 import FilterPanel from "./filterPanel";
 import StylistList from "./StylistList";
-import StylistMap from "./StylistMap";
 
 function Stylist() {
   const positionData = useGetCurrentLocation();
+  const verifyUsersAccount = useVerifyUsersAccount();
+  const searchRef = useRef({});
+  const [ref2, inView2] = useInView();
 
-  const [selectBookableStylist, setSelectBookableStylist] = useState(false);
-  const [categories, setCategories] = useState("all-stylist");
-  const [lat, setLat] = useState(null);
-  const [lng, setLng] = useState(null);
-  const [status, setStatus] = useState(null);
-  const [certifications, setCertifications] = useState([
-    {
-      id: 1,
-      checked: false,
-      label: "Deva",
-    },
-    {
-      id: 2,
-      checked: false,
-      label: "Quidad",
-    },
-    {
-      id: 3,
-      checked: false,
-      label: "Ketch",
-    },
-  ]);
-  const [getServices, setGetServices] = useState([]);
+  const [coord, setCoord] = useState({ lat: "", lng: "" });
+  const [searchParam, setSearchParam] = useState({});
+
   const [filteredArr, setFilteredArr] = useState([]);
-  const [getStylist, setGetStylist] = React.useState([]);
+  const [stylistList, setStylistList] = React.useState([]);
+  const [isMapFixed, setIsMapFixed] = React.useState(false);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [totalStylistCount, setTotalStylistCount] = useState(null);
 
-  const handleSelectToggle = () => {
-    // console.log("handleSelectToggle", selectBookableStylist);
-    setSelectBookableStylist(!selectBookableStylist);
-  };
+  const {
+    data: stylistData,
+    isFetching,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    error,
+  } = useGetAllStylists();
 
-  const handleSelectCategory = (e) => {
-    setCategories(e.target.value);
-  };
+  const {
+    data: stylistSearchData,
+    isFetching: isSearchFetching,
+    fetchNextPage: fetchNextSearchPage,
+    hasNextPage: hasSearchNextPage,
+    error: searchError,
+  } = useSearchStylist({ query: searchParam });
 
-  const handleOnCheckboxChange = (id, value) => {
-    const newArr = certifications;
-    const getCheckedItems = newArr.map((item) =>
-      item.id === id ? { ...item, checked: !item.checked } : item
-    );
-    setCertifications(getCheckedItems);
-  };
-
-  const applyFilter = () => {
-    let updatedList = filteredArr;
-    // console.log(updatedList, "all");
-    if (selectBookableStylist === true) {
-      updatedList = updatedList.filter((item) => item.services.length > 0);
-      // setGetStylist(updatedList);
-      // console.log(updatedList, "services available");
-    }
-
-    if (categories !== "all-stylist") {
-      updatedList = updatedList.filter(
-        (item) => item.category_type === categories
-      );
-      // console.log(updatedList, "all stylist");
-    }
-
-    setGetStylist(updatedList);
-  };
-  const { data: stylistData, isLoading, isError } = useGetAllStylists();
-  const stylists = stylistData?.data?.stylists;
-
-  React.useEffect(() => {
-    if (stylistData) {
-      setFilteredArr(stylists);
-      setGetStylist(stylists);
-    }
-  }, [stylistData]);
-
-  React.useEffect(() => {
-    const fetchData = () => {
-      admin.GetServices().then((response) => {
-        setGetServices(response.data.data);
-      });
-    };
-    fetchData();
-  }, []);
-
-  React.useEffect(() => {
-    applyFilter();
-  }, [selectBookableStylist, categories]);
+  const getLocation = useCallback(() => {
+    setCoord({
+      ...coord,
+      lat: positionData?.position.lat,
+      lng: positionData?.position.lng,
+    });
+  }, [positionData]);
 
   useEffect(() => {
     if (positionData.status === "data") {
       getLocation();
     }
-  }, [positionData]);
+  }, [positionData.status]);
 
-  // Store autocomplete object in a ref.
-  // This is done because refs do not trigger a re-render when changed.
-  const autocompleteRef = useRef(null);
+  // const handleOnCheckboxChange = (id, value) => {
+  //   const newArr = certifications;
+  //   const getCheckedItems = newArr.map((item) =>
+  //     item.id === id ? { ...item, checked: !item.checked } : item
+  //   );
+  //   setCertifications(getCheckedItems);
+  // };
 
-  const getLocation = () => {
-    setLat(positionData.position.lat);
-    setLng(positionData.position.lng);
-  };
-
-  const handlePlaceSelect = () => {
-    const places = autocompleteRef.current.getPlaces();
-
-    if (places.length === 0) {
-      return;
+  React.useEffect(() => {
+    if (inView2) {
+      setIsMapFixed(false);
+    } else {
+      setIsMapFixed(true);
     }
+  }, [inView2]);
 
-    const geo = places[0].geometry.location;
-    setLat(geo.lat());
-    setLng(geo.lng());
+  React.useEffect(() => {
+    if (stylistData && !isSearchMode) {
+      const data = queryClient.getQueryData(["stylists"]);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.stylist).flatMap((a) => a) ?? [];
+        setFilteredArr(currentData);
+        setStylistList(currentData);
+        setTotalStylistCount(data.pages[0].data.totalCount);
+      }
+    }
+  }, [stylistData, !isSearchMode]);
+
+  useEffect(() => {
+    if (stylistSearchData && isSearchMode) {
+      const data = queryClient.getQueryData(["stylistsSearch", searchParam]);
+      if (data?.pages) {
+        const currentData =
+          data?.pages.map((item) => item.data.stylist).flatMap((a) => a) ?? [];
+
+        setFilteredArr(currentData);
+        setStylistList(currentData);
+        // setTotalStylistCount(data.pages[0].data.totalSearchCount);
+        const stylistWithCords = currentData.find((item) => item.longitude);
+        if (stylistWithCords) {
+          setCoord({
+            ...coord,
+            lat: Number(stylistWithCords.latitude),
+            lng: Number(stylistWithCords.longitude),
+          });
+        }
+      }
+    }
+  }, [stylistSearchData, isSearchMode]);
+
+  React.useEffect(() => {
+    const ac = new AbortController();
+    if (!Object.keys(searchParam).length) {
+      setIsSearchMode(false);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [searchParam]);
+
+  const filterOutEmptyObject = (obj) => {
+    Object.keys(obj).map((item) => {
+      if (!obj[item] || (Array.isArray(obj[item]) && !obj[item].length)) {
+        delete obj[item];
+      }
+      return null;
+    });
   };
 
-  const handleScriptLoad = () => {
-    // Initialize Google Autocomplete
-    /* global google */ // To disable any eslint 'google not defined' errors
-    autocompleteRef.current = new google.maps.places.SearchBox(
-      document.getElementById("searchInput")
-    );
-
-    autocompleteRef.current.addListener("places_changed", handlePlaceSelect);
+  const setDataToRef = (data) => {
+    if (searchRef?.current?.value) {
+      const newData = { ...searchRef.current.value, ...data };
+      filterOutEmptyObject(newData);
+      searchRef.current.value = { ...newData };
+    } else {
+      filterOutEmptyObject(data);
+      searchRef.current.value = { ...data };
+    }
   };
 
-  const handleClick = () => {
-    getLocation();
-    document.getElementById("searchInput").value = "";
-    // const geocoder = new google.maps.Geocoder(
-    //   document.getElementById("searchInput")
-    // );
-    // console.log({ position });
-    // geocoder
-    //   .geocode({ location: { lat: position.lat, lng: position.lng } })
-    //   .then((response) => {
-    //     console.log("response", response);
-    //     document.getElementById("searchInput").value = "";
-    //     // document.getElementById("searchInput").value =
-    //     //   response.results[0].formatted_address;
-    //   });
+  const handleSearchAddress = (data) => {
+    setDataToRef(data);
+    setSearchParam(searchRef.current.value);
   };
 
   return (
-    <div className="ml-80 bg-white px-10 pt-8 w-full min-h-screen">
-      {isLoading && <Loader />}
+    <div className="bg-white px-5 lg:px-10 pt-32px w-full min-h-screen mt-50 md:mt-0">
+      {isFetching && <Loader />}
       {stylistData && (
         <>
-          <FilterPanel
-            selectToggle={handleSelectToggle}
-            selectBookableStylist={selectBookableStylist}
-            certifications={certifications}
-            handleOnCheckboxChange={handleOnCheckboxChange}
-            categories={categories}
-            handleSelectCategory={handleSelectCategory}
-            getServices={getServices}
-            handleScriptLoad={handleScriptLoad}
-            handleClick={handleClick}
-          />
-          <hr className="w-full border border-gray-600 mt-8" />
+          <div ref={ref2}>
+            <FilterPanel
+              handleSearchAddress={handleSearchAddress}
+              setIsSearchMode={setIsSearchMode}
+              isSearchLoading={isSearchFetching}
+              getLocation={getLocation}
+            />
+            <hr className="w-full border border-gray-600" />
+          </div>
           <StylistList
-            list={stylists}
-            selectedPlace={{ lat, lng }}
+            list={stylistList}
+            fetchNextPage={!isSearchMode ? fetchNextPage : fetchNextSearchPage}
+            hasNextPage={hasNextPage}
+            hasSearchNextPage={hasSearchNextPage}
+            selectedPlace={{ lat: coord.lat, lng: coord.lng }}
             positionData={positionData}
+            isSearchMode={isSearchMode}
+            totalStylistCount={totalStylistCount}
+            isMapFixed={isMapFixed}
           />
         </>
       )}
-      {isError && <p>Error </p>}
+      {(error || searchError) && <ErrorDisplayComponent refetch={refetch} />}
     </div>
   );
 }

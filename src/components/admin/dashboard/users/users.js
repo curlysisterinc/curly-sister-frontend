@@ -42,7 +42,7 @@ function UsersTab() {
 
   return (
     <>
-      <div className="flex w-1/2 mx-auto justify-center mb-5">
+      <div className="flex w-1/2 mx-auto justify-center">
         {userNavlinks.map((link) => (
           <NavLink
             key={link.title}

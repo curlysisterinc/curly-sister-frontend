@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import SelectOptions from "components/selectOptions";
+import DatePicker from "react-datepicker";
 import { Select, SelectItem } from "../../../../../customSelect";
 import dash from "../../../../../../assets/images/dash.svg";
 import { timeArr } from "../../data";
+import "react-datepicker/dist/react-datepicker.css";
 
 const selectclassname =
   "flex items-center justify-between shadow-sm appearance-none border border-gray-800 rounded w-32 py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline";
@@ -19,54 +22,52 @@ function TimeRange({
   const { from, to } = selected;
 
   const onSelectchangeone = (e) => {
-    const index = timeArr.findIndex((itm) => itm.value === e);
+    const index = timeArr.findIndex((itm) => itm.value === e.target.value);
     setFirstIndex(index);
     const defaultTime2 = timeArr[index + 1].value;
-
-    bookingStarttime(selectedid, e, defaultTime2);
+    bookingStarttime(selectedid, e.target.value, defaultTime2);
   };
 
   const onSelectchangetwo = (e) => {
-    bookingEndtime(selectedid, e);
+    bookingEndtime(selectedid, e.target.value);
   };
 
   return (
     <div className="flex items-center">
-      <Select
-        id="t1"
-        name="t1"
-        className={selectclassname}
+      <SelectOptions
+        placeholder="Start time"
+        collection={timeArr.slice(0, -1)}
         onChange={onSelectchangeone}
+        name="from"
+        // selectedValue="value"
+        optionvalue="value"
+        optionlabelvalue="label"
         value={from}
-        disabled={buttonAction === "Edit"}
-        default={defaultval}
-      >
-        {timeArr.slice(0, -1).map((itm) => {
-          return (
-            <SelectItem key={itm.value} value={itm.value}>
-              {itm.label}
-            </SelectItem>
-          );
-        })}
-      </Select>
+      />
+
       <img className="mx-2" src={dash} alt="" />
-      <Select
+
+      <SelectOptions
+        placeholder="End time"
+        collection={timeArr.slice(firstIndex + 1)}
         onChange={onSelectchangetwo}
-        id="t2"
-        name="t2"
-        className={selectclassname}
-        disabled={buttonAction === "Edit"}
+        name="from"
+        // selectedValue="value"
+        optionvalue="value"
+        optionlabelvalue="label"
         value={to}
-        default={defaultval}
-      >
-        {timeArr.slice(firstIndex + 1).map((itm) => {
-          return (
-            <SelectItem key={itm.value} value={itm.value}>
-              {itm.label}
-            </SelectItem>
-          );
-        })}
-      </Select>
+      />
+      {/* <DatePicker
+        placeholder="End time"
+        // selected={startDate}
+        onChange={(date) => console.log(date)}
+        showTimeSelect
+        showTimeSelectOnly
+        // inline
+        // timeIntervals={data?.bookedservice?.duration}
+        timeCaption="End time"
+        dateFormat="h:mm aa"
+      /> */}
     </div>
   );
 }

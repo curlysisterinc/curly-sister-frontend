@@ -6,9 +6,9 @@ function useChangeBtnTitle(tabtitle, setButtonAction, setData) {
   const { state } = useLocation();
 
   useEffect(() => {
+    const ac = new AbortController();
     if (state) {
       setButtonAction("Edit");
-      console.log(state, "changed to edit");
     }
 
     if (stylistId) {
@@ -25,6 +25,9 @@ function useChangeBtnTitle(tabtitle, setButtonAction, setData) {
         setData({ type: "ADD_STYLISTID", payload: stylistId });
       }
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 }
 

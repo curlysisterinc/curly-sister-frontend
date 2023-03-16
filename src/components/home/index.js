@@ -1,37 +1,21 @@
-/* eslint-disable react/function-component-definition */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable import/no-cycle */
-/* eslint-disable import/order */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-props-no-spreading */
+/* eslint-disable camelcase */
 import React, { useState, useEffect } from "react";
-import SideBarComponent from "../sidebar";
-import { Link, useNavigate } from "react-router-dom";
-import authHandler from "../../authHandler";
-import learn from "../../api/learn";
-import admin from "../../api/admin";
-import LandingPage from "./landingPage";
 import UserHome from "components/userHome";
-import useGetAllStylists from "hooks/data/admin/useGetAllStylists";
-import useGetAllQuestions from "hooks/data/learn/useGetAllQuestions";
-import { useAuthContext } from "../../redux/auth";
 import { useQueries } from "@tanstack/react-query";
-// import UserHome from "./home";
+import { queryClient } from "App";
+import authHandler from "../../authHandler";
+import admin from "../../api/admin";
+import stylist from "../../api/stylist";
+import LandingPage from "./landingPage";
+import { useAuthContext } from "../../redux/auth";
 
 function HomeComponent() {
   const {
-    state: { isSignedIn },
+    state: { isSignedIn, email_verified },
   } = useAuthContext();
-  // console.log({ isSignedIn });
+  const { GetAllVideos, GetAllArticles, GetUpcomingBookings } = admin;
+  const { GetAllStylists } = stylist;
 
-  const { GetAllVideos, GetAllArticles, GetAllStylists, GetUpcomingBookings } =
-    admin;
-
-  const details = localStorage.getItem("user");
   const [firstName, setFirstName] = React.useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [getQuestions, setGetQuestions] = useState([]);
@@ -41,46 +25,40 @@ function HomeComponent() {
   const [getStylist, setGetStylist] = React.useState([]);
   const [upcomingBookings, setUpcomingBookings] = useState([]);
 
-  // const { data, loading, error: err } = useGetAllStylists();
-  // const { data, loading, error: err } = useGetAllStylists();
-  // const {
-  //   data: questions,
-  //   loading: isQuestionsLoading,
-  //   error: QuestionsErr,
-  // } = useGetAllQuestions();
-
-  // const getStylist = data?.data?.stylists;
-  // const getQuestions2 = questions?.data?.data;
-  // console.log({ getQuestions2 });
+  React.useEffect(() => {
+    queryClient.removeQueries(["stylists"], { exact: true });
+  }, []);
 
   const results = useQueries({
     queries: [
       { queryKey: ["videos"], queryFn: GetAllVideos },
       { queryKey: ["articles"], queryFn: GetAllArticles },
-      { queryKey: ["stylists"], queryFn: GetAllStylists },
+      { queryKey: ["stylistsList"], queryFn: () => GetAllStylists(0) },
       { queryKey: ["upcomingBookings"], queryFn: GetUpcomingBookings },
     ],
   });
 
-  // console.log("RESULT", results);
-  // console.log("PROCESS", process.env);
   useEffect(() => {
+    const ac = new AbortController();
     const isDataLoading = results.some((result) => result.isLoading);
     setIsLoading(isDataLoading);
     const isSuccess = results.every((result) => result.isSuccess);
     if (isSuccess) {
-      setGetVideos(results[0].data.data.data);
-      setGetArticles(results[1].data.data.data);
-      setGetStylist(results[2].data.data.stylists);
-      setUpcomingBookings(results[3].data.data.data);
+      setGetVideos(results[0]?.data?.data?.data);
+      setGetArticles(results[1]?.data?.data?.data);
+      setGetStylist(results[2]?.data?.data?.stylist);
+      setUpcomingBookings(results[3]?.data?.data?.data);
     }
+    return function cleanup() {
+      ac.abort();
+    };
   }, [results]);
 
   React.useEffect(() => {
     const ac = new AbortController();
     if (isSignedIn) {
       const userDetails = authHandler.getUser("users");
-      const userFirstName = userDetails?.active?.firstName;
+      const userFirstName = userDetails?.firstName;
       setFirstName(userFirstName);
     }
 
@@ -89,67 +67,11 @@ function HomeComponent() {
     };
   }, []);
 
-  // useEffect(async () => {
-  //   const ac = new AbortController();
-
-  //   learn
-  //     .GetAllQuestions()
-  //     .then((response) => {
-  //       console.log(response.data.data);
-  //       setIsLoading(false);
-  //       setGetQuestions(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-  //   admin
-  //     .GetAllVideos()
-  //     .then((response) => {
-  //       console.log(response.data.data, "Success");
-  //       setIsLoading(false);
-  //       setGetVideos(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //     });
-  //   admin
-  //     .GetAllArticles()
-  //     .then((response) => {
-  //       console.log(response.data.data, "Success");
-  //       setIsLoading(false);
-
-  //       setGetArticles(response.data.data);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-
-  //       console.log(error);
-  //     });
-  //   // admin
-  //   //   .GetAllStylists()
-  //   //   .then((response) => {
-  //   //     console.log(response.data.stylists, "stylists");
-  //   //     setGetStylist(response.data.stylists);
-  //   //   })
-  //   //   .catch((error) => {
-  //   //     console.log(error.message);
-  //   //   });
-  //   admin.GetUpcomingBookings().then((response) => {
-  //     setUpcomingBookings(response.data.data);
-  //     console.log(response, "upcoming bookings");
-  //   });
-  //   return function cleanup() {
-  //     ac.abort();
-  //   };
-  // }, []);
-
   return (
     !isLoading &&
     getStylist && (
       <div>
-        {!isSignedIn ? (
+        {!isSignedIn || !email_verified ? (
           <LandingPage getStylist={getStylist} />
         ) : (
           <UserHome

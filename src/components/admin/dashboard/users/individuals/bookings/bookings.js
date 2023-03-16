@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthRoutes } from "../../../../../../constants";
 import backArrow from "../../../../../../assets/images/back-arrow.svg";
 import rightArrow from "../../../../../../assets/images/right-arrow.svg";
-import audre from "../../../../../../assets/images/audre.svg";
+import audre from "../../../../../../assets/images/allyn.png";
 import kebabIcon from "../../../../../../assets/images/kebab.svg";
 import addIcon from "../../../../../../assets/images/add.svg";
 import productRecommendation from "../../../../../../assets/images/product-recommendation.png";
@@ -14,7 +14,7 @@ function IndividualsBookings() {
   const navigate = useNavigate();
 
   return (
-    <div className="ml-80 bg-white px-10 py-8 w-full flex items-start">
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full flex items-start">
       <div
         className="flex items-center cursor-pointer"
         onClick={() => navigate(AuthRoutes.dashboard)}

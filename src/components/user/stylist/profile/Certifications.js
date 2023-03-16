@@ -7,7 +7,7 @@ function Certifications({ getStylist }) {
       {getStylist?.certifications?.length > 0 && (
         <div className="">
           <p className="text-base text-gray-400">Certifications</p>
-          <div className="flex justify-start flex-wrap items-center mt-5">
+          <div className="flex justify-start flex-wrap items-center mt-4">
             {getStylist.certifications.map((item) => {
               return (
                 <div

@@ -11,8 +11,8 @@ import admin from "../../../../../api/admin";
 import { AuthRoutes } from "../../../../../constants";
 import backArrow from "../../../../../assets/images/back-arrow.svg";
 import uploadFile from "../../../../../assets/images/upload-file.png";
-import SlateContent from "../slateContent";
 import learn from "../../../../../api/learn";
+import { DraftContentEditor } from "../DraftContentEditor";
 
 const initialValue = [
   {
@@ -74,7 +74,6 @@ function EditArticle() {
     learn
       .GetOneArticle(token)
       .then((response) => {
-        console.log(response.data, "data");
         setGetArticles(response.data.data);
         setInputValues({
           ...inputValues,
@@ -85,9 +84,7 @@ function EditArticle() {
           status: "published",
         });
       })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
+      .catch((error) => {});
     return function cleanup() {
       ac.abort();
     };
@@ -101,11 +98,10 @@ function EditArticle() {
     formData.append("status", inputValues.status1);
     formData.append("articleId", inputValues.articleId);
     admin
-      .EditArticle(formData)
+      .updateArticle(formData)
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
-          console.log(res);
           navigate(-1);
         }
       })
@@ -177,7 +173,7 @@ function EditArticle() {
   }, [inputValues]);
 
   return (
-    <div className="ml-80 bg-white px-10 py-8 w-full">
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
       <div className="flex items-start ">
         <div
           className="flex items-center cursor-pointer"
@@ -222,7 +218,7 @@ function EditArticle() {
               >
                 Title
                 <input
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-700 placeholder-gray-700 text-sm placeholder:text-sm leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 text-sm placeholder:text-sm leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   placeholder="Enter a title for this article here"
                   name="title"
@@ -266,7 +262,7 @@ function EditArticle() {
                         setImage(null);
                       }
                     }}
-                    className="opacity-0 absolute h-16 w-120  border cursor-pointer"
+                    className="opacity-0 absolute h-16 w-120  border cursor-pointer z-50"
                   />
                   {filePreview == null ? (
                     <img src={uploadFile} className="h-16 w-120" alt="" />
@@ -285,10 +281,7 @@ function EditArticle() {
 
               <div className="mt-5">
                 <p>Content</p>
-                <SlateContent
-                  value={inputValues.content}
-                  onChange={handleSlateChange}
-                />
+                <DraftContentEditor />
               </div>
             </div>
           </div>

@@ -8,10 +8,10 @@ function content({ setTypeValue }) {
       <DropDownItem>
         <button
           type="button"
-          onClick={() => setTypeValue("walk-in Only")}
+          onClick={() => setTypeValue("walk-in Only stylist")}
           className=" hover:bg-gray-600 p-2 text-sm text-gray-400 flex items-center  w-full cursor-pointer"
         >
-          Walk-in Only
+          Walk-in Only stylist
         </button>
       </DropDownItem>
       <DropDownItem>

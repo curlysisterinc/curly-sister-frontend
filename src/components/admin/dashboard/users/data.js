@@ -1,6 +1,6 @@
-import spencerAvatar from "../../../../assets/images/spencer.svg";
-import allynAvatar from "../../../../assets/images/allyn.svg";
-import rfHairstudio from "../../../../assets/images/rf-hairstudio.svg";
+import spencerAvatar from "../../../../assets/images/spencer.png";
+import allynAvatar from "../../../../assets/images/allyn.png";
+import rfHairstudio from "../../../../assets/images/rf-hairstudio.png";
 import productRecommendation from "../../../../assets/images/product-recommendation.png";
 import flag from "../../../../assets/images/flag.svg";
 import colorHairVideo from "../../../../assets/images/color-hair-video.png";
@@ -141,7 +141,7 @@ export const stylistTypes = [
   },
   {
     id: 2,
-    name: "Walk-in only",
+    name: "Walk-in only stylist",
   },
   {
     id: 3,
@@ -471,7 +471,7 @@ export const getService = [
 ];
 
 export const weekList = [
-  { id: 1, day: "Mon", selected: true },
+  { id: 1, day: "Mon", selected: false },
   { id: 2, day: "Tue", selected: false },
   { id: 3, day: "Wed", selected: false },
   { id: 4, day: "Thu", selected: false },

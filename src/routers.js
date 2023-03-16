@@ -5,9 +5,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useLayoutEffect } from "react";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import AdminLayout from "./components/layout/admin";
 import { NonAuthRoutes, AuthRoutes } from "./constants";
 
@@ -26,17 +26,25 @@ const NewArticle = lazy(() =>
 const NewVideo = lazy(() =>
   import("./components/admin/dashboard/content/video/addVideo")
 );
-const LearnComponent = lazy(() => import("./components/user/learn/learn"));
-const VideoContent = lazy(() => import("./components/user/learn/videoContent"));
+const LearnComponent = lazy(() =>
+  import("./components/user/learn/LearnNavigationTab")
+);
+const VideoContent = lazy(() =>
+  import("./components/user/learn/videos/VideoContent")
+);
 const ArticleContent = lazy(() =>
-  import("./components/user/learn/articleContent")
+  import("./components/user/learn/articles/ArticleContent")
 );
 const CommunityContent = lazy(() =>
-  import("./components/user/learn/communityContent")
+  import("./components/user/learn/community/CommunityContent")
 );
-const VideoTab = lazy(() => import("./components/user/learn/videoTab"));
-const ArticleTab = lazy(() => import("./components/user/learn/articleTab"));
-const CommunityTab = lazy(() => import("./components/user/learn/communityTab"));
+const VideoTab = lazy(() => import("./components/user/learn/videos/VideoTab"));
+const ArticleTab = lazy(() =>
+  import("./components/user/learn/articles/ArticleTab")
+);
+const CommunityTab = lazy(() =>
+  import("./components/user/learn/community/CommunityTab")
+);
 // const LearnMoreTabComponent = lazy(() => import("./components/learn/videoTab"));
 // const LearnMoreCommunityTab = lazy(() =>
 //   import("./components/learn/communityTab")
@@ -49,7 +57,7 @@ const IndividualTab = lazy(() =>
   import("./components/admin/dashboard/users/individuals/individuals")
 );
 const ContentTab = lazy(() =>
-  import("./components/admin/dashboard/content/contentTable")
+  import("./components/admin/dashboard/content/ContentTab")
 );
 const DataTab = lazy(() => import("./components/admin/dashboard/data/data"));
 const EditVideo = lazy(() =>
@@ -76,30 +84,37 @@ const OverviewTab = lazy(() => import("./components/admin/dashboard/overview"));
 const StylistTab = lazy(() =>
   import("./components/admin/dashboard/users/stylists/stylists")
 );
-const AllTab = lazy(() => import("./components/user/learn/allTab"));
+const AllTab = lazy(() => import("./components/user/learn/all/AllTab"));
 const HomeComponent = lazy(() => import("components/home"));
 
 const AboutComponent = lazy(() => import("./components/about"));
 const LoginComponent = lazy(() => import("./components/login"));
+const VerifyUser = lazy(() => import("./components/verify-user"));
 const SignupComponent = lazy(() => import("./components/signup"));
 const ForgotPasswordComponent = lazy(() =>
   import("./components/forgotPassword")
 );
 const TermsAndPrivacy = lazy(() => import("./components/termsAndPrivacy"));
 const ResetPasswordComponent = lazy(() => import("./components/resetPassword"));
-// const UserHome = lazy(() => import("./components/userHome"));
+const UserHome = lazy(() => import("./components/userHome"));
 const AdminDashbaord = lazy(() => import("./components/admin"));
 const AddStylist = lazy(() =>
   import("components/admin/dashboard/users/addStylists/addStylist")
 );
+const EditStylist = lazy(() =>
+  import("components/admin/dashboard/users/addStylists/editStylists")
+);
 
 const PageNotFound = lazy(() => import("pages/404"));
 
-const stripePromise = loadStripe(
-  "pk_test_51LQ4MZBHdUN0GiBt1CZsfNAPvWydnkEX1xL5ZiUXSsC2ErjI9LOQwT4K48YOQbJtcp8vXJX0TT5aP7XAXNmXSt2j00BlrHqanQ"
-);
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_KEY);
 
 function Routers() {
+  const location = useLocation();
+  // Scroll to top if path changes
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
   return (
     <Suspense fallback={<LoaderComponent />}>
       <Elements stripe={stripePromise}>
@@ -108,9 +123,10 @@ function Routers() {
             "client-id": process.env.REACT_APP_PAYPAL_CLIENT_ID,
           }}
         >
-          <div className="dark:bg-slate-800">
+          <div className="dark:bg-white">
             <Routes>
               <Route path={NonAuthRoutes.login} element={<LoginComponent />} />
+              <Route path={NonAuthRoutes.verifyUser} element={<VerifyUser />} />
               <Route
                 path={NonAuthRoutes.signup}
                 element={<SignupComponent />}
@@ -204,6 +220,10 @@ function Routers() {
                     path={AuthRoutes.addStylist}
                     element={<AddStylist />}
                   />
+                  <Route
+                    path={AuthRoutes.editStylist}
+                    element={<EditStylist />}
+                  />
 
                   <Route
                     path={AuthRoutes.bookings}
@@ -217,11 +237,11 @@ function Routers() {
 
                   <Route
                     path={AuthRoutes.editVideoById}
-                    element={<EditVideo />}
+                    element={<NewVideo />}
                   />
                   <Route
                     path={AuthRoutes.editArticleById}
-                    element={<EditArticle />}
+                    element={<NewArticle />}
                   />
                 </Route>
               </Route>

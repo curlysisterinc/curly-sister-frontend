@@ -6,14 +6,24 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
 
-function EditServiceModal({ handleClose }) {
-  const [serviceList, setServiceList] = useState([
-    { serviceName: "", description: "", price: "", duration: "", people: "" },
-  ]);
+function EditServiceModal({ handleClose, modalContent }) {
+  const [serviceList, setServiceList] = useState({
+    default_price: "",
+    description: "",
+    duration: "",
+    name: "",
+    who_is_this_for: "",
+    _id: "",
+  });
+
+  useEffect(() => {
+    setServiceList({ ...modalContent });
+  }, [modalContent]);
+
   const [coverPhoto, setCoverPhoto] = useState(null);
   // handle file change
   const handleFileChange = (e) => {
@@ -43,7 +53,7 @@ function EditServiceModal({ handleClose }) {
           src={closeModalBtn}
           alt="close button"
         />
-        <div className="bg-white p-10">
+        <div className="bg-white p-10 h-screen">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
             Edit service
           </h4>
@@ -58,10 +68,10 @@ function EditServiceModal({ handleClose }) {
               >
                 Name of service
                 <input
-                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="serviceName"
                   type="text"
-                  value="Stylist training"
+                  value={serviceList.name}
                   placeholder="Type a name here"
                   name="serviceName"
                   onChange={handleChange}
@@ -75,14 +85,14 @@ function EditServiceModal({ handleClose }) {
               >
                 Description
                 <textarea
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="textarea"
                   placeholder="Enter a description for this service"
                   name="description"
                   label="description"
                   id="description"
                   rows="3"
-                  value=" This training is for professional stylists to have a deep dive in the art of curly hair."
+                  value={serviceList.description}
                 />
               </label>
             </div>
@@ -96,10 +106,11 @@ function EditServiceModal({ handleClose }) {
                   Default price
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded-lg w-full h-full px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter price"
                       name="price"
+                      value={serviceList.default_price}
                       id="price"
                     />
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
@@ -107,7 +118,7 @@ function EditServiceModal({ handleClose }) {
                         id="currency"
                         name="currency"
                         value="90"
-                        className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
+                        className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-lg "
                       >
                         <option value="usd">$USD</option>
                         <option>$CAD</option>
@@ -126,17 +137,22 @@ function EditServiceModal({ handleClose }) {
                   Duration
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm appearance-none border border-gray-800 rounded-lg w-full h-full px-3 text-gray-400 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter time"
                       name="time"
                       id="time"
+                      value={
+                        serviceList.duration > 59
+                          ? serviceList.duration / 60
+                          : serviceList.duration
+                      }
                     />
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
                       <select
                         id="currency"
                         name="currency"
-                        className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
+                        className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-lg "
                       >
                         <option>mins</option>
                         <option>hour</option>
@@ -156,9 +172,9 @@ function EditServiceModal({ handleClose }) {
                 <select
                   id="people"
                   name="people"
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
-                  <option>Everyone</option>
+                  <option value="Others">Others</option>
                   <option>Not everyone</option>
                 </select>
               </label>
@@ -170,7 +186,7 @@ function EditServiceModal({ handleClose }) {
                 <input
                   type="file"
                   onChange={handleFileChange}
-                  className="opacity-0 absolute h-16 w-120  border cursor-pointer"
+                  className="opacity-0 absolute h-16 w-120  border cursor-pointer z-50"
                 />
                 {coverPhoto === null ? (
                   <img src={uploadFile} className="h-16 w-120" alt="" />

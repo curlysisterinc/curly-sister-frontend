@@ -1,4 +1,7 @@
 import React from "react";
+import { DropdownArrow } from "components/customdropdown/primitive/DropDownMenuContent";
+import { DropdownMenuArrow } from "@radix-ui/react-dropdown-menu";
+import { Loadersmall } from "components/loader-component/loader";
 import DropDown from "../../../primitive";
 import kebabIcon from "../../../../../assets/images/kebab.svg";
 import Content from "./content";
@@ -7,8 +10,9 @@ function AdminDropDown({
   status,
   deteleAction,
   activateAction,
-  mkadminAction,
+  isLoading,
   mkStylistAction,
+  changeAdminToUser,
 }) {
   return (
     <DropDown
@@ -17,16 +21,20 @@ function AdminDropDown({
           status={status}
           deteleAction={deteleAction}
           activateAction={activateAction}
-          mkadminAction={mkadminAction}
           mkStylistAction={mkStylistAction}
+          changeAdminToUser={changeAdminToUser}
         />
       }
     >
       <button
         type="button"
-        className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
+        className="hover:bg-gray-500 rounded-full  flex justify-center items-center p-2"
       >
-        <img src={kebabIcon} alt="kebab icon" />
+        {isLoading ? (
+          <Loadersmall />
+        ) : (
+          <img src={kebabIcon} alt="kebab icon" className="h-5 w-5" />
+        )}
       </button>
     </DropDown>
   );

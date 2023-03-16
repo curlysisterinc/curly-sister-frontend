@@ -56,7 +56,6 @@ function EditVideo() {
     learn
       .GetOneVideo(token)
       .then((response) => {
-        console.log(response.data, "data");
         setGetVideos(response.data.data);
         setVideoInputs({
           ...videoInputs,
@@ -77,10 +76,13 @@ function EditVideo() {
   }, []);
 
   useEffect(() => {
+    const ac = new AbortController();
     admin.GetVideoCategory().then((result) => {
-      console.log(result.data.data, "data");
       setOptions(result.data.data);
     });
+    return function cleanup() {
+      ac.abort();
+    };
   }, []);
 
   useEffect(() => {
@@ -114,7 +116,6 @@ function EditVideo() {
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
-          console.log(res);
           navigate(AuthRoutes.content);
         }
       })
@@ -135,7 +136,6 @@ function EditVideo() {
       .then((response) => {
         if (response.status === 200) {
           const res = response.data;
-          console.log(res);
         }
       })
       .catch((error) => {
@@ -148,7 +148,7 @@ function EditVideo() {
   return (
     <div className="max-w-screen-2xl w-full flex m-auto border border-gray-50">
       <SideBarComponent active="dashboard" isLoggedIn />
-      <div className="ml-80 bg-white px-10 py-8 w-full">
+      <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
         <div className="flex items-start ">
           <div
             className="flex items-center cursor-pointer"
@@ -316,7 +316,7 @@ function EditVideo() {
                 >
                   Add a description for this video (optional)
                   <textarea
-                    className="shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline font-normal"
                     type="textarea"
                     placeholder="Enter a description for this service"
                     name="description"

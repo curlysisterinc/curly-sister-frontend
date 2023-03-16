@@ -31,7 +31,7 @@ function ManageServicesModal({ handleClose }) {
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center"
+      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full flex  justify-end items-center z-"
     >
       <div
         className="flex items-start h-full"
@@ -58,7 +58,7 @@ function ManageServicesModal({ handleClose }) {
               >
                 Name of service
                 <input
-                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="serviceName"
                   type="text"
                   value={serviceList.serviceName}
@@ -75,7 +75,7 @@ function ManageServicesModal({ handleClose }) {
               >
                 Description
                 <textarea
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="textarea"
                   placeholder="Enter a description for this service"
                   name="description"
@@ -95,7 +95,7 @@ function ManageServicesModal({ handleClose }) {
                   Default price
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter price"
                       name="price"
@@ -124,7 +124,7 @@ function ManageServicesModal({ handleClose }) {
                   Duration
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-400 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter time"
                       name="time"
@@ -154,7 +154,7 @@ function ManageServicesModal({ handleClose }) {
                 <select
                   id="people"
                   name="people"
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option>Everyone</option>
                   <option>Stylist</option>

@@ -9,6 +9,7 @@
 /* eslint-disable no-param-reassign */
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import Image from "components/image";
 import StylistDropDown from "../../../../customdropdown/dashboard/stylist/stylistitm";
 import { AuthRoutes } from "../../../../../constants";
 import grayIndicator from "../../../../../assets/images/gray-indicator.svg";
@@ -33,73 +34,69 @@ function StylistRow({
     }
   };
 
-  console.log(stylistsList);
-
   return (
     // eslint-disable-next-line
     <>
-      {stylistsList
-        ?.filter((filteredStylist) =>
-          filteredStylist?.stylist_name
-            ?.toLowerCase()
-            ?.includes(query?.toLowerCase())
-        )
-        .map((stylist, index) => {
-          return (
-            <tr key={stylist._id} className="bg-white border-b border-gray-600">
-              <th scope="row">
-                <input
-                  type="checkbox"
-                  checked={selectedId.includes(stylist._id)}
-                  className="ml-3"
-                  id={stylist._id}
-                  onChange={(e) => onCheck(e, stylist._id)}
-                />
-              </th>
-              <td
-                className="px-6 py-4 whitespace-nowrap flex items-center cursor-pointer"
-                onClick={() => {
-                  navigate(AuthRoutes.addStylist, {
-                    state: stylist.category_type,
-                  });
-                  localStorage.setItem("createdStylist", stylist._id);
-                }}
-              >
-                <img
+      {stylistsList.map((stylist, index) => {
+        return (
+          <tr
+            key={stylist._id}
+            className="bg-white border-b border-gray-600 cursor-pointer "
+            onClick={() => {
+              navigate(`/dashboard/users/edit-stylist/${stylist._id}`);
+            }}
+          >
+            <th scope="row">
+              <input
+                type="checkbox"
+                checked={selectedId.includes(stylist._id)}
+                className="ml-3"
+                id={stylist._id}
+                onChange={(e) => onCheck(e, stylist._id)}
+              />
+            </th>
+            <td className="px-6 py-4 whitespace-nowrap flex items-center ">
+              <div className="w-12">
+                <Image
                   src={stylist.photo ? stylist.photo : Avatar}
                   alt=""
-                  className="h-10 w-10 rounded-full"
+                  className="h-10 w-10 rounded-full object-cover"
                 />
-                <div className="ml-2">
-                  <p className="text-sm text-gray-400 mb-1">
-                    {stylist.stylist_name}
-                  </p>
-                  <p className="text-xs text-gray-200 ">{stylist.email}</p>
-                </div>
-              </td>
-              <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                {stylist.category_type}
-              </td>
-              <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                {/* {stylist.location} */} Nigeria
-              </td>
-              <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-                {stylist.active === true ? (
-                  <img src={greenIndicator} alt="" />
-                ) : (
-                  <img src={grayIndicator} alt="" />
-                )}
-              </td>
-              <td className="px-2 py-y relative cursor-pointer ">
-                <StylistDropDown
-                  status={stylist.active}
-                  // deteleAction={() => null}
-                  publishAction={() => null}
-                />
-              </td>
-            </tr>
-          );
-        })}
+              </div>
+              <div className="ml-2">
+                <p className="text-sm text-gray-400 mb-1">
+                  {stylist.business_name}
+                </p>
+                <p className="text-xs text-gray-200 ">{stylist.email}</p>
+              </div>
+            </td>
+
+            <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap first-letter:uppercase">
+              {stylist?.category_type ||
+                (stylist?.services.length
+                  ? "curly sister stylist"
+                  : "walk-in only (default)")}
+            </td>
+            <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
+              {stylist?.location || stylist?.country}
+            </td>
+            <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
+              {stylist.active === true ? (
+                <img src={greenIndicator} alt="" />
+              ) : (
+                <img src={grayIndicator} alt="" />
+              )}
+            </td>
+            <td className="px-2 py-y relative cursor-pointer ">
+              <StylistDropDown
+                status={stylist.active}
+                // deteleAction={() => null}
+                publishAction={() => null}
+              />
+            </td>
+          </tr>
+        );
+      })}
     </>
   );
 }

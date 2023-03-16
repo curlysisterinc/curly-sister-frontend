@@ -1,86 +1,119 @@
-import React, { useEffect, useMemo, useState } from "react";
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable no-shadow */
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import GoogleMapReact from "google-map-react";
+import useSupercluster from "use-supercluster";
 import { ReactComponent as LocationIcon } from "../../../assets/images/location-dark.svg";
 import { ReactComponent as VerifyIcon } from "../../../assets/images/verify.svg";
-import hairChallenge from "../../../assets/images/hair-challenge-avatar.png";
-import girl from "../../../assets/images/girl-2.png";
+import avatar2 from "../../../assets/images/gradient-avatar.svg";
+import galleryBanner from "../../../assets/images/stylist-profile-banner.png";
 
 const K_SIZE = 40;
 
-function MapMaker({ text, $hover, stylist, ...rest }) {
-  const style = $hover ? "flex" : "hidden";
+function LocationMaker({ text, $hover, stylist, ...rest }) {
+  const display = text ? "visible" : "invisible";
   return (
-    <div className="relative">
+    <div className={`${display}`}>
+      <LocationIcon color="#590BA9" />
+    </div>
+  );
+}
+
+function MapMaker({
+  text,
+  $hover,
+  stylist,
+  // handleScriptLoad,
+  children,
+  ...rest
+}) {
+  const { data, isMapLoaded } = text;
+  const style = $hover ? "flex" : "hidden";
+  // const style = "flex";
+  const display = isMapLoaded ? "visible" : "invisible";
+
+  return (
+    <div className={`relative ${display}`}>
       <LocationIcon />
       <div
-        className={`bg-white border border-gray-600 shadow-s07 absolute rounded-2xl -top-10 left-10  w-489 flex overflow-hidden ${style} z-10`}
+        className={`bg-white border border-gray-600 shadow-s07 absolute  rounded-2xl bottom-9 p-0  w-350 flex overflow-hidden ${style} z-100 `}
       >
-        <div className="w-2/5 flex justify-center items-center">
-          <img src={girl} alt="" className="object-cover w-4/5" />
-
+        <div className="w-2/5 h-full flex justify-center items-center relative">
           <img
-            src={hairChallenge}
+            src={data.gallery[0] ?? galleryBanner}
             alt=""
-            className="w-16 h-16  rounded relative right-7 object-cover"
+            className="w-full h-40  object-none"
+          />
+          <img
+            src={data.photo ? data.photo : avatar2}
+            alt=""
+            className="w-16 h-16   relative right-7  rounded-full object-cover border-white border"
           />
         </div>
         <div className="m-3 w-3/5">
           <div className="flex  items-center mb-1">
             <p className="text-gray-350 font-semibold text-base mr-1">
-              {text.business_name}
+              {data.business_name ?? data.stylist_name}
             </p>
             <VerifyIcon />
           </div>
-          <p className="font-normal text-sm mb-2">
-            Here’s a short version of a bio where one has been provided.
-          </p>
+          <p className="font-normal text-sm mb-2">{data.description}</p>
           <p className="font-normal text-sm">
-            {text?.phone_no} · {text?.address} ·{" "}
-            {text?.certifications.length > 0 && "Certified"}
+            {data?.phone_no} · {data?.address} ·{" "}
+            {data?.certifications.length > 0 && "Certified"}
           </p>
         </div>
       </div>
+      {children}
     </div>
   );
 }
 
-export default function StylistMap({ stylelist, selectedPlace, positionData }) {
+const Marker = ({ children }) => children;
+
+export default function StylistMap({
+  stylelist,
+  selectedPlace,
+  positionData,
+  handleScriptLoad,
+  isMapFixed,
+}) {
   const { position, status: currentLocationStatus } = positionData;
   const { lat, lng } = position;
+  const [zoom, setZoom] = useState(10);
+  const [bounds, setBounds] = useState(null);
 
-  console.log({ stylelist, selectedPlace, positionData });
+  const mapRef = useRef();
 
   const [mapGeo, setMapGeo] = useState({
     longitude: null,
-    latitute: null,
+    latitude: null,
   });
+  const [isMapLoaded, setIsMapLoaded] = useState("false");
 
   useEffect(() => {
     if (currentLocationStatus === "data") {
-      setMapGeo({ longitude: lng, latitude: lat });
+      setMapGeo({ longitude: Number(lng), latitude: Number(lat) });
     }
   }, [currentLocationStatus]);
 
   useEffect(() => {
     if (selectedPlace) {
-      setMapGeo({ longitude: selectedPlace.lng, latitude: selectedPlace.lat });
+      setMapGeo({
+        longitude: Number(selectedPlace.lng),
+        latitude: Number(selectedPlace.lat),
+      });
     }
   }, [selectedPlace]);
 
-  const defaultProps = currentLocationStatus === "data" && {
-    center: { lat, lng },
-    zoom: 11,
+  const defaultProps = {
+    center: { ...position },
+    zoom: 15,
   };
 
   const createMapOptions = (maps) => {
     return {
-      panControl: false,
-      mapTypeControl: false,
-      scrollwheel: true,
-      fullscreenControl: false,
-      scaleControl: true,
-      // disableDefaultUI: true,
-      // fullscreenControl: false,
       styles: [
         {
           stylers: [
@@ -94,7 +127,34 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
     };
   };
   const stylistsWithGeoInfo = useMemo(() => {
-    return [...stylelist].filter((item) => item.latitude && item.longitude);
+    const res = [...stylelist]
+      .filter((item) => item.latitude && item.longitude)
+      .map((elem) => {
+        return {
+          type: "Feature",
+          properties: {
+            cluster: false,
+            category: "stylists",
+            stylistsId: elem._id,
+            data: elem,
+          },
+          geometry: {
+            type: "Point",
+            coordinates: [
+              parseFloat(elem.longitude),
+              parseFloat(elem.latitude),
+            ],
+          },
+        };
+      });
+    return res;
+  }, [stylelist]);
+
+  const { clusters, supercluster } = useSupercluster({
+    points: stylistsWithGeoInfo,
+    bounds,
+    zoom,
+    options: { radius: 75, maxZoom: 20 },
   });
 
   return (
@@ -102,17 +162,17 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
     <div
       style={{
         height: "calc(100vh - 220px)",
-        width: "100%",
-        position: "sticky",
+        width: isMapFixed ? "450px" : "100%",
+        position: isMapFixed ? "fixed" : "sticky",
         top: 0,
+        borderRadius: "16px",
         // background: "rgb(229, 227, 223)",
       }}
     >
-      {/* {currentLocationStatus !== "data" && currentLocationStatus} */}
       <div
         className={`${
           currentLocationStatus !== "data"
-            ? "opacity-100 h-full flex justify-center item transition-opacity"
+            ? "opacity-100 h-full flex justify-center item transition-opacity rounded-2xl"
             : "opacity-0 h-0"
         }`}
       >
@@ -121,37 +181,87 @@ export default function StylistMap({ stylelist, selectedPlace, positionData }) {
       <div
         className={`${
           currentLocationStatus === "data"
-            ? "opacity-100 h-full flex justify-center item transition-opacity  delay-300 duration-1000"
+            ? "opacity-100 h-full flex justify-center item transition-opacity  delay-300 duration-1000 "
             : "opacity-0 h-0 transition-opacity relative"
         }`}
       >
-        {/* <button
-          type="button"
-          className="absolute left-0 top-0 text-gray-200 text-sm cursor-pointer z-50"
-        >
-          toggle map
-        </button> */}
-        {currentLocationStatus === "data" && (
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_API }}
-            defaultCenter={defaultProps.center}
-            defaultZoom={defaultProps.zoom}
-            options={createMapOptions}
-            //   onChildClick
-            // hoverDistance={20}
+        <div style={{ height: "100vh", width: "100%" }}>
+          {defaultProps?.center?.lat && (
+            <GoogleMapReact
+              bootstrapURLKeys={{
+                key: process.env.REACT_APP_MAP_API,
+                // libraries: ["places"],
+              }}
+              options={createMapOptions}
+              defaultCenter={defaultProps.center}
+              defaultZoom={10}
+              yesIWantToUseGoogleMapApiInternals
+              onGoogleApiLoaded={({ map }) => {
+                mapRef.current = map;
+                setIsMapLoaded("true");
+              }}
+              center={{
+                lat: Number(mapGeo.latitude),
+                lng: Number(mapGeo.longitude),
+              }}
+              onChange={({ zoom, bounds }) => {
+                setZoom(zoom);
+                setBounds([
+                  bounds.nw.lng,
+                  bounds.se.lat,
+                  bounds.se.lng,
+                  bounds.nw.lat,
+                ]);
+              }}
+            >
+              {clusters &&
+                clusters.map((cluster) => {
+                  const [longitude, latitude] = cluster.geometry.coordinates;
+                  const { cluster: isCluster, point_count: pointCount } =
+                    cluster.properties;
 
-            center={{ lng: mapGeo.longitude, lat: mapGeo.latitude }}
-          >
-            {[...stylistsWithGeoInfo].map((item) => (
-              <MapMaker
-                lat={item.latitude}
-                lng={item.longitude}
-                key={item._id}
-                text={item}
-              />
-            ))}
-          </GoogleMapReact>
-        )}
+                  if (isCluster) {
+                    const size =
+                      (pointCount * 40) / (stylistsWithGeoInfo.length * 10);
+                    return (
+                      <Marker
+                        lat={latitude}
+                        lng={longitude}
+                        key={`cluster-${cluster.id}`}
+                        className="rounded-xl p-4 flex items-center justify-center bg-green-500 text-white"
+                      >
+                        <div
+                          className="rounded-2xl p-4 flex items-center justify-center bg-green-500 text-white text-lg cursor-pointer"
+                          style={{ width: `${size}px`, height: `${size}px` }}
+                          onClick={() => {
+                            const expansionZoom = Math.min(
+                              supercluster.getClusterExpansionZoom(cluster.id),
+                              50
+                            );
+                            mapRef.current.setZoom(expansionZoom);
+                            mapRef.current.panTo({
+                              lat: latitude,
+                              lng: longitude,
+                            });
+                          }}
+                        >
+                          {pointCount}
+                        </div>
+                      </Marker>
+                    );
+                  }
+                  return (
+                    <MapMaker
+                      lat={cluster.properties?.data?.latitude}
+                      lng={cluster.properties?.data?.longitude}
+                      key={cluster.properties?.data?._id}
+                      text={{ data: cluster.properties.data, isMapLoaded }}
+                    />
+                  );
+                })}
+            </GoogleMapReact>
+          )}
+        </div>
       </div>
     </div>
   );

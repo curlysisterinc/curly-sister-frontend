@@ -11,7 +11,7 @@ function NewStylist() {
       <button
         type="button"
         onClick={() => setToggleAddContent(!toggleAddContent)}
-        className="cursor-pointer bg-purple-100 relative text-white h-10 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3"
+        className="cursor-pointer bg-purple-100 relative text-white h-12 font-BeatriceSemiBold text-sm flex justify-between items-center  rounded-full p-3 w-180"
       >
         New stylists
         <img

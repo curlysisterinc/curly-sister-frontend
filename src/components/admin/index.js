@@ -1,20 +1,28 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 /* eslint-disable import/no-cycle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { AuthRoutes } from "constants";
+import { AuthRoutes, NonAuthRoutes } from "constants";
 import React, { useEffect } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useAuthContext } from "redux/auth";
 
 function AdminDashbaord() {
   const { pathname } = useLocation();
+  const {
+    state: { email_verified },
+  } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (pathname === AuthRoutes.dashboard) {
       navigate(AuthRoutes.dashboardOverview);
     }
-  }, [pathname]);
+    if (!email_verified) {
+      navigate(NonAuthRoutes.home);
+    }
+  }, [pathname, email_verified]);
 
   const dashboardNavlink = [
     {
@@ -36,8 +44,8 @@ function AdminDashbaord() {
   ];
 
   return (
-    <div className="ml-80 bg-white px-10 py-8 w-full">
-      <div className="flex justify-center items-center w-1/2 mx-auto mb-6">
+    <div className="bg-white px-10 py-8 pt-20 md:pt-12 w-full">
+      <div className="flex justify-center items-center w-1/2 mx-auto mb-4">
         {dashboardNavlink.map((link) => (
           <NavLink
             key={link.title}

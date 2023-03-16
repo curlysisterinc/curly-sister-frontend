@@ -5,23 +5,14 @@ import { addDays } from "date-fns";
 const availablehours = {
   rangeid: Math.floor(Math.random() * 10000),
   days: [],
-  time_range: { from: "01:00AM", to: "02:00AM" },
+  time_range: { from: "", to: "" },
 };
 
 export const initialState = {
   stylistId: "",
-  timezone: "GMT +1: Central European Time",
+  timezone: "",
   range: [availablehours],
-  blocked_dates: [
-    [
-      Math.floor(Math.random() * 10000),
-      {
-        startDate: new Date(),
-        endDate: addDays(new Date(), 7),
-        key: "selection",
-      },
-    ],
-  ],
+  blocked_dates: [],
 };
 
 export default function reducer(state, { type, payload }) {
@@ -138,10 +129,11 @@ export default function reducer(state, { type, payload }) {
         blocked_dates: [
           ...state.blocked_dates.map((dateblock) => {
             const { id, value } = payload;
+
             if (dateblock[0] !== id) {
               return dateblock;
             }
-            return [id, { ...value[0] }];
+            return [id, { ...value }];
           }),
         ],
       };

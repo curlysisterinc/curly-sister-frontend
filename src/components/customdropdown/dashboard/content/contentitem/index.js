@@ -1,14 +1,16 @@
 import React from "react";
+import { Loadersmall } from "components/loader-component/loader";
 import DropDown from "../../../primitive";
-import kebabIcon from "../../../../../assets/images/kebab.svg";
+import { ReactComponent as KebabIcon } from "../../../../../assets/images/kebab.svg";
 import Content from "./content";
 
 function ContentDropDown({
   status,
   type,
-  deleteAction,
+  handleDeleteContent,
   editAction,
   publishAction,
+  isLoading,
 }) {
   return (
     <DropDown
@@ -16,7 +18,7 @@ function ContentDropDown({
         <Content
           status={status}
           type={type}
-          deleteHandler={deleteAction}
+          handleDeleteContent={handleDeleteContent}
           editHandler={editAction}
           publishHandler={publishAction}
         />
@@ -24,9 +26,9 @@ function ContentDropDown({
     >
       <button
         type="button"
-        className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
+        className="hover:bg-gray-500 rounded-full flex justify-center items-center p-2"
       >
-        <img src={kebabIcon} alt="kebab icon" />
+        {isLoading ? <Loadersmall /> : <KebabIcon height={20} width={20} />}
       </button>
     </DropDown>
   );

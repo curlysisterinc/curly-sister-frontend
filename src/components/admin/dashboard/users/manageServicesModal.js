@@ -7,11 +7,39 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable prefer-regex-literals */
 import React, { useEffect, useState } from "react";
+import useCreateServices from "hooks/data/admin/useCreateServices";
+import useUpdateService from "hooks/data/admin/useUpdateService";
+import { Loadersmall } from "components/loader-component/loader";
+import { runFunctionWhenSpaceOrEnterIsClicked } from "utils";
+import useUploadPhoto from "hooks/data/admin/useUploadPhoto";
 import closeModalBtn from "../../../../assets/images/cancel.svg";
 import uploadFile from "../../../../assets/images/upload-file.png";
 import admin from "../../../../api/admin";
 
-function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
+function ManageServicesModal({ handleClose, modalContent }) {
+  const {
+    data,
+    isLoading: isServiceLoading,
+    error,
+    mutate: createServices,
+  } = useCreateServices();
+
+  const {
+    data: updateServiceData,
+    isLoading: updateServiceLoading,
+    error: updateServiceError,
+    mutate: updateService,
+  } = useUpdateService();
+
+  const {
+    isLoading: isPhotoUploadLoading,
+    data: photoUploadData,
+    isError: photoUploadError,
+    refetch: photoUploadRefetch,
+    mutate: uploadPhoto,
+  } = useUploadPhoto();
+  const isEdit = !!modalContent;
+
   const [serviceList, setServiceList] = useState({
     name: "",
     description: "",
@@ -20,9 +48,17 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
     duration: "",
   });
   const [coverPhoto, setCoverPhoto] = useState(null);
+
+  useEffect(() => {
+    if (modalContent) {
+      setServiceList({ ...modalContent });
+    }
+  }, [modalContent]);
+
   // handle file change
   const handleFileChange = (e) => {
-    setCoverPhoto(URL.createObjectURL(e.target.files[0]));
+    setCoverPhoto(e.target.files[0]);
+    // setCoverPhoto(URL.createObjectURL(e.target.files[0]));
   };
 
   // handle input change
@@ -31,58 +67,110 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
   };
 
   useEffect(() => {
-    const ac = new AbortController();
     document.title = "Curly sisters • Create services";
-
-    return function cleanup() {
-      ac.abort();
-      setIsServiceUpdate(false);
-    };
   }, []);
+
   const handleSubmitService = (e) => {
     e.preventDefault();
-    admin
-      .CreateServices(serviceList)
-      .then((response) => {
-        console.log(response.data);
-        setServiceList({
-          ...serviceList,
-          name: "",
-          description: "",
-          default_price: "",
-          who_is_this_for: "For everyone",
-          duration: "",
-        });
-        if (response.status === 200) {
-          handleClose();
-          setIsServiceUpdate(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+    const serviceDuration =
+      serviceList.durationTime === "hour"
+        ? serviceList.duration * 60
+        : serviceList.duration * 1;
+
+    if (typeof coverPhoto === "string" || !coverPhoto) {
+      return isEdit
+        ? updateService({
+            ...serviceList,
+            duration: serviceDuration,
+            serviceId: serviceList._id,
+            photo: coverPhoto,
+          })
+        : createServices({
+            ...serviceList,
+            duration: serviceDuration,
+            photo: coverPhoto,
+          });
+    }
+    const formData = new FormData();
+    formData.append("file", coverPhoto);
+    return uploadPhoto(formData);
   };
+
+  useEffect(() => {
+    if (photoUploadData) {
+      const serviceDuration =
+        serviceList.durationTime === "hour"
+          ? serviceList.duration * 60
+          : serviceList.duration * 1;
+      return isEdit
+        ? updateService({
+            ...serviceList,
+            serviceId: serviceList._id,
+            duration: serviceDuration,
+            photo: photoUploadData.data.file,
+          })
+        : createServices({
+            ...serviceList,
+            duration: serviceDuration,
+            photo: photoUploadData.data.file,
+          });
+    }
+    return null;
+  }, [photoUploadData]);
+
+  const handleSubmitDisabled = () => {
+    return Object.values(serviceList).some((item) => item === "");
+  };
+
+  useEffect(() => {
+    const ac = new AbortController();
+    if (data) {
+      setServiceList({
+        ...serviceList,
+        name: "",
+        description: "",
+        default_price: "",
+        who_is_this_for: "For everyone",
+        duration: "",
+      });
+      handleClose();
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [data]);
+
+  const isLoading =
+    updateServiceLoading || isPhotoUploadLoading || isServiceLoading;
+
   return (
     <div
       onClick={handleClose}
-      className=" fixed top-0 left-0 h-full overflow-y-auto z-50 bg-black-100 w-full min-h-screen"
+      className="fixed top-0 left-0 h-full overflow-y-auto z-200 bg-black-100 w-full flex  justify-end items-center"
     >
       <div
         className="flex  justify-end items-start h-full"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          className="mt-20 mr-10 bg-white rounded-full p-2"
+        <div
+          className=" bg-white rounded-full p-2 fixed top-2  right-2 xs:left-auto xs:right-500"
           onClick={handleClose}
-          src={closeModalBtn}
-          alt="close button"
-        />
-        <div className="bg-white p-10 w-2/5">
+          role="button"
+          tabIndex="0"
+          onKeyPress={(e) =>
+            runFunctionWhenSpaceOrEnterIsClicked(e, handleClose)
+          }
+        >
+          <img src={closeModalBtn} alt="close button" />
+        </div>
+        <div className="bg-white min-h-screen p-5 pt-10 sm:p-10 w-full max-w-480 ">
           <h4 className="text-22 text-gray-400 mb-3 font-BeatriceSemiBold">
-            Add a service
+            {isEdit ? "Edit service" : "Add a service"}
           </h4>
           <p className="text-gray-200 text-base mb-6">
-            Create a new service for people to book
+            {isEdit
+              ? "Edit created service"
+              : "Create a new service for people to book"}
           </p>
           <form className="">
             <div className="mb-6">
@@ -92,7 +180,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
               >
                 Name of service
                 <input
-                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-sm appearance-none mt-3 placeholder-text-sm border border-gray-500 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="name"
                   type="text"
                   value={serviceList.name}
@@ -109,7 +197,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
               >
                 Description
                 <textarea
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="textarea"
                   placeholder="Enter a description for this service"
                   name="description"
@@ -121,7 +209,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                 />
               </label>
             </div>
-            <div className="mb-6 grid grid-cols-2 gap-6">
+            <div className="mb-6 grid  md:grid-cols-2 gap-6">
               {/* default price */}
               <div className="col relative">
                 <label
@@ -131,7 +219,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                   Default price
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm placeholder-text-sm appearance-none border border-gray-800 rounded-lg w-full h-full px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter price"
                       name="default_price"
@@ -144,6 +232,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                         id="currency"
                         name="currency"
                         className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
+                        disabled
                       >
                         <option>$USD</option>
                         <option>$CAD</option>
@@ -162,7 +251,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                   Duration
                   <div className="relative h-10 mt-3">
                     <input
-                      className="shadow-sm appearance-none border border-gray-800 rounded w-full h-full px-3 text-gray-700 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
+                      className="shadow-sm appearance-none border border-gray-800 rounded-lg w-full h-full px-3 text-gray-400 placeholder-gray-700 placeholder-text-sm leading-tight focus:outline-none focus:shadow-outline"
                       type="text"
                       placeholder="Enter time"
                       name="duration"
@@ -173,8 +262,9 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                     <div className="absolute h-full top-0 inset-y-0 right-0 flex items-center">
                       <select
                         id="duration"
-                        name="duration"
-                        // onChange={handleChange}
+                        name="durationTime"
+                        onChange={handleChange}
+                        value={serviceList.durationTime}
                         className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded-md"
                       >
                         <option value="mins">mins</option>
@@ -197,7 +287,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                   name="who_is_this_for"
                   value={serviceList.who_is_this_for}
                   onChange={handleChange}
-                  className="shadow-sm appearance-none mt-3 border border-gray-800 rounded w-full py-4 px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="text-sm shadow-sm appearance-none mt-3 border border-gray-800 rounded-lg w-full py-4 px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 >
                   <option value="Everyone">Everyone</option>
                   <option value="Stylists">Stylists</option>
@@ -217,7 +307,7 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
                   <img src={uploadFile} className="h-16 w-120" alt="" />
                 ) : (
                   <img
-                    src={coverPhoto}
+                    src={URL.createObjectURL(coverPhoto)}
                     className="h-16 w-120 object-cover"
                     alt="cover"
                   />
@@ -227,16 +317,11 @@ function ManageServicesModal({ handleClose, setIsServiceUpdate }) {
             <button
               type="button"
               onClick={handleSubmitService}
-              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm font-BeatriceSemiBold"
+              disabled={handleSubmitDisabled() || isLoading}
+              className="mt-6 w-full h-12 bg-orange-200 rounded-full text-white text-sm flex justify-center font-BeatriceSemiBold items-center disabled:opacity-40"
             >
-              {/* <svg
-                  className="motion-reduce:hidden animate-spin ..."
-                  viewBox="0 0 24 24"
-                >
-                  {" "}
-                  ...{" "}
-                </svg> */}
-              Create service
+              {isLoading && <Loadersmall />}
+              {!isLoading && (isEdit ? "Save service" : "Create service")}
             </button>
           </form>
         </div>

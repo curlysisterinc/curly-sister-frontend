@@ -19,11 +19,14 @@ export default {
     return curlySistersApi.get(`/v1/admin/get-stylist/${id}`);
   },
   async AddAdmin(email) {
-    const data = { email };
+    const data = {
+      email,
+      callbackUrl: `${window.location.origin}/login`,
+    };
     return curlySistersApi.post("/v1/admin/add-admin", data);
   },
-  async GetAllAdmin() {
-    return curlySistersApi.get("/v1/admin/get-all-admin");
+  async GetAllAdmin(page) {
+    return curlySistersApi.get(`/v1/admin/get-all-admin?page=${page}&size=20`);
   },
   async DeleteContent(data) {
     return curlySistersApi.get("/v1/admin/delete-content-by-id", data);
@@ -37,14 +40,14 @@ export default {
   async SuspendOrActivateUser(data) {
     return curlySistersApi.post("/v1/admin/suspend-user", data);
   },
+  async ChangeUserRole(data) {
+    return curlySistersApi.post("/v1/admin/change-user-role", data);
+  },
   async EditVideo(data) {
     return curlySistersApi.post("/v1/admin/update-video", data);
   },
-  async EditArticle(data) {
-    return curlySistersApi.post("/v1/admin/update-article", data);
-  },
+
   async CreateStylist(data) {
-    console.log(data, "data");
     return curlySistersApi.post("/v1/admin/add-stylist", data);
   },
   async UpdateStylist(data) {
@@ -53,23 +56,35 @@ export default {
   async CreateAvailability(data) {
     return curlySistersApi.post("/v1/admin/add-availability", data);
   },
+  async UpdateAvailability(data) {
+    return curlySistersApi.post("/v1/admin/update-availability", data);
+  },
   async GetAvailabilityById(id) {
-    return curlySistersOnboarding.get(`/v1/admin/get-availability/${id}`);
+    return curlySistersApi.get(`/v1/admin/get-availability/${id}`);
   },
   async CreateServices(data) {
     return curlySistersApi.post("/v1/admin/create-service", data);
   },
+
+  async UpdateService(data) {
+    return curlySistersApi.post("/v1/admin/update-service", data);
+  },
   async GetServices() {
     return curlySistersOnboarding.get("/v1/admin/find-all-service");
   },
-  async GetAllIndividuals() {
-    return curlySistersApi.get("/v1/admin/view-users");
+  async GetAllIndividuals(page) {
+    return curlySistersApi.get(`/v1/admin/view-users?page=${page}&size=20`);
   },
   async DeleteIndividual(data) {
     return curlySistersApi.post("/v1/admin/delete-user", data);
   },
-  async GetAllContents() {
-    return curlySistersOnboarding.post("/v1/admin/fetch-all-content");
+  async GetAllContents({ isSignedIn, page, size }) {
+    const newSize = size || 20;
+    const res = await curlySistersApi.get(
+      `/v1/admin/fetch-all-content?page=${page}&size=${newSize}`
+    );
+
+    return res.data;
   },
   async UploadPhoto(formData) {
     return curlySistersFormDataApi.post(
@@ -84,28 +99,29 @@ export default {
     );
   },
 
-  async CreateCertification(name) {
-    const data = {
-      name,
-    };
-    const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post(
-      "/v1/admin/create-certifications",
-      stringifiedData
-    );
+  async CreateCertification(data) {
+    return curlySistersApi.post("/v1/admin/create-certifications", data);
   },
   async GetCertification() {
-    return curlySistersOnboarding.get("/v1/admin/find-all-certifications");
+    return curlySistersApi.get("/v1/admin/find-all-certifications");
   },
+
+  async UpdateCertification(data) {
+    return curlySistersApi.post("/v1/admin/update-certifications", data);
+  },
+
   async CreateTags(name) {
     const data = {
       name,
     };
     const stringifiedData = JSON.stringify(data);
-    return curlySistersOnboarding.post("/v1/admin/create-tag", stringifiedData);
+    return curlySistersApi.post("/v1/admin/create-tag", stringifiedData);
   },
   async GetTags() {
     return curlySistersOnboarding.get("/v1/admin/find-all-tags");
+  },
+  async UpdateTag(data) {
+    return curlySistersApi.post("/v1/admin/update-tag", data);
   },
 
   async StripeCheckout(data) {
@@ -125,27 +141,57 @@ export default {
     return curlySistersApi.post("/v1/admin/add-video", data);
   },
 
+  async updateVideo(data) {
+    return curlySistersApi.post("/v1/admin/update-video", data);
+  },
   /** Send a POST request to add video to content */
   async AddArticleToContent(data) {
-    return curlySistersApi.post("/v1/admin/article/create-article", data);
+    return curlySistersApi.post("/v1/admin/create-article", data);
+  },
+  async updateArticle(data) {
+    return curlySistersApi.post("/v1/admin/update-article", data);
   },
 
   async CreateVideoCategory(name) {
-    const data = { name };
-    return curlySistersApi.post("/v1/admin/create-video-category", data);
+    return curlySistersApi.post("/v1/admin/create-video-category", { name });
+  },
+  async updateVideoCategory(data) {
+    return curlySistersApi.post("/v1/admin/update-video-category", data);
+  },
+  async DeleteVideoCategory(videoCategoryId) {
+    return curlySistersApi.post("/v1/admin/delete-video-category", {
+      videoCategoryId,
+    });
   },
 
   async GetVideoCategory() {
     return curlySistersOnboarding.get("/v1/admin/find-all-video-category");
   },
 
-  async GetAllVideos() {
-    return curlySistersOnboarding.get("/v1/admin/find-all-videos");
+  async GetAllVideos({ isSignedIn, page, size }) {
+    const newSize = size || 20;
+    const res = isSignedIn
+      ? await curlySistersApi.get(
+          `/v1/admin/find-all-videos-protected?page=${page}&size=${newSize}`
+        )
+      : await curlySistersOnboarding.get(
+          `/v1/admin/find-all-videos?page=${page}&size=${newSize}`
+        );
+    return res.data;
   },
 
-  async GetAllArticles() {
-    return curlySistersOnboarding.get("/v1/admin/find-all-article");
+  async GetAllArticles({ isSignedIn, page, size }) {
+    const newSize = size || 20;
+    const res = isSignedIn
+      ? await curlySistersApi.get(
+          `/v1/admin/find-all-article-protected?page=${page}&size=${newSize}`
+        )
+      : await curlySistersOnboarding.get(
+          `/v1/admin/find-all-article?page=${page}&size=${newSize}`
+        );
+    return res.data;
   },
+
   async DeleteArticleById(articleId) {
     const data = {
       articleId,

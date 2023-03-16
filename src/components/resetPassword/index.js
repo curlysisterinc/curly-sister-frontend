@@ -8,21 +8,17 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import Cookies from "js-cookie";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import AuthModalComponent from "../authModal";
-import onboarding from "../../api/onBoarding";
-import { AuthRoutes } from "../../constants";
+import useResetPassword from "hooks/data/onboarding/useResetPassword";
+import { Loadersmall } from "components/loader-component/loader";
 import AuthSideBarComponent from "../authSidebar";
-import authHandler from "../../authHandler";
-import resetSuccess from "../../assets/images/reset-success.svg";
-import forgotPwdError from "../../assets/images/forgot-pwd-error.svg";
 
 function ResetPasswordComponent() {
   const navigate = useNavigate();
   const { token } = useParams();
-  const [btnIsLoading, setBtnIsLoading] = useState(false);
+
+  const { data, isLoading, error, mutate: resetPassword } = useResetPassword();
+
   const [disableBtn, setBtnDisabled] = useState(true);
-  const [emailSuccess, setEmailSuccess] = useState(false);
-  const [emailFailure, setEmailFailure] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -34,11 +30,17 @@ function ResetPasswordComponent() {
     };
   }, []);
 
-  // handle modal close
-  const hideModal = () => {
-    setEmailSuccess(false);
-    setEmailFailure(false);
-  };
+  useEffect(() => {
+    const ac = new AbortController();
+    if (data) {
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    }
+    return function cleanup() {
+      ac.abort();
+    };
+  }, [data]);
 
   /** handles show Password text */
   const handleShowPassword = () => {
@@ -51,35 +53,17 @@ function ResetPasswordComponent() {
       password2: "",
     },
     onSubmit: (values) => {
-      onboarding
-        .ResetPassword(token, values.newPassword)
-        .then((response) => {
-          if (response.status === 200) {
-            setEmailSuccess(true);
-            // eslint-disable-next-line no-console
-            // const accessToken = res.access_token;
-            // authHandler.handle(accessToken);
-          }
-        })
-        .catch((error) => {
-          setEmailFailure(true);
-
-          if (error.response.data.message) {
-            setEmailSuccess(false);
-            setEmailFailure(true);
-            setBtnIsLoading(false);
-          }
-        });
+      resetPassword({ token, password: values.newPassword });
     },
 
     validate: (values) => {
       const errors = {};
       const passwordRegex = new RegExp(
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])\w{8,}$/
+        "^(?=.*[A-Z])(?=.*[.!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$"
       );
       const validPassword = passwordRegex.test(values.newPassword);
-      const isValid =
-        values.newPassword.trim().length && values.password2.trim().length;
+
+      const isValid = validPassword && values.newPassword === values.password2;
 
       if (isValid) {
         setBtnDisabled(false);
@@ -87,10 +71,10 @@ function ResetPasswordComponent() {
         setBtnDisabled(true);
       }
 
-      if (!values.newPassword) {
+      if (!values.newPassword && formik.touched.newPassword) {
         errors.newPassword = "Required";
       }
-      if (validPassword === true) {
+      if (validPassword === false && formik.touched.newPassword) {
         errors.newPassword =
           "*Please enter a password of atleast 8 characters with an uppercase, lowercase, numeric or special character. ";
       }
@@ -99,7 +83,7 @@ function ResetPasswordComponent() {
         errors.password2 = "*Your passwords do not match. Please try again";
       }
 
-      if (!values.password2) {
+      if (!values.password2 && formik.touched.password2) {
         errors.password2 = "Required";
       }
 
@@ -108,10 +92,13 @@ function ResetPasswordComponent() {
   });
 
   return (
-    <div className="max-w-screen-2xl w-full flex flex-col lg:flex-row  m-auto border border-gray-50">
+    <div
+      className=" w-full flex flex-col md:flex-row m-auto border-r border-gray-50"
+      id="appLayout"
+    >
       <AuthSideBarComponent signin="back" />
-      <div className="lg:ml-96 p-5  sm:p-10 lg:p-28 bg-white w-full">
-        <div className="w-full lg:w-3/4  ">
+      <div className="md:ml-60 xl:ml-80 w-full content p-5 pt-10">
+        <div className="max-w-640 m-auto">
           <h3 className="text-lg lg:text-2xl font-bold text-black">
             Reset Your Password
           </h3>
@@ -139,14 +126,14 @@ function ResetPasswordComponent() {
                   />
                   {showPassword ? (
                     <AiOutlineEye
-                      size={16}
-                      className="absolute top-8 right-3"
+                      size={25}
+                      className="absolute top-6 cursor-pointer right-3"
                       onClick={handleShowPassword}
                     />
                   ) : (
                     <AiOutlineEyeInvisible
-                      size={16}
-                      className="absolute top-8 right-3"
+                      size={25}
+                      className="absolute top-6 cursor-pointer right-3"
                       onClick={handleShowPassword}
                     />
                   )}
@@ -177,14 +164,14 @@ function ResetPasswordComponent() {
                   />
                   {showPassword ? (
                     <AiOutlineEye
-                      size={16}
-                      className="absolute top-8 right-3"
+                      size={25}
+                      className="absolute top-6 cursor-pointer right-3"
                       onClick={handleShowPassword}
                     />
                   ) : (
                     <AiOutlineEyeInvisible
-                      size={16}
-                      className="absolute top-8 right-3"
+                      size={25}
+                      className="absolute top-6 cursor-pointer right-3"
                       onClick={handleShowPassword}
                     />
                   )}
@@ -199,13 +186,15 @@ function ResetPasswordComponent() {
 
             <button
               type="submit"
-              disabled={disableBtn}
+              disabled={disableBtn || isLoading}
               className="mt-6 bg-orange-200 rounded shadow text-white font-bold w-full disabled:opacity-50 py-3"
             >
-              {btnIsLoading ? (
-                <div className="flex justify-center">loading...</div>
+              {isLoading ? (
+                <div className="flex justify-center">
+                  <Loadersmall />
+                </div>
               ) : (
-                "Send link"
+                "Create new password"
               )}
             </button>
             <p className="text-black text-center mt-4">
@@ -215,45 +204,6 @@ function ResetPasswordComponent() {
               </Link>
             </p>
           </form>
-          {emailSuccess && (
-            <AuthModalComponent handleClose={hideModal}>
-              <>
-                <h2 className="text-2xl lg:text-4xl font-bold mb-5">
-                  Password Reset Successful
-                </h2>
-                <img src={resetSuccess} alt="successful sign in" />
-                <p className="modal-feedback mt-8">
-                  Your password has been sucessfully updated
-                </p>
-                <button
-                  className="bg-orange-200 mt-4 rounded shadow text-white font-bold w-full py-3"
-                  type="button"
-                  onClick={() => navigate(AuthRoutes.home)}
-                >
-                  Continue
-                </button>
-              </>
-            </AuthModalComponent>
-          )}
-
-          {emailFailure && (
-            <AuthModalComponent handleClose={hideModal}>
-              <h2 className="text-2xl lg:text-4xl font-bold mb-5">
-                Password Reset Failed
-              </h2>
-              <img src={forgotPwdError} alt="failed sign in" />
-              <p className="modal-feedback mt-8">
-                Please try again, we could not change your password.
-              </p>
-              <button
-                className="bg-orange-200 rounded shadow mt-4 text-white font-bold w-full py-3"
-                onClick={hideModal}
-                type="button"
-              >
-                Try Again
-              </button>
-            </AuthModalComponent>
-          )}
         </div>
       </div>
     </div>

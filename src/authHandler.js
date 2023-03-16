@@ -17,37 +17,17 @@ export default {
   delete() {
     return localStorage.removeItem("token");
   },
-  setUserInfo(
-    active,
-    createdAt,
-    email,
-    email_verified,
-    firstName,
-    lastName,
-    reset_password,
-    role,
-    source
-  ) {
-    const user = {
-      active,
-      createdAt,
-      email,
-      email_verified,
-      firstName,
-      lastName,
-      reset_password,
-      role,
-      source,
-    };
+  setUserInfo(user) {
     localStorage.setItem("user", JSON.stringify(user));
   },
   getUser() {
     return JSON.parse(localStorage.getItem("user"));
   },
   deleteUser() {
-    return JSON.parse(localStorage.removeItem("user"));
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   },
   userRole() {
-    return JSON.parse(localStorage.getItem("userRole"));
+    return JSON.parse(localStorage.getItem("token"));
   },
 };

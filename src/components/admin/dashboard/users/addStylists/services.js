@@ -1,71 +1,58 @@
-/* eslint-disable import/order */
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable eqeqeq */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/no-cycle */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useState, useEffect } from "react";
+import { IoMdClose } from "react-icons/io";
+import { useLocation } from "react-router-dom";
+import useGetServices from "hooks/data/admin/useGetServices";
+import { Loadersmall } from "components/loader-component/loader";
 import admin from "../../../../../api/admin";
 import useChangeBtnTitle from "../../../../../hooks/useChangeBtnTitle";
 import ManageServicesModal from "../manageServicesModal";
-import { IoMdClose } from "react-icons/io";
 import OrangeBtn from "../../../../customButton/orangeBtn";
-import { useLocation } from "react-router-dom";
 import { serviceInitials } from "./helper";
 import DropDown from "../../../../customdropdown/primitive/DropDown";
 import DropDownItem from "../../../../customdropdown/primitive/DropDownItem";
 
-function ServicesTab({ ariaHidden, idx, setActiveTab }) {
+function ServicesTab({
+  ariaHidden,
+  idx,
+  activeTab,
+  isOpen,
+  isLoading,
+  detailsValues,
+  setDetailsValues,
+  stylistData,
+  mode,
+  handleEditStylist,
+}) {
   const [stylistServices, setStylistServices] = useState(serviceInitials);
   const [allServices, setAllServices] = useState([]);
   const [iServiceUpdate, setIServiceUpdate] = useState(false);
   const [openServiceModal, setOpenServiceModal] = useState(false);
   const [buttonAction, setButtonAction] = useState("Save");
-  const [isloading, setIsloading] = useState(false);
+  const [, setIsloading] = useState(false);
 
   const { state } = useLocation();
   const stylistId = localStorage.getItem("createdStylist");
 
   useChangeBtnTitle("service", setButtonAction, setStylistServices);
+  const {
+    data: servicesData,
+    isLoading: isServicesLoading,
+    data,
+    error: ServicesError,
+  } = useGetServices();
 
   useEffect(() => {
     const ac = new AbortController();
-
-    if (state) {
-      setIsloading(true);
-      admin
-        .GetStylistById(stylistId)
-        .then((res) => {
-          console.log(res.data.stylist, "services stylist");
-          const { services } = res.data.stylist;
-          const temp = services.map((service) => service._id);
-          setStylistServices((prev) => ({ ...prev, services: [...temp] }));
-          setIsloading(false);
-        })
-        .catch((err) => {
-          console.log(err, "error fetching existing stylist information");
-          setIsloading(false);
-        });
+    if (stylistData && servicesData) {
+      setAllServices(servicesData.data.data);
+      const { services } = stylistData;
+      const temp = services.map((service) => service._id);
+      setStylistServices((prev) => ({ ...prev, services: [...temp] }));
     }
-
-    // if (allServices.length === 0) {
-    admin
-      .GetServices()
-      .then((response) => {
-        console.log(response.data, "services");
-        setAllServices(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error.message, "error");
-      });
-    // }
-
     return function cleanup() {
       ac.abort();
     };
-  }, [iServiceUpdate]);
+  }, [iServiceUpdate, servicesData]);
 
   // handle click event of the Remove button
   const handleRemoveServiceClick = (index) => {
@@ -74,25 +61,9 @@ function ServicesTab({ ariaHidden, idx, setActiveTab }) {
     );
     setStylistServices((prev) => ({ ...prev, services: [...tempServices] }));
   };
-  const handleCreateStylist = () => {
-    setIsloading(true);
-    admin
-      .UpdateStylist(stylistServices)
-      .then((res) => {
-        setActiveTab((prev) => ({ ...prev, availabilityTab: true }));
-        setButtonAction("Edit");
-        setIsloading(false);
-      })
-      .catch((err) => console.log(err));
-  };
 
-  const clickHandler = () => {
-    if (buttonAction === "Save" || buttonAction === "Update") {
-      handleCreateStylist();
-    }
-    if (buttonAction === "Edit") {
-      setButtonAction("Update");
-    }
+  const handleUpdateServices = () => {
+    handleEditStylist(stylistServices);
   };
   // handle certification modal change
   useEffect(() => {
@@ -124,7 +95,7 @@ function ServicesTab({ ariaHidden, idx, setActiveTab }) {
   const handleOpenServiceModal = () => {
     setOpenServiceModal(true);
     // Disables Background Scrolling whilst the SideDrawer/Modal is open
-    if (typeof window != "undefined" && window.document) {
+    if (typeof window !== "undefined" && window.document) {
       document.body.style.overflow = "hidden";
     }
   };
@@ -216,6 +187,7 @@ function ServicesTab({ ariaHidden, idx, setActiveTab }) {
             })}
         </tbody>
       </table>
+      {isServicesLoading && <Loadersmall />}
       {allServices.filter(
         (service) => stylistServices.services.includes(service._id) === false
       ).length > 0 ? (
@@ -260,10 +232,10 @@ function ServicesTab({ ariaHidden, idx, setActiveTab }) {
       )}
       <div className="flex justify-end">
         <OrangeBtn
-          buttonAction={buttonAction}
-          disabled={disableBtn()}
-          onClick={clickHandler}
-          isloading={isloading}
+          disabled={disableBtn() && isLoading}
+          buttonAction="Save"
+          onClick={handleUpdateServices}
+          isloading={isLoading && activeTab === "Services and pricing"}
         />
       </div>
     </div>

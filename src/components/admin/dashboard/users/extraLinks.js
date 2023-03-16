@@ -55,7 +55,7 @@ function ExtraLinks({
               name="link"
               value={selected}
               onChange={handleSelect}
-              className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded flex items-center justify-between"
+              className="focus:ring-indigo-500 focus:border-indigo-500  h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-700 sm:text-sm rounded flex items-center justify-between font-normal"
             >
               {links
                 // .filter((option) => option.link !== opt)
@@ -70,7 +70,7 @@ function ExtraLinks({
             disabled={buttonAction === "Edit"}
             value={globalInput[selected]}
             name={selected}
-            className="shadow-sm pl-36 placeholder-text-sm appearance-none border-0  w-full h-full px-3 text-gray-700 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="shadow-sm pl-36 text-sm font-normal appearance-none border-0  w-full h-full px-3 text-gray-400 placeholder-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             placeholder="Enter link here"
             onChange={handleChange}

@@ -1,9 +1,7 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable global-require */
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}"],
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   theme: {
     extend: {
       colors: {
@@ -25,8 +23,8 @@ module.exports = {
           550: "rgba(89, 11, 169, 0.05)",
           600: "#EEEDEF",
           650: "rgba(89, 11, 169, 0.25)",
-          // 650: "#F7F7F8",
           700: "#A49DAA",
+          750: "#F7F7F8",
           800: "#D5D2D7",
         },
         orange: {
@@ -37,24 +35,47 @@ module.exports = {
           250: "rgba(255, 133, 0, 0.05)",
           300: "rgba(255, 133, 0, 0.03)",
           350: "rgba(255, 133, 0, 0.15)",
+          400: "#FFF3E6",
         },
         black: {
           50: "rgba(0, 0, 0, 0.2)",
           100: "rgba(0, 0, 0, 0.6)",
+          modal: "rgba(68, 60, 77, 0.65)",
         },
         alert: {
-          success:"#47B881",
+          success: "#47B881",
           error: "#EE6D52",
           warning: "#FF8500",
-          info:"#590BA9"
-        }
+          info: "#590BA9",
+        },
+      },
+      borderWidth: {
+        1.5: "1.5px",
       },
       height: {
+        69: "69px",
         36: "36px",
         46: "46px",
+        50: "50px",
         86: "86px",
         120: "120px",
+        234: "234px",
+        324: "324px",
+        316: "316px",
+        372: "372px",
         500: "500px",
+        150: "150px",
+        159: "159px",
+        520: "520px",
+        "90vh": "90vh",
+        "screen-420px": "calc(100vh - 420px)",
+        "screen-250px": "calc(100vh - 250px)",
+        "screen-170px": "calc(100vh - 170px)",
+        "screen-200px": "calc(100vh - 200px)",
+        "screen-300px": "calc(100vh - 300px)",
+        "full-90px": "calc(100% - 90px)",
+        "full-62px": "calc(100% - 62px)",
+        "full-20px": "calc(100% - 20px)",
       },
       width: {
         36: "36px",
@@ -62,18 +83,60 @@ module.exports = {
         86: "86px",
         120: "120px",
         140: "140px",
+        180: "180px",
         196: "196px",
-        220:"220px",
+        220: "220px",
         300: "300px",
         358: "358px",
         489: "489px",
+        480: "480px",
         543: "543px",
+        "95vw": "95vw",
+      },
+      spacing: {
+        "8px": "8px",
+        18: "18px",
+        "32px": "32px",
+        50: "50px",
+        69: "69px",
+        350: "350px",
+        250: "250px",
+        428: "428px",
+        400: "400px",
+        500: "500px",
+        600: "600px",
+        tablet: "768px",
+      },
+      maxHeight: {
+        700: "700px",
+        "screen-420px": "calc(100vh - 420px)",
+        "screen-250px": "calc(100vh - 250px)",
+        "screen-300px": "calc(100vh - 300px)",
+      },
+      minHeight: {
+        200: "200px",
       },
       minWidth: {
         30: "30%",
       },
+      maxWidth: {
+        480: "480px",
+        250: "250px",
+        280: "280px",
+        358: "358px",
+        375: "375px",
+        640: "640px",
+        678: "678px",
+        777: "777px",
+        1000: "1000px",
+        1111: "1111px",
+        500: "500px",
+        1170: "1170px",
+        1031: "1031px",
+      },
       fontFamily: {
         GTSuperTextBlack: "'GTSuperTextBlack', serif",
+        GTSuperText: "'GTSuperText', serif",
         BeatriceSemiBold: "'BeatriceSemiBold', serif",
         BeatriceSemiBoldItalic: "'BeatriceSemiBoldItalic', serif",
         BeatriceMediumItalic: "'BeatriceMediumItalic', serif",
@@ -84,14 +147,29 @@ module.exports = {
       fontSize: {
         22: "1.375rem",
       },
+      screens: {
+        xs: "480px",
+      },
+      zIndex: {
+        60: "60",
+        70: "70",
+        80: "80",
+        100: "100",
+        200: "200",
+        300: "300",
+        400: "400",
+        500: "500",
+      },
       backgroundImage: {
         "service-image": "url('/src/assets/images/service-image.png')",
         "purple-pattern": "url('/src/assets/images/bg-one.png')",
       },
       boxShadow: {
-        s01:"0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
-        s07:"0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)"
-      }
+        s01: "0px 2px 4px -2px rgba(68, 60, 77, 0.12), 0px 4px 4px -2px rgba(68, 60, 77, 0.08)",
+        s07: "0px 8px 22px -6px rgba(68, 60, 77, 0.12), 0px 14px 64px -4px rgba(68, 60, 77, 0.12)",
+        sinput: "0 0 0 2px #590BA9",
+        s05: "0px 6px 14px -6px rgba(68, 60, 77, 0.12), 0px 10px 32px -4px rgba(68, 60, 77, 0.1)",
+      },
     },
   },
   variants: {

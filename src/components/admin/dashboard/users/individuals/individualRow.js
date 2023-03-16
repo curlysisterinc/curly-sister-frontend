@@ -21,9 +21,10 @@ import kebabIcon from "../../../../../assets/images/kebab.svg";
 import trashIcon from "../../../../../assets/images/trash.svg";
 import activateIcon from "../../../../../assets/images/activate.svg";
 import rightArrow from "../../../../../assets/images/right-arrow.svg";
-import moment from "moment";
-import spencerAvatar from "../../../../../assets/images/spencer.svg";
+import * as dayjs from "dayjs";
+import spencerAvatar from "../../../../../assets/images/product-recommendation.png";
 import admin from "../../../../../api/admin";
+import IndividualDropDown from "./individualDropDown";
 
 function IndividualsRow({
   individualList,
@@ -31,8 +32,6 @@ function IndividualsRow({
   selectedId,
   setSelectedId,
 }) {
-  const [activeDropdown, setActiveDropdown] = useState(null);
-
   const navigate = useNavigate();
 
   const handleCheck = (e, id) => {
@@ -45,48 +44,9 @@ function IndividualsRow({
     }
   };
 
-  const toggleDropdownStyle = (index) => {
-    const mylist = [...individualList];
-    if (mylist[index]._id === activeDropdown) {
-      return "block";
-    } else return "hidden";
+  const displayUsersName = (user) => {
+    return `${user?.firstName ?? ""} ${user?.lastName ?? ""}`;
   };
-
-  const handleDropdownOpen = (index) => {
-    const newList = [...individualList];
-    setActiveDropdown(newList[index]._id);
-
-    if (newList[index]._id === activeDropdown) {
-      setActiveDropdown(null);
-    }
-  };
-  const handleDeleteUser = (id) => {
-    const data = {
-      userId: id,
-    };
-    console.log(data, "payload user");
-    admin
-      .DeleteIndividual(data)
-      .then((response) => {
-        console.log(response.data, "delete user");
-      })
-      .catch((error) => {
-        console.log(error, "error delete user");
-      });
-  };
-  const handleDeactivateUser = (id) => {
-    admin.SuspendOrActivateUser({ status: "false", userId: id });
-  };
-
-  // .filter((filteredindividual) => {
-  //   if (query === "") {
-  //     return filteredindividual;
-  //   } else if (
-  //     filteredindividual.name.toLowerCase().includes(query.toLowerCase())
-  //   ) {
-  //     return filteredindividual;
-  //   }
-  // })
   return (
     <>
       {individualList.map((individual, index) => {
@@ -115,12 +75,14 @@ function IndividualsRow({
                 alt="profile pix"
               />
               <div className="ml-2">
-                <p className="text-sm text-gray-400 mb-1">Adun Tope</p>
+                <p className="text-sm text-gray-400 mb-1">
+                  {displayUsersName(individual)}
+                </p>
                 <p className="text-xs text-gray-200 ">{individual.email}</p>
               </div>
             </td>
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {moment(individual.createdAt).format("DD MM YYYY")}
+              {dayjs(individual.createdAt).format("DD MMM YYYY")}
             </td>
             <td
               onClick={() => navigate(AuthRoutes.bookings)}
@@ -132,59 +94,14 @@ function IndividualsRow({
               </div>
             </td>
             <td className="text-sm text-gray-400  px-6 py-4 whitespace-nowrap">
-              {individual.status === "active" ? (
+              {individual.active ? (
                 <img src={greenIndicator} alt="" />
               ) : (
                 <img src={grayIndicator} alt="" />
               )}
             </td>
             <td className="px-2 py-y relative cursor-pointer ">
-              <div
-                className="hover:bg-gray-50 rounded-full h-8 w-8 flex justify-center items-center"
-                onClick={() => handleDropdownOpen(index)}
-              >
-                <img src={kebabIcon} alt="kebab icon" />
-              </div>
-
-              <div
-                className={clsx(
-                  toggleDropdownStyle(index),
-                  "absolute bg-white rounded-lg shadow-lg w-40 right-10 overflow-hidden text-sm text-gray-400"
-                )}
-              >
-                {individual.status === "active" ? (
-                  <>
-                    <div
-                      onClick={() => handleDeactivateUser(individual._id)}
-                      className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2 "
-                    >
-                      <img className="mr-3" src={activateIcon} alt="key icon" />
-                      Deactivate
-                    </div>
-                    <div
-                      onClick={() => handleDeleteUser(individual._id)}
-                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                    >
-                      <img className="mr-3" src={trashIcon} alt="key icon" />
-                      Delete
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center mb-3 hover:bg-gray-600 pl-3 py-2">
-                      <img className="mr-3" src={activateIcon} alt="key icon" />
-                      Activate
-                    </div>
-                    <div
-                      onClick={() => handleDeleteUser(individual._id)}
-                      className="flex items-center hover:bg-gray-600 pl-3 py-2 text-red-500"
-                    >
-                      <img className="mr-3" src={trashIcon} alt="key icon" />
-                      Delete
-                    </div>
-                  </>
-                )}
-              </div>
+              <IndividualDropDown user={individual} />
             </td>
           </tr>
         );
