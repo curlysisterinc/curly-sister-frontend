@@ -9,7 +9,7 @@ import DeleteContentModal from "./deleteContentModal";
 import trashIcon from "../../../../assets/images/trash.svg";
 import dropdownIcon from "../../../../assets/images/dropdown.svg";
 import searchIcon from "../../../../assets/images/search-normal-2.svg";
-import ContentTableRow from "./ContentTableRow";
+import ContentTableRow from "./contentTableRow";
 import TypesContent from "../../../customdropdown/dashboard/types";
 import Newcontent from "../../../customdropdown/dashboard/content/newcontent";
 import useGetAllContents from "../../../../hooks/data/admin/useGetAllContents";
